@@ -5,10 +5,18 @@
 #include <osg/PositionAttitudeTransform>
 #include <osg/PolygonMode>
 #include "KeyboardEventHandler.h"
+#include "ConfigReader.h"
+#include "defines.h"
 
 
 int main(int argc, char** argv)
 {
+
+	ConfigReader configReader;
+	configReader.readConfigFile(CONFIG_PATH);
+
+	std::cout << configReader.getStringFromStartupConfig("test") << std::endl;
+
 	//osg::PositionAttitudeTransform* sceneRoot = new osg::PositionAttitudeTransform();
 
 	//osg::Vec3Array* lineVertices = new osg::Vec3Array();
@@ -65,9 +73,6 @@ int main(int argc, char** argv)
 	//{
 	//	viewer->frame();
 	//}
-
-	std::cout << "Hello World" << std::endl;
-	std::cin.get();
 
 	return 0;
 

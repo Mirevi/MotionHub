@@ -1,7 +1,7 @@
 # top level cmake file
 
 cmake_minimum_required (VERSION 2.6 FATAL_ERROR)
-project (CMakeOSGHelloWorld)
+project (MotionHub)
 
 include_directories("${CMAKE_SOURCE_DIR}/src")
 
@@ -26,3 +26,5 @@ FIND_PACKAGE( OpenSceneGraph REQUIRED ) # Cmake will look for cmake scripts in /
 
 # Add subdir with additional CMakeLists.txt and files
 add_subdirectory("${CMAKE_SOURCE_DIR}/src") # CMake look for further CMakeLists.txt in that directory
+
+set_target_properties(MotionHub PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
