@@ -35,8 +35,6 @@
 
 #include "tinyxml2.h"
 
-using namespace tinyxml2;
-
 class ConfigReader
 {
 	// #### CONSTRUCTOR & DESTRUCTOR ###############
