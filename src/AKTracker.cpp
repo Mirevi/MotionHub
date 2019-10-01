@@ -1,6 +1,8 @@
 #include "AKTracker.h"
 
-class AKTracker
+AKTracker::AKTracker()
 {
 
-};
+
+
+}

@@ -1,9 +1,10 @@
 #include "TrackerManager.h"
 
-class TrackerManager
+Tracker TrackerManager::CreateTracker(TypeTracker type)
 {
-	Tracker TrackerManager::CreateTracker()
-	{
 
-	}
-};
+	Tracker trc;
+
+	return trc;
+
+}

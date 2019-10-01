@@ -1,4 +1,9 @@
+#pragma once
+
 #include "Skeleton.h"
+
+#include <string>
+#include <iostream>
 
 class NetworkManager
 {

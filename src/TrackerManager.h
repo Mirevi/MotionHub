@@ -1,23 +1,21 @@
+#pragma once
+
 #include <list>
 #include "Tracker.h"
 
 class TrackerManager
 {
-public:
 
+public:
+	enum TypeTracker
+	{
+		AKTracker,
+		XSTracker
+	};
 
 private:
 	std::list<Tracker> tracker;
 
+	Tracker CreateTracker(TypeTracker type);
 
-
-
-	Tracker CreateTracker(TypeTracker type);
-
-};
-
-enum TypeTracker
-{
-	AKTracker,
-	XSTracker
 };

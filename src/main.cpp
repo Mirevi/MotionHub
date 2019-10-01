@@ -1,6 +1,3 @@
-#include <iostream>
-
-#include "defines.h"
 #include "MotionHub.h"
 
 //#include <osgDB/ReadFile>

@@ -1,3 +1,5 @@
+#pragma once
+
 #include <Joint.h>
 
 class Skeleton

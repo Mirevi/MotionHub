@@ -23,7 +23,10 @@ set(CMAKE_DEBUG_POSTFIX "d")
 # CMake Modules
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 FIND_PACKAGE( OpenSceneGraph REQUIRED ) # Cmake will look for cmake scripts in /cmake/Modules/. This examples searches "FindOpenSceneGraph.cmake"
-
+FIND_PACKAGE( AzureKinectBodyTrackingSDK REQUIRED )
+FIND_PACKAGE( AzureKinectSensorSDK REQUIRED )
+FIND_PACKAGE( OSCPack REQUIRED )
+FIND_PACKAGE( Cudnn REQUIRED )
 # Add subdir with additional CMakeLists.txt and files
 add_subdirectory("${CMAKE_SOURCE_DIR}/src") # CMake look for further CMakeLists.txt in that directory
 
