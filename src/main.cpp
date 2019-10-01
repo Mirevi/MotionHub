@@ -13,7 +13,7 @@
 int main(int argc, char** argv)
 {
 
-	MotionHub* motionHub;
+	MotionHub motionHub = MotionHub();
 
 	return 0;
 

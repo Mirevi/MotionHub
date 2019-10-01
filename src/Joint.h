@@ -6,9 +6,12 @@ class Joint
 
 private:
 	std::string m_name;
+	/*
 	std::vector<float> m_position;
 	std::vector<float> m_position;
+	*/
 
 public:
 	Joint();
+	Joint(std::string name);
 };

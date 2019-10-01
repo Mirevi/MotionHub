@@ -4,10 +4,12 @@
 MotionHub::MotionHub()
 {
 
-	m_configReader = new ConfigReader();
-	m_configReader->readConfigFile(CONFIG_PATH);
+	Console::printHeader();
 
-	TrackerManager* m_trackerManager;
-	NetworkManager* m_networkManager;
+	m_configReader = ConfigReader();
+	m_configReader.readConfigFile(CONFIG_PATH);
+
+	//m_trackerManager = TrackerManager();
+	m_networkManager = NetworkManager();
 
 }

@@ -6,3 +6,10 @@ Joint::Joint()
 
 
 }
+
+Joint::Joint(std::string name)
+{
+
+
+
+}

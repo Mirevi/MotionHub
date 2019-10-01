@@ -19,5 +19,5 @@ private:
 	int m_sid;
 	StateSkeleton m_state;
 	int m_ageFrames;
-	Joint m_joints[];
+	//Joint m_joints[26];
 };
