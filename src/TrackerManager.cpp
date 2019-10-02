@@ -5,20 +5,22 @@ TrackerManager::TrackerManager()
 
 }
 
-void TrackerManager::CreateTracker(Tracker::TypeTracker type)
+void TrackerManager::CreateTracker(TypeTracker type)
 {
 
 	switch (type)
 	{
-	case Tracker::AKTracker:
-		poolTracker.insert({ "NULL", new AKTracker() });
-		break;
-	case Tracker::XSTracker:
-		//poolTracker.insert({ "NULL", new XSTracker() });
 
-		break;
-	default:
-		break;
+		case AKT:
+			poolTracker.insert({ "NULL", new AKTracker() });
+			break;
+
+		case XST:
+			//poolTracker.insert({ "NULL", new XSTracker() });
+			break;
+
+		default:
+			break;
+
 	}
-
 }

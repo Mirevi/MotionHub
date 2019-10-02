@@ -1,6 +1,6 @@
 #include "Tracker.h"
 
-Tracker::Tracker(TypeTracker type)
+Tracker::Tracker()
 {
 
 	tracking = false;
@@ -16,4 +16,11 @@ void Tracker::start()
 void Tracker::stop()
 {
 	tracking = false;
+}
+
+void Tracker::track()
+{
+
+
+
 }

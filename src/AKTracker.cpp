@@ -4,8 +4,9 @@
 AKTracker::AKTracker()
 {
 	
-}
 
+
+}
 
 void AKTracker::track()
 {
