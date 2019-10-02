@@ -20,7 +20,7 @@ int main(int argc, char** argv)
 	// start tracking
 	//motionHub.m_trackerManager.start();
 
-	Vector3 vector3 = Vector3::one() ;
+	Vector3 vector3 = Vector3::one();
 	Console::log(vector3.toString());
 
 	return 0;

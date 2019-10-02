@@ -14,8 +14,8 @@ class Console
 
 public:
 	static void log(std::string message);
-	static void warning(std::string message);
-	static void error(std::string message);
+	static void logWarning(std::string message);
+	static void logError(std::string message);
 	static void printHeader();
 
 };
