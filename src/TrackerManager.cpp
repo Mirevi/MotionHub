@@ -1,10 +1,24 @@
 #include "TrackerManager.h"
 
-Tracker TrackerManager::CreateTracker(TypeTracker type)
+TrackerManager::TrackerManager()
 {
 
-	Tracker trc;
+}
 
-	return trc;
+void TrackerManager::CreateTracker(Tracker::TypeTracker type)
+{
+
+	switch (type)
+	{
+	case Tracker::AKTracker:
+		poolTracker.insert({ "NULL", new AKTracker() });
+		break;
+	case Tracker::XSTracker:
+		//poolTracker.insert({ "NULL", new XSTracker() });
+
+		break;
+	default:
+		break;
+	}
 
 }
