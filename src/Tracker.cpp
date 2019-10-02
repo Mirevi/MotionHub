@@ -1,15 +1,19 @@
 #include "Tracker.h"
 
-Tracker::Tracker()
+Tracker::Tracker(TypeTracker type)
 {
 
-
+	tracking = false;
 
 }
 
-void Tracker::updateSkeletons()
+void Tracker::start()
 {
+	tracking = true;
+	track();
+}
 
-
-
+void Tracker::stop()
+{
+	tracking = false;
 }

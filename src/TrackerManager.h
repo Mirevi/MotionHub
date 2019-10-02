@@ -3,19 +3,18 @@
 #include <list>
 #include "Tracker.h"
 
+#include <map>
+#include <vector>
+
+
 class TrackerManager
 {
 
 public:
-	enum TypeTracker
-	{
-		AKTracker,
-		XSTracker
-	};
+	void CreateTracker(Tracker::TypeTracker type);
+	TrackerManager();
 
 private:
-	std::list<Tracker> tracker;
-
-	Tracker CreateTracker(TypeTracker type);
+	std::map<std::string, Tracker*> poolTracker;
 
 };
