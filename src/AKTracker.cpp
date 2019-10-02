@@ -52,7 +52,7 @@ void AKTracker::stop()
 
 	Tracker::stop();
 
-	Console::log('e', "Finished body tracking processing!");
+	Console::error("Finished body tracking processing!");
 
 	k4abt_tracker_shutdown(tracker);
 	k4abt_tracker_destroy(tracker);
@@ -75,12 +75,12 @@ void AKTracker::track()
 		if (queue_capture_result == K4A_WAIT_RESULT_TIMEOUT)
 		{
 			// It should never hit timeout when K4A_WAIT_INFINITE is set.
-			Console::log('e', "Add capture to tracker process queue timeout!");
+			Console::error("Add capture to tracker process queue timeout!");
 			return;
 		}
 		else if (queue_capture_result == K4A_WAIT_RESULT_FAILED)
 		{
-			Console::log('e', "Add capture to tracker process queue failed!");
+			Console::error("Add capture to tracker process queue failed!");
 			return;
 		}
 
@@ -92,31 +92,31 @@ void AKTracker::track()
 
 			size_t num_bodies = k4abt_frame_get_num_bodies(body_frame);
 			//printf("%zu bodies are detected!\n", num_bodies);
-			Console::log('i', "AKTracker deteceted bodies = " + std::to_string(num_bodies));
+			Console::log("AKTracker deteceted bodies = " + std::to_string(num_bodies));
 
 			k4abt_frame_release(body_frame); // Remember to release the body frame once you finish using it
 		}
 		else if (pop_frame_result == K4A_WAIT_RESULT_TIMEOUT)
 		{
 			//  It should never hit timeout when K4A_WAIT_INFINITE is set.
-			Console::log('e', "Pop body frame result timeout!");
+			Console::error("Pop body frame result timeout!");
 			return;
 		}
 		else
 		{
-			Console::log('e', "Pop body frame result failed!");
+			Console::error("Pop body frame result failed!");
 			return;
 		}
 	}
 	else if (get_capture_result == K4A_WAIT_RESULT_TIMEOUT)
 	{
 		// It should never hit time out when K4A_WAIT_INFINITE is set.
-		Console::log('e', "Get depth frame time out!");
+		Console::error("Get depth frame time out!");
 		return;
 	}
 	else
 	{
-		Console::log('e', "Get depth capture returned error: " + std::to_string(get_capture_result));
+		Console::error("Get depth capture returned error: " + std::to_string(get_capture_result));
 		return;
 	}
 }
