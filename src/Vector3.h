@@ -16,4 +16,31 @@ public:
 
 	Vector3 static zero();
 
+	Vector3 operator + (Vector3 const vector3)
+	{
+
+		return Vector3(m_xyz.x + vector3.m_xyz.x, m_xyz.y + vector3.m_xyz.y, m_xyz.z + vector3.m_xyz.z);
+
+	};
+
+	Vector3 operator - (Vector3 const vector3)
+	{
+
+		return Vector3(m_xyz.x - vector3.m_xyz.x, m_xyz.y - vector3.m_xyz.y, m_xyz.z - vector3.m_xyz.z);
+
+	};
+
+	Vector3 operator * (Vector3 const vector3)
+	{
+
+		return Vector3(m_xyz.x * vector3.m_xyz.x, m_xyz.y * vector3.m_xyz.y, m_xyz.z * vector3.m_xyz.z);
+
+	};
+
+	Vector3 operator / (Vector3 const vector3)
+	{
+
+		return Vector3(m_xyz.x / vector3.m_xyz.x, m_xyz.y / vector3.m_xyz.y, m_xyz.z / vector3.m_xyz.z);
+
+	};
 };
