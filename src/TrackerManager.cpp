@@ -57,12 +57,12 @@ void TrackerManager::createTracker(TypeTracker type)
 
 		case AKT:
 			poolTracker.insert({ "NULL", new AKTracker() });
-			Console::log('i', "Created tracker: AKTracker.");
+			Console::log("Created tracker: AKTracker.");
 			break;
 
 		case XST:
 			//poolTracker.insert({ "NULL", new XSTracker() });
-			Console::log('i', "Created tracker: XSTracker.");
+			Console::log("Created tracker: XSTracker.");
 			break;
 
 		default:

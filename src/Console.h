@@ -13,7 +13,9 @@ class Console
 {
 
 public:
-	static void log(char type, std::string message);
+	static void log(std::string message);
+	static void warning(std::string message);
+	static void error(std::string message);
 	static void printHeader();
 
 };
