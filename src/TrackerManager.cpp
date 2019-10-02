@@ -3,9 +3,12 @@
 TrackerManager::TrackerManager()
 {
 
+	createTracker(AKT);
+	poolTracker.begin()->second->start();
+
 }
 
-void TrackerManager::CreateTracker(TypeTracker type)
+void TrackerManager::createTracker(TypeTracker type)
 {
 
 	switch (type)
@@ -13,6 +16,7 @@ void TrackerManager::CreateTracker(TypeTracker type)
 
 		case AKT:
 			poolTracker.insert({ "NULL", new AKTracker() });
+			Console::log('i', "Created tracker = AKTracker.");
 			break;
 
 		case XST:

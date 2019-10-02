@@ -21,7 +21,7 @@ public:
 		XST
 	};
 
-	void CreateTracker(TypeTracker type);
+	void createTracker(TypeTracker type);
 
 private:
 	std::map<std::string, Tracker*> poolTracker;

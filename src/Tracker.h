@@ -18,13 +18,13 @@ public:
 		PAUSED
 	};
 
+	void start();
+	void stop();
+
 private:
 
 	StateTracker state;	
 	std::list<Skeleton> skeletons;
-
-	void start();
-	void stop();
 
 	virtual void track();
 };
