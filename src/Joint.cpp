@@ -7,7 +7,7 @@ Joint::Joint()
 
 }
 
-Joint::Joint(std::string name)
+Joint::Joint(std::string key)
 {
 
 
