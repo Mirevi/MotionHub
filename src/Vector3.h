@@ -1,3 +1,7 @@
+#pragma once
+
+#include <string>
+
 class Vector3
 {
 
@@ -14,33 +18,16 @@ public:
 
 	position m_xyz;
 
+	Vector3 operator + (Vector3 const vector3);
+	Vector3 operator - (Vector3 const vector3);
+	Vector3 operator * (Vector3 const vector3);
+	Vector3 operator / (Vector3 const vector3);
+	Vector3 operator * (float const scale);
+	Vector3 operator * (int const scale);
+
 	Vector3 static zero();
+	Vector3 static one();
 
-	Vector3 operator + (Vector3 const vector3)
-	{
+	std::string toString();
 
-		return Vector3(m_xyz.x + vector3.m_xyz.x, m_xyz.y + vector3.m_xyz.y, m_xyz.z + vector3.m_xyz.z);
-
-	};
-
-	Vector3 operator - (Vector3 const vector3)
-	{
-
-		return Vector3(m_xyz.x - vector3.m_xyz.x, m_xyz.y - vector3.m_xyz.y, m_xyz.z - vector3.m_xyz.z);
-
-	};
-
-	Vector3 operator * (Vector3 const vector3)
-	{
-
-		return Vector3(m_xyz.x * vector3.m_xyz.x, m_xyz.y * vector3.m_xyz.y, m_xyz.z * vector3.m_xyz.z);
-
-	};
-
-	Vector3 operator / (Vector3 const vector3)
-	{
-
-		return Vector3(m_xyz.x / vector3.m_xyz.x, m_xyz.y / vector3.m_xyz.y, m_xyz.z / vector3.m_xyz.z);
-
-	};
 };

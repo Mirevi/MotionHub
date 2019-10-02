@@ -31,3 +31,59 @@ Vector3 Vector3::zero()
 	return Vector3(0.0f, 0.0f, 0.0f);
 
 }
+
+Vector3 Vector3::one()
+{
+
+	return Vector3(1.0f, 1.0f, 1.0f);
+
+}
+
+Vector3 Vector3::operator + (Vector3 const vector3)
+{
+
+	return Vector3(m_xyz.x + vector3.m_xyz.x, m_xyz.y + vector3.m_xyz.y, m_xyz.z + vector3.m_xyz.z);
+
+}
+
+Vector3 Vector3::operator - (Vector3 const vector3)
+{
+
+	return Vector3(m_xyz.x - vector3.m_xyz.x, m_xyz.y - vector3.m_xyz.y, m_xyz.z - vector3.m_xyz.z);
+
+}
+
+Vector3 Vector3::operator * (Vector3 const vector3)
+{
+
+	return Vector3(m_xyz.x * vector3.m_xyz.x, m_xyz.y * vector3.m_xyz.y, m_xyz.z * vector3.m_xyz.z);
+
+}
+
+Vector3 Vector3::operator / (Vector3 const vector3)
+{
+
+	return Vector3(m_xyz.x / vector3.m_xyz.x, m_xyz.y / vector3.m_xyz.y, m_xyz.z / vector3.m_xyz.z);
+
+}
+
+Vector3 Vector3::operator * (float const scale)
+{
+
+	return Vector3(m_xyz.x * scale, m_xyz.y * scale, m_xyz.z * scale);
+
+}
+
+Vector3 Vector3::operator * (int const scale)
+{
+
+	return Vector3(m_xyz.x * scale, m_xyz.y * scale, m_xyz.z * scale);
+
+}
+
+std::string Vector3::toString()
+{
+
+	return "(" + std::to_string(m_xyz.x) + ", " + std::to_string(m_xyz.y) + ", " + std::to_string(m_xyz.z) + ")";
+
+}
