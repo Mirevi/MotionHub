@@ -3,19 +3,22 @@
 Tracker::Tracker()
 {
 
-	tracking = false;
+
 
 }
 
 void Tracker::start()
 {
-	tracking = true;
-	track();
+
+	m_tracking = true;
+
 }
 
 void Tracker::stop()
 {
-	tracking = false;
+
+	m_tracking = false;
+
 }
 
 void Tracker::track()

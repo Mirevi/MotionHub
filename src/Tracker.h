@@ -1,5 +1,8 @@
 #pragma once
 
+#include <iostream>
+#include <future>
+
 #include "Skeleton.h"
 #include <list>
 
@@ -9,7 +12,7 @@ class Tracker
 public:
 
 	Tracker();
-	bool tracking;
+	bool m_tracking = false;
 
 	enum StateTracker
 	{
@@ -20,11 +23,10 @@ public:
 
 	void start();
 	void stop();
+	virtual void track();
 
 private:
 
 	StateTracker state;	
 	std::list<Skeleton> skeletons;
-
-	virtual void track();
 };

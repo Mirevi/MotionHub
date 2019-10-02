@@ -12,6 +12,12 @@ int main(int argc, char** argv)
 
 	MotionHub motionHub = MotionHub();
 
+	// register tracker
+	motionHub.m_trackerManager.createTracker(TrackerManager::AKT);
+
+	// start tracking
+	motionHub.m_trackerManager.start();
+
 	return 0;
 
 }
