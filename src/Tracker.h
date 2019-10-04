@@ -24,9 +24,13 @@ public:
 	void start();
 	void stop();
 	virtual void track();
+	std::map<int, Skeleton> skeletons;
+	//virtual void createSkeleton();
+	//virtual void updateSkeletons(k4abt_frame_t* body_frame);
+	//virtual void parseSkeleton(k4abt_skeleton_t* skeleton);
 
 private:
 
-	StateTracker state;	
-	std::list<Skeleton> skeletons;
+	StateTracker state;
+
 };

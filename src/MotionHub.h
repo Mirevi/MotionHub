@@ -11,7 +11,12 @@ class MotionHub
 public:
 	MotionHub();
 	ConfigReader m_configReader;
-	TrackerManager m_trackerManager;
+	
 	NetworkManager m_networkManager;
 
+	inline TrackerManager* getTrackerManager() { return m_trackerManager; }
+	//inline void setTrackerManager(TrackerManager* trackingManager) { m_trackerManager = trackingManager; }
+
+private:
+	TrackerManager* m_trackerManager;
 };

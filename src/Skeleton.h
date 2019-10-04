@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Joint.h>
+#include <map>
 
 class Skeleton
 {
@@ -16,6 +17,9 @@ public:
 	Skeleton();
 	Skeleton(int sid);
 	void updateAge();
+	void parseJoint(Joint::jointNames name, Vector3 position, Vector4 rotation);
+	std::map<Joint::jointNames, Joint> m_joints;
+
 
 private:
 	int m_sid;

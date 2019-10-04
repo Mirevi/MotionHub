@@ -12,16 +12,23 @@
 int main(int argc, char** argv)
 {
 
-	MotionHub motionHub = MotionHub();
+	MotionHub* motionHub = new MotionHub();
 
 	// register tracker
-	motionHub.m_trackerManager.createTracker(TrackerManager::AKT);
+	motionHub->getTrackerManager()->createTracker(TrackerManager::AKT);
+	
+	//Idea by PL	TODO:
+	//TODO: SingleAzureKinect -> Besser Enum namen + createTracker gibt Pointer auf AKTracker zurück
+	//AKTracker* aktracker = motionHub->getTrackerManager()->createTracker(TrackerManager::SingleAzureKinect); //Schön! 
+	//if(akTracker == nullprt)
+	//{
+	//	Error!
+	//}
+	//AKTracker* aktracker = motionHub.m_trackerManager.createTracker(TrackerManager::AKT);
+	//motionHub.m_trackerManager.registerTracker(aktracker);
 
 	// start tracking
-	//motionHub.m_trackerManager.start();
-
-	Vector3 vector3 = Vector3::one();
-	Console::log(vector3.toString());
+	motionHub->getTrackerManager()->start();
 
 	return 0;
 

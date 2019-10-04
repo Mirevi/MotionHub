@@ -24,6 +24,8 @@ public:
 	void start();
 	void stop();
 	void track();
+	void updateSkeletons(k4abt_frame_t* body_frame);
+
 
 private:
 	k4a_device_t cam;
@@ -31,6 +33,10 @@ private:
 	k4a_calibration_t calibrationCam;
 	k4abt_tracker_t tracker;
 	k4abt_tracker_configuration_t configTracker;
+	int m_num_bodies;
+	int highestSkeletonId = 0;
+	
 	void init(k4a_device_configuration_t configDevice);
-
+	void parseSkeleton(k4abt_skeleton_t* skeleton, int id, bool createNew);
+	void cleanSkeletonList(k4abt_frame_t* bodyFrame);
 };

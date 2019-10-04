@@ -31,7 +31,7 @@ void Console::log(std::string message)
 }
 
 //outputs a string in console as warning
-void Console::warning(std::string message)
+void Console::logWarning(std::string message)
 {
 	std::string output;
 
@@ -59,7 +59,7 @@ void Console::warning(std::string message)
 }
 
 //outputs a string in console as error
-void Console::error(std::string message)
+void Console::logError(std::string message)
 {
 	std::string output;
 
@@ -108,10 +108,8 @@ void Console::printHeader()
 
 	SetConsoleTextAttribute(handle_console, 15);
 
-	log("Mirevi MotionHub");
-	log("Processes skeleton data and sends osc skeleton udp packets over ip.");
-	std::cout << std::endl;
-	log("Created by Kester Evers and Eric Jansen at MIREVI (mirevi.de).");
-	std::cout << std::endl;
+	std::cout << "Mirevi MotionHub" << std::endl;;
+	std::cout << "Combines different body tracking solutions and sends position and rotation data of skeleton joints via ip.\n" << std::endl;;
+	std::cout << "MotionHub is created at MIREVI within the scope of the project HIVE.\nCurrently MotionHub is developed by Kester Evers, Eric Jansen and supervised by Philipp Ladwig.\n" << std::endl;;
 
 }

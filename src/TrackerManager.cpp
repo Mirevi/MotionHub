@@ -49,8 +49,20 @@ void TrackerManager::update()
 	}
 }
 
+/*
+
+# work with states
+
+registerTracker
+
+initTracker
+
+*/
+
 void TrackerManager::createTracker(TypeTracker type)
 {
+
+	// error handling in method -> work with pointers
 
 	switch (type)
 	{
