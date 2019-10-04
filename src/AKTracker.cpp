@@ -96,12 +96,23 @@ void AKTracker::track()
 
 
 
+<<<<<<< HEAD
 			//update all skeletons with current data in body_frame
 			updateSkeletons(&body_frame);
 
 
 
 
+=======
+
+			//loop through all skeletons
+			//update list
+			//updateSkeleton();
+			//
+			//loop through list
+			//print out pelvis position
+			//parse SkeletonData();
+>>>>>>> 6fcddf202a3beda60cc1476e34f79a88d0babae7
 
 
 
@@ -110,6 +121,12 @@ void AKTracker::track()
 
 
 
+<<<<<<< HEAD
+=======
+			size_t num_bodies = k4abt_frame_get_num_bodies(body_frame);
+			//printf("%zu bodies are detected!\n", num_bodies);
+			Console::log("AKTracker deteceted bodies = " + std::to_string(num_bodies));
+>>>>>>> 6fcddf202a3beda60cc1476e34f79a88d0babae7
 
 			k4abt_frame_release(body_frame); // Remember to release the body frame once you finish using it
 		}
