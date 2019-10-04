@@ -90,6 +90,27 @@ void AKTracker::track()
 		{
 			// Successfully popped the body tracking result. Start your processing
 
+
+
+
+
+
+
+			//loop through all skeletons
+			//update list
+			//updateSkeleton();
+			//
+			//loop through list
+			//print out pelvis position
+			//parse SkeletonData();
+
+
+
+
+
+
+
+
 			size_t num_bodies = k4abt_frame_get_num_bodies(body_frame);
 			//printf("%zu bodies are detected!\n", num_bodies);
 			Console::log("AKTracker deteceted bodies = " + std::to_string(num_bodies));
