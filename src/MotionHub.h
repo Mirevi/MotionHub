@@ -4,19 +4,18 @@
 #include "TrackerManager.h"
 #include "NetworkManager.h"
 #include "Console.h"
+#include "defines.h"
 
 class MotionHub
 {
 
 public:
 	MotionHub();
-	ConfigReader m_configReader;
-	
-	NetworkManager m_networkManager;
-
-	inline TrackerManager* getTrackerManager() { return m_trackerManager; }
-	//inline void setTrackerManager(TrackerManager* trackingManager) { m_trackerManager = trackingManager; }
+	TrackerManager* getTrackerManager();
 
 private:
 	TrackerManager* m_trackerManager;
+	ConfigReader* m_configReader;
+	NetworkManager* m_networkManager;
+
 };

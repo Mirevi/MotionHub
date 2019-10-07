@@ -1,7 +1,5 @@
 #include "AKTracker.h"
 
-
-//constructor
 AKTracker::AKTracker()
 {
 
@@ -9,9 +7,10 @@ AKTracker::AKTracker()
 
 }
 
-AKTracker::AKTracker(k4a_device_configuration_t configDevice)
+AKTracker::AKTracker(k4a_device_configuration_t configDevice, int idCam)
 {
 
+	m_idCam = idCam;
 	init(configDevice);
 
 }
@@ -20,19 +19,19 @@ void AKTracker::init(k4a_device_configuration_t configDevice)
 {
 
 	cam = NULL;
-	VERIFY_K4A_FUNCTION(k4a_device_open(0, &cam), "Open K4A Device failed!");
+	VERIFY_K4A_FUNCTION(k4a_device_open(m_idCam, &cam), "[cam id = " + std::to_string(m_idCam) + "] + Open K4A Device failed!");
 
 	// Start camera. Make sure depth camera is enabled.
 	configCam = configDevice;
 	configCam.depth_mode = K4A_DEPTH_MODE_WFOV_2X2BINNED;
 	configCam.color_resolution = K4A_COLOR_RESOLUTION_OFF;
-	VERIFY_K4A_FUNCTION(k4a_device_start_cameras(cam, &configCam), "Start K4A cameras failed!");
+	VERIFY_K4A_FUNCTION(k4a_device_start_cameras(cam, &configCam), "[cam id = " + std::to_string(m_idCam) + "] + Start K4A cameras failed!");
 
-	VERIFY_K4A_FUNCTION(k4a_device_get_calibration(cam, configCam.depth_mode, configCam.color_resolution, &calibrationCam), "Get depth camera calibration failed!");
+	VERIFY_K4A_FUNCTION(k4a_device_get_calibration(cam, configCam.depth_mode, configCam.color_resolution, &calibrationCam), "[cam id = " + std::to_string(m_idCam) + "] + Get depth camera calibration failed!");
 
 	tracker = NULL;
 	configTracker = K4ABT_TRACKER_CONFIG_DEFAULT;
-	VERIFY_K4A_FUNCTION(k4abt_tracker_create(&calibrationCam, configTracker, &tracker), "Body tracker initialization failed!");
+	VERIFY_K4A_FUNCTION(k4abt_tracker_create(&calibrationCam, configTracker, &tracker), "[cam id = " + std::to_string(m_idCam) + "] + Body tracker initialization failed!");
 
 }
 
@@ -41,10 +40,6 @@ void AKTracker::start()
 
 	Tracker::start();
 
-	// mutex
-	// atomic
-	// observer pattern for trackerManager
-
 }
 
 void AKTracker::stop()
@@ -52,12 +47,15 @@ void AKTracker::stop()
 
 	Tracker::stop();
 
-	Console::log("Finished body tracking processing!");
+
 
 	k4abt_tracker_shutdown(tracker);
 	k4abt_tracker_destroy(tracker);
 	k4a_device_stop_cameras(cam);
 	k4a_device_close(cam);
+
+	Console::log("[cam id = " + std::to_string(m_idCam) + "] AKTracker::stop(): Stopped body tracking!");
+
 }
 
 void AKTracker::track()
@@ -74,12 +72,12 @@ void AKTracker::track()
 		if (queue_capture_result == K4A_WAIT_RESULT_TIMEOUT)
 		{
 			// It should never hit timeout when K4A_WAIT_INFINITE is set.
-			Console::logError("Add capture to tracker process queue timeout!");
+			Console::logError("[cam id = " + std::to_string(m_idCam) + "] Add capture to tracker process queue timeout!");
 			return;
 		}
 		else if (queue_capture_result == K4A_WAIT_RESULT_FAILED)
 		{
-			Console::logError("Add capture to tracker process queue failed!");
+			Console::logError("[cam id = " + std::to_string(m_idCam) + "] Add capture to tracker process queue failed!");
 			return;
 		}
 
@@ -89,50 +87,42 @@ void AKTracker::track()
 		{
 			// Successfully popped the body tracking result. Start your processing
 
-
 			//update all skeletons with current data in body_frame
 			updateSkeletons(&body_frame);
 
+			//clean up skeleton pool - remove inactive skeletons
 			cleanSkeletonList(&body_frame);
 
-			Console::log("pool size: " + std::to_string(poolSkeletons.size()));
+			//for (auto itPoolSkeletons = poolSkeletons.begin(); itPoolSkeletons != poolSkeletons.end(); itPoolSkeletons++)
+			//{
 
-			for (size_t i = 1; i <= poolSkeletons.size(); i++)
-			{
-				Console::log("skeleton " + std::to_string(i) + " position" + poolSkeletons[i].m_joints[(Joint::jointNames)0].getJointPosition().toString());
-			}
+			//	Console::log("[cam id = " + std::to_string(m_idCam) + "] AkTracker::track(): Skeleton with id = " + std::to_string(itPoolSkeletons->first) + ", pelvis position = " + itPoolSkeletons->second.m_joints[(Joint::jointNames)0].getJointPosition().toString());
 
-
-
-			//Console::log("length of list: " + std::to_string(poolSkeletons.size()));
-			//size_t num_bodies = k4abt_frame_get_num_bodies(body_frame);
-			////printf("%zu bodies are detected!\n", num_bodies);
-			//Console::log("AKTracker deteceted bodies = " + std::to_string(num_bodies));
-
+			//}
 
 			k4abt_frame_release(body_frame); // Remember to release the body frame once you finish using it
 		}
 		else if (pop_frame_result == K4A_WAIT_RESULT_TIMEOUT)
 		{
 			//  It should never hit timeout when K4A_WAIT_INFINITE is set.
-			Console::logError("Pop body frame result timeout!");
+			Console::logError("[cam id = " + std::to_string(m_idCam) + "] Pop body frame result timeout!");
 			return;
 		}
 		else
 		{
-			Console::logError("Pop body frame result failed!");
+			Console::logError("[cam id = " + std::to_string(m_idCam) + "] Pop body frame result failed!");
 			return;
 		}
 	}
 	else if (get_capture_result == K4A_WAIT_RESULT_TIMEOUT)
 	{
 		// It should never hit time out when K4A_WAIT_INFINITE is set.
-		Console::logError("Get depth frame time out!");
+		Console::logError("[cam id = " + std::to_string(m_idCam) + "] Get depth frame time out!");
 		return;
 	}
 	else
 	{
-		Console::logError("Get depth capture returned error: " + std::to_string(get_capture_result));
+		Console::logError("[cam id = " + std::to_string(m_idCam) + "] Get depth capture returned error: " + std::to_string(get_capture_result));
 		return;
 	}
 }
@@ -150,19 +140,22 @@ void AKTracker::updateSkeletons(k4abt_frame_t* body_frame)
 		k4abt_frame_get_body_skeleton(*body_frame, indexSkeleton, &skeleton);
 		uint32_t id = k4abt_frame_get_body_id(*body_frame, indexSkeleton);
 
-		if (id > highestSkeletonId)
+		if (id > m_idCurrMaxSkeletons)
 		{
-			highestSkeletonId = id;
+			m_idCurrMaxSkeletons = id;
 
 			poolSkeletons.insert(std::pair<int, Skeleton>(id, *parseSkeleton(&skeleton, id)));
+
+			Console::log("[cam id = " + std::to_string(m_idCam) + "] AkTracker::updateSkeleton(): Created new skeleton with id = " + std::to_string(id) + ".");
+
 		}
 		else
 		{
 			poolSkeletons[id] = *parseSkeleton(&skeleton, id);
-		}
 
-		//Console::log("length of list: " + std::to_string(poolSkeletons.size()));
-		//Console::log("id:" + std::to_string(id));
+			//Console::log("[cam id = " + std::to_string(m_idCam) + "] AkTracker::updateSkeleton(): Updated skeleton with id = " + std::to_string(id) + ".");
+
+		}
 	}
 }
 
@@ -181,15 +174,8 @@ Skeleton* AKTracker::parseSkeleton(k4abt_skeleton_t* skeleton, int id)
 		Vector3 pos = Vector3(skeleton_position.xyz.x, skeleton_position.xyz.y, skeleton_position.xyz.z);
 		Vector4 rot = Vector4(skeleton_rotation.wxyz.x, skeleton_rotation.wxyz.y, skeleton_rotation.wxyz.z, skeleton_rotation.wxyz.w);
 
-		//if (i == 0)
-		//{
-		//	Console::log("Skeleton " + std::to_string(id) + " position: (" 
-		//							 + std::to_string(pos.m_xyz.x) + ", " 
-		//							 + std::to_string(pos.m_xyz.y) + ", " 
-		//							 + std::to_string(pos.m_xyz.z) + ")");
-		//}
-
-		currSkeleton->m_joints.insert(std::pair<Joint::jointNames, Joint>((Joint::jointNames)jointIndex, Joint(pos, rot)));
+		//save joint data in skeleton object
+		currSkeleton->m_joints.insert({ (Joint::jointNames)jointIndex, Joint(pos, rot) });
 
 	}
 
@@ -231,5 +217,13 @@ void AKTracker::cleanSkeletonList(k4abt_frame_t* bodyFrame)
 	for (auto itIndexIdSkeletonsToErase = idSkeletonsToErase.begin(); itIndexIdSkeletonsToErase != idSkeletonsToErase.end(); itIndexIdSkeletonsToErase++)
 	{
 		poolSkeletons.erase(*itIndexIdSkeletonsToErase);
+
+		Console::log("[cam id = " + std::to_string(m_idCam) + "] AkTracker::cleanSkeletonList(): Removed skeleton with id = " + std::to_string(*itIndexIdSkeletonsToErase) + " from pool!");
+
+		if(poolSkeletons.size() == 0)
+			Console::log("[cam id = " + std::to_string(m_idCam) + "] AkTracker::cleanSkeletonList(): Pool closed! No skeletons detected.");
+		else
+			Console::log("[cam id = " + std::to_string(m_idCam) + "] AkTracker::cleanSkeletonList(): Skeleton pool count = " + std::to_string(poolSkeletons.size()) + ".");
+
 	}
 }

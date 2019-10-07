@@ -25,8 +25,8 @@ public:
 	Vector3 operator * (float const scale);
 	Vector3 operator * (int const scale);
 
-	Vector3 static zero();
-	Vector3 static one();
+	static Vector3 zero();
+	static Vector3 one();
 
 	std::string toString();
 

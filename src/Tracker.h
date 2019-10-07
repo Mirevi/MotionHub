@@ -10,9 +10,13 @@ class Tracker
 {
 
 public:
-
 	Tracker();
 	bool m_tracking = false;
+
+	void start();
+	void stop();
+	//captures one frame of body tracking data and saves all data in the skeleton pool
+	virtual void track();
 
 	enum StateTracker
 	{
@@ -21,16 +25,9 @@ public:
 		PAUSED
 	};
 
-	void start();
-	void stop();
-	virtual void track();
 	std::map<int, Skeleton> poolSkeletons;
-	//virtual void createSkeleton();
-	//virtual void updateSkeletons(k4abt_frame_t* body_frame);
-	//virtual void parseSkeleton(k4abt_skeleton_t* skeleton);
 
 private:
-
 	StateTracker state;
 
 };

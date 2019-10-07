@@ -2,8 +2,8 @@
 
 Skeleton::Skeleton()
 {
-	m_state = NONE;
 
+	m_state = NONE;
 
 }
 
@@ -14,12 +14,6 @@ Skeleton::Skeleton(int sid)
 
 }
 
-void Skeleton::updateAge()
-{
-
-
-
-};
 
 void Skeleton::parseJoint(Joint::jointNames name, Vector3 position, Vector4 rotation)
 {

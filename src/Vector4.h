@@ -25,8 +25,8 @@ public:
 	Vector4 operator * (float const scale);
 	Vector4 operator * (int const scale);
 
-	Vector4 static zero();
-	Vector4 static one();
+	static Vector4 zero();
+	static Vector4 one();
 
 	std::string toString();
 

@@ -8,15 +8,17 @@ class Joint
 {
 
 private:
-	std::string m_key;
+
 	Vector3 m_position;
 	Vector4 m_rotation;
 
 public:
+
 	Joint();
-	Joint(std::string key);
-	Vector3 getJointPosition() { return m_position; };
-	Vector4 getJointRotation() { return m_rotation; };
+	Joint(Vector3 position, Vector4 rotation);
+
+	Vector3 getJointPosition();
+	Vector4 getJointRotation();
 
 	//enum for joint names
 	enum jointNames
@@ -48,7 +50,5 @@ public:
 		JOINT_EYE_RIGHT,
 		JOINT_EAR_RIGHT,
 	};
-
-	Joint(Vector3 position, Vector4 rotation);
 
 };
