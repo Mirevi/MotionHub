@@ -1,5 +1,5 @@
 #include "AKTracker.h"
-#include<iostream>
+
 
 //constructor
 AKTracker::AKTracker()
@@ -28,7 +28,6 @@ void AKTracker::init(k4a_device_configuration_t configDevice)
 	configCam.color_resolution = K4A_COLOR_RESOLUTION_OFF;
 	VERIFY_K4A_FUNCTION(k4a_device_start_cameras(cam, &configCam), "Start K4A cameras failed!");
 
-	calibrationCam;
 	VERIFY_K4A_FUNCTION(k4a_device_get_calibration(cam, configCam.depth_mode, configCam.color_resolution, &calibrationCam), "Get depth camera calibration failed!");
 
 	tracker = NULL;
@@ -53,13 +52,12 @@ void AKTracker::stop()
 
 	Tracker::stop();
 
-	Console::logError("Finished body tracking processing!");
+	Console::log("Finished body tracking processing!");
 
 	k4abt_tracker_shutdown(tracker);
 	k4abt_tracker_destroy(tracker);
 	k4a_device_stop_cameras(cam);
 	k4a_device_close(cam);
-
 }
 
 void AKTracker::track()
@@ -92,26 +90,24 @@ void AKTracker::track()
 			// Successfully popped the body tracking result. Start your processing
 
 
-
-
-
-
-
 			//update all skeletons with current data in body_frame
 			updateSkeletons(&body_frame);
 
+			cleanSkeletonList(&body_frame);
+
+			Console::log("pool size: " + std::to_string(poolSkeletons.size()));
+
+			for (size_t i = 1; i <= poolSkeletons.size(); i++)
+			{
+				Console::log("skeleton " + std::to_string(i) + " position" + poolSkeletons[i].m_joints[(Joint::jointNames)0].getJointPosition().toString());
+			}
 
 
 
-
-
-
-
-
-
-			size_t num_bodies = k4abt_frame_get_num_bodies(body_frame);
-			//printf("%zu bodies are detected!\n", num_bodies);
-			Console::log("AKTracker deteceted bodies = " + std::to_string(num_bodies));
+			//Console::log("length of list: " + std::to_string(poolSkeletons.size()));
+			//size_t num_bodies = k4abt_frame_get_num_bodies(body_frame);
+			////printf("%zu bodies are detected!\n", num_bodies);
+			//Console::log("AKTracker deteceted bodies = " + std::to_string(num_bodies));
 
 
 			k4abt_frame_release(body_frame); // Remember to release the body frame once you finish using it
@@ -144,48 +140,36 @@ void AKTracker::track()
 //loops through all k4a skeletons and gives all active skeletons into parsing method
 void AKTracker::updateSkeletons(k4abt_frame_t* body_frame)
 {
-	m_num_bodies = k4abt_frame_get_num_bodies(*body_frame);
-	Console::log(std::to_string(m_num_bodies) + " bodies found");
+	m_numBodies = k4abt_frame_get_num_bodies(*body_frame);
+	//Console::log(std::to_string(m_numBodies) + " bodies found");
 
-	for (size_t indexSkeleton = 0; indexSkeleton < m_num_bodies; indexSkeleton++)
+	for (size_t indexSkeleton = 0; indexSkeleton < m_numBodies; indexSkeleton++)
 	{
 		//get the skeleton and the id
 		k4abt_skeleton_t skeleton;
 		k4abt_frame_get_body_skeleton(*body_frame, indexSkeleton, &skeleton);
 		uint32_t id = k4abt_frame_get_body_id(*body_frame, indexSkeleton);
 
-
-
-
 		if (id > highestSkeletonId)
 		{
 			highestSkeletonId = id;
 
-			parseSkeleton(&skeleton, id, true);
+			poolSkeletons.insert(std::pair<int, Skeleton>(id, *parseSkeleton(&skeleton, id)));
 		}
 		else
 		{
-			parseSkeleton(&skeleton, id, false);
+			poolSkeletons[id] = *parseSkeleton(&skeleton, id);
 		}
+
+		//Console::log("length of list: " + std::to_string(poolSkeletons.size()));
+		//Console::log("id:" + std::to_string(id));
 	}
 }
 
-
 //takes data from a k4a skeleton and pushes it into the list
-void AKTracker::parseSkeleton(k4abt_skeleton_t* skeleton, int id, bool createNew)
+Skeleton* AKTracker::parseSkeleton(k4abt_skeleton_t* skeleton, int id)
 {
-	Skeleton* currSkeleton;
-
-	//decide if skeleton already exists
-	if (createNew)
-	{
-		currSkeleton = new Skeleton(id);
-	}
-	else
-	{
-		currSkeleton = &skeletons[id];
-	}
-
+	Skeleton* currSkeleton = new Skeleton(id);
 
 	//loop through all joints, get the position and rotation and pass them into the joint map
 	for (size_t jointIndex = 0; jointIndex < K4ABT_JOINT_COUNT; jointIndex++)
@@ -206,19 +190,46 @@ void AKTracker::parseSkeleton(k4abt_skeleton_t* skeleton, int id, bool createNew
 		//}
 
 		currSkeleton->m_joints.insert(std::pair<Joint::jointNames, Joint>((Joint::jointNames)jointIndex, Joint(pos, rot)));
+
 	}
 
-	//insert skeleton data into skeleton in pool
-	skeletons.insert(std::pair<int, Skeleton>(id, *currSkeleton));
+	return currSkeleton;
 }
 
+//erases all unused skeletons from list
 void AKTracker::cleanSkeletonList(k4abt_frame_t* bodyFrame)
 {
-	//for (int skeletonIndex = 0; skeletonIndex < skeletons.size; skeletonIndex++)
-	//{
-	//	/*if (skeletons[skeletonIndex])
-	//	{
+	//all skeletons with ids in ths list will be erased at the end of this method
+	std::list<int> idSkeletonsToErase;
 
-	//	}*/
-	//}
+	//loop though all skeletons in pool
+	for (auto itPoolSkeletons = poolSkeletons.begin(); itPoolSkeletons != poolSkeletons.end(); itPoolSkeletons++)
+	{	
+		//current skeleton
+		int idCurrPoolSkeleton = itPoolSkeletons->first;
+		bool isK4aSkeletonInPool = false;
+
+		//loop thorugh all k4a skeletons in frame
+		for (int indexK4aSkeleton = 0; indexK4aSkeleton < m_numBodies; indexK4aSkeleton++)
+		{
+			//current k4a skeleton
+			int idCurrK4aSkeleton = k4abt_frame_get_body_id(*bodyFrame, indexK4aSkeleton);
+
+			//if 
+			if (idCurrPoolSkeleton == idCurrK4aSkeleton)
+			{
+				isK4aSkeletonInPool = true;
+			}
+		}
+
+		if (!isK4aSkeletonInPool)
+		{
+			idSkeletonsToErase.push_back(idCurrPoolSkeleton);
+		}
+	}
+
+	for (auto itIndexIdSkeletonsToErase = idSkeletonsToErase.begin(); itIndexIdSkeletonsToErase != idSkeletonsToErase.end(); itIndexIdSkeletonsToErase++)
+	{
+		poolSkeletons.erase(*itIndexIdSkeletonsToErase);
+	}
 }

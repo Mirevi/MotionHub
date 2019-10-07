@@ -31,5 +31,4 @@ int main(int argc, char** argv)
 	motionHub->getTrackerManager()->start();
 
 	return 0;
-
 }

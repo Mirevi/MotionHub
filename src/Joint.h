@@ -15,6 +15,8 @@ private:
 public:
 	Joint();
 	Joint(std::string key);
+	Vector3 getJointPosition() { return m_position; };
+	Vector4 getJointRotation() { return m_rotation; };
 
 	//enum for joint names
 	enum jointNames

@@ -6,6 +6,7 @@
 #include "Tracker.h"
 #include "k4a/k4a.h"
 #include "k4abt.h"
+#include <iostream>
 
 #include "defines.h"
 
@@ -33,10 +34,10 @@ private:
 	k4a_calibration_t calibrationCam;
 	k4abt_tracker_t tracker;
 	k4abt_tracker_configuration_t configTracker;
-	int m_num_bodies;
+	int m_numBodies;
 	int highestSkeletonId = 0;
 	
 	void init(k4a_device_configuration_t configDevice);
-	void parseSkeleton(k4abt_skeleton_t* skeleton, int id, bool createNew);
+	Skeleton* parseSkeleton(k4abt_skeleton_t* skeleton, int id);
 	void cleanSkeletonList(k4abt_frame_t* bodyFrame);
 };
