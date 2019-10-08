@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Skeleton.h"
-#include "NetworkManager.h" 
+#include "defines.h"
 
 class NetworkSender
 {
@@ -12,6 +12,7 @@ public:
 
 	const char* m_address;
 	int m_port;
+	bool active = true;
 
 	virtual void sendSkeleton(Skeleton* skeleton, const char* uri);
 

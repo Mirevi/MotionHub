@@ -45,13 +45,14 @@ void TrackerManager::update()
 				itTracker->second->track();
 				m_networkManager->sendSkeletonPool(&(itTracker->second->poolSkeletons));
 
-			}
+			}							
 			else
-				itTracker->second->start();
+				itTracker->second->start();			
 
 		}
 	}
 
+	/*
 	// stop all tracker
 	for (auto iteratorTracker = poolTracker.begin(); iteratorTracker != poolTracker.end(); iteratorTracker++)
 	{
@@ -59,6 +60,7 @@ void TrackerManager::update()
 		iteratorTracker->second->stop();
 
 	}
+	*/
 }
 
 void TrackerManager::createTracker(TypeTracker type)

@@ -7,8 +7,7 @@ OSCSender::OSCSender()
 
 	m_transmitSocket = new UdpTransmitSocket(IpEndpointName(m_address, m_port));
 
-	char buffer[OUTPUT_BUFFER_SIZE];
-	osc::OutboundPacketStream p(buffer, OUTPUT_BUFFER_SIZE);
+	m_packetStream = new osc::OutboundPacketStream(buffer, OUTPUT_BUFFER_SIZE);
 
 }
 
@@ -20,8 +19,7 @@ OSCSender::OSCSender(const char* address, int port)
 
 	m_transmitSocket = new UdpTransmitSocket(IpEndpointName(m_address, m_port));
 
-	char buffer[OUTPUT_BUFFER_SIZE];
-	osc::OutboundPacketStream p(buffer, OUTPUT_BUFFER_SIZE);
+	m_packetStream = new osc::OutboundPacketStream(buffer, OUTPUT_BUFFER_SIZE);
 
 }
 
@@ -31,19 +29,33 @@ void OSCSender::sendSkeleton(Skeleton* skeleton, const char* uri)
 	//first value in stream is user ID
 	*m_packetStream << osc::BeginBundleImmediate << osc::BeginMessage(uri) << skeleton->getSid();
 
-	//loop through all Joints to write pose data into the stream
-	for (int jointsIndex = 0; jointsIndex < 26; jointsIndex++)
-	{
-		//add position data to stream
-		m_packetStream << (skeleton->m_joints[(Joint::jointNames)jointsIndex].getJointPosition.m_xyz.x * (-1)) / 1000
-			<< ((skeleton->m_joints[(Joint::jointNames)jointsIndex].getJointPosition.m_xyz.y * (-1)) + 950) / 1000
-			<< skeleton->m_joints[(Joint::jointNames)jointsIndex].getJointPosition.m_xyz.z / 1000
+	Vector3 currJointPosition = Vector3::zero();
+	Vector4 currJointRotation = Vector4::zero();
 
+	
+
+	//loop through all Joints to write pose data into the stream
+	for (int jointsIndex = 0; jointsIndex < skeleton->m_joints.size(); jointsIndex++)
+	{
+
+		currJointPosition = skeleton->m_joints[(Joint::jointNames)jointsIndex].getJointPosition();
+		currJointRotation = skeleton->m_joints[(Joint::jointNames)jointsIndex].getJointRotation();
+
+		//if (jointsIndex == 0)
+		//{
+		//	Console::log("send Skeleton: " + std::to_string(skeleton->getSid()) + " on position " + currJointPosition.toString());
+		//}
+
+		*m_packetStream
+			//add position data to stream
+			<< (currJointPosition.m_xyz.x * (-1)) / 1000
+			<< ((currJointPosition.m_xyz.y * (-1)) + 950) / 1000
+			<< currJointPosition.m_xyz.z / 1000
 			//add rotation data to stream
-			<< skeleton->m_joints[(Joint::jointNames)jointsIndex].getJointRotation.m_xyzw.x
-			<< skeleton->m_joints[(Joint::jointNames)jointsIndex].getJointRotation.m_xyzw.y
-			<< skeleton->m_joints[(Joint::jointNames)jointsIndex].getJointRotation.m_xyzw.z
-			<< skeleton->m_joints[(Joint::jointNames)jointsIndex].getJointRotation.m_xyzw.w;
+			<< currJointRotation.m_xyzw.x
+			<< currJointRotation.m_xyzw.y
+			<< currJointRotation.m_xyzw.z
+			<< currJointRotation.m_xyzw.w;
 
 	}
 

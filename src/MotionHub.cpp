@@ -20,3 +20,10 @@ TrackerManager* MotionHub::getTrackerManager()
 	return m_trackerManager; 
 
 }
+
+NetworkManager* MotionHub::getNetworkmanager()
+{
+
+	return m_networkManager;
+
+}

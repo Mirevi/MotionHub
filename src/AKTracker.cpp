@@ -91,8 +91,6 @@ void AKTracker::track()
 			//clean up skeleton pool - remove inactive skeletons
 			cleanSkeletonList(&body_frame);
 
-
-
 			//for (auto itPoolSkeletons = poolSkeletons.begin(); itPoolSkeletons != poolSkeletons.end(); itPoolSkeletons++)
 			//{
 
@@ -131,9 +129,8 @@ void AKTracker::track()
 void AKTracker::updateSkeletons(k4abt_frame_t* body_frame)
 {
 	m_numBodies = k4abt_frame_get_num_bodies(*body_frame);
-	//Console::log(std::to_string(m_numBodies) + " bodies found");
 
-	for (size_t indexSkeleton = 0; indexSkeleton < m_numBodies; indexSkeleton++)
+	for (int indexSkeleton = 0; indexSkeleton < m_numBodies; indexSkeleton++)
 	{
 		//get the skeleton and the id
 		k4abt_skeleton_t skeleton;

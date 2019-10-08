@@ -5,12 +5,15 @@
 #include "UdpSocket.h"
 #include "OscOutboundPacketStream.h"
 
-#define OUTPUT_BUFFER_SIZE 1024
+#include "defines.h"
+#include "Vector3.h"
+#include "Vector4.h"
 
 class OSCSender : public NetworkSender
 {
 
 private:
+	char buffer[OUTPUT_BUFFER_SIZE];
 	UdpTransmitSocket* m_transmitSocket = nullptr;
 	osc::OutboundPacketStream* m_packetStream = nullptr;
 

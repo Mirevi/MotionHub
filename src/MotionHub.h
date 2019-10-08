@@ -12,6 +12,7 @@ class MotionHub
 public:
 	MotionHub();
 	TrackerManager* getTrackerManager();
+	NetworkManager* getNetworkmanager();
 
 private:
 	TrackerManager* m_trackerManager;
