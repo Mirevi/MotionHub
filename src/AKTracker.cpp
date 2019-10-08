@@ -47,8 +47,6 @@ void AKTracker::stop()
 
 	Tracker::stop();
 
-
-
 	k4abt_tracker_shutdown(tracker);
 	k4abt_tracker_destroy(tracker);
 	k4a_device_stop_cameras(cam);
@@ -92,6 +90,8 @@ void AKTracker::track()
 
 			//clean up skeleton pool - remove inactive skeletons
 			cleanSkeletonList(&body_frame);
+
+
 
 			//for (auto itPoolSkeletons = poolSkeletons.begin(); itPoolSkeletons != poolSkeletons.end(); itPoolSkeletons++)
 			//{
@@ -140,6 +140,7 @@ void AKTracker::updateSkeletons(k4abt_frame_t* body_frame)
 		k4abt_frame_get_body_skeleton(*body_frame, indexSkeleton, &skeleton);
 		uint32_t id = k4abt_frame_get_body_id(*body_frame, indexSkeleton);
 
+		// create new skeleton
 		if (id > m_idCurrMaxSkeletons)
 		{
 			m_idCurrMaxSkeletons = id;
@@ -149,6 +150,7 @@ void AKTracker::updateSkeletons(k4abt_frame_t* body_frame)
 			Console::log("[cam id = " + std::to_string(m_idCam) + "] AkTracker::updateSkeleton(): Created new skeleton with id = " + std::to_string(id) + ".");
 
 		}
+		// update skeleton
 		else
 		{
 			poolSkeletons[id] = *parseSkeleton(&skeleton, id);

@@ -11,6 +11,7 @@ public:
 	Skeleton(int sid);
 
 	void parseJoint(Joint::jointNames name, Vector3 position, Vector4 rotation);
+	int getSid();
 
 	std::map<Joint::jointNames, Joint> m_joints;
 

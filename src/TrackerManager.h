@@ -2,6 +2,7 @@
 
 #include <list>
 #include "Tracker.h"
+#include "NetworkManager.h"
 
 #include <map>
 #include <vector>
@@ -13,6 +14,7 @@ class TrackerManager
 
 public:
 	TrackerManager();
+	TrackerManager(NetworkManager* networkmanager);
 
 	void start();
 	void stop();
@@ -28,6 +30,8 @@ public:
 private:
 	bool m_tracking = false;
 	std::map<std::pair<TypeTracker, int>, Tracker*> poolTracker;
+
+	NetworkManager* m_networkManager;
 
 	void update();
 

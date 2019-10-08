@@ -10,7 +10,7 @@ MotionHub::MotionHub()
 
 	m_networkManager = new NetworkManager();
 
-	m_trackerManager = new TrackerManager();
+	m_trackerManager = new TrackerManager(m_networkManager);
 
 }
 

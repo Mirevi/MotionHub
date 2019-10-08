@@ -7,6 +7,13 @@ TrackerManager::TrackerManager()
 
 }
 
+TrackerManager::TrackerManager(NetworkManager* networkmanager)
+{
+
+	m_networkManager = networkmanager;
+
+}
+
 void TrackerManager::start()
 {
 
@@ -29,13 +36,18 @@ void TrackerManager::update()
 	while (m_tracking)
 	{
 
-		for (auto iteratorTracker = poolTracker.begin(); iteratorTracker != poolTracker.end(); iteratorTracker++)
+		for (auto itTracker = poolTracker.begin(); itTracker != poolTracker.end(); itTracker++)
 		{
 
-			if(iteratorTracker->second->m_tracking)
-				iteratorTracker->second->track();
+			if (itTracker->second->m_tracking)
+			{
+
+				itTracker->second->track();
+				m_networkManager->sendSkeletonPool(&(itTracker->second->poolSkeletons));
+
+			}
 			else
-				iteratorTracker->second->start();
+				itTracker->second->start();
 
 		}
 	}
