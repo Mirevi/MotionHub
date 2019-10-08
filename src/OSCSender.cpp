@@ -58,7 +58,7 @@ void OSCSender::sendSkeleton(Skeleton* skeleton, const char* uri)
 			<< currJointRotation.m_xyzw.w;
 
 	}
-
+	
 	//close the stream
 	*m_packetStream << osc::EndMessage << osc::EndBundle;
 
