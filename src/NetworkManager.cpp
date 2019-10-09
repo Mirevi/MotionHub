@@ -17,7 +17,7 @@ void NetworkManager::sendSkeletonPool(std::map<int, Skeleton>* skeletonPool)
 			{
 				if (poolSender.at(i)->m_active)
 				{
-					poolSender.at(i)->sendSkeleton(&(itSkeletonPool->second), DEFAULT_URI.c_str() + itSkeletonPool->first);
+					poolSender.at(i)->sendSkeleton(&(itSkeletonPool->second), DEFAULT_URI);// +std::to_string(itSkeletonPool->first)
 				}
 			}
 		}
@@ -27,4 +27,3 @@ void NetworkManager::sendSkeletonPool(std::map<int, Skeleton>* skeletonPool)
 		}
 	}
 }
-

@@ -33,10 +33,9 @@ void OSCSender::sendSkeleton(Skeleton* skeleton, const char* uri)
 		currJointPosition = skeleton->m_joints[(Joint::jointNames)jointsIndex].getJointPosition();
 		currJointRotation = skeleton->m_joints[(Joint::jointNames)jointsIndex].getJointRotation();
 
-		//if (jointsIndex == 0)
-		//{
-		//	Console::log("send Skeleton: " + std::to_string(skeleton->getSid()) + " on position " + currJointPosition.toString());
-		//}
+
+		//Console::log("Joint: " + std::to_string(jointsIndex) + " on position " + currJointPosition.toString());
+
 
 		*m_packetStream
 			//add position data to stream
