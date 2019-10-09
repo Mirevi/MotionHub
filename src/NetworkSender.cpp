@@ -2,15 +2,9 @@
 
 NetworkSender::NetworkSender()
 {
-
-	m_address = LOCALHOST;
-	m_port = DEFAULT_PORT;
-
 }
 
-void NetworkSender::sendSkeleton(Skeleton* skeleton, const char* uri)
+NetworkSender::NetworkSender(std::string address, int port) : m_address(address), m_port(port)
 {
-
-
 
 }

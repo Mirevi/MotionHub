@@ -2,22 +2,16 @@
 
 OSCSender::OSCSender()
 {
-	
-	NetworkSender::NetworkSender();
-
-	m_transmitSocket = new UdpTransmitSocket(IpEndpointName(m_address, m_port));
+	m_transmitSocket = new UdpTransmitSocket(IpEndpointName(m_address.c_str(), m_port));
 
 	m_packetStream = new osc::OutboundPacketStream(buffer, OUTPUT_BUFFER_SIZE);
 
 }
 
-OSCSender::OSCSender(const char* address, int port)
+OSCSender::OSCSender(std::string address, int port) : NetworkSender(address, port)
 {
-
-	m_address = address;
-	m_port = port;
-
-	m_transmitSocket = new UdpTransmitSocket(IpEndpointName(m_address, m_port));
+	m_address;
+	m_transmitSocket = new UdpTransmitSocket(IpEndpointName(m_address.c_str(), m_port));
 
 	m_packetStream = new osc::OutboundPacketStream(buffer, OUTPUT_BUFFER_SIZE);
 
@@ -25,13 +19,11 @@ OSCSender::OSCSender(const char* address, int port)
 
 void OSCSender::sendSkeleton(Skeleton* skeleton, const char* uri)
 {
-
 	//first value in stream is user ID
 	*m_packetStream << osc::BeginBundleImmediate << osc::BeginMessage(uri) << skeleton->getSid();
 
 	Vector3 currJointPosition = Vector3::zero();
 	Vector4 currJointRotation = Vector4::zero();
-
 	
 
 	//loop through all Joints to write pose data into the stream

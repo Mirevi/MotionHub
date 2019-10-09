@@ -20,7 +20,7 @@ private:
 public:
 
 	OSCSender();
-	OSCSender(const char* address, int port);
+	OSCSender(std::string address, int port);
 
 	void sendSkeleton(Skeleton* skeleton, const char* uri) override;
 

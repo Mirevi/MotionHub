@@ -8,8 +8,6 @@ int main(int argc, char** argv)
 	// register tracker
 	motionHub->getTrackerManager()->createTracker(TrackerManager::AKT);
 
-	motionHub->getNetworkmanager();
-
 	// start tracking
 	motionHub->getTrackerManager()->start();
 

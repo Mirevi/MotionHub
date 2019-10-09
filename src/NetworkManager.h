@@ -7,23 +7,19 @@
 
 #include <string>
 #include <iostream>
+#include <vector>
 
 //change if you add more Sender
-#define NETWORK_SENDER_COUNT 1
 
 class NetworkManager
 {
 
 public:
-
 	NetworkManager();	
 
 	void sendSkeletonPool(std::map<int, Skeleton>* skeletonPool);
 
-
-
 private:
-	//OSCSender* m_oscSender;
-	NetworkSender* poolSender[NETWORK_SENDER_COUNT];
+	std::vector<NetworkSender*> poolSender;
 	
 };

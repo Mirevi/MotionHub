@@ -7,13 +7,18 @@ class NetworkSender
 {
 
 public:
-
 	NetworkSender();
+	NetworkSender(std::string address, int port);
+	bool m_active = true;
 
-	const char* m_address;
+	virtual void sendSkeleton(Skeleton* skeleton, const char* uri) = 0;
+
+	
+protected: //Is only accessable by derived classes
+	std::string m_address;
 	int m_port;
-	bool active = true;
 
-	virtual void sendSkeleton(Skeleton* skeleton, const char* uri);
+
+
 
 };
