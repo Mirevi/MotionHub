@@ -10,7 +10,6 @@
 #include <vector>
 
 //change if you add more Sender
-
 class NetworkManager
 {
 
