@@ -89,7 +89,7 @@ void AKTracker::track()
 			updateSkeletons(&body_frame);
 
 			//clean up skeleton pool - remove inactive skeletons
-			cleanSkeletonList(&body_frame);
+			cleanSkeletonPool(&body_frame);
 
 			//for (auto itPoolSkeletons = poolSkeletons.begin(); itPoolSkeletons != poolSkeletons.end(); itPoolSkeletons++)
 			//{
@@ -185,7 +185,7 @@ Skeleton* AKTracker::parseSkeleton(k4abt_skeleton_t* skeleton, int id)
 }
 
 //erases all unused skeletons from list
-void AKTracker::cleanSkeletonList(k4abt_frame_t* bodyFrame)
+void AKTracker::cleanSkeletonPool(k4abt_frame_t* bodyFrame)
 {
 	//all skeletons with ids in ths list will be erased at the end of this method
 	std::list<int> idSkeletonsToErase;
