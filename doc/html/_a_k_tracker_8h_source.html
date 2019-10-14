@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.16"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>MotionHub: C:/dev/MotionHub/src/AKTracker.h Source File</title>
+<title>MotionHub: src/AKTracker.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -61,7 +61,7 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_5fc0168d11760b9445bd29fa15d9290f.html">dev</a></li><li class="navelem"><a class="el" href="dir_5edc1a258ab5a6c7e17edd76dc74eccf.html">MotionHub</a></li><li class="navelem"><a class="el" href="dir_4d86d5fa7282e9e12eb30eecb3f52da5.html">src</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -69,7 +69,7 @@ $(function() {
 <div class="title">AKTracker.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#pragma once</span></div>
+<a href="_a_k_tracker_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#pragma once</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160; </div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &lt;stdio.h&gt;</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;stdlib.h&gt;</span></div>
@@ -78,10 +78,10 @@ $(function() {
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &quot;k4a/k4a.h&quot;</span></div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &quot;k4abt.h&quot;</span></div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160; </div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &quot;defines.h&quot;</span></div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &quot;Tracker.h&quot;</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="defines_8h.html">defines.h</a>&quot;</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="_tracker_8h.html">Tracker.h</a>&quot;</span></div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160; </div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#define VERIFY_K4A_FUNCTION(result, error)                                                              \</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno"><a class="line" href="_a_k_tracker_8h.html#aeac27e87913a785f317b629b9ee6c796">   13</a></span>&#160;<span class="preprocessor">#define VERIFY_K4A_FUNCTION(result, error)                                                              \</span></div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">    if(result != K4A_RESULT_SUCCEEDED)                                                                  \</span></div>
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">    {                                                                                                   \</span></div>
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">        printf(&quot;%s \n - (File: %s, Function: %s, Line: %d)\n&quot;, error, __FILE__, __FUNCTION__, __LINE__);\</span></div>
@@ -93,42 +93,60 @@ $(function() {
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160; </div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="keyword">public</span>:</div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160; </div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <a class="code" href="class_a_k_tracker.html">AKTracker</a>();</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    <a class="code" href="class_a_k_tracker.html">AKTracker</a>(k4a_device_configuration_t configDevice, <span class="keywordtype">int</span> idCam);</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    <span class="keywordtype">void</span> start();</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    <span class="keywordtype">void</span> stop();</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160; </div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160; </div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    <span class="keywordtype">int</span> m_idCam = 0;</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160; </div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    k4a_device_t cam;</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    k4a_device_configuration_t configCam;</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    k4a_calibration_t calibrationCam;</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160; </div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    k4abt_tracker_t tracker;</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    k4abt_tracker_configuration_t configTracker;</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    <a class="code" href="class_a_k_tracker.html#a111210b931c0eeb2f232e7495b591cdd">AKTracker</a>();</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    <a class="code" href="class_a_k_tracker.html#a111210b931c0eeb2f232e7495b591cdd">AKTracker</a>(k4a_device_configuration_t configDevice, <span class="keywordtype">int</span> idCam);</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160; </div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="class_a_k_tracker.html#abcae022c919b3bf4564be604cf0730bd">start</a>();</div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160; </div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    <span class="keywordtype">int</span> m_numBodies;</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    <span class="keywordtype">int</span> m_idCurrMaxSkeletons = 0;</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    </div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    <span class="keywordtype">void</span> init(k4a_device_configuration_t configDevice);</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="class_a_k_tracker.html#a29f17288baf6f550cf6c82776d09bbdc">stop</a>();</div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    <span class="keywordtype">void</span> track();</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="keyword">private</span>:</div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160; </div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160; </div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    <span class="keywordtype">void</span> updateSkeletons(k4abt_frame_t* body_frame);</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160; </div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    <a class="code" href="class_skeleton.html">Skeleton</a>* <a class="code" href="class_a_k_tracker.html#a126a5164c80c0a3e1198ec716b279d4e">parseSkeleton</a>(k4abt_skeleton_t* skeleton, <span class="keywordtype">int</span> <span class="keywordtype">id</span>);</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    <span class="keywordtype">void</span> cleanSkeletonList(k4abt_frame_t* bodyFrame);</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;};</div>
+<div class="line"><a name="l00057"></a><span class="lineno"><a class="line" href="class_a_k_tracker.html#ac4c6dcf3325e16e2aa57d861145a9201">   57</a></span>&#160;    <span class="keywordtype">int</span> <a class="code" href="class_a_k_tracker.html#ac4c6dcf3325e16e2aa57d861145a9201">m_idCam</a> = 0;</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160; </div>
+<div class="line"><a name="l00062"></a><span class="lineno"><a class="line" href="class_a_k_tracker.html#af925401582860681c7de605d944c4895">   62</a></span>&#160;    k4a_device_t <a class="code" href="class_a_k_tracker.html#af925401582860681c7de605d944c4895">cam</a>;</div>
+<div class="line"><a name="l00066"></a><span class="lineno"><a class="line" href="class_a_k_tracker.html#a12276cca20d564b8e51178512dc42ccd">   66</a></span>&#160;    k4a_device_configuration_t <a class="code" href="class_a_k_tracker.html#a12276cca20d564b8e51178512dc42ccd">configCam</a>;</div>
+<div class="line"><a name="l00070"></a><span class="lineno"><a class="line" href="class_a_k_tracker.html#aa22192d117f8e062b0cf40d5fb826d62">   70</a></span>&#160;    k4a_calibration_t <a class="code" href="class_a_k_tracker.html#aa22192d117f8e062b0cf40d5fb826d62">calibrationCam</a>;</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160; </div>
+<div class="line"><a name="l00075"></a><span class="lineno"><a class="line" href="class_a_k_tracker.html#ab9715ddca98b368a5ea69ffa8421e1dd">   75</a></span>&#160;    k4abt_tracker_t <a class="code" href="class_a_k_tracker.html#ab9715ddca98b368a5ea69ffa8421e1dd">tracker</a>;</div>
+<div class="line"><a name="l00079"></a><span class="lineno"><a class="line" href="class_a_k_tracker.html#aeec455f9163e2dc5d84fbcac48ea3542">   79</a></span>&#160;    k4abt_tracker_configuration_t <a class="code" href="class_a_k_tracker.html#aeec455f9163e2dc5d84fbcac48ea3542">configTracker</a>;</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160; </div>
+<div class="line"><a name="l00085"></a><span class="lineno"><a class="line" href="class_a_k_tracker.html#ac8f2d8cea5178b14f8724ed0d2515fb5">   85</a></span>&#160;    <span class="keywordtype">int</span> <a class="code" href="class_a_k_tracker.html#ac8f2d8cea5178b14f8724ed0d2515fb5">m_numBodies</a>;</div>
+<div class="line"><a name="l00090"></a><span class="lineno"><a class="line" href="class_a_k_tracker.html#a6b1f6ded254993568a682665a8dac5fc">   90</a></span>&#160;    <span class="keywordtype">int</span> <a class="code" href="class_a_k_tracker.html#a6b1f6ded254993568a682665a8dac5fc">m_idCurrMaxSkeletons</a> = 0;</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;    </div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="class_a_k_tracker.html#a58b14ec3e0b097dcb7313ddff7171bd7">init</a>(k4a_device_configuration_t configDevice);</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160; </div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="class_a_k_tracker.html#a17ec988395a57933a296eed7f2399cd2">track</a>();</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160; </div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="class_a_k_tracker.html#a9f9a73d2f64609b9a2b8ecc51e7f5df9">updateSkeletons</a>(k4abt_frame_t* body_frame);</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160; </div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;    <a class="code" href="class_skeleton.html">Skeleton</a>* <a class="code" href="class_a_k_tracker.html#a126a5164c80c0a3e1198ec716b279d4e">parseSkeleton</a>(k4abt_skeleton_t* skeleton, <span class="keywordtype">int</span> <span class="keywordtype">id</span>);</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160; </div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="class_a_k_tracker.html#a1057ea1ecb04e3027c8f6ccb5c429e12">cleanSkeletonPool</a>(k4abt_frame_t* bodyFrame);</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160; </div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;};</div>
 </div><!-- fragment --></div><!-- contents -->
+<div class="ttc" id="aclass_a_k_tracker_html_a1057ea1ecb04e3027c8f6ccb5c429e12"><div class="ttname"><a href="class_a_k_tracker.html#a1057ea1ecb04e3027c8f6ccb5c429e12">AKTracker::cleanSkeletonPool</a></div><div class="ttdeci">void cleanSkeletonPool(k4abt_frame_t *bodyFrame)</div><div class="ttdef"><b>Definition:</b> AKTracker.cpp:188</div></div>
+<div class="ttc" id="a_tracker_8h_html"><div class="ttname"><a href="_tracker_8h.html">Tracker.h</a></div></div>
+<div class="ttc" id="aclass_a_k_tracker_html_aeec455f9163e2dc5d84fbcac48ea3542"><div class="ttname"><a href="class_a_k_tracker.html#aeec455f9163e2dc5d84fbcac48ea3542">AKTracker::configTracker</a></div><div class="ttdeci">k4abt_tracker_configuration_t configTracker</div><div class="ttdef"><b>Definition:</b> AKTracker.h:79</div></div>
 <div class="ttc" id="aclass_tracker_html"><div class="ttname"><a href="class_tracker.html">Tracker</a></div><div class="ttdef"><b>Definition:</b> Tracker.h:9</div></div>
-<div class="ttc" id="aclass_skeleton_html"><div class="ttname"><a href="class_skeleton.html">Skeleton</a></div><div class="ttdef"><b>Definition:</b> Skeleton.h:6</div></div>
+<div class="ttc" id="aclass_a_k_tracker_html_a12276cca20d564b8e51178512dc42ccd"><div class="ttname"><a href="class_a_k_tracker.html#a12276cca20d564b8e51178512dc42ccd">AKTracker::configCam</a></div><div class="ttdeci">k4a_device_configuration_t configCam</div><div class="ttdef"><b>Definition:</b> AKTracker.h:66</div></div>
+<div class="ttc" id="aclass_a_k_tracker_html_aa22192d117f8e062b0cf40d5fb826d62"><div class="ttname"><a href="class_a_k_tracker.html#aa22192d117f8e062b0cf40d5fb826d62">AKTracker::calibrationCam</a></div><div class="ttdeci">k4a_calibration_t calibrationCam</div><div class="ttdef"><b>Definition:</b> AKTracker.h:70</div></div>
+<div class="ttc" id="adefines_8h_html"><div class="ttname"><a href="defines_8h.html">defines.h</a></div></div>
+<div class="ttc" id="aclass_a_k_tracker_html_ab9715ddca98b368a5ea69ffa8421e1dd"><div class="ttname"><a href="class_a_k_tracker.html#ab9715ddca98b368a5ea69ffa8421e1dd">AKTracker::tracker</a></div><div class="ttdeci">k4abt_tracker_t tracker</div><div class="ttdef"><b>Definition:</b> AKTracker.h:75</div></div>
+<div class="ttc" id="aclass_a_k_tracker_html_a6b1f6ded254993568a682665a8dac5fc"><div class="ttname"><a href="class_a_k_tracker.html#a6b1f6ded254993568a682665a8dac5fc">AKTracker::m_idCurrMaxSkeletons</a></div><div class="ttdeci">int m_idCurrMaxSkeletons</div><div class="ttdef"><b>Definition:</b> AKTracker.h:90</div></div>
+<div class="ttc" id="aclass_a_k_tracker_html_ac8f2d8cea5178b14f8724ed0d2515fb5"><div class="ttname"><a href="class_a_k_tracker.html#ac8f2d8cea5178b14f8724ed0d2515fb5">AKTracker::m_numBodies</a></div><div class="ttdeci">int m_numBodies</div><div class="ttdef"><b>Definition:</b> AKTracker.h:85</div></div>
+<div class="ttc" id="aclass_a_k_tracker_html_a111210b931c0eeb2f232e7495b591cdd"><div class="ttname"><a href="class_a_k_tracker.html#a111210b931c0eeb2f232e7495b591cdd">AKTracker::AKTracker</a></div><div class="ttdeci">AKTracker()</div><div class="ttdef"><b>Definition:</b> AKTracker.cpp:3</div></div>
+<div class="ttc" id="aclass_skeleton_html"><div class="ttname"><a href="class_skeleton.html">Skeleton</a></div><div class="ttdef"><b>Definition:</b> Skeleton.h:9</div></div>
+<div class="ttc" id="aclass_a_k_tracker_html_a58b14ec3e0b097dcb7313ddff7171bd7"><div class="ttname"><a href="class_a_k_tracker.html#a58b14ec3e0b097dcb7313ddff7171bd7">AKTracker::init</a></div><div class="ttdeci">void init(k4a_device_configuration_t configDevice)</div><div class="ttdef"><b>Definition:</b> AKTracker.cpp:18</div></div>
+<div class="ttc" id="aclass_a_k_tracker_html_ac4c6dcf3325e16e2aa57d861145a9201"><div class="ttname"><a href="class_a_k_tracker.html#ac4c6dcf3325e16e2aa57d861145a9201">AKTracker::m_idCam</a></div><div class="ttdeci">int m_idCam</div><div class="ttdef"><b>Definition:</b> AKTracker.h:57</div></div>
+<div class="ttc" id="aclass_a_k_tracker_html_a17ec988395a57933a296eed7f2399cd2"><div class="ttname"><a href="class_a_k_tracker.html#a17ec988395a57933a296eed7f2399cd2">AKTracker::track</a></div><div class="ttdeci">void track()</div><div class="ttdef"><b>Definition:</b> AKTracker.cpp:59</div></div>
 <div class="ttc" id="aclass_a_k_tracker_html"><div class="ttname"><a href="class_a_k_tracker.html">AKTracker</a></div><div class="ttdef"><b>Definition:</b> AKTracker.h:23</div></div>
+<div class="ttc" id="aclass_a_k_tracker_html_a9f9a73d2f64609b9a2b8ecc51e7f5df9"><div class="ttname"><a href="class_a_k_tracker.html#a9f9a73d2f64609b9a2b8ecc51e7f5df9">AKTracker::updateSkeletons</a></div><div class="ttdeci">void updateSkeletons(k4abt_frame_t *body_frame)</div><div class="ttdef"><b>Definition:</b> AKTracker.cpp:129</div></div>
 <div class="ttc" id="aclass_a_k_tracker_html_a126a5164c80c0a3e1198ec716b279d4e"><div class="ttname"><a href="class_a_k_tracker.html#a126a5164c80c0a3e1198ec716b279d4e">AKTracker::parseSkeleton</a></div><div class="ttdeci">Skeleton * parseSkeleton(k4abt_skeleton_t *skeleton, int id)</div><div class="ttdef"><b>Definition:</b> AKTracker.cpp:162</div></div>
+<div class="ttc" id="aclass_a_k_tracker_html_a29f17288baf6f550cf6c82776d09bbdc"><div class="ttname"><a href="class_a_k_tracker.html#a29f17288baf6f550cf6c82776d09bbdc">AKTracker::stop</a></div><div class="ttdeci">void stop()</div><div class="ttdef"><b>Definition:</b> AKTracker.cpp:45</div></div>
+<div class="ttc" id="aclass_a_k_tracker_html_af925401582860681c7de605d944c4895"><div class="ttname"><a href="class_a_k_tracker.html#af925401582860681c7de605d944c4895">AKTracker::cam</a></div><div class="ttdeci">k4a_device_t cam</div><div class="ttdef"><b>Definition:</b> AKTracker.h:62</div></div>
+<div class="ttc" id="aclass_a_k_tracker_html_abcae022c919b3bf4564be604cf0730bd"><div class="ttname"><a href="class_a_k_tracker.html#abcae022c919b3bf4564be604cf0730bd">AKTracker::start</a></div><div class="ttdeci">void start()</div><div class="ttdef"><b>Definition:</b> AKTracker.cpp:38</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

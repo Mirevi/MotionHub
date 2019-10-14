@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.16"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>MotionHub: C:/dev/MotionHub/src/NetworkSender.h Source File</title>
+<title>MotionHub: src/NetworkSender.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -61,7 +61,7 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_5fc0168d11760b9445bd29fa15d9290f.html">dev</a></li><li class="navelem"><a class="el" href="dir_5edc1a258ab5a6c7e17edd76dc74eccf.html">MotionHub</a></li><li class="navelem"><a class="el" href="dir_4d86d5fa7282e9e12eb30eecb3f52da5.html">src</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -69,25 +69,25 @@ $(function() {
 <div class="title">NetworkSender.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#pragma once</span></div>
+<a href="_network_sender_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#pragma once</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160; </div>
-<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &quot;Skeleton.h&quot;</span></div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &quot;defines.h&quot;</span></div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="_skeleton_8h.html">Skeleton.h</a>&quot;</span></div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="defines_8h.html">defines.h</a>&quot;</span></div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160; </div>
 <div class="line"><a name="l00006"></a><span class="lineno"><a class="line" href="class_network_sender.html">    6</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_network_sender.html">NetworkSender</a></div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;{</div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160; </div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;    <a class="code" href="class_network_sender.html">NetworkSender</a>();</div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;    <a class="code" href="class_network_sender.html">NetworkSender</a>(std::string address, <span class="keywordtype">int</span> port);</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;    <span class="keywordtype">bool</span> m_active = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;    <a class="code" href="class_network_sender.html#a14bcf54d3c289d92c12c3e741619975f">NetworkSender</a>();</div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;    <a class="code" href="class_network_sender.html#a14bcf54d3c289d92c12c3e741619975f">NetworkSender</a>(std::string address, <span class="keywordtype">int</span> port);</div>
+<div class="line"><a name="l00012"></a><span class="lineno"><a class="line" href="class_network_sender.html#a0ded69e4cbcb81e2ef6bad6a383f03d6">   12</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="class_network_sender.html#a0ded69e4cbcb81e2ef6bad6a383f03d6">m_active</a> = <span class="keyword">true</span>;</div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160; </div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> sendSkeleton(<a class="code" href="class_skeleton.html">Skeleton</a>* skeleton, <span class="keyword">const</span> <span class="keywordtype">char</span>* uri) = 0;</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="class_network_sender.html#a876b6f8f1b97391cbe9edfc014fe777c">sendSkeleton</a>(<a class="code" href="class_skeleton.html">Skeleton</a>* skeleton, <span class="keyword">const</span> <span class="keywordtype">char</span>* uri) = 0;</div>
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160; </div>
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    </div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="keyword">protected</span>: <span class="comment">//Is only accessable by derived classes</span></div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    std::string m_address;</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    <span class="keywordtype">int</span> m_port;</div>
+<div class="line"><a name="l00018"></a><span class="lineno"><a class="line" href="class_network_sender.html#a2864a9461c86bdf9006aa1510d2d1fb2">   18</a></span>&#160;    std::string <a class="code" href="class_network_sender.html#a2864a9461c86bdf9006aa1510d2d1fb2">m_address</a>;</div>
+<div class="line"><a name="l00019"></a><span class="lineno"><a class="line" href="class_network_sender.html#a310a464039a7790bfe11a72b73816d63">   19</a></span>&#160;    <span class="keywordtype">int</span> <a class="code" href="class_network_sender.html#a310a464039a7790bfe11a72b73816d63">m_port</a>;</div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160; </div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160; </div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160; </div>
@@ -95,7 +95,14 @@ $(function() {
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;};</div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="aclass_network_sender_html"><div class="ttname"><a href="class_network_sender.html">NetworkSender</a></div><div class="ttdef"><b>Definition:</b> NetworkSender.h:6</div></div>
-<div class="ttc" id="aclass_skeleton_html"><div class="ttname"><a href="class_skeleton.html">Skeleton</a></div><div class="ttdef"><b>Definition:</b> Skeleton.h:6</div></div>
+<div class="ttc" id="aclass_network_sender_html_a14bcf54d3c289d92c12c3e741619975f"><div class="ttname"><a href="class_network_sender.html#a14bcf54d3c289d92c12c3e741619975f">NetworkSender::NetworkSender</a></div><div class="ttdeci">NetworkSender()</div><div class="ttdef"><b>Definition:</b> NetworkSender.cpp:3</div></div>
+<div class="ttc" id="adefines_8h_html"><div class="ttname"><a href="defines_8h.html">defines.h</a></div></div>
+<div class="ttc" id="aclass_network_sender_html_a876b6f8f1b97391cbe9edfc014fe777c"><div class="ttname"><a href="class_network_sender.html#a876b6f8f1b97391cbe9edfc014fe777c">NetworkSender::sendSkeleton</a></div><div class="ttdeci">virtual void sendSkeleton(Skeleton *skeleton, const char *uri)=0</div></div>
+<div class="ttc" id="aclass_network_sender_html_a2864a9461c86bdf9006aa1510d2d1fb2"><div class="ttname"><a href="class_network_sender.html#a2864a9461c86bdf9006aa1510d2d1fb2">NetworkSender::m_address</a></div><div class="ttdeci">std::string m_address</div><div class="ttdef"><b>Definition:</b> NetworkSender.h:18</div></div>
+<div class="ttc" id="a_skeleton_8h_html"><div class="ttname"><a href="_skeleton_8h.html">Skeleton.h</a></div></div>
+<div class="ttc" id="aclass_skeleton_html"><div class="ttname"><a href="class_skeleton.html">Skeleton</a></div><div class="ttdef"><b>Definition:</b> Skeleton.h:9</div></div>
+<div class="ttc" id="aclass_network_sender_html_a310a464039a7790bfe11a72b73816d63"><div class="ttname"><a href="class_network_sender.html#a310a464039a7790bfe11a72b73816d63">NetworkSender::m_port</a></div><div class="ttdeci">int m_port</div><div class="ttdef"><b>Definition:</b> NetworkSender.h:19</div></div>
+<div class="ttc" id="aclass_network_sender_html_a0ded69e4cbcb81e2ef6bad6a383f03d6"><div class="ttname"><a href="class_network_sender.html#a0ded69e4cbcb81e2ef6bad6a383f03d6">NetworkSender::m_active</a></div><div class="ttdeci">bool m_active</div><div class="ttdef"><b>Definition:</b> NetworkSender.h:12</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

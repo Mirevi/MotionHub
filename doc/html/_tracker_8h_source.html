@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.16"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>MotionHub: C:/dev/MotionHub/src/Tracker.h Source File</title>
+<title>MotionHub: src/Tracker.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -61,7 +61,7 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_5fc0168d11760b9445bd29fa15d9290f.html">dev</a></li><li class="navelem"><a class="el" href="dir_5edc1a258ab5a6c7e17edd76dc74eccf.html">MotionHub</a></li><li class="navelem"><a class="el" href="dir_4d86d5fa7282e9e12eb30eecb3f52da5.html">src</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -69,41 +69,53 @@ $(function() {
 <div class="title">Tracker.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#pragma once</span></div>
+<a href="_tracker_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#pragma once</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160; </div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &lt;iostream&gt;</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;future&gt;</span></div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160; </div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &quot;Skeleton.h&quot;</span></div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="_skeleton_8h.html">Skeleton.h</a>&quot;</span></div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &lt;list&gt;</span></div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160; </div>
 <div class="line"><a name="l00009"></a><span class="lineno"><a class="line" href="class_tracker.html">    9</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_tracker.html">Tracker</a></div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;{</div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160; </div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;    <a class="code" href="class_tracker.html">Tracker</a>();</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;    <span class="keywordtype">bool</span> m_tracking = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;    <a class="code" href="class_tracker.html#adf214393a14e8bf23de2fc8231e239ec">Tracker</a>();</div>
+<div class="line"><a name="l00014"></a><span class="lineno"><a class="line" href="class_tracker.html#ae22477addd3a2701af97f27f0bebd2f0">   14</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="class_tracker.html#ae22477addd3a2701af97f27f0bebd2f0">m_tracking</a> = <span class="keyword">false</span>;</div>
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160; </div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    <span class="keywordtype">void</span> start();</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    <span class="keywordtype">void</span> stop();</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="class_tracker.html#a94209dba8b6d1acc482e3e4d0e9e67b0">start</a>();</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="class_tracker.html#a9f1ffd518945d2ea5edb4e9c102343de">stop</a>();</div>
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    <span class="comment">//captures one frame of body tracking data and saves all data in the skeleton pool</span></div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> track();</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="class_tracker.html#ac546223174de241b5acdee1e820d0397">track</a>();</div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160; </div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    <span class="keyword">enum</span> StateTracker</div>
+<div class="line"><a name="l00021"></a><span class="lineno"><a class="line" href="class_tracker.html#a0044081294d9750f1023ad47555c1014">   21</a></span>&#160;    <span class="keyword">enum</span> <a class="code" href="class_tracker.html#a0044081294d9750f1023ad47555c1014">StateTracker</a></div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    {</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;        INIT,</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;        TRACKING,</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;        PAUSED</div>
+<div class="line"><a name="l00023"></a><span class="lineno"><a class="line" href="class_tracker.html#a0044081294d9750f1023ad47555c1014a048e0510ba2efa480fc419b9f0acff1a">   23</a></span>&#160;        <a class="code" href="class_tracker.html#a0044081294d9750f1023ad47555c1014a048e0510ba2efa480fc419b9f0acff1a">INIT</a>,</div>
+<div class="line"><a name="l00024"></a><span class="lineno"><a class="line" href="class_tracker.html#a0044081294d9750f1023ad47555c1014af69a49209b7b517e0bbfbdceb0b17746">   24</a></span>&#160;        <a class="code" href="class_tracker.html#a0044081294d9750f1023ad47555c1014af69a49209b7b517e0bbfbdceb0b17746">TRACKING</a>,</div>
+<div class="line"><a name="l00025"></a><span class="lineno"><a class="line" href="class_tracker.html#a0044081294d9750f1023ad47555c1014abb819628d0f202a58b3814a59b67002a">   25</a></span>&#160;        <a class="code" href="class_tracker.html#a0044081294d9750f1023ad47555c1014abb819628d0f202a58b3814a59b67002a">PAUSED</a></div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    };</div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160; </div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    std::map&lt;int, Skeleton&gt; poolSkeletons;</div>
+<div class="line"><a name="l00028"></a><span class="lineno"><a class="line" href="class_tracker.html#a91fb10d87f77bd9e14622a5e5e6e582f">   28</a></span>&#160;    std::map&lt;int, Skeleton&gt; <a class="code" href="class_tracker.html#a91fb10d87f77bd9e14622a5e5e6e582f">poolSkeletons</a>;</div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160; </div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    StateTracker state;</div>
+<div class="line"><a name="l00031"></a><span class="lineno"><a class="line" href="class_tracker.html#a492d97976189b89d90229e18919a9414">   31</a></span>&#160;    <a class="code" href="class_tracker.html#a0044081294d9750f1023ad47555c1014">StateTracker</a> <a class="code" href="class_tracker.html#a492d97976189b89d90229e18919a9414">state</a>;</div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160; </div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;};</div>
 </div><!-- fragment --></div><!-- contents -->
+<div class="ttc" id="aclass_tracker_html_ae22477addd3a2701af97f27f0bebd2f0"><div class="ttname"><a href="class_tracker.html#ae22477addd3a2701af97f27f0bebd2f0">Tracker::m_tracking</a></div><div class="ttdeci">bool m_tracking</div><div class="ttdef"><b>Definition:</b> Tracker.h:14</div></div>
+<div class="ttc" id="aclass_tracker_html_a94209dba8b6d1acc482e3e4d0e9e67b0"><div class="ttname"><a href="class_tracker.html#a94209dba8b6d1acc482e3e4d0e9e67b0">Tracker::start</a></div><div class="ttdeci">void start()</div><div class="ttdef"><b>Definition:</b> Tracker.cpp:10</div></div>
 <div class="ttc" id="aclass_tracker_html"><div class="ttname"><a href="class_tracker.html">Tracker</a></div><div class="ttdef"><b>Definition:</b> Tracker.h:9</div></div>
+<div class="ttc" id="aclass_tracker_html_a9f1ffd518945d2ea5edb4e9c102343de"><div class="ttname"><a href="class_tracker.html#a9f1ffd518945d2ea5edb4e9c102343de">Tracker::stop</a></div><div class="ttdeci">void stop()</div><div class="ttdef"><b>Definition:</b> Tracker.cpp:17</div></div>
+<div class="ttc" id="aclass_tracker_html_a0044081294d9750f1023ad47555c1014abb819628d0f202a58b3814a59b67002a"><div class="ttname"><a href="class_tracker.html#a0044081294d9750f1023ad47555c1014abb819628d0f202a58b3814a59b67002a">Tracker::PAUSED</a></div><div class="ttdef"><b>Definition:</b> Tracker.h:25</div></div>
+<div class="ttc" id="aclass_tracker_html_a0044081294d9750f1023ad47555c1014af69a49209b7b517e0bbfbdceb0b17746"><div class="ttname"><a href="class_tracker.html#a0044081294d9750f1023ad47555c1014af69a49209b7b517e0bbfbdceb0b17746">Tracker::TRACKING</a></div><div class="ttdef"><b>Definition:</b> Tracker.h:24</div></div>
+<div class="ttc" id="aclass_tracker_html_a0044081294d9750f1023ad47555c1014a048e0510ba2efa480fc419b9f0acff1a"><div class="ttname"><a href="class_tracker.html#a0044081294d9750f1023ad47555c1014a048e0510ba2efa480fc419b9f0acff1a">Tracker::INIT</a></div><div class="ttdef"><b>Definition:</b> Tracker.h:23</div></div>
+<div class="ttc" id="aclass_tracker_html_ac546223174de241b5acdee1e820d0397"><div class="ttname"><a href="class_tracker.html#ac546223174de241b5acdee1e820d0397">Tracker::track</a></div><div class="ttdeci">virtual void track()</div><div class="ttdef"><b>Definition:</b> Tracker.cpp:24</div></div>
+<div class="ttc" id="a_skeleton_8h_html"><div class="ttname"><a href="_skeleton_8h.html">Skeleton.h</a></div></div>
+<div class="ttc" id="aclass_tracker_html_a91fb10d87f77bd9e14622a5e5e6e582f"><div class="ttname"><a href="class_tracker.html#a91fb10d87f77bd9e14622a5e5e6e582f">Tracker::poolSkeletons</a></div><div class="ttdeci">std::map&lt; int, Skeleton &gt; poolSkeletons</div><div class="ttdef"><b>Definition:</b> Tracker.h:28</div></div>
+<div class="ttc" id="aclass_tracker_html_adf214393a14e8bf23de2fc8231e239ec"><div class="ttname"><a href="class_tracker.html#adf214393a14e8bf23de2fc8231e239ec">Tracker::Tracker</a></div><div class="ttdeci">Tracker()</div><div class="ttdef"><b>Definition:</b> Tracker.cpp:3</div></div>
+<div class="ttc" id="aclass_tracker_html_a0044081294d9750f1023ad47555c1014"><div class="ttname"><a href="class_tracker.html#a0044081294d9750f1023ad47555c1014">Tracker::StateTracker</a></div><div class="ttdeci">StateTracker</div><div class="ttdef"><b>Definition:</b> Tracker.h:21</div></div>
+<div class="ttc" id="aclass_tracker_html_a492d97976189b89d90229e18919a9414"><div class="ttname"><a href="class_tracker.html#a492d97976189b89d90229e18919a9414">Tracker::state</a></div><div class="ttdeci">StateTracker state</div><div class="ttdef"><b>Definition:</b> Tracker.h:31</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.16"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>MotionHub: C:/dev/MotionHub/src/Skeleton.h Source File</title>
+<title>MotionHub: src/Skeleton.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -61,7 +61,7 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_5fc0168d11760b9445bd29fa15d9290f.html">dev</a></li><li class="navelem"><a class="el" href="dir_5edc1a258ab5a6c7e17edd76dc74eccf.html">MotionHub</a></li><li class="navelem"><a class="el" href="dir_4d86d5fa7282e9e12eb30eecb3f52da5.html">src</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -69,39 +69,52 @@ $(function() {
 <div class="title">Skeleton.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#pragma once</span></div>
+<a href="_skeleton_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#pragma once</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160; </div>
-<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &lt;Joint.h&gt;</span></div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="_joint_8h.html">Joint.h</a>&gt;</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;map&gt;</span></div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160; </div>
-<div class="line"><a name="l00006"></a><span class="lineno"><a class="line" href="class_skeleton.html">    6</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_skeleton.html">Skeleton</a></div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;{</div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160; </div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;    <a class="code" href="class_skeleton.html">Skeleton</a>();</div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;    <a class="code" href="class_skeleton.html">Skeleton</a>(<span class="keywordtype">int</span> sid);</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160; </div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;    <span class="keywordtype">void</span> parseJoint(Joint::jointNames name, <a class="code" href="class_vector3.html">Vector3</a> position, <a class="code" href="class_vector4.html">Vector4</a> rotation);</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;    <span class="keywordtype">int</span> getSid();</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160; </div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    std::map&lt;Joint::jointNames, Joint&gt; m_joints;</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160; </div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    <span class="keyword">enum</span> StateSkeleton</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    {</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;        NONE,</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;        INIT,</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;        ACTIVE,</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;        INACTIVE</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    };</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160; </div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    <span class="keywordtype">int</span> m_sid;</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    StateSkeleton m_state;</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160; </div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;};</div>
+<div class="line"><a name="l00009"></a><span class="lineno"><a class="line" href="class_skeleton.html">    9</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_skeleton.html">Skeleton</a></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;{</div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160; </div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    <a class="code" href="class_skeleton.html#af01a02f1ce9ae4c801cd6e66ccf7407f">Skeleton</a>();</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    <a class="code" href="class_skeleton.html#af01a02f1ce9ae4c801cd6e66ccf7407f">Skeleton</a>(<span class="keywordtype">int</span> sid);</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160; </div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="class_skeleton.html#af05fa38bccb3d50e023cb4bdbdec7e79">parseJoint</a>(<a class="code" href="class_joint.html#a1f9a5333c33c8e471c1c3868f2e26fe8">Joint::jointNames</a> name, <a class="code" href="class_vector3.html">Vector3</a> position, <a class="code" href="class_vector4.html">Vector4</a> rotation);</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    <span class="keywordtype">int</span> <a class="code" href="class_skeleton.html#aab77a9adb8d6e24a7061cf45efb26c91">getSid</a>();</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160; </div>
+<div class="line"><a name="l00033"></a><span class="lineno"><a class="line" href="class_skeleton.html#a468e7b5e1660285ec357e8d35827a01d">   33</a></span>&#160;    std::map&lt;Joint::jointNames, Joint&gt; <a class="code" href="class_skeleton.html#a468e7b5e1660285ec357e8d35827a01d">m_joints</a>;</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160; </div>
+<div class="line"><a name="l00035"></a><span class="lineno"><a class="line" href="class_skeleton.html#aa3ffb248b5904d59422c5cb875e32e7a">   35</a></span>&#160;    <span class="keyword">enum</span> <a class="code" href="class_skeleton.html#aa3ffb248b5904d59422c5cb875e32e7a">StateSkeleton</a></div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    {</div>
+<div class="line"><a name="l00037"></a><span class="lineno"><a class="line" href="class_skeleton.html#aa3ffb248b5904d59422c5cb875e32e7aa9013f54588a4b42058faf534e5070f7b">   37</a></span>&#160;        <a class="code" href="class_skeleton.html#aa3ffb248b5904d59422c5cb875e32e7aa9013f54588a4b42058faf534e5070f7b">NONE</a>,</div>
+<div class="line"><a name="l00038"></a><span class="lineno"><a class="line" href="class_skeleton.html#aa3ffb248b5904d59422c5cb875e32e7aaef4948f2f63428fea11bad19229a87a6">   38</a></span>&#160;        <a class="code" href="class_skeleton.html#aa3ffb248b5904d59422c5cb875e32e7aaef4948f2f63428fea11bad19229a87a6">INIT</a>,</div>
+<div class="line"><a name="l00039"></a><span class="lineno"><a class="line" href="class_skeleton.html#aa3ffb248b5904d59422c5cb875e32e7aa09dbb8d6c5747fdef11e6e7129a16eaa">   39</a></span>&#160;        <a class="code" href="class_skeleton.html#aa3ffb248b5904d59422c5cb875e32e7aa09dbb8d6c5747fdef11e6e7129a16eaa">ACTIVE</a>,</div>
+<div class="line"><a name="l00040"></a><span class="lineno"><a class="line" href="class_skeleton.html#aa3ffb248b5904d59422c5cb875e32e7aa5c0c967f59049a1a491f0b7f39e59354">   40</a></span>&#160;        <a class="code" href="class_skeleton.html#aa3ffb248b5904d59422c5cb875e32e7aa5c0c967f59049a1a491f0b7f39e59354">INACTIVE</a></div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    };</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160; </div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00044"></a><span class="lineno"><a class="line" href="class_skeleton.html#ae6ecf0938adeaeada1166932a23da0d6">   44</a></span>&#160;    <span class="keywordtype">int</span> <a class="code" href="class_skeleton.html#ae6ecf0938adeaeada1166932a23da0d6">m_sid</a>;</div>
+<div class="line"><a name="l00045"></a><span class="lineno"><a class="line" href="class_skeleton.html#af15479f8fe388d2b096a54eb2a7b083e">   45</a></span>&#160;    <a class="code" href="class_skeleton.html#aa3ffb248b5904d59422c5cb875e32e7a">StateSkeleton</a> <a class="code" href="class_skeleton.html#af15479f8fe388d2b096a54eb2a7b083e">m_state</a>;</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160; </div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;};</div>
 </div><!-- fragment --></div><!-- contents -->
+<div class="ttc" id="aclass_skeleton_html_af15479f8fe388d2b096a54eb2a7b083e"><div class="ttname"><a href="class_skeleton.html#af15479f8fe388d2b096a54eb2a7b083e">Skeleton::m_state</a></div><div class="ttdeci">StateSkeleton m_state</div><div class="ttdef"><b>Definition:</b> Skeleton.h:45</div></div>
 <div class="ttc" id="aclass_vector3_html"><div class="ttname"><a href="class_vector3.html">Vector3</a></div><div class="ttdef"><b>Definition:</b> Vector3.h:5</div></div>
-<div class="ttc" id="aclass_skeleton_html"><div class="ttname"><a href="class_skeleton.html">Skeleton</a></div><div class="ttdef"><b>Definition:</b> Skeleton.h:6</div></div>
+<div class="ttc" id="aclass_skeleton_html_af05fa38bccb3d50e023cb4bdbdec7e79"><div class="ttname"><a href="class_skeleton.html#af05fa38bccb3d50e023cb4bdbdec7e79">Skeleton::parseJoint</a></div><div class="ttdeci">void parseJoint(Joint::jointNames name, Vector3 position, Vector4 rotation)</div><div class="ttdef"><b>Definition:</b> Skeleton.cpp:17</div></div>
+<div class="ttc" id="aclass_joint_html_a1f9a5333c33c8e471c1c3868f2e26fe8"><div class="ttname"><a href="class_joint.html#a1f9a5333c33c8e471c1c3868f2e26fe8">Joint::jointNames</a></div><div class="ttdeci">jointNames</div><div class="ttdef"><b>Definition:</b> Joint.h:24</div></div>
+<div class="ttc" id="aclass_skeleton_html_aa3ffb248b5904d59422c5cb875e32e7aa09dbb8d6c5747fdef11e6e7129a16eaa"><div class="ttname"><a href="class_skeleton.html#aa3ffb248b5904d59422c5cb875e32e7aa09dbb8d6c5747fdef11e6e7129a16eaa">Skeleton::ACTIVE</a></div><div class="ttdef"><b>Definition:</b> Skeleton.h:39</div></div>
+<div class="ttc" id="aclass_skeleton_html_a468e7b5e1660285ec357e8d35827a01d"><div class="ttname"><a href="class_skeleton.html#a468e7b5e1660285ec357e8d35827a01d">Skeleton::m_joints</a></div><div class="ttdeci">std::map&lt; Joint::jointNames, Joint &gt; m_joints</div><div class="ttdef"><b>Definition:</b> Skeleton.h:33</div></div>
+<div class="ttc" id="a_joint_8h_html"><div class="ttname"><a href="_joint_8h.html">Joint.h</a></div></div>
+<div class="ttc" id="aclass_skeleton_html_aa3ffb248b5904d59422c5cb875e32e7aaef4948f2f63428fea11bad19229a87a6"><div class="ttname"><a href="class_skeleton.html#aa3ffb248b5904d59422c5cb875e32e7aaef4948f2f63428fea11bad19229a87a6">Skeleton::INIT</a></div><div class="ttdef"><b>Definition:</b> Skeleton.h:38</div></div>
+<div class="ttc" id="aclass_skeleton_html_aab77a9adb8d6e24a7061cf45efb26c91"><div class="ttname"><a href="class_skeleton.html#aab77a9adb8d6e24a7061cf45efb26c91">Skeleton::getSid</a></div><div class="ttdeci">int getSid()</div><div class="ttdef"><b>Definition:</b> Skeleton.cpp:25</div></div>
+<div class="ttc" id="aclass_skeleton_html_aa3ffb248b5904d59422c5cb875e32e7a"><div class="ttname"><a href="class_skeleton.html#aa3ffb248b5904d59422c5cb875e32e7a">Skeleton::StateSkeleton</a></div><div class="ttdeci">StateSkeleton</div><div class="ttdef"><b>Definition:</b> Skeleton.h:35</div></div>
+<div class="ttc" id="aclass_skeleton_html"><div class="ttname"><a href="class_skeleton.html">Skeleton</a></div><div class="ttdef"><b>Definition:</b> Skeleton.h:9</div></div>
+<div class="ttc" id="aclass_skeleton_html_aa3ffb248b5904d59422c5cb875e32e7aa9013f54588a4b42058faf534e5070f7b"><div class="ttname"><a href="class_skeleton.html#aa3ffb248b5904d59422c5cb875e32e7aa9013f54588a4b42058faf534e5070f7b">Skeleton::NONE</a></div><div class="ttdef"><b>Definition:</b> Skeleton.h:37</div></div>
+<div class="ttc" id="aclass_skeleton_html_ae6ecf0938adeaeada1166932a23da0d6"><div class="ttname"><a href="class_skeleton.html#ae6ecf0938adeaeada1166932a23da0d6">Skeleton::m_sid</a></div><div class="ttdeci">int m_sid</div><div class="ttdef"><b>Definition:</b> Skeleton.h:44</div></div>
+<div class="ttc" id="aclass_skeleton_html_af01a02f1ce9ae4c801cd6e66ccf7407f"><div class="ttname"><a href="class_skeleton.html#af01a02f1ce9ae4c801cd6e66ccf7407f">Skeleton::Skeleton</a></div><div class="ttdeci">Skeleton()</div><div class="ttdef"><b>Definition:</b> Skeleton.cpp:3</div></div>
+<div class="ttc" id="aclass_skeleton_html_aa3ffb248b5904d59422c5cb875e32e7aa5c0c967f59049a1a491f0b7f39e59354"><div class="ttname"><a href="class_skeleton.html#aa3ffb248b5904d59422c5cb875e32e7aa5c0c967f59049a1a491f0b7f39e59354">Skeleton::INACTIVE</a></div><div class="ttdef"><b>Definition:</b> Skeleton.h:40</div></div>
 <div class="ttc" id="aclass_vector4_html"><div class="ttname"><a href="class_vector4.html">Vector4</a></div><div class="ttdef"><b>Definition:</b> Vector4.h:5</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

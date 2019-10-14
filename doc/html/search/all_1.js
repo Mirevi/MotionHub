@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['configreader_1',['ConfigReader',['../class_config_reader.html',1,'']]],
-  ['console_2',['Console',['../class_console.html',1,'']]]
+  ['buffer_5',['buffer',['../class_o_s_c_sender.html#a574a2f176b535f02b66d81cc69d0ff0d',1,'OSCSender']]]
 ];

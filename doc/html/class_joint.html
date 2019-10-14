@@ -70,70 +70,250 @@ $(function() {
 <div class="title">Joint Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="_joint_8h_source.html">Joint.h</a>&gt;</code></p>
+<div class="dynheader">
+Collaboration diagram for Joint:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_joint__coll__graph.png" border="0" usemap="#_joint_coll__map" alt="Collaboration graph"/></div>
+<map name="_joint_coll__map" id="_joint_coll__map">
+<area shape="rect" title=" " alt="" coords="74,491,209,612"/>
+<area shape="rect" href="class_vector3.html" title=" " alt="" coords="23,189,121,428"/>
+<area shape="rect" href="struct_vector3_1_1position.html" title=" " alt="" coords="5,13,125,119"/>
+<area shape="rect" href="class_vector4.html" title=" " alt="" coords="155,189,253,428"/>
+<area shape="rect" href="struct_vector4_1_1position.html" title=" " alt="" coords="149,5,269,127"/>
+</map>
+</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:a1f9a5333c33c8e471c1c3868f2e26fe8"><td class="memItemLeft" align="right" valign="top"><a id="a1f9a5333c33c8e471c1c3868f2e26fe8"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><b>jointNames</b> { <br />
-&#160;&#160;<b>JOINT_PELVIS</b>, 
-<b>JOINT_SPINE_NAVAL</b>, 
-<b>JOINT_SPINE_CHEST</b>, 
-<b>JOINT_NECK</b>, 
+<tr class="memitem:a1f9a5333c33c8e471c1c3868f2e26fe8"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_joint.html#a1f9a5333c33c8e471c1c3868f2e26fe8">jointNames</a> { <br />
+&#160;&#160;<a class="el" href="class_joint.html#a1f9a5333c33c8e471c1c3868f2e26fe8af6196cfb492b50bb21673948e018c1dd">JOINT_PELVIS</a>, 
+<a class="el" href="class_joint.html#a1f9a5333c33c8e471c1c3868f2e26fe8a7402a43ed8a07a2f83c7419deda952ef">JOINT_SPINE_NAVAL</a>, 
+<a class="el" href="class_joint.html#a1f9a5333c33c8e471c1c3868f2e26fe8ace103b78793c21269bf9ce95487645ad">JOINT_SPINE_CHEST</a>, 
+<a class="el" href="class_joint.html#a1f9a5333c33c8e471c1c3868f2e26fe8a97c87656d69a8608af1a6020ddfbbcc1">JOINT_NECK</a>, 
 <br />
-&#160;&#160;<b>JOINT_CLAVICLE_LEFT</b>, 
-<b>JOINT_SHOULDER_LEFT</b>, 
-<b>JOINT_ELBOW_LEFT</b>, 
-<b>JOINT_WRIST_LEFT</b>, 
+&#160;&#160;<a class="el" href="class_joint.html#a1f9a5333c33c8e471c1c3868f2e26fe8a0478c19036dc2c8c2d038a988942175d">JOINT_CLAVICLE_LEFT</a>, 
+<a class="el" href="class_joint.html#a1f9a5333c33c8e471c1c3868f2e26fe8a525cdcef92e64377849218f844d3be78">JOINT_SHOULDER_LEFT</a>, 
+<a class="el" href="class_joint.html#a1f9a5333c33c8e471c1c3868f2e26fe8ae2307dae8b072244c7cc88f1bee0e79c">JOINT_ELBOW_LEFT</a>, 
+<a class="el" href="class_joint.html#a1f9a5333c33c8e471c1c3868f2e26fe8af6371b2f3ca8669704db58b5436e9ab3">JOINT_WRIST_LEFT</a>, 
 <br />
-&#160;&#160;<b>JOINT_CLAVICLE_RIGHT</b>, 
-<b>JOINT_SHOULDER_RIGHT</b>, 
-<b>JOINT_ELBOW_RIGHT</b>, 
-<b>JOINT_WRIST_RIGHT</b>, 
+&#160;&#160;<a class="el" href="class_joint.html#a1f9a5333c33c8e471c1c3868f2e26fe8ab463e55a97f65976479fc331c49d72bb">JOINT_CLAVICLE_RIGHT</a>, 
+<a class="el" href="class_joint.html#a1f9a5333c33c8e471c1c3868f2e26fe8adea6d579d5fb3bc5e031d77622afcb46">JOINT_SHOULDER_RIGHT</a>, 
+<a class="el" href="class_joint.html#a1f9a5333c33c8e471c1c3868f2e26fe8a75f39ef7038d8df924ac18d2f26fad59">JOINT_ELBOW_RIGHT</a>, 
+<a class="el" href="class_joint.html#a1f9a5333c33c8e471c1c3868f2e26fe8a8cacc85cc33bfdb5948d6eafe84ef9a3">JOINT_WRIST_RIGHT</a>, 
 <br />
-&#160;&#160;<b>JOINT_HIP_LEFT</b>, 
-<b>JOINT_KNEE_LEFT</b>, 
-<b>JOINT_ANKLE_LEFT</b>, 
-<b>JOINT_FOOT_LEFT</b>, 
+&#160;&#160;<a class="el" href="class_joint.html#a1f9a5333c33c8e471c1c3868f2e26fe8a4fb39b2f915f299b63f9df21853e756a">JOINT_HIP_LEFT</a>, 
+<a class="el" href="class_joint.html#a1f9a5333c33c8e471c1c3868f2e26fe8a52ef45c4fb2bb57e793924ab12257beb">JOINT_KNEE_LEFT</a>, 
+<a class="el" href="class_joint.html#a1f9a5333c33c8e471c1c3868f2e26fe8a93fd76d19bbf767c792f1a46caf20543">JOINT_ANKLE_LEFT</a>, 
+<a class="el" href="class_joint.html#a1f9a5333c33c8e471c1c3868f2e26fe8a0e583b00bb23e0e6b1c6cea9f79f481c">JOINT_FOOT_LEFT</a>, 
 <br />
-&#160;&#160;<b>JOINT_HIP_RIGHT</b>, 
-<b>JOINT_KNEE_RIGHT</b>, 
-<b>JOINT_ANKLE_RIGHT</b>, 
-<b>JOINT_FOOT_RIGHT</b>, 
+&#160;&#160;<a class="el" href="class_joint.html#a1f9a5333c33c8e471c1c3868f2e26fe8a2ec675d55f7b45a315fca03b2f6ccbcc">JOINT_HIP_RIGHT</a>, 
+<a class="el" href="class_joint.html#a1f9a5333c33c8e471c1c3868f2e26fe8ae9c0768d77837bb01ae9a0b0a98c513d">JOINT_KNEE_RIGHT</a>, 
+<a class="el" href="class_joint.html#a1f9a5333c33c8e471c1c3868f2e26fe8a63c9bc5a1677e43ea9c8a118ee88e9b9">JOINT_ANKLE_RIGHT</a>, 
+<a class="el" href="class_joint.html#a1f9a5333c33c8e471c1c3868f2e26fe8a243c283d58a716126b04e826a0a8b8db">JOINT_FOOT_RIGHT</a>, 
 <br />
-&#160;&#160;<b>JOINT_HEAD</b>, 
-<b>JOINT_NOSE</b>, 
-<b>JOINT_EYE_LEFT</b>, 
-<b>JOINT_EAR_LEFT</b>, 
+&#160;&#160;<a class="el" href="class_joint.html#a1f9a5333c33c8e471c1c3868f2e26fe8a0cb4b8a9d4609c98569a2c8ad7acfd35">JOINT_HEAD</a>, 
+<a class="el" href="class_joint.html#a1f9a5333c33c8e471c1c3868f2e26fe8a54e48cf458a1676fb1dfff8087fc3061">JOINT_NOSE</a>, 
+<a class="el" href="class_joint.html#a1f9a5333c33c8e471c1c3868f2e26fe8a9081476216c3e4c14bbf844b01869234">JOINT_EYE_LEFT</a>, 
+<a class="el" href="class_joint.html#a1f9a5333c33c8e471c1c3868f2e26fe8acb2e52fcb20d71d6b3883dffc734aba0">JOINT_EAR_LEFT</a>, 
 <br />
-&#160;&#160;<b>JOINT_EYE_RIGHT</b>, 
-<b>JOINT_EAR_RIGHT</b>
+&#160;&#160;<a class="el" href="class_joint.html#a1f9a5333c33c8e471c1c3868f2e26fe8af3ac27b7ec3543430c60100bd1facc65">JOINT_EYE_RIGHT</a>, 
+<a class="el" href="class_joint.html#a1f9a5333c33c8e471c1c3868f2e26fe8ab4a3e8639a95cda45ee4bd459428a717">JOINT_EAR_RIGHT</a>
 <br />
  }</td></tr>
 <tr class="separator:a1f9a5333c33c8e471c1c3868f2e26fe8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a438289749d1e144c0f0445ea92290add"><td class="memItemLeft" align="right" valign="top"><a id="a438289749d1e144c0f0445ea92290add"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>Joint</b> (<a class="el" href="class_vector3.html">Vector3</a> position, <a class="el" href="class_vector4.html">Vector4</a> rotation)</td></tr>
+<tr class="memitem:a79a7a4715b2166714e039d7c7c5ea3b4"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_joint.html#a79a7a4715b2166714e039d7c7c5ea3b4">Joint</a> ()</td></tr>
+<tr class="separator:a79a7a4715b2166714e039d7c7c5ea3b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a438289749d1e144c0f0445ea92290add"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_joint.html#a438289749d1e144c0f0445ea92290add">Joint</a> (<a class="el" href="class_vector3.html">Vector3</a> position, <a class="el" href="class_vector4.html">Vector4</a> rotation)</td></tr>
 <tr class="separator:a438289749d1e144c0f0445ea92290add"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a66545a90a0057857ddeea2db8ce0dfbd"><td class="memItemLeft" align="right" valign="top"><a id="a66545a90a0057857ddeea2db8ce0dfbd"></a>
-<a class="el" href="class_vector3.html">Vector3</a>&#160;</td><td class="memItemRight" valign="bottom"><b>getJointPosition</b> ()</td></tr>
+<tr class="memitem:a66545a90a0057857ddeea2db8ce0dfbd"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_vector3.html">Vector3</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_joint.html#a66545a90a0057857ddeea2db8ce0dfbd">getJointPosition</a> ()</td></tr>
 <tr class="separator:a66545a90a0057857ddeea2db8ce0dfbd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4fcd9c570529b13a5ebd8740cf09e50b"><td class="memItemLeft" align="right" valign="top"><a id="a4fcd9c570529b13a5ebd8740cf09e50b"></a>
-<a class="el" href="class_vector4.html">Vector4</a>&#160;</td><td class="memItemRight" valign="bottom"><b>getJointRotation</b> ()</td></tr>
+<tr class="memitem:a4fcd9c570529b13a5ebd8740cf09e50b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_vector4.html">Vector4</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_joint.html#a4fcd9c570529b13a5ebd8740cf09e50b">getJointRotation</a> ()</td></tr>
 <tr class="separator:a4fcd9c570529b13a5ebd8740cf09e50b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
-<tr class="memitem:aa74344b6caa78ff687de025a2141380a"><td class="memItemLeft" align="right" valign="top"><a id="aa74344b6caa78ff687de025a2141380a"></a>
-<a class="el" href="class_vector3.html">Vector3</a>&#160;</td><td class="memItemRight" valign="bottom"><b>m_position</b></td></tr>
+<tr class="memitem:aa74344b6caa78ff687de025a2141380a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_vector3.html">Vector3</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_joint.html#aa74344b6caa78ff687de025a2141380a">m_position</a></td></tr>
 <tr class="separator:aa74344b6caa78ff687de025a2141380a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9bd1f15fb66812e00594a9449ba726a5"><td class="memItemLeft" align="right" valign="top"><a id="a9bd1f15fb66812e00594a9449ba726a5"></a>
-<a class="el" href="class_vector4.html">Vector4</a>&#160;</td><td class="memItemRight" valign="bottom"><b>m_rotation</b></td></tr>
+<tr class="memitem:a9bd1f15fb66812e00594a9449ba726a5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_vector4.html">Vector4</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_joint.html#a9bd1f15fb66812e00594a9449ba726a5">m_rotation</a></td></tr>
 <tr class="separator:a9bd1f15fb66812e00594a9449ba726a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Member Enumeration Documentation</h2>
+<a id="a1f9a5333c33c8e471c1c3868f2e26fe8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1f9a5333c33c8e471c1c3868f2e26fe8">&#9670;&nbsp;</a></span>jointNames</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="class_joint.html#a1f9a5333c33c8e471c1c3868f2e26fe8">Joint::jointNames</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a1f9a5333c33c8e471c1c3868f2e26fe8af6196cfb492b50bb21673948e018c1dd"></a>JOINT_PELVIS&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a1f9a5333c33c8e471c1c3868f2e26fe8a7402a43ed8a07a2f83c7419deda952ef"></a>JOINT_SPINE_NAVAL&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a1f9a5333c33c8e471c1c3868f2e26fe8ace103b78793c21269bf9ce95487645ad"></a>JOINT_SPINE_CHEST&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a1f9a5333c33c8e471c1c3868f2e26fe8a97c87656d69a8608af1a6020ddfbbcc1"></a>JOINT_NECK&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a1f9a5333c33c8e471c1c3868f2e26fe8a0478c19036dc2c8c2d038a988942175d"></a>JOINT_CLAVICLE_LEFT&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a1f9a5333c33c8e471c1c3868f2e26fe8a525cdcef92e64377849218f844d3be78"></a>JOINT_SHOULDER_LEFT&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a1f9a5333c33c8e471c1c3868f2e26fe8ae2307dae8b072244c7cc88f1bee0e79c"></a>JOINT_ELBOW_LEFT&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a1f9a5333c33c8e471c1c3868f2e26fe8af6371b2f3ca8669704db58b5436e9ab3"></a>JOINT_WRIST_LEFT&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a1f9a5333c33c8e471c1c3868f2e26fe8ab463e55a97f65976479fc331c49d72bb"></a>JOINT_CLAVICLE_RIGHT&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a1f9a5333c33c8e471c1c3868f2e26fe8adea6d579d5fb3bc5e031d77622afcb46"></a>JOINT_SHOULDER_RIGHT&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a1f9a5333c33c8e471c1c3868f2e26fe8a75f39ef7038d8df924ac18d2f26fad59"></a>JOINT_ELBOW_RIGHT&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a1f9a5333c33c8e471c1c3868f2e26fe8a8cacc85cc33bfdb5948d6eafe84ef9a3"></a>JOINT_WRIST_RIGHT&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a1f9a5333c33c8e471c1c3868f2e26fe8a4fb39b2f915f299b63f9df21853e756a"></a>JOINT_HIP_LEFT&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a1f9a5333c33c8e471c1c3868f2e26fe8a52ef45c4fb2bb57e793924ab12257beb"></a>JOINT_KNEE_LEFT&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a1f9a5333c33c8e471c1c3868f2e26fe8a93fd76d19bbf767c792f1a46caf20543"></a>JOINT_ANKLE_LEFT&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a1f9a5333c33c8e471c1c3868f2e26fe8a0e583b00bb23e0e6b1c6cea9f79f481c"></a>JOINT_FOOT_LEFT&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a1f9a5333c33c8e471c1c3868f2e26fe8a2ec675d55f7b45a315fca03b2f6ccbcc"></a>JOINT_HIP_RIGHT&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a1f9a5333c33c8e471c1c3868f2e26fe8ae9c0768d77837bb01ae9a0b0a98c513d"></a>JOINT_KNEE_RIGHT&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a1f9a5333c33c8e471c1c3868f2e26fe8a63c9bc5a1677e43ea9c8a118ee88e9b9"></a>JOINT_ANKLE_RIGHT&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a1f9a5333c33c8e471c1c3868f2e26fe8a243c283d58a716126b04e826a0a8b8db"></a>JOINT_FOOT_RIGHT&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a1f9a5333c33c8e471c1c3868f2e26fe8a0cb4b8a9d4609c98569a2c8ad7acfd35"></a>JOINT_HEAD&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a1f9a5333c33c8e471c1c3868f2e26fe8a54e48cf458a1676fb1dfff8087fc3061"></a>JOINT_NOSE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a1f9a5333c33c8e471c1c3868f2e26fe8a9081476216c3e4c14bbf844b01869234"></a>JOINT_EYE_LEFT&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a1f9a5333c33c8e471c1c3868f2e26fe8acb2e52fcb20d71d6b3883dffc734aba0"></a>JOINT_EAR_LEFT&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a1f9a5333c33c8e471c1c3868f2e26fe8af3ac27b7ec3543430c60100bd1facc65"></a>JOINT_EYE_RIGHT&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a1f9a5333c33c8e471c1c3868f2e26fe8ab4a3e8639a95cda45ee4bd459428a717"></a>JOINT_EAR_RIGHT&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="a79a7a4715b2166714e039d7c7c5ea3b4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a79a7a4715b2166714e039d7c7c5ea3b4">&#9670;&nbsp;</a></span>Joint() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Joint::Joint </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a438289749d1e144c0f0445ea92290add"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a438289749d1e144c0f0445ea92290add">&#9670;&nbsp;</a></span>Joint() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Joint::Joint </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_vector3.html">Vector3</a>&#160;</td>
+          <td class="paramname"><em>position</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_vector4.html">Vector4</a>&#160;</td>
+          <td class="paramname"><em>rotation</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="a66545a90a0057857ddeea2db8ce0dfbd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a66545a90a0057857ddeea2db8ce0dfbd">&#9670;&nbsp;</a></span>getJointPosition()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_vector3.html">Vector3</a> Joint::getJointPosition </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a4fcd9c570529b13a5ebd8740cf09e50b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4fcd9c570529b13a5ebd8740cf09e50b">&#9670;&nbsp;</a></span>getJointRotation()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_vector4.html">Vector4</a> Joint::getJointRotation </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a id="aa74344b6caa78ff687de025a2141380a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa74344b6caa78ff687de025a2141380a">&#9670;&nbsp;</a></span>m_position</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_vector3.html">Vector3</a> Joint::m_position</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a9bd1f15fb66812e00594a9449ba726a5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9bd1f15fb66812e00594a9449ba726a5">&#9670;&nbsp;</a></span>m_rotation</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_vector4.html">Vector4</a> Joint::m_rotation</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following files:<ul>
-<li>C:/dev/MotionHub/src/<a class="el" href="_joint_8h_source.html">Joint.h</a></li>
-<li>C:/dev/MotionHub/src/Joint.cpp</li>
+<li>src/<a class="el" href="_joint_8h_source.html">Joint.h</a></li>
+<li>src/<a class="el" href="_joint_8cpp.html">Joint.cpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

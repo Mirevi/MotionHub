@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['networkmanager_6',['NetworkManager',['../class_network_manager.html',1,'']]],
-  ['networksender_7',['NetworkSender',['../class_network_sender.html',1,'']]]
+  ['handle_32',['handle',['../class_keyboard_event_handler.html#ab575dcd8f2456ba2fd83af5409ce4f3c',1,'KeyboardEventHandler']]]
 ];
