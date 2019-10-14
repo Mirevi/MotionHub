@@ -11,3 +11,5 @@ static const int DEFAULT_PORT = 7000;
 static const char* DEFAULT_URI = "/mh/skeleton/";
 
 static const char* CONFIG_PATH = "./data/config.xml";
+
+static const char* LOGFILE = "log.txt";
