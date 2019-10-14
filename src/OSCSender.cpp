@@ -23,8 +23,7 @@ void OSCSender::sendSkeleton(Skeleton* skeleton, const char* uri)
 	*m_packetStream << osc::BeginBundleImmediate << osc::BeginMessage(uri) << skeleton->getSid();
 
 	Vector3 currJointPosition = Vector3::zero();
-	Vector4 currJointRotation = Vector4::zero();
-	
+	Vector4 currJointRotation = Vector4::zero();	
 
 	//loop through all Joints to write pose data into the stream
 	for (int jointsIndex = 0; jointsIndex < skeleton->m_joints.size(); jointsIndex++)
@@ -32,10 +31,8 @@ void OSCSender::sendSkeleton(Skeleton* skeleton, const char* uri)
 
 		currJointPosition = skeleton->m_joints[(Joint::jointNames)jointsIndex].getJointPosition();
 		currJointRotation = skeleton->m_joints[(Joint::jointNames)jointsIndex].getJointRotation();
-
-
-		//Console::log("Joint: " + std::to_string(jointsIndex) + " on position " + currJointPosition.toString());
-
+		
+		// Console::log("Send skeleton with id = " + std::to_string(skeleton->getSid()) + " joint = " + std::to_string((Joint::jointNames)jointsIndex) + " with position " + currJointPosition.toString() + ".");
 
 		*m_packetStream
 			//add position data to stream

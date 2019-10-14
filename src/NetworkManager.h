@@ -7,7 +7,7 @@
 
 #include <string>
 #include <iostream>
-#include <vector>
+#include <list>
 
 //change if you add more Sender
 class NetworkManager
@@ -19,6 +19,6 @@ public:
 	void sendSkeletonPool(std::map<int, Skeleton>* skeletonPool);
 
 private:
-	std::vector<NetworkSender*> poolSender;
+	std::list<NetworkSender*> poolSender;
 	
 };

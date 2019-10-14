@@ -18,7 +18,7 @@ void Skeleton::parseJoint(Joint::jointNames name, Vector3 position, Vector4 rota
 {
 
 	Joint curr_joint = Joint(position, rotation);
-	m_joints.insert({ Joint::JOINT_PELVIS, curr_joint });	
+	m_joints.insert({ Joint::HIPS, curr_joint });	
 
 }
 

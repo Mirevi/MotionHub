@@ -3,27 +3,29 @@
 
 NetworkManager::NetworkManager()
 {
+
 	poolSender.push_back(new OSCSender(BROADCAST, DEFAULT_PORT));
+
 }
 
 void NetworkManager::sendSkeletonPool(std::map<int, Skeleton>* skeletonPool)
 {
 	for (auto itSkeletonPool = skeletonPool->begin(); itSkeletonPool != skeletonPool->end(); itSkeletonPool++)
 	{
-
 		try
 		{
-			for (size_t i = 0; i < poolSender.size(); i++)
+			for (auto itSenderPool = poolSender.begin(); itSenderPool != poolSender.end(); itSenderPool++)
 			{
-				if (poolSender.at(i)->m_active)
+
+				if ((*itSenderPool)->isActive())
 				{
-					poolSender.at(i)->sendSkeleton(&(itSkeletonPool->second), DEFAULT_URI);// +std::to_string(itSkeletonPool->first)
+					(*itSenderPool)->sendSkeleton(&(itSkeletonPool->second), DEFAULT_URI);
 				}
 			}
 		}
 		catch (const std::exception&)
 		{
-			Console::logError("NetworkManager::sendSkeleton(): Skeleton could not be send! Pointer exception.");
+			Console::logError("NetworkManager::sendSkeleton(): Skeleton could not be send!");
 		}
 	}
 }

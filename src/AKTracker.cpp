@@ -152,6 +152,8 @@ void AKTracker::updateSkeletons(k4abt_frame_t* body_frame)
 		{
 			poolSkeletons[id] = *parseSkeleton(&skeleton, id);
 
+			//Console::log("[cam id = " + std::to_string(m_idCam) + "] AkTracker::updateSkeleton(): Skeleton with id = " + std::to_string(id) + " pelvis position = " + poolSkeletons[id].m_joints[Joint::JOINT_PELVIS].getJointPosition().toString() + ".");
+
 			//Console::log("[cam id = " + std::to_string(m_idCam) + "] AkTracker::updateSkeleton(): Updated skeleton with id = " + std::to_string(id) + ".");
 
 		}
@@ -164,11 +166,11 @@ Skeleton* AKTracker::parseSkeleton(k4abt_skeleton_t* skeleton, int id)
 	Skeleton* currSkeleton = new Skeleton(id);
 
 	//loop through all joints, get the position and rotation and pass them into the joint map
-	for (size_t jointIndex = 0; jointIndex < K4ABT_JOINT_COUNT; jointIndex++)
+	for (int jointIndex = 0; jointIndex < K4ABT_JOINT_COUNT; jointIndex++)
 	{
+
 		k4a_float3_t skeleton_position = skeleton->joints[jointIndex].position;
 		k4a_quaternion_t skeleton_rotation = skeleton->joints[jointIndex].orientation;
-
 
 		//convert from k4a Vectors and quaternions into custom vectors
 		Vector3 pos = Vector3(skeleton_position.xyz.x, skeleton_position.xyz.y, skeleton_position.xyz.z);
@@ -176,10 +178,99 @@ Skeleton* AKTracker::parseSkeleton(k4abt_skeleton_t* skeleton, int id)
 
 		//Console::log("Joint " + std::to_string(jointIndex) + " on position " + pos.toString());
 
-		//save joint data in skeleton object
-		currSkeleton->m_joints.insert({ (Joint::jointNames)jointIndex, Joint(pos, rot) });
+		switch (jointIndex)
+		{
 
+			case 0:
+				currSkeleton->m_joints.insert({ Joint::HIPS, Joint(pos, rot) });
+				break;
+
+			case 1:
+				currSkeleton->m_joints.insert({ Joint::SPINE, Joint(pos, rot) });
+				break;
+
+			case 2:
+				currSkeleton->m_joints.insert({ Joint::CHEST, Joint(pos, rot) });
+				break;
+
+			case 3:
+				currSkeleton->m_joints.insert({ Joint::NECK, Joint(pos, rot) });
+				break;
+
+			case 4:
+				currSkeleton->m_joints.insert({ Joint::SHOULDER_L, Joint(pos, rot) });
+				break;
+
+			case 5:
+				currSkeleton->m_joints.insert({ Joint::ARM_L, Joint(pos, rot) });
+				break;
+
+			case 6:
+				currSkeleton->m_joints.insert({ Joint::FOREARM_L, Joint(pos, rot) });
+				break;
+
+			case 7:
+				currSkeleton->m_joints.insert({ Joint::HAND_L, Joint(pos, rot) });
+				break;
+
+			case 11:
+				currSkeleton->m_joints.insert({ Joint::SHOULDER_R, Joint(pos, rot) });
+				break;
+
+			case 12:
+				currSkeleton->m_joints.insert({ Joint::ARM_R, Joint(pos, rot) });
+				break;
+
+			case 13:
+				currSkeleton->m_joints.insert({ Joint::FOREARM_R, Joint(pos, rot) });
+				break;
+
+			case 14:
+				currSkeleton->m_joints.insert({ Joint::HAND_R, Joint(pos, rot) });
+				break;
+
+			case 18:
+				currSkeleton->m_joints.insert({ Joint::UPLEG_L, Joint(pos, rot) });
+				break;
+
+			case 19:
+				currSkeleton->m_joints.insert({ Joint::LEG_L, Joint(pos, rot) });
+				break;
+
+			case 20:
+				currSkeleton->m_joints.insert({ Joint::FOOT_L, Joint(pos, rot) });
+				break;
+
+			case 21:
+				currSkeleton->m_joints.insert({ Joint::TOE_L, Joint(pos, rot) });
+				break;
+
+			case 22:
+				currSkeleton->m_joints.insert({ Joint::UPLEG_R, Joint(pos, rot) });
+				break;
+
+			case 23:
+				currSkeleton->m_joints.insert({ Joint::LEG_R, Joint(pos, rot) });
+				break;
+
+			case 24:
+				currSkeleton->m_joints.insert({ Joint::FOOT_R, Joint(pos, rot) });
+				break;
+
+			case 25:
+				currSkeleton->m_joints.insert({ Joint::TOE_R, Joint(pos, rot) });
+				break;
+
+			case 26:
+				currSkeleton->m_joints.insert({ Joint::HEAD, Joint(pos, rot) });
+				break;
+
+			default:
+				break;
+		}
 	}
+
+	// Console::log("Parsed skeleton with id = " + std::to_string(currSkeleton->getSid()) + " joint count = " + std::to_string(currSkeleton->m_joints.size()) + ".");
 
 	return currSkeleton;
 }
