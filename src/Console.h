@@ -11,7 +11,13 @@
 
 #include "defines.h"
 
-//static class for giving putting out messages
+/*!
+ * \class Console
+ *
+ * \brief Utility Class for Console output
+ *
+ * \author Eric Jansen
+ */
 class Console
 {
 

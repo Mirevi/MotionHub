@@ -72,14 +72,17 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
+<p>Manager for all types of tracker.  
+ <a href="class_tracker_manager.html#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="_tracker_manager_8h_source.html">TrackerManager.h</a>&gt;</code></p>
 <div class="dynheader">
 Collaboration diagram for TrackerManager:</div>
 <div class="dyncontent">
 <div class="center"><img src="class_tracker_manager__coll__graph.png" border="0" usemap="#_tracker_manager_coll__map" alt="Collaboration graph"/></div>
 <map name="_tracker_manager_coll__map" id="_tracker_manager_coll__map">
-<area shape="rect" title=" " alt="" coords="11,160,146,325"/>
-<area shape="rect" href="class_network_manager.html" title=" " alt="" coords="5,5,152,97"/>
+<area shape="rect" title="Manager for all types of tracker." alt="" coords="11,160,146,325"/>
+<area shape="rect" href="class_network_manager.html" title="Manager for different Network Sender and skeleton sending." alt="" coords="5,5,152,97"/>
 </map>
 </div>
 <table class="memberdecls">
@@ -112,13 +115,15 @@ Private Member Functions</h2></td></tr>
 Private Attributes</h2></td></tr>
 <tr class="memitem:aced2ef331b0f237611fab48cd4ed9dfd"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tracker_manager.html#aced2ef331b0f237611fab48cd4ed9dfd">m_tracking</a> = false</td></tr>
 <tr class="separator:aced2ef331b0f237611fab48cd4ed9dfd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5ddd9b3cf2bb02a9e5eb98042a63ba79"><td class="memItemLeft" align="right" valign="top">std::map&lt; std::pair&lt; <a class="el" href="class_tracker_manager.html#ab0456d60105d88830ad54e52cdc9cc57">TypeTracker</a>, int &gt;, <a class="el" href="class_tracker.html">Tracker</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tracker_manager.html#a5ddd9b3cf2bb02a9e5eb98042a63ba79">poolTracker</a></td></tr>
-<tr class="separator:a5ddd9b3cf2bb02a9e5eb98042a63ba79"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a83f226c8f142e4d46125a51a551be401"><td class="memItemLeft" align="right" valign="top">std::map&lt; std::pair&lt; <a class="el" href="class_tracker_manager.html#ab0456d60105d88830ad54e52cdc9cc57">TypeTracker</a>, int &gt;, <a class="el" href="class_tracker.html">Tracker</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tracker_manager.html#a83f226c8f142e4d46125a51a551be401">m_poolTracker</a></td></tr>
+<tr class="separator:a83f226c8f142e4d46125a51a551be401"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0f9b112d5b54bb390cdfa1c790fd43d5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_network_manager.html">NetworkManager</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tracker_manager.html#a0f9b112d5b54bb390cdfa1c790fd43d5">m_networkManager</a></td></tr>
 <tr class="separator:a0f9b112d5b54bb390cdfa1c790fd43d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Manager for all types of tracker while running, it collects all data from the tracker in the pool </p>
+<div class="textblock"><p>Manager for all types of tracker. </p>
+<dl class="section note"><dt>Note</dt><dd>while Tracking, it collects all data from the tracker pool</dd></dl>
+<dl class="section author"><dt>Author</dt><dd>Kester Evers and Eric Jansen </dd></dl>
 </div><h2 class="groupheader">Member Enumeration Documentation</h2>
 <a id="ab0456d60105d88830ad54e52cdc9cc57"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ab0456d60105d88830ad54e52cdc9cc57">&#9670;&nbsp;</a></span>TypeTracker</h2>
@@ -294,6 +299,29 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="a83f226c8f142e4d46125a51a551be401"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a83f226c8f142e4d46125a51a551be401">&#9670;&nbsp;</a></span>m_poolTracker</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::map&lt;std::pair&lt;<a class="el" href="class_tracker_manager.html#ab0456d60105d88830ad54e52cdc9cc57">TypeTracker</a>, int&gt;, <a class="el" href="class_tracker.html">Tracker</a>*&gt; TrackerManager::m_poolTracker</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>pool of all created tracker </p>
+
+</div>
+</div>
 <a id="aced2ef331b0f237611fab48cd4ed9dfd"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aced2ef331b0f237611fab48cd4ed9dfd">&#9670;&nbsp;</a></span>m_tracking</h2>
 
@@ -314,29 +342,6 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 <p>true while traking loop is running </p>
-
-</div>
-</div>
-<a id="a5ddd9b3cf2bb02a9e5eb98042a63ba79"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5ddd9b3cf2bb02a9e5eb98042a63ba79">&#9670;&nbsp;</a></span>poolTracker</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::map&lt;std::pair&lt;<a class="el" href="class_tracker_manager.html#ab0456d60105d88830ad54e52cdc9cc57">TypeTracker</a>, int&gt;, <a class="el" href="class_tracker.html">Tracker</a>*&gt; TrackerManager::poolTracker</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>pool of all created tracker </p>
 
 </div>
 </div>

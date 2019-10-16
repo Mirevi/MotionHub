@@ -6,7 +6,6 @@
 //outputs a string in console as info text
 void Console::log(std::string message)
 {
-	std::string output;
 
 	HANDLE  handle_console;
 	handle_console = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -35,7 +34,6 @@ void Console::log(std::string message)
 //outputs a string in console as warning
 void Console::logWarning(std::string message)
 {
-	std::string output;
 
 	HANDLE  handle_console;
 	handle_console = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -65,7 +63,6 @@ void Console::logWarning(std::string message)
 //outputs a string in console as error
 void Console::logError(std::string message)
 {
-	std::string output;
 
 	HANDLE  handle_console;
 	handle_console = GetStdHandle(STD_OUTPUT_HANDLE);

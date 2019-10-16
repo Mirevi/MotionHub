@@ -78,28 +78,26 @@ $(function() {
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160; </div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &lt;iostream&gt;</span></div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &lt;vector&gt;</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &lt;list&gt;</span></div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160; </div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="comment">//change if you add more Sender</span></div>
-<div class="line"><a name="l00013"></a><span class="lineno"><a class="line" href="class_network_manager.html">   13</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_network_manager.html">NetworkManager</a></div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;{</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160; </div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    <a class="code" href="class_network_manager.html#a5aaf71c4aa7a2efab7f1dbae02312280">NetworkManager</a>();   </div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160; </div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="class_network_manager.html#ab08494824e9686313c6c6a3c3af3d6bc">sendSkeletonPool</a>(std::map&lt;int, Skeleton&gt;* skeletonPool);</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160; </div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00022"></a><span class="lineno"><a class="line" href="class_network_manager.html#a4ebff3617f00e02d1a2225680c233c17">   22</a></span>&#160;    std::vector&lt;NetworkSender*&gt; <a class="code" href="class_network_manager.html#a4ebff3617f00e02d1a2225680c233c17">poolSender</a>;</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    </div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;};</div>
+<div class="line"><a name="l00021"></a><span class="lineno"><a class="line" href="class_network_manager.html">   21</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_network_manager.html">NetworkManager</a></div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;{</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160; </div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    <a class="code" href="class_network_manager.html#a5aaf71c4aa7a2efab7f1dbae02312280">NetworkManager</a>();</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="class_network_manager.html#ab08494824e9686313c6c6a3c3af3d6bc">sendSkeletonPool</a>(std::map&lt;int, Skeleton&gt;* skeletonPool);</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160; </div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00029"></a><span class="lineno"><a class="line" href="class_network_manager.html#aad869b257a670cfbeb8c966e9e830d3b">   29</a></span>&#160;    std::list&lt;NetworkSender*&gt; <a class="code" href="class_network_manager.html#aad869b257a670cfbeb8c966e9e830d3b">poolSender</a>;</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    </div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;};</div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="aclass_network_manager_html"><div class="ttname"><a href="class_network_manager.html">NetworkManager</a></div><div class="ttdef"><b>Definition:</b> NetworkManager.h:13</div></div>
+<div class="ttc" id="aclass_network_manager_html"><div class="ttname"><a href="class_network_manager.html">NetworkManager</a></div><div class="ttdoc">Manager for different Network Sender and skeleton sending.</div><div class="ttdef"><b>Definition:</b> NetworkManager.h:21</div></div>
 <div class="ttc" id="a_o_s_c_sender_8h_html"><div class="ttname"><a href="_o_s_c_sender_8h.html">OSCSender.h</a></div></div>
 <div class="ttc" id="a_skeleton_8h_html"><div class="ttname"><a href="_skeleton_8h.html">Skeleton.h</a></div></div>
-<div class="ttc" id="aclass_network_manager_html_ab08494824e9686313c6c6a3c3af3d6bc"><div class="ttname"><a href="class_network_manager.html#ab08494824e9686313c6c6a3c3af3d6bc">NetworkManager::sendSkeletonPool</a></div><div class="ttdeci">void sendSkeletonPool(std::map&lt; int, Skeleton &gt; *skeletonPool)</div><div class="ttdef"><b>Definition:</b> NetworkManager.cpp:9</div></div>
+<div class="ttc" id="aclass_network_manager_html_ab08494824e9686313c6c6a3c3af3d6bc"><div class="ttname"><a href="class_network_manager.html#ab08494824e9686313c6c6a3c3af3d6bc">NetworkManager::sendSkeletonPool</a></div><div class="ttdeci">void sendSkeletonPool(std::map&lt; int, Skeleton &gt; *skeletonPool)</div><div class="ttdef"><b>Definition:</b> NetworkManager.cpp:11</div></div>
+<div class="ttc" id="aclass_network_manager_html_aad869b257a670cfbeb8c966e9e830d3b"><div class="ttname"><a href="class_network_manager.html#aad869b257a670cfbeb8c966e9e830d3b">NetworkManager::poolSender</a></div><div class="ttdeci">std::list&lt; NetworkSender * &gt; poolSender</div><div class="ttdef"><b>Definition:</b> NetworkManager.h:29</div></div>
 <div class="ttc" id="aclass_network_manager_html_a5aaf71c4aa7a2efab7f1dbae02312280"><div class="ttname"><a href="class_network_manager.html#a5aaf71c4aa7a2efab7f1dbae02312280">NetworkManager::NetworkManager</a></div><div class="ttdeci">NetworkManager()</div><div class="ttdef"><b>Definition:</b> NetworkManager.cpp:4</div></div>
-<div class="ttc" id="aclass_network_manager_html_a4ebff3617f00e02d1a2225680c233c17"><div class="ttname"><a href="class_network_manager.html#a4ebff3617f00e02d1a2225680c233c17">NetworkManager::poolSender</a></div><div class="ttdeci">std::vector&lt; NetworkSender * &gt; poolSender</div><div class="ttdef"><b>Definition:</b> NetworkManager.h:22</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

@@ -17,7 +17,7 @@ Vector4::Vector4(float x, float y, float z, float w)
 
 }
 
-Vector4::Vector4(position xyzw)
+Vector4::Vector4(Position xyzw)
 {
 
 	m_xyzw.x = xyzw.x;

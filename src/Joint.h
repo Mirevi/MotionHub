@@ -4,6 +4,13 @@
 #include "Vector3.h"
 #include "Vector4.h"
 
+/*!
+ * \class Joint
+ *
+ * \brief Data Structure for Default Joint with position and rotation
+ *
+ * \author Kester Evers and Eric Jansen
+ */
 class Joint
 {
 
@@ -21,7 +28,7 @@ public:
 	Vector4 getJointRotation();
 
 	//enum for joint names
-	enum jointNames
+	enum JointNames
 	{
 		HIPS,
 		SPINE,

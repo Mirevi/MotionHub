@@ -73,29 +73,34 @@ $(function() {
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160; </div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &lt;windows.h&gt;</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;iostream&gt;</span></div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160; </div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160; </div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &lt;ctime&gt;</span></div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &lt;chrono&gt;</span></div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160; </div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="comment">//static class for giving putting out messages</span></div>
-<div class="line"><a name="l00012"></a><span class="lineno"><a class="line" href="class_console.html">   12</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_console.html">Console</a></div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;{</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160; </div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code" href="class_console.html#a1e55dfc328feee4ed3b6f892ffb335ba">log</a>(std::string message);</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code" href="class_console.html#a2054519b116f008978abf324a9007a30">logWarning</a>(std::string message);</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code" href="class_console.html#a1c34c56422a79b9443feaee7531b4312">logError</a>(std::string message);</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code" href="class_console.html#a936cd2b60c3f5052b92aac06aefefa14">printHeader</a>();</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160; </div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;};</div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &lt;fstream&gt;</span></div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160; </div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160; </div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &lt;ctime&gt;</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &lt;chrono&gt;</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160; </div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="defines_8h.html">defines.h</a>&quot;</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160; </div>
+<div class="line"><a name="l00021"></a><span class="lineno"><a class="line" href="class_console.html">   21</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_console.html">Console</a></div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;{</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160; </div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code" href="class_console.html#a1e55dfc328feee4ed3b6f892ffb335ba">log</a>(std::string message);</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code" href="class_console.html#a2054519b116f008978abf324a9007a30">logWarning</a>(std::string message);</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code" href="class_console.html#a1c34c56422a79b9443feaee7531b4312">logError</a>(std::string message);</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code" href="class_console.html#a936cd2b60c3f5052b92aac06aefefa14">printHeader</a>();</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code" href="class_console.html#a3c0a71acce87ee05daa9e8fb4d078bb5">writeToLogfile</a>(std::string message);</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;};</div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="aclass_console_html"><div class="ttname"><a href="class_console.html">Console</a></div><div class="ttdef"><b>Definition:</b> Console.h:12</div></div>
-<div class="ttc" id="aclass_console_html_a2054519b116f008978abf324a9007a30"><div class="ttname"><a href="class_console.html#a2054519b116f008978abf324a9007a30">Console::logWarning</a></div><div class="ttdeci">static void logWarning(std::string message)</div><div class="ttdef"><b>Definition:</b> Console.cpp:34</div></div>
-<div class="ttc" id="aclass_console_html_a1c34c56422a79b9443feaee7531b4312"><div class="ttname"><a href="class_console.html#a1c34c56422a79b9443feaee7531b4312">Console::logError</a></div><div class="ttdeci">static void logError(std::string message)</div><div class="ttdef"><b>Definition:</b> Console.cpp:62</div></div>
+<div class="ttc" id="aclass_console_html_a3c0a71acce87ee05daa9e8fb4d078bb5"><div class="ttname"><a href="class_console.html#a3c0a71acce87ee05daa9e8fb4d078bb5">Console::writeToLogfile</a></div><div class="ttdeci">static void writeToLogfile(std::string message)</div><div class="ttdef"><b>Definition:</b> Console.cpp:120</div></div>
+<div class="ttc" id="aclass_console_html"><div class="ttname"><a href="class_console.html">Console</a></div><div class="ttdoc">Utility Class for Console output.</div><div class="ttdef"><b>Definition:</b> Console.h:21</div></div>
+<div class="ttc" id="aclass_console_html_a2054519b116f008978abf324a9007a30"><div class="ttname"><a href="class_console.html#a2054519b116f008978abf324a9007a30">Console::logWarning</a></div><div class="ttdeci">static void logWarning(std::string message)</div><div class="ttdef"><b>Definition:</b> Console.cpp:35</div></div>
+<div class="ttc" id="aclass_console_html_a1c34c56422a79b9443feaee7531b4312"><div class="ttname"><a href="class_console.html#a1c34c56422a79b9443feaee7531b4312">Console::logError</a></div><div class="ttdeci">static void logError(std::string message)</div><div class="ttdef"><b>Definition:</b> Console.cpp:64</div></div>
+<div class="ttc" id="adefines_8h_html"><div class="ttname"><a href="defines_8h.html">defines.h</a></div></div>
 <div class="ttc" id="aclass_console_html_a1e55dfc328feee4ed3b6f892ffb335ba"><div class="ttname"><a href="class_console.html#a1e55dfc328feee4ed3b6f892ffb335ba">Console::log</a></div><div class="ttdeci">static void log(std::string message)</div><div class="ttdef"><b>Definition:</b> Console.cpp:7</div></div>
-<div class="ttc" id="aclass_console_html_a936cd2b60c3f5052b92aac06aefefa14"><div class="ttname"><a href="class_console.html#a936cd2b60c3f5052b92aac06aefefa14">Console::printHeader</a></div><div class="ttdeci">static void printHeader()</div><div class="ttdef"><b>Definition:</b> Console.cpp:91</div></div>
+<div class="ttc" id="aclass_console_html_a936cd2b60c3f5052b92aac06aefefa14"><div class="ttname"><a href="class_console.html#a936cd2b60c3f5052b92aac06aefefa14">Console::printHeader</a></div><div class="ttdeci">static void printHeader()</div><div class="ttdef"><b>Definition:</b> Console.cpp:94</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

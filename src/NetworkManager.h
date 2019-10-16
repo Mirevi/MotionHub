@@ -9,13 +9,20 @@
 #include <iostream>
 #include <list>
 
-//change if you add more Sender
+/*!
+ * \class NetworkManager
+ *
+ * \brief Manager for different Network Sender and skeleton sending
+ *
+ * \note Supported Protocols: OSC
+ * 
+ * \author Kester Evers and Eric Jansen
+ */
 class NetworkManager
 {
 
 public:
-	NetworkManager();	
-
+	NetworkManager();
 	void sendSkeletonPool(std::map<int, Skeleton>* skeletonPool);
 
 private:

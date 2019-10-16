@@ -2,21 +2,28 @@
 
 #include <string>
 
+/*!
+ * \class Vector3
+ *
+ * \brief Utility Class
+ *
+ * \author Eric Jansen
+ */
 class Vector3
 {
 
 public:
 
-	struct position
+	struct Position
 	{
 		float x, y, z;
 	};
 
 	Vector3();
 	Vector3(float x, float y, float z);
-	Vector3(position xyz);
+	Vector3(Position xyz);
 
-	position m_xyz;
+	Position m_xyz;
 
 	Vector3 operator + (Vector3 const vector3);
 	Vector3 operator - (Vector3 const vector3);

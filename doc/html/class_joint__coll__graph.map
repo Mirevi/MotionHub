@@ -1,7 +1,7 @@
 <map id="Joint" name="Joint">
-<area shape="rect" id="node1" title=" " alt="" coords="74,491,209,612"/>
-<area shape="rect" id="node2" href="$class_vector3.html" title=" " alt="" coords="23,189,121,428"/>
-<area shape="rect" id="node3" href="$struct_vector3_1_1position.html" title=" " alt="" coords="5,13,125,119"/>
-<area shape="rect" id="node4" href="$class_vector4.html" title=" " alt="" coords="155,189,253,428"/>
-<area shape="rect" id="node5" href="$struct_vector4_1_1position.html" title=" " alt="" coords="149,5,269,127"/>
+<area shape="rect" id="node1" title="Data Structure for Default Joint with position and rotation." alt="" coords="75,491,210,612"/>
+<area shape="rect" id="node2" href="$class_vector3.html" title="Utility Class." alt="" coords="25,189,122,428"/>
+<area shape="rect" id="node3" href="$struct_vector3_1_1_position.html" title=" " alt="" coords="5,13,128,119"/>
+<area shape="rect" id="node4" href="$class_vector4.html" title="Utility Class." alt="" coords="158,189,255,428"/>
+<area shape="rect" id="node5" href="$struct_vector4_1_1_position.html" title=" " alt="" coords="152,5,275,127"/>
 </map>

@@ -3,8 +3,13 @@
 #include <Joint.h>
 #include <map>
 
+
 /*!
- * the default skeleton with all Joint poses 
+ * \class Skeleton
+ *
+ * \brief Default Skeleton with all Joint poses
+ *
+ * \author Kester Evers and Eric Jansen
  */
 class Skeleton
 {
@@ -27,10 +32,10 @@ public:
 	 * \param position
 	 * \param rotation
 	 */
-	void parseJoint(Joint::jointNames name, Vector3 position, Vector4 rotation);
+	void parseJoint(Joint::JointNames name, Vector3 position, Vector4 rotation);
 	int getSid();
 
-	std::map<Joint::jointNames, Joint> m_joints;
+	std::map<Joint::JointNames, Joint> m_joints;
 
 	enum StateSkeleton
 	{

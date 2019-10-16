@@ -8,7 +8,7 @@
 
 
 /*!
- * Software for combining different body tracking solutions and sending position and rotation data of skeleton joints via ip.
+ * Hub for combining different body tracking solutions and sending position and rotation data of skeleton joints via ip.
  */
 class MotionHub
 {

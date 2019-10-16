@@ -18,7 +18,11 @@
     } 
 
 /*!
- * a tracker class for Azure Kinect by Microsoft
+ * \class AKTracker
+ *
+ * \brief Manages Azure Kinect Body Tracking
+ *
+ * \author Kester Evers and Eric Jansen
  */
 class AKTracker : public Tracker
 {
@@ -59,24 +63,24 @@ private:
 	/*!
 	 * k4a camera handle
 	 */
-	k4a_device_t cam;
+	k4a_device_t m_cam;
 	/*!
 	 * k4a camera configuration parameters
 	 */
-	k4a_device_configuration_t configCam;
+	k4a_device_configuration_t m_configCam;
 	/*!
 	 * k4a calibration type
 	 */
-	k4a_calibration_t calibrationCam;
+	k4a_calibration_t m_calibrationCam;
 
 	/*!
 	 * k4a body tracking component handle 
 	 */
-	k4abt_tracker_t tracker;
+	k4abt_tracker_t m_tracker;
 	/*!
 	 * k4a tracker configuration parameters
 	 */
-	k4abt_tracker_configuration_t configTracker;
+	k4abt_tracker_configuration_t m_configTracker;
 
 	/*!
 	 * current number of tracked skeletons

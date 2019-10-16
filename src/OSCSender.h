@@ -9,6 +9,13 @@
 #include "Vector3.h"
 #include "Vector4.h"
 
+/*!
+ * \class OSCSender
+ *
+ * \brief Implements OSC Protocol
+ *
+ * \author Kester Evers and Eric Jansen
+ */
 class OSCSender : public NetworkSender
 {
 

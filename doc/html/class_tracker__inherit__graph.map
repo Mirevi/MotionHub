@@ -1,4 +1,4 @@
 <map id="Tracker" name="Tracker">
-<area shape="rect" id="node1" title=" " alt="" coords="30,5,146,156"/>
-<area shape="rect" id="node2" href="$class_a_k_tracker.html" title=" " alt="" coords="5,204,171,501"/>
+<area shape="rect" id="node1" title="Prototype class for implemetation &#45; holds virtual methods." alt="" coords="30,5,146,156"/>
+<area shape="rect" id="node2" href="$class_a_k_tracker.html" title="Manages Azure Kinect Body Tracking." alt="" coords="5,204,171,501"/>
 </map>

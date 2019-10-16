@@ -1,6 +1,7 @@
 var searchData=
 [
-  ['no_5foutput_349',['NO_OUTPUT',['../class_config_reader.html#adee445654c84d6f4ef5152c57e58e344a3dd5dbd1d3a85df6224a8310c88efdb4',1,'ConfigReader']]],
-  ['none_350',['NONE',['../class_skeleton.html#aa3ffb248b5904d59422c5cb875e32e7aa9013f54588a4b42058faf534e5070f7b',1,'Skeleton']]],
-  ['not_5fin_5floops_351',['NOT_IN_LOOPS',['../class_config_reader.html#adee445654c84d6f4ef5152c57e58e344a2990b16a0723f854fef5ca5c4d72a7b4',1,'ConfigReader']]]
+  ['hand_5fl_330',['HAND_L',['../class_joint.html#a4585063fdb4bca4f2898c27ee1bfabe8a1940d488049dab1ba8a5da8cf660b09a',1,'Joint']]],
+  ['hand_5fr_331',['HAND_R',['../class_joint.html#a4585063fdb4bca4f2898c27ee1bfabe8a7e93f4e002e69badd8dfa13fca6ba201',1,'Joint']]],
+  ['head_332',['HEAD',['../class_joint.html#a4585063fdb4bca4f2898c27ee1bfabe8acf8a84ac9b84ac6a691905ab3b5c1aef',1,'Joint']]],
+  ['hips_333',['HIPS',['../class_joint.html#a4585063fdb4bca4f2898c27ee1bfabe8ae3fe0c5c8d7076898770e12f47e87cc3',1,'Joint']]]
 ];

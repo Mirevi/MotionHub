@@ -1,4 +1,4 @@
 <map id="NetworkSender" name="NetworkSender">
-<area shape="rect" id="node1" title=" " alt="" coords="8,5,139,141"/>
-<area shape="rect" id="node2" href="$class_o_s_c_sender.html" title=" " alt="" coords="5,189,141,325"/>
+<area shape="rect" id="node1" title="Prototype class for implemetation &#45; holds virtual methods." alt="" coords="8,5,139,171"/>
+<area shape="rect" id="node2" href="$class_o_s_c_sender.html" title="Implements OSC Protocol." alt="" coords="5,219,141,355"/>
 </map>

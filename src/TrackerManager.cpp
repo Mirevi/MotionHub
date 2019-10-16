@@ -36,7 +36,7 @@ void TrackerManager::update()
 	while (m_tracking)
 	{
 
-		for (auto itTracker = poolTracker.begin(); itTracker != poolTracker.end(); itTracker++)
+		for (auto itTracker = m_poolTracker.begin(); itTracker != m_poolTracker.end(); itTracker++)
 		{
 
 			if (itTracker->second->m_tracking)
@@ -75,7 +75,7 @@ void TrackerManager::createTracker(TypeTracker type)
 
 		case AKT:
 
-			for (auto itPoolTracker = poolTracker.begin(); itPoolTracker != poolTracker.end(); itPoolTracker++)
+			for (auto itPoolTracker = m_poolTracker.begin(); itPoolTracker != m_poolTracker.end(); itPoolTracker++)
 			{
 
 				if (itPoolTracker->first.first == AKT)
@@ -86,7 +86,7 @@ void TrackerManager::createTracker(TypeTracker type)
 				}
 			}
 
-			poolTracker.insert({ { AKT, idCam }, new AKTracker(K4A_DEVICE_CONFIG_INIT_DISABLE_ALL, idCam) });
+			m_poolTracker.insert({ { AKT, idCam }, new AKTracker(K4A_DEVICE_CONFIG_INIT_DISABLE_ALL, idCam) });
 
 			Console::log("TrackerManager::createTracker(): Created AKTracker with cam id = " + std::to_string(idCam) + ".");
 

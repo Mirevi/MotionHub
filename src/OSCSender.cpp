@@ -29,8 +29,8 @@ void OSCSender::sendSkeleton(Skeleton* skeleton, const char* uri)
 	for (int jointsIndex = 0; jointsIndex < skeleton->m_joints.size(); jointsIndex++)
 	{
 
-		currJointPosition = skeleton->m_joints[(Joint::jointNames)jointsIndex].getJointPosition();
-		currJointRotation = skeleton->m_joints[(Joint::jointNames)jointsIndex].getJointRotation();
+		currJointPosition = skeleton->m_joints[(Joint::JointNames)jointsIndex].getJointPosition();
+		currJointRotation = skeleton->m_joints[(Joint::JointNames)jointsIndex].getJointRotation();
 		
 		// Console::log("Send skeleton with id = " + std::to_string(skeleton->getSid()) + " joint = " + std::to_string((Joint::jointNames)jointsIndex) + " with position " + currJointPosition.toString() + ".");
 

@@ -63,13 +63,16 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
-<a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="#pro-attribs">Protected Attributes</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="class_network_sender-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">NetworkSender Class Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>Prototype class for implemetation - holds virtual methods.  
+ <a href="class_network_sender.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="_network_sender_8h_source.html">NetworkSender.h</a>&gt;</code></p>
 <div class="dynheader">
@@ -77,8 +80,8 @@ Inheritance diagram for NetworkSender:</div>
 <div class="dyncontent">
 <div class="center"><img src="class_network_sender__inherit__graph.png" border="0" usemap="#_network_sender_inherit__map" alt="Inheritance graph"/></div>
 <map name="_network_sender_inherit__map" id="_network_sender_inherit__map">
-<area shape="rect" title=" " alt="" coords="8,5,139,141"/>
-<area shape="rect" href="class_o_s_c_sender.html" title=" " alt="" coords="5,189,141,325"/>
+<area shape="rect" title="Prototype class for implemetation &#45; holds virtual methods." alt="" coords="8,5,139,171"/>
+<area shape="rect" href="class_o_s_c_sender.html" title="Implements OSC Protocol." alt="" coords="5,219,141,355"/>
 </map>
 </div>
 <div class="dynheader">
@@ -86,7 +89,7 @@ Collaboration diagram for NetworkSender:</div>
 <div class="dyncontent">
 <div class="center"><img src="class_network_sender__coll__graph.png" border="0" usemap="#_network_sender_coll__map" alt="Collaboration graph"/></div>
 <map name="_network_sender_coll__map" id="_network_sender_coll__map">
-<area shape="rect" title=" " alt="" coords="5,5,136,141"/>
+<area shape="rect" title="Prototype class for implemetation &#45; holds virtual methods." alt="" coords="5,5,136,171"/>
 </map>
 </div>
 <table class="memberdecls">
@@ -96,13 +99,12 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a14bcf54d3c289d92c12c3e741619975f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3d63dee9fba180f66aa63433aac0ddc2"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_network_sender.html#a3d63dee9fba180f66aa63433aac0ddc2">NetworkSender</a> (std::string address, int port)</td></tr>
 <tr class="separator:a3d63dee9fba180f66aa63433aac0ddc2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afa9c05865a8f48f693962e99e2ed10a0"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_network_sender.html#afa9c05865a8f48f693962e99e2ed10a0">isActive</a> ()</td></tr>
+<tr class="separator:afa9c05865a8f48f693962e99e2ed10a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a16e35cc79e57de1d2130617da8ace3d0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_network_sender.html#a16e35cc79e57de1d2130617da8ace3d0">setActive</a> (bool active)</td></tr>
+<tr class="separator:a16e35cc79e57de1d2130617da8ace3d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a876b6f8f1b97391cbe9edfc014fe777c"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_network_sender.html#a876b6f8f1b97391cbe9edfc014fe777c">sendSkeleton</a> (<a class="el" href="class_skeleton.html">Skeleton</a> *skeleton, const char *uri)=0</td></tr>
 <tr class="separator:a876b6f8f1b97391cbe9edfc014fe777c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
-Public Attributes</h2></td></tr>
-<tr class="memitem:a0ded69e4cbcb81e2ef6bad6a383f03d6"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_network_sender.html#a0ded69e4cbcb81e2ef6bad6a383f03d6">m_active</a> = true</td></tr>
-<tr class="separator:a0ded69e4cbcb81e2ef6bad6a383f03d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
@@ -110,8 +112,16 @@ Protected Attributes</h2></td></tr>
 <tr class="separator:a2864a9461c86bdf9006aa1510d2d1fb2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a310a464039a7790bfe11a72b73816d63"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_network_sender.html#a310a464039a7790bfe11a72b73816d63">m_port</a></td></tr>
 <tr class="separator:a310a464039a7790bfe11a72b73816d63"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:a0ded69e4cbcb81e2ef6bad6a383f03d6"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_network_sender.html#a0ded69e4cbcb81e2ef6bad6a383f03d6">m_active</a> = true</td></tr>
+<tr class="separator:a0ded69e4cbcb81e2ef6bad6a383f03d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Prototype class for implemetation - holds virtual methods. </p>
+<dl class="section author"><dt>Author</dt><dd>Kester Evers and Eric Jansen </dd></dl>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a14bcf54d3c289d92c12c3e741619975f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a14bcf54d3c289d92c12c3e741619975f">&#9670;&nbsp;</a></span>NetworkSender() <span class="overload">[1/2]</span></h2>
 
@@ -158,6 +168,23 @@ Protected Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="afa9c05865a8f48f693962e99e2ed10a0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afa9c05865a8f48f693962e99e2ed10a0">&#9670;&nbsp;</a></span>isActive()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool NetworkSender::isActive </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a876b6f8f1b97391cbe9edfc014fe777c"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a876b6f8f1b97391cbe9edfc014fe777c">&#9670;&nbsp;</a></span>sendSkeleton()</h2>
 
@@ -196,17 +223,43 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="a16e35cc79e57de1d2130617da8ace3d0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a16e35cc79e57de1d2130617da8ace3d0">&#9670;&nbsp;</a></span>setActive()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void NetworkSender::setActive </td>
+          <td>(</td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>active</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <h2 class="groupheader">Member Data Documentation</h2>
 <a id="a0ded69e4cbcb81e2ef6bad6a383f03d6"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a0ded69e4cbcb81e2ef6bad6a383f03d6">&#9670;&nbsp;</a></span>m_active</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">bool NetworkSender::m_active = true</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 </div>

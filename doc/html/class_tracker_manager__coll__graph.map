@@ -1,4 +1,4 @@
 <map id="TrackerManager" name="TrackerManager">
-<area shape="rect" id="node1" title=" " alt="" coords="11,160,146,325"/>
-<area shape="rect" id="node2" href="$class_network_manager.html" title=" " alt="" coords="5,5,152,97"/>
+<area shape="rect" id="node1" title="Manager for all types of tracker." alt="" coords="11,160,146,325"/>
+<area shape="rect" id="node2" href="$class_network_manager.html" title="Manager for different Network Sender and skeleton sending." alt="" coords="5,5,152,97"/>
 </map>

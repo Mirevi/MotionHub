@@ -10,8 +10,13 @@
 #include "AKTracker.h"
 
 /*!
- * Manager for all types of tracker
- * while running, it collects all data from the tracker in the pool
+ * \class TrackerManager
+ *
+ * \brief Manager for all types of tracker
+ *
+ * \note while Tracking, it collects all data from the tracker pool
+ * 
+ * \author Kester Evers and Eric Jansen
  */
 class TrackerManager
 {
@@ -64,7 +69,7 @@ private:
 	/*!
 	 * pool of all created tracker 
 	 */
-	std::map<std::pair<TypeTracker, int>, Tracker*> poolTracker;
+	std::map<std::pair<TypeTracker, int>, Tracker*> m_poolTracker;
 
 	/*!
 	 * pointer to the Network Manager for passing the skeleton data for transmission

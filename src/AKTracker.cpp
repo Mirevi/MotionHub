@@ -18,20 +18,20 @@ AKTracker::AKTracker(k4a_device_configuration_t configDevice, int idCam)
 void AKTracker::init(k4a_device_configuration_t configDevice)
 {
 
-	cam = NULL;
-	VERIFY_K4A_FUNCTION(k4a_device_open(m_idCam, &cam), "[cam id = " + std::to_string(m_idCam) + "] + Open K4A Device failed!");
+	m_cam = NULL;
+	VERIFY_K4A_FUNCTION(k4a_device_open(m_idCam, &m_cam), "[cam id = " + std::to_string(m_idCam) + "] + Open K4A Device failed!");
 
 	// Start camera. Make sure depth camera is enabled.
-	configCam = configDevice;
-	configCam.depth_mode = K4A_DEPTH_MODE_WFOV_2X2BINNED;
-	configCam.color_resolution = K4A_COLOR_RESOLUTION_OFF;
-	VERIFY_K4A_FUNCTION(k4a_device_start_cameras(cam, &configCam), "[cam id = " + std::to_string(m_idCam) + "] + Start K4A cameras failed!");
+	m_configCam = configDevice;
+	m_configCam.depth_mode = K4A_DEPTH_MODE_NFOV_UNBINNED;
+	m_configCam.color_resolution = K4A_COLOR_RESOLUTION_OFF;
+	VERIFY_K4A_FUNCTION(k4a_device_start_cameras(m_cam, &m_configCam), "[cam id = " + std::to_string(m_idCam) + "] + Start K4A cameras failed!");
 
-	VERIFY_K4A_FUNCTION(k4a_device_get_calibration(cam, configCam.depth_mode, configCam.color_resolution, &calibrationCam), "[cam id = " + std::to_string(m_idCam) + "] + Get depth camera calibration failed!");
+	VERIFY_K4A_FUNCTION(k4a_device_get_calibration(m_cam, m_configCam.depth_mode, m_configCam.color_resolution, &m_calibrationCam), "[cam id = " + std::to_string(m_idCam) + "] + Get depth camera calibration failed!");
 
-	tracker = NULL;
-	configTracker = K4ABT_TRACKER_CONFIG_DEFAULT;
-	VERIFY_K4A_FUNCTION(k4abt_tracker_create(&calibrationCam, configTracker, &tracker), "[cam id = " + std::to_string(m_idCam) + "] + Body tracker initialization failed!");
+	m_tracker = NULL;
+	m_configTracker = K4ABT_TRACKER_CONFIG_DEFAULT;
+	VERIFY_K4A_FUNCTION(k4abt_tracker_create(&m_calibrationCam, m_configTracker, &m_tracker), "[cam id = " + std::to_string(m_idCam) + "] + Body tracker initialization failed!");
 
 }
 
@@ -47,10 +47,10 @@ void AKTracker::stop()
 
 	Tracker::stop();
 
-	k4abt_tracker_shutdown(tracker);
-	k4abt_tracker_destroy(tracker);
-	k4a_device_stop_cameras(cam);
-	k4a_device_close(cam);
+	k4abt_tracker_shutdown(m_tracker);
+	k4abt_tracker_destroy(m_tracker);
+	k4a_device_stop_cameras(m_cam);
+	k4a_device_close(m_cam);
 
 	Console::log("[cam id = " + std::to_string(m_idCam) + "] AKTracker::stop(): Stopped body tracking!");
 
@@ -60,12 +60,12 @@ void AKTracker::track()
 {
 
 	k4a_capture_t sensor_capture;
-	k4a_wait_result_t get_capture_result = k4a_device_get_capture(cam, &sensor_capture, K4A_WAIT_INFINITE);
+	k4a_wait_result_t get_capture_result = k4a_device_get_capture(m_cam, &sensor_capture, K4A_WAIT_INFINITE);
 
 	if (get_capture_result == K4A_WAIT_RESULT_SUCCEEDED)
 	{
 
-		k4a_wait_result_t queue_capture_result = k4abt_tracker_enqueue_capture(tracker, sensor_capture, K4A_WAIT_INFINITE);
+		k4a_wait_result_t queue_capture_result = k4abt_tracker_enqueue_capture(m_tracker, sensor_capture, K4A_WAIT_INFINITE);
 		k4a_capture_release(sensor_capture); // Remember to release the sensor capture once you finish using it
 		if (queue_capture_result == K4A_WAIT_RESULT_TIMEOUT)
 		{
@@ -80,7 +80,7 @@ void AKTracker::track()
 		}
 
 		k4abt_frame_t body_frame = NULL;
-		k4a_wait_result_t pop_frame_result = k4abt_tracker_pop_result(tracker, &body_frame, K4A_WAIT_INFINITE);
+		k4a_wait_result_t pop_frame_result = k4abt_tracker_pop_result(m_tracker, &body_frame, K4A_WAIT_INFINITE);
 		if (pop_frame_result == K4A_WAIT_RESULT_SUCCEEDED)
 		{
 			// Successfully popped the body tracking result. Start your processing

@@ -6,6 +6,13 @@
 #include "Skeleton.h"
 #include <list>
 
+/*!
+ * \class Tracker
+ *
+ * \brief Prototype class for implemetation - holds virtual methods
+ *
+ * \author Kester Evers and Eric Jansen
+ */
 class Tracker
 {
 
