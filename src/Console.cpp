@@ -19,7 +19,9 @@ void Console::log(std::string message)
 		time[strlen(time) - 1] = '\0';
 	}
 
-	Console::writeToLogfile("[INFO]: " + message);
+	std::string str(time);
+
+	Console::writeToLogfile(str + " [INFO]: " + message);
 
 	SetConsoleTextAttribute(handle_console, 8);
 	std::cout << time;
@@ -47,7 +49,9 @@ void Console::logWarning(std::string message)
 		time[strlen(time) - 1] = '\0';
 	}
 
-	Console::writeToLogfile("[WARNING]: " + message);
+	std::string str(time);
+
+	Console::writeToLogfile(str + " [WARNING]: " + message);
 
 	SetConsoleTextAttribute(handle_console, 8);
 	std::cout << time;
@@ -76,7 +80,9 @@ void Console::logError(std::string message)
 		time[strlen(time) - 1] = '\0';
 	}
 
-	Console::writeToLogfile("[ERROR]: " + message);
+	std::string str(time);
+
+	Console::writeToLogfile(str + " [ERROR]: " + message);
 
 	SetConsoleTextAttribute(handle_console, 8);
 	std::cout << time;

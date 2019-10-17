@@ -3,13 +3,16 @@
 Skeleton::Skeleton()
 {
 
-	m_state = NONE;
+
 
 }
 
 Skeleton::Skeleton(int sid)
 {
 	
+	m_state = StateSkeleton::NONE;
+	m_posture = StatePosture::UNKNOWN;
+
 	m_sid = sid;
 
 }
@@ -26,5 +29,19 @@ int Skeleton::getSid()
 {
 
 	return m_sid;
+
+}
+
+Skeleton::StatePosture Skeleton::getPosture()
+{
+
+	return m_posture;
+
+}
+
+void Skeleton::setPosture(Skeleton::StatePosture posture)
+{
+
+	m_posture = posture;
 
 }

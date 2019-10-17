@@ -3,6 +3,7 @@
 #include <list>
 #include "Tracker.h"
 #include "NetworkManager.h"
+#include "GestureManager.h"
 
 #include <map>
 #include <vector>
@@ -31,7 +32,7 @@ public:
 	 * constructor with Network manager passing 
 	 * \param networkmanager pointer to the Network manager
 	 */
-	TrackerManager(NetworkManager* networkmanager);
+	TrackerManager(NetworkManager* networkManager, GestureManager* gestureManager);
 
 	/*!
 	 * starts the tracking loop
@@ -75,6 +76,7 @@ private:
 	 * pointer to the Network Manager for passing the skeleton data for transmission
 	 */
 	NetworkManager* m_networkManager;
+	GestureManager* m_gestureManager;
 
 	/*!
 	 * calls all track() methods of the active tracker in the pool

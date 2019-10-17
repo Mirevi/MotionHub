@@ -45,8 +45,22 @@ public:
 		INACTIVE
 	};
 
+	enum StatePosture
+	{
+		UNKNOWN,
+		STAND,
+		SIT,
+		CROUCH,
+		JUMP,
+		LIE
+	};
+
+	StatePosture getPosture();
+	void setPosture(StatePosture posture);
+
 private:
 	int m_sid;
 	StateSkeleton m_state;
+	StatePosture m_posture;
 
 };

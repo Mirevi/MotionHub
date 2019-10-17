@@ -7,10 +7,11 @@ TrackerManager::TrackerManager()
 
 }
 
-TrackerManager::TrackerManager(NetworkManager* networkmanager)
+TrackerManager::TrackerManager(NetworkManager* networkManager, GestureManager* gestureManager)
 {
 
-	m_networkManager = networkmanager;
+	m_networkManager = networkManager;
+	m_gestureManager = gestureManager;
 
 }
 
@@ -43,6 +44,7 @@ void TrackerManager::update()
 			{
 
 				itTracker->second->track();
+				m_gestureManager->updateAllSkeletonPostures(&(itTracker->second->poolSkeletons));
 				m_networkManager->sendSkeletonPool(&(itTracker->second->poolSkeletons));
 
 			}							
