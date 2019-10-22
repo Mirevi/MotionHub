@@ -1,7 +1,7 @@
 # top level cmake file
 
 cmake_minimum_required (VERSION 2.6 FATAL_ERROR)
-project (MotionHub)
+project (MireviMotionHub)
 
 include_directories("${CMAKE_SOURCE_DIR}/src")
 
@@ -28,6 +28,11 @@ FIND_PACKAGE( AzureKinectSensorSDK REQUIRED )
 FIND_PACKAGE( OSCPack REQUIRED )
 FIND_PACKAGE( Cudnn REQUIRED )
 # Add subdir with additional CMakeLists.txt and files
-add_subdirectory("${CMAKE_SOURCE_DIR}/src") # CMake look for further CMakeLists.txt in that directory
+add_subdirectory("${CMAKE_SOURCE_DIR}/src/MireviMotionHub") # CMake look for further CMakeLists.txt in that directory
+add_subdirectory("${CMAKE_SOURCE_DIR}/src/TrackerManagement")
+add_subdirectory("${CMAKE_SOURCE_DIR}/src/NetworkManagement")
+# add_subdirectory("${CMAKE_SOURCE_DIR}/src/UIManagement")
+# add_subdirectory("${CMAKE_SOURCE_DIR}/src/3DRenderManagement")
+add_subdirectory("${CMAKE_SOURCE_DIR}/src/GestureManagement")
+add_subdirectory("${CMAKE_SOURCE_DIR}/src/MotionHubUtil")
 
-set_target_properties(MotionHub PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
