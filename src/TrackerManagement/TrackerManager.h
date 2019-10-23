@@ -45,11 +45,6 @@ public:
 	 */
 	void createTracker(TypeTracker type);
 
-	/*!
-	* calls all track() methods of the active tracker in the pool
-	*/
-	void update();
-
 	std::map<std::pair<TypeTracker, int>, Tracker*>* getPoolTracker();
 
 private:

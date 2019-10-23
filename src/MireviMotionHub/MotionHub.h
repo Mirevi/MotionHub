@@ -8,6 +8,8 @@
 #include "TrackerManagement/TrackerManager.h"
 #include "NetworkManagement/NetworkManager.h"
 #include "GestureManagement/GestureManager.h"
+#include "UIManagement/UIManager.h"
+#include "UIManagement/InputManager.h"
 
 #include <string>
 
@@ -22,24 +24,26 @@ class MotionHub
 {
 
 public:
-	MotionHub();
+	MotionHub(int argc, char** argv);
 	TrackerManager* getTrackerManager();
 	NetworkManager* getNetworkmanager();
 	GestureManager* getGestureManager();
+	UIManager* getUiManager();
+	//InputManager* getInputManager();
+	bool isTracking();
 
-	void startTracking();
-	void stopTracking();
+	void start();
+	void stop();
 
 private:
-	TrackerManager* m_trackerManager;
 	ConfigReader* m_configReader;
-	NetworkManager* m_networkManager;
+	TrackerManager* m_trackerManager;
 	GestureManager* m_gestureManager;
-
-	std::map<std::pair<TrackerManager::TypeTracker, int>, Tracker*>* m_refPoolTracker;
+	NetworkManager* m_networkManager;
+	UIManager* m_uiManager;
+	//InputManager* m_inputManager;
 
 	bool m_isTracking;
-
-	void track();
+	void update();
 
 };

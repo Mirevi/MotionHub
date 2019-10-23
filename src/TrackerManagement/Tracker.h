@@ -1,10 +1,10 @@
 #pragma once
 
 #include <iostream>
-#include <future>
+#include <thread>
 
 #include "MotionHubUtil/Skeleton.h"
-#include <list>
+#include "MotionHubUtil/Console.h"
 
 /*!
  * \class Tracker
@@ -20,8 +20,8 @@ public:
 	Tracker();
 	bool m_tracking = false;
 
-	void start();
-	void stop();
+	virtual void start();
+	virtual void stop();
 	//captures one frame of body tracking data and saves all data in the skeleton pool
 	virtual void track();
 
@@ -36,5 +36,7 @@ public:
 
 private:
 	StateTracker state;
+
+	std::thread* trackThread;
 
 };

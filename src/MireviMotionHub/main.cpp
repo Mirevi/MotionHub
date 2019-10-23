@@ -3,13 +3,19 @@
 int main(int argc, char** argv)
 {
 
-	MotionHub* motionHub = new MotionHub();
+	MotionHub* motionHub = new MotionHub(argc, argv);
 
-	// create tracker
-	motionHub->getTrackerManager()->createTracker(TrackerManager::AKT);
+	// main loop
+	while (motionHub->getUiManager()->getMainWindow()->isVisible())
+	{
 
-	// start tracking
-	motionHub->startTracking();
+		if (!motionHub->isTracking() /*&& motionHub->getInputManager()->isButtonPressed(MainWindow::startTracking)*/)
+		{
+
+			motionHub->start();
+
+		}
+	}
 
 	return 0;
 

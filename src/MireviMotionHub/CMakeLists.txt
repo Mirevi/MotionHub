@@ -15,6 +15,9 @@ link_directories(${CMAKE_BINARY_DIR}/lib "${CMAKE_BINARY_DIR}/lib" ${Cudnn_LIBRA
 #OSCpack
 include_directories(${CMAKE_BINARY_DIR}/src ${OSCp_INCLUDE_DIR})
 link_directories(${CMAKE_BINARY_DIR}/lib "${CMAKE_BINARY_DIR}/lib" ${OSCp_LIBRARIES_DIR})
+#Qt
+include_directories(${CMAKE_BINARY_DIR}/src ${Qt5ForMireviMotionHub_INCLUDE_DIR})
+link_directories(${CMAKE_BINARY_DIR}/lib "${CMAKE_BINARY_DIR}/lib" ${Qt5ForMireviMotionHub_LIBRARIES_DIR})
 
 #include internal source files
 include_directories(${CMAKE_BINARY_DIR}/src/MotionHubUtil)
@@ -41,13 +44,15 @@ target_link_libraries(MireviMotionHub
 	debug cudnn optimized cudnn
 	debug oscpack optimized oscpack
 	debug Ws2_32 optimized Ws2_32
-	debug winmm optimized winmm	
+	debug winmm optimized winmm		
+	debug Qt5Core${CMAKE_DEBUG_POSTFIX} optimized Qt5Core
+	debug Qt5Widgets${CMAKE_DEBUG_POSTFIX} optimized Qt5Widgets
 	
 	debug MotionHubUtil${CMAKE_DEBUG_POSTFIX} optimized MotionHubUtil
 	debug NetworkManagement${CMAKE_DEBUG_POSTFIX} optimized NetworkManagement
 	debug TrackerManagement${CMAKE_DEBUG_POSTFIX} optimized TrackerManagement
 	debug GestureManagement${CMAKE_DEBUG_POSTFIX} optimized GestureManagement
-	# debug UIManagement${CMAKE_DEBUG_POSTFIX} optimized UIManagement
+	debug UIManagement${CMAKE_DEBUG_POSTFIX} optimized UIManagement
 	# debug 3DRenderManagement${CMAKE_DEBUG_POSTFIX} optimized 3DRenderManagement	
 )
 

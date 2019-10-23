@@ -10,6 +10,7 @@
 #include "MotionHubUtil/Console.h"
 
 #include "Tracker.h"
+#include <list>
 
 #define VERIFY_K4A_FUNCTION(result, error)																\
     if(result != K4A_RESULT_SUCCEEDED)																	\
@@ -52,6 +53,8 @@ public:
 	*/
 	void stop();
 
+	void shutdown();
+
 private:
 
 	/*!
@@ -88,11 +91,6 @@ private:
 	 * is updated by updateSkeletons(...) method
 	 */
 	int m_numBodies;
-	/*!
-	 * id of the latest skeleton
-	 * if this is 0, no skeletons have been tracked 
-	 */
-	int m_idCurrMaxSkeletons = 0;
 	
 	/*!
 	 * initializes the camera, must only be called once in the beginning

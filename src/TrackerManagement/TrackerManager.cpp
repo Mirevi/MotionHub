@@ -3,36 +3,8 @@
 TrackerManager::TrackerManager()
 {
 	
+	createTracker(TrackerManager::AKT);
 
-
-}
-
-void TrackerManager::update()
-{
-
-	for (auto itTracker = m_poolTracker.begin(); itTracker != m_poolTracker.end(); itTracker++)
-	{
-
-		if (itTracker->second->m_tracking)
-		{
-
-			itTracker->second->track();
-
-
-		}							
-		else
-			itTracker->second->start();			
-	}
-
-	/*
-	// stop all tracker
-	for (auto iteratorTracker = poolTracker.begin(); iteratorTracker != poolTracker.end(); iteratorTracker++)
-	{
-
-		iteratorTracker->second->stop();
-
-	}
-	*/
 }
 
 void TrackerManager::createTracker(TypeTracker type)

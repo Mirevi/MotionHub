@@ -1,31 +1,26 @@
-// #pragma once
+#pragma once
 
+#include <QtWidgets/QMainWindow>
+#include <QtWidgets/QApplication>
 
-// #include "Skeleton.h"
+#include "ConfigDllExportUIManagement.h"
 
-// #include "OSCSender.h"
+#include "MainWindow.h"
+#include "InputManager.h"
 
-// #include <string>
-// #include <iostream>
-// #include <list>
+#include <thread>
 
-// /*!
- // * \class NetworkManager
- // *
- // * \brief Manager for different Network Sender and skeleton sending
- // *
- // * \note Supported Protocols: OSC
- // * 
- // * \author Kester Evers and Eric Jansen
- // */
-// class NetworkManager
-// {
+class UIManagement_DLL_import_export UIManager
+{
 
-// public:
-	// NetworkManager();
-	// void sendSkeletonPool(std::map<int, Skeleton>* skeletonPool);
+public:
+	UIManager(int argc, char** argv/*, InputManager* inputManager*/);
+	MainWindow* getMainWindow();
 
-// private:
-	// std::list<NetworkSender*> poolSender;
-	
-// };
+private:
+	void init(int argc, char** argv/*, InputManager* inputManager*/);
+	QApplication* m_app;
+	MainWindow* m_mainWindow;
+	std::thread* m_threadApplication; 
+
+};

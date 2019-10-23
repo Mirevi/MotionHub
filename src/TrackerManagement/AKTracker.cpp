@@ -47,6 +47,11 @@ void AKTracker::stop()
 
 	Tracker::stop();
 
+}
+
+void AKTracker::shutdown()
+{
+
 	k4abt_tracker_shutdown(m_tracker);
 	k4abt_tracker_destroy(m_tracker);
 	k4a_device_stop_cameras(m_cam);
@@ -123,11 +128,15 @@ void AKTracker::track()
 		Console::logError("[cam id = " + std::to_string(m_idCam) + "] Get depth capture returned error: " + std::to_string(get_capture_result));
 		return;
 	}
+
+	stop();
+
 }
 
 //loops through all k4a skeletons and gives all active skeletons into parsing method
 void AKTracker::updateSkeletons(k4abt_frame_t* body_frame)
 {
+
 	m_numBodies = k4abt_frame_get_num_bodies(*body_frame);
 
 	for (int indexSkeleton = 0; indexSkeleton < m_numBodies; indexSkeleton++)
@@ -137,26 +146,35 @@ void AKTracker::updateSkeletons(k4abt_frame_t* body_frame)
 		k4abt_frame_get_body_skeleton(*body_frame, indexSkeleton, &skeleton);
 		uint32_t id = k4abt_frame_get_body_id(*body_frame, indexSkeleton);
 
-		// create new skeleton
-		if (id > m_idCurrMaxSkeletons)
+		bool createNewSkeleton = true;
+
+		// update existing skeleton
+		for (auto itPoolSkeletons = poolSkeletons.begin(); itPoolSkeletons != poolSkeletons.end(); itPoolSkeletons++)
 		{
 
-			m_idCurrMaxSkeletons = id;
+			if (id = itPoolSkeletons->first)
+			{
+
+				poolSkeletons[id]->m_joints = parseSkeleton(&skeleton, id)->m_joints;
+
+				//Console::log("[cam id = " + std::to_string(m_idCam) + "] AkTracker::updateSkeleton(): Skeleton with id = " + std::to_string(id) + " pelvis position = " + poolSkeletons[id].m_joints[Joint::JOINT_PELVIS].getJointPosition().toString() + ".");
+
+				//Console::log("[cam id = " + std::to_string(m_idCam) + "] AkTracker::updateSkeleton(): Updated skeleton with id = " + std::to_string(id) + ".");
+
+				createNewSkeleton = false;
+
+				break;
+
+			}
+		}
+
+		// create new skeleton
+		if (createNewSkeleton)
+		{
 
 			poolSkeletons.insert(std::pair<int, Skeleton*>(id, parseSkeleton(&skeleton, id)));
 
 			Console::log("[cam id = " + std::to_string(m_idCam) + "] AkTracker::updateSkeleton(): Created new skeleton with id = " + std::to_string(id) + ".");
-
-		}
-		// update skeleton
-		else if(poolSkeletons[id] != nullptr)
-		{
-
-			poolSkeletons[id]->m_joints = parseSkeleton(&skeleton, id)->m_joints;
-
-			//Console::log("[cam id = " + std::to_string(m_idCam) + "] AkTracker::updateSkeleton(): Skeleton with id = " + std::to_string(id) + " pelvis position = " + poolSkeletons[id].m_joints[Joint::JOINT_PELVIS].getJointPosition().toString() + ".");
-
-			//Console::log("[cam id = " + std::to_string(m_idCam) + "] AkTracker::updateSkeleton(): Updated skeleton with id = " + std::to_string(id) + ".");
 
 		}
 	}

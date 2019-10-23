@@ -12,6 +12,11 @@ void Tracker::start()
 
 	m_tracking = true;
 
+	trackThread = new std::thread(&Tracker::track, this);
+	trackThread->detach();
+
+	//Console::log("Started tracking thread.");
+
 }
 
 void Tracker::stop()
@@ -24,6 +29,6 @@ void Tracker::stop()
 void Tracker::track()
 {
 
-
+	stop();
 
 }

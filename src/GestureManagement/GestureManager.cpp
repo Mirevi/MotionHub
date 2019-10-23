@@ -58,7 +58,7 @@ void GestureManager::updateAllSkeletonPostures(std::map<int, Skeleton*>* poolSke
 			{
 				itPoolSkeletons->second->setPosture(currPosture);
 				//Console::log("GestureManager::updateAllSkeletonPostures(): Skeleton with id = " + std::to_string(itPoolSkeletons->second->getSid()) + " | previous posture = " + std::to_string(previousPosture) + " | current posture = " + std::to_string(currPosture) + ".");
-				Console::log("GestureManager::updateAllSkeletonPostures(): Updated skeleton with id = " + std::to_string(itPoolSkeletons->second->getSid()) + " posture: " + currGestureName + ".");
+				//Console::log("GestureManager::updateAllSkeletonPostures(): Updated skeleton with id = " + std::to_string(itPoolSkeletons->second->getSid()) + " posture: " + currGestureName + ".");
 			}
 		}
 	}

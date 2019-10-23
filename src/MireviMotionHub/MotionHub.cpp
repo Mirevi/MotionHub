@@ -1,6 +1,6 @@
 #include "MotionHub.h"
 
-MotionHub::MotionHub()
+MotionHub::MotionHub(int argc, char** argv)
 {
 
 	m_isTracking = false;
@@ -9,12 +9,14 @@ MotionHub::MotionHub()
 
 	m_configReader = new ConfigReader();
 	m_configReader->readConfigFile(CONFIG_PATH);
+	
+	//m_inputManager = new InputManager();
+
+	m_uiManager = new UIManager(argc, argv/*, m_inputManager*/);
 
 	m_trackerManager = new TrackerManager();
 	m_gestureManager = new GestureManager();
 	m_networkManager = new NetworkManager();
-
-	m_refPoolTracker = m_trackerManager->getPoolTracker();
 
 }
 
@@ -39,36 +41,63 @@ GestureManager* MotionHub::getGestureManager()
 
 }
 
-void MotionHub::track()
+
+// motion hub loop
+void MotionHub::update()
 {
-	//global tracking loop
 
 	while (m_isTracking)
-	{
-		
-		m_trackerManager->update();
+	{	
 
-		for (auto itTracker = m_refPoolTracker->begin(); itTracker != m_refPoolTracker->end(); itTracker++)
+		// tracker loop
+		for (auto itTracker = m_trackerManager->getPoolTracker()->begin(); itTracker != m_trackerManager->getPoolTracker()->end(); itTracker++)
 		{
 			
-			m_gestureManager->updateAllSkeletonPostures(&(itTracker->second->poolSkeletons));
-			m_networkManager->sendSkeletonPool(&(itTracker->second->poolSkeletons));
+			if (!itTracker->second->m_tracking)
+			{
 
+				m_gestureManager->updateAllSkeletonPostures(&(itTracker->second->poolSkeletons));
+				m_networkManager->sendSkeletonPool(&(itTracker->second->poolSkeletons));
+				itTracker->second->start();
+
+			}
 		}
 	}
 }
 
-void MotionHub::startTracking()
+void MotionHub::start()
 {
 
 	m_isTracking = true;
-	track();
+
+	update();
 
 }
 
-void MotionHub::stopTracking()
+void MotionHub::stop()
 {
 
 	m_isTracking = false;
+
+}
+
+UIManager* MotionHub::getUiManager()
+{
+
+	return m_uiManager;
+
+}
+
+//InputManager* MotionHub::getInputManager()
+//{
+//
+//	return m_inputManager;
+//
+//}
+
+bool MotionHub::isTracking()
+{
+
+	return m_isTracking;
 
 }

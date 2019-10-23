@@ -1,31 +1,28 @@
-// #include "NetworkManager.h"
-// #include "defines.h"
+#include "UIManager.h"
 
-// NetworkManager::NetworkManager()
-// {
+UIManager::UIManager(int argc, char** argv/*, InputManager* inputManager*/)
+{
+	   
+	m_threadApplication = new std::thread(&UIManager::init, this, argc, argv/*, inputManager*/);
+	m_threadApplication->detach();
 
-	// poolSender.push_back(new OSCSender(BROADCAST, DEFAULT_PORT));
+}
 
-// }
+void UIManager::init(int argc, char** argv/*, InputManager* inputManager*/)
+{
 
-// void NetworkManager::sendSkeletonPool(std::map<int, Skeleton>* skeletonPool)
-// {
-	// for (auto itSkeletonPool = skeletonPool->begin(); itSkeletonPool != skeletonPool->end(); itSkeletonPool++)
-	// {
-		// try
-		// {
-			// for (auto itSenderPool = poolSender.begin(); itSenderPool != poolSender.end(); itSenderPool++)
-			// {
+	m_app = new QApplication(argc, argv);
 
-				// if ((*itSenderPool)->isActive())
-				// {
-					// (*itSenderPool)->sendSkeleton(&(itSkeletonPool->second), DEFAULT_URI);
-				// }
-			// }
-		// }
-		// catch (const std::exception&)
-		// {
-			// Console::logError("NetworkManager::sendSkeleton(): Skeleton could not be send!");
-		// }
-	// }
-// }
+	m_mainWindow = new MainWindow(/*inputManager*/);
+	m_mainWindow->show();
+
+	m_app->exec();
+
+}
+
+MainWindow* UIManager::getMainWindow()
+{
+
+	return m_mainWindow;
+
+}
