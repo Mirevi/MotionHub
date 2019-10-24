@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>CreateTrackerWindow</class>
+ <widget class="QDialog" name="CreateTrackerWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>359</width>
+    <height>117</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Create new Tracker</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_2">
+   <item>
+    <layout class="QVBoxLayout" name="layout">
+     <item>
+      <widget class="QFrame" name="frame_info">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>1</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>20</height>
+        </size>
+       </property>
+       <property name="autoFillBackground">
+        <bool>true</bool>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::Box</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Plain</enum>
+       </property>
+       <widget class="QLabel" name="label_info">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>0</y>
+          <width>381</width>
+          <height>21</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Create new Tracker</string>
+        </property>
+       </widget>
+      </widget>
+     </item>
+     <item>
+      <widget class="QWidget" name="widget_body" native="true">
+       <property name="autoFillBackground">
+        <bool>true</bool>
+       </property>
+       <widget class="QComboBox" name="dropdown_tracker">
+        <property name="geometry">
+         <rect>
+          <x>50</x>
+          <y>10</y>
+          <width>120</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>120</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="currentText">
+         <string>Azure Kinect</string>
+        </property>
+        <item>
+         <property name="text">
+          <string>Azure Kinect</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>XSense</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>OptiTrack</string>
+         </property>
+        </item>
+       </widget>
+       <widget class="QPushButton" name="btn_create">
+        <property name="geometry">
+         <rect>
+          <x>200</x>
+          <y>40</y>
+          <width>60</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Create</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="btn_cancel">
+        <property name="geometry">
+         <rect>
+          <x>270</x>
+          <y>40</y>
+          <width>60</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Cancel</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_typeInfo">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>10</y>
+          <width>31</width>
+          <height>21</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Type:</string>
+        </property>
+       </widget>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>dropdown_tracker</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>CreateTrackerWindow</receiver>
+   <slot>switchTrackerType(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>90</x>
+     <y>55</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>167</x>
+     <y>-13</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btn_cancel</sender>
+   <signal>pressed()</signal>
+   <receiver>CreateTrackerWindow</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>360</x>
+     <y>139</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>306</x>
+     <y>-11</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btn_create</sender>
+   <signal>pressed()</signal>
+   <receiver>CreateTrackerWindow</receiver>
+   <slot>createTracker()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>317</x>
+     <y>145</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>253</x>
+     <y>-2</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>switchTrackerType(int)</slot>
+  <slot>createTracker()</slot>
+ </slots>
+</ui>

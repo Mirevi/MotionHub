@@ -13,6 +13,8 @@
 
 #include "defines.h"
 
+#include <mutex>
+
 /*!
  * \class Console
  *

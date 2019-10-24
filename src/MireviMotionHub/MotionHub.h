@@ -9,7 +9,7 @@
 #include "NetworkManagement/NetworkManager.h"
 #include "GestureManagement/GestureManager.h"
 #include "UIManagement/UIManager.h"
-#include "UIManagement/InputManager.h"
+#include "MotionHubUtil/InputManager.h"
 
 #include <string>
 
@@ -29,7 +29,7 @@ public:
 	NetworkManager* getNetworkmanager();
 	GestureManager* getGestureManager();
 	UIManager* getUiManager();
-	//InputManager* getInputManager();
+	InputManager* getInputManager();
 	bool isTracking();
 
 	void start();
@@ -41,9 +41,15 @@ private:
 	GestureManager* m_gestureManager;
 	NetworkManager* m_networkManager;
 	UIManager* m_uiManager;
-	//InputManager* m_inputManager;
+	InputManager* m_inputManager;
 
 	bool m_isTracking;
 	void update();
+	int m_argc;
+	char** m_argv;
+
+	void inputLoop();
+	std::thread* m_threadInputLoop;
+	std::thread* m_threadTrackingLoop;
 
 };

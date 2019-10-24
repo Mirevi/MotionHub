@@ -6,7 +6,8 @@
 #include "ConfigDllExportUIManagement.h"
 
 #include "MainWindow.h"
-#include "InputManager.h"
+#include "CreateTrackerWindow.h"
+#include "MotionHubUtil/InputManager.h"
 
 #include <thread>
 
@@ -14,13 +15,13 @@ class UIManagement_DLL_import_export UIManager
 {
 
 public:
-	UIManager(int argc, char** argv/*, InputManager* inputManager*/);
-	MainWindow* getMainWindow();
+	UIManager(int argc, char** argv, InputManager* inputManager);
 
 private:
-	void init(int argc, char** argv/*, InputManager* inputManager*/);
 	QApplication* m_app;
 	MainWindow* m_mainWindow;
-	std::thread* m_threadApplication; 
+	CreateTrackerWindow* m_createTrackerWindow;
+	InputManager* m_refInputManager;
+
 
 };

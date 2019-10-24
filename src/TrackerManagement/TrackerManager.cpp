@@ -3,7 +3,7 @@
 TrackerManager::TrackerManager()
 {
 	
-	createTracker(TrackerManager::AKT);
+
 
 }
 

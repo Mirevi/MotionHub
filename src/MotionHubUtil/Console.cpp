@@ -7,6 +7,8 @@
 void Console::log(std::string message)
 {
 
+	std::mutex mutex;
+
 	HANDLE  handle_console;
 	handle_console = GetStdHandle(STD_OUTPUT_HANDLE);
 
@@ -23,6 +25,8 @@ void Console::log(std::string message)
 
 	Console::writeToLogfile(str + " [INFO]: " + message);
 
+	mutex.lock();
+
 	SetConsoleTextAttribute(handle_console, 8);
 	std::cout << time;
 	SetConsoleTextAttribute(handle_console, 2);
@@ -30,12 +34,16 @@ void Console::log(std::string message)
 	SetConsoleTextAttribute(handle_console, 15);
 	std::cout << message << std::endl;
 
+	mutex.unlock();
+
 	SetConsoleTextAttribute(handle_console, 15);
 }
 
 //outputs a string in console as warning
 void Console::logWarning(std::string message)
 {
+
+	std::mutex mutex;
 
 	HANDLE  handle_console;
 	handle_console = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -53,12 +61,16 @@ void Console::logWarning(std::string message)
 
 	Console::writeToLogfile(str + " [WARNING]: " + message);
 
+	mutex.lock();
+
 	SetConsoleTextAttribute(handle_console, 8);
 	std::cout << time;
 	SetConsoleTextAttribute(handle_console, 6);
 	std::cout << " [WARNING]: ";
 	SetConsoleTextAttribute(handle_console, 15);
 	std::cout << message << std::endl;
+
+	mutex.unlock();
 
 	SetConsoleTextAttribute(handle_console, 15);
 
@@ -67,6 +79,8 @@ void Console::logWarning(std::string message)
 //outputs a string in console as error
 void Console::logError(std::string message)
 {
+
+	std::mutex mutex;
 
 	HANDLE  handle_console;
 	handle_console = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -84,12 +98,16 @@ void Console::logError(std::string message)
 
 	Console::writeToLogfile(str + " [ERROR]: " + message);
 
+	mutex.lock();
+
 	SetConsoleTextAttribute(handle_console, 8);
 	std::cout << time;
 	SetConsoleTextAttribute(handle_console, 4);
 	std::cout << " [ERROR]: ";
 	SetConsoleTextAttribute(handle_console, 15);
 	std::cout << message << std::endl;
+
+	mutex.unlock();
 
 	SetConsoleTextAttribute(handle_console, 15);
 

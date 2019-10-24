@@ -3,6 +3,9 @@
 MotionHub::MotionHub(int argc, char** argv)
 {
 
+	m_argc = argc;
+	m_argv = argv;
+
 	m_isTracking = false;
 
 	Console::printHeader();
@@ -10,13 +13,16 @@ MotionHub::MotionHub(int argc, char** argv)
 	m_configReader = new ConfigReader();
 	m_configReader->readConfigFile(CONFIG_PATH);
 	
-	//m_inputManager = new InputManager();
-
-	m_uiManager = new UIManager(argc, argv/*, m_inputManager*/);
+	m_inputManager = new InputManager();
 
 	m_trackerManager = new TrackerManager();
 	m_gestureManager = new GestureManager();
 	m_networkManager = new NetworkManager();
+
+	m_threadInputLoop = new std::thread(&MotionHub::inputLoop, this);
+	m_threadInputLoop->detach();
+
+	m_uiManager = new UIManager(m_argc, m_argv, m_inputManager);
 
 }
 
@@ -68,9 +74,19 @@ void MotionHub::update()
 void MotionHub::start()
 {
 
-	m_isTracking = true;
+	if (!m_isTracking)
+	{
+		
+		m_isTracking = true;
 
-	update();
+		m_threadInputLoop = new std::thread(&MotionHub::update, this);
+		m_threadInputLoop->detach();
+
+		Console::log("MotionHub::start(): Started tracking loop.");
+
+	}
+	else
+		Console::logError("MotionHub::start(): Can not start tracking loop. Thread is already running!");
 
 }
 
@@ -78,6 +94,8 @@ void MotionHub::stop()
 {
 
 	m_isTracking = false;
+
+	Console::log("MotionHub::start(): Stopped tracking loop.");
 
 }
 
@@ -88,16 +106,49 @@ UIManager* MotionHub::getUiManager()
 
 }
 
-//InputManager* MotionHub::getInputManager()
-//{
-//
-//	return m_inputManager;
-//
-//}
+InputManager* MotionHub::getInputManager()
+{
+
+	return m_inputManager;
+
+}
 
 bool MotionHub::isTracking()
 {
 
 	return m_isTracking;
 
+}
+
+void MotionHub::inputLoop()
+{
+
+	Console::log("MotionHub::inputLoop(): Started input loop.");
+
+	// input loop
+	while (true)
+	{
+
+		if (m_inputManager->isButtonPressed(0))
+		{
+
+			start();
+
+		}
+
+		if (m_inputManager->isButtonPressed(2))
+		{
+			switch (m_inputManager->getCurrSelectedTrackerId())
+			{
+				case 0:
+					m_trackerManager->createTracker(TrackerManager::AKT);
+					break;
+
+				default:
+					Console::logError("MotionHub::inputLoop(): Tracker type not yet implemented.");
+					break;
+
+			}
+		}
+	}
 }
