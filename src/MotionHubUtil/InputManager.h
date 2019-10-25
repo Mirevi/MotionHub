@@ -25,6 +25,6 @@ private:
 	 */
 	std::map<int, int>* poolButtonState;
 	bool m_isLocked;
-	int m_currSelectedTrackerId;
+	int m_currSelectedTrackerId = 0;
 
 };
