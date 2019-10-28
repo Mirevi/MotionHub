@@ -33,8 +33,9 @@ void MainWindow::startAllTracker()
 
 void MainWindow::addTracker()
 {
+	
 
-	m_createTrackerWindow = new CreateTrackerWindow(m_refInputManager);
+	m_createTrackerWindow = new CreateTrackerWindow(m_refInputManager, ui->listView_tracker);
 	
 	m_createTrackerWindow->setModal(true);
 	m_createTrackerWindow->exec();

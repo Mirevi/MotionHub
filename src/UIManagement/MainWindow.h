@@ -5,6 +5,9 @@
 #include "MotionHubUtil/Console.h"
 #include "MotionHubUtil/InputManager.h"
 #include "CreateTrackerWindow.h"
+//#include <qstringlistmodel.h>
+#include "QtCore/qstringlistmodel.h"
+#include "QtCore/qstring.h"
 
 namespace Ui {
 	class MainWindow;
@@ -28,5 +31,4 @@ private:
 	Ui::MainWindow *ui;
 	InputManager* m_refInputManager;
 	CreateTrackerWindow* m_createTrackerWindow;
-
 };
