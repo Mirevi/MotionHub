@@ -690,14 +690,18 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
             <widget class="QPushButton" name="btn_startTracker">
              <property name="geometry">
               <rect>
-               <x>70</x>
+               <x>100</x>
                <y>20</y>
-               <width>40</width>
+               <width>20</width>
                <height>20</height>
               </rect>
              </property>
              <property name="text">
-              <string>Start</string>
+              <string/>
+             </property>
+             <property name="icon">
+              <iconset resource="MainWindow.qrc">
+               <normaloff>:/ressources/icons/icons8-play-32.png</normaloff>:/ressources/icons/icons8-play-32.png</iconset>
              </property>
             </widget>
            </widget>

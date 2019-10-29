@@ -32,3 +32,10 @@ void Tracker::track()
 	stop();
 
 }
+
+void Tracker::shutdown()
+{
+
+
+
+}

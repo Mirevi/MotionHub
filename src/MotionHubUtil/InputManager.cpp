@@ -63,16 +63,30 @@ void InputManager::registerButton(int buttonId)
 
 }
 
-void InputManager::setCurrSelectedTrackerId(int id)
+void InputManager::setSelectedTrackerIdInDropdown(int id)
 {
 
-	m_currSelectedTrackerId = id;
+	m_selectedTrackerIdInDropdown = id;
 
 }
 
-int InputManager::getCurrSelectedTrackerId()
+int InputManager::getSelectedTrackerIdInDropdown()
 {
 
-	return m_currSelectedTrackerId;
+	return m_selectedTrackerIdInDropdown;
+
+}
+
+int InputManager::getSelectedTrackerIdInList()
+{
+
+	return m_selectedTrackerIdInList;
+
+}
+
+void InputManager::setSelectedTrackerIdInList(int id) 
+{
+
+	m_selectedTrackerIdInList = id;
 
 }

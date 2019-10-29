@@ -24,6 +24,7 @@ public:
 	virtual void stop();
 	//captures one frame of body tracking data and saves all data in the skeleton pool
 	virtual void track();
+	virtual void shutdown();
 
 	enum StateTracker
 	{

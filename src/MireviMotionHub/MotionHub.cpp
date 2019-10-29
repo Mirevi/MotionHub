@@ -132,13 +132,40 @@ void MotionHub::inputLoop()
 		if (m_inputManager->isButtonPressed(0))
 		{
 
-			start();
+			if (!m_isTracking)
+				start();
+			else
+				stop();
 
+		}
+
+		if (m_inputManager->isButtonPressed(1))
+		{
+
+			bool wasTracking = m_isTracking;
+
+			// stop tracking loop if running
+			if (m_isTracking)
+			{
+
+				stop();
+
+			}
+
+			m_trackerManager->removeTracker(m_inputManager->getSelectedTrackerIdInList());
+
+			// start tracking loop if it was running
+			if (wasTracking)
+			{
+
+				start();
+
+			}
 		}
 
 		if (m_inputManager->isButtonPressed(2))
 		{
-			switch (m_inputManager->getCurrSelectedTrackerId())
+			switch (m_inputManager->getSelectedTrackerIdInDropdown())
 			{
 				case 0:
 					m_trackerManager->createTracker(TrackerManager::AKT);

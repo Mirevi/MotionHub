@@ -22,7 +22,7 @@ void CreateTrackerWindow::createTracker()
 {
 
 	QStringListModel* model = new QStringListModel(this);
-	QStringList stringList;// = new QStringList();
+	QStringList stringList;
 
 	QAbstractItemModel* oldModel = m_listViewTracker->model();
 
@@ -49,6 +49,6 @@ void CreateTrackerWindow::createTracker()
 void CreateTrackerWindow::switchTrackerType(int id)
 {
 
-	m_refInputManager->setCurrSelectedTrackerId(id);
+	m_refInputManager->setSelectedTrackerIdInDropdown(id);
 
 }

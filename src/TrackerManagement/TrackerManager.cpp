@@ -50,6 +50,30 @@ void TrackerManager::createTracker(TypeTracker type)
 	}
 }
 
+void TrackerManager::removeTracker(int idToRemove)
+{
+
+	std::pair<TypeTracker, int> key;
+
+	for (auto itPoolTracker = m_poolTracker.begin(); itPoolTracker != m_poolTracker.end(); itPoolTracker++)
+	{
+
+		if (itPoolTracker->first.second == idToRemove)
+		{
+
+			key = itPoolTracker->first;
+
+		}
+	}
+
+	m_poolTracker.at(key)->stop();
+
+	m_poolTracker.erase(key);
+
+	Console::log("TrackerManager::removeTracker(): Removed tracker with id = " + std::to_string(key.second) + ".");
+
+}
+
 std::map<std::pair<TrackerManager::TypeTracker, int>, Tracker*>* TrackerManager::getPoolTracker()
 {
 

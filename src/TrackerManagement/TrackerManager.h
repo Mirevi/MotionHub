@@ -44,6 +44,7 @@ public:
 	 * \param type type of the tracker (Azure Kinect, XSense, ...)
 	 */
 	void createTracker(TypeTracker type);
+	void removeTracker(int idToRemove);
 
 	std::map<std::pair<TypeTracker, int>, Tracker*>* getPoolTracker();
 

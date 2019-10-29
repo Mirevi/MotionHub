@@ -12,8 +12,10 @@ public:
 	bool isButtonPressed(int buttonId);
 	void setButtonPressed(int buttonId, bool pressed);
 	void registerButton(int buttonId);
-	int getCurrSelectedTrackerId();
-	void setCurrSelectedTrackerId(int id);
+	int getSelectedTrackerIdInDropdown();
+	void setSelectedTrackerIdInDropdown(int id);
+	int getSelectedTrackerIdInList();
+	void setSelectedTrackerIdInList(int id);
 
 private:
 	/*!
@@ -25,6 +27,7 @@ private:
 	 */
 	std::map<int, int>* poolButtonState;
 	bool m_isLocked;
-	int m_currSelectedTrackerId = 0;
+	int m_selectedTrackerIdInDropdown = 0;
+	int m_selectedTrackerIdInList;
 
 };

@@ -46,6 +46,7 @@ void AKTracker::stop()
 {
 
 	Tracker::stop();
+	shutdown();
 
 }
 
@@ -57,7 +58,7 @@ void AKTracker::shutdown()
 	k4a_device_stop_cameras(m_cam);
 	k4a_device_close(m_cam);
 
-	Console::log("[cam id = " + std::to_string(m_idCam) + "] AKTracker::stop(): Stopped body tracking!");
+	Console::log("[cam id = " + std::to_string(m_idCam) + "] AKTracker::stop(): Stopped Azure Kinect Tracker.");
 
 }
 

@@ -5,7 +5,6 @@
 #include "MotionHubUtil/Console.h"
 #include "MotionHubUtil/InputManager.h"
 #include "CreateTrackerWindow.h"
-//#include <qstringlistmodel.h>
 #include "QtCore/qstringlistmodel.h"
 #include "QtCore/qstring.h"
 
@@ -19,7 +18,7 @@ class UIManagement_DLL_import_export MainWindow : public QMainWindow
 public:
 	explicit MainWindow(InputManager* inputManager, QWidget *parent = 0);
 	~MainWindow();
-	CreateTrackerWindow* getCreateTrackerWindow();
+
 
 private slots:
 	void on_actionExit_triggered();
@@ -31,4 +30,6 @@ private:
 	Ui::MainWindow *ui;
 	InputManager* m_refInputManager;
 	CreateTrackerWindow* m_createTrackerWindow;
+	void removeTrackerFromList(int id);
+	bool m_isTracking = false;
 };
