@@ -66,8 +66,7 @@ void TrackerManager::removeTracker(int idToRemove)
 		}
 	}
 
-	m_poolTracker.at(key)->stop();
-
+	m_poolTracker.at(key)->shutdown();
 	m_poolTracker.erase(key);
 
 	Console::log("TrackerManager::removeTracker(): Removed tracker with id = " + std::to_string(key.second) + ".");

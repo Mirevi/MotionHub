@@ -46,7 +46,6 @@ void AKTracker::stop()
 {
 
 	Tracker::stop();
-	shutdown();
 
 }
 

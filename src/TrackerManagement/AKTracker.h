@@ -42,7 +42,6 @@ public:
 	 * \param idCam the cameras id number
 	 */
 	AKTracker(k4a_device_configuration_t configDevice, int idCam);
-
 	/*!
 	 * calls the start() method of the base class which sets m_tracking to true 
 	 */
