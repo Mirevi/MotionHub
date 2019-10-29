@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['log_239',['log',['../class_console.html#a1e55dfc328feee4ed3b6f892ffb335ba',1,'Console']]],
-  ['logerror_240',['logError',['../class_console.html#a1c34c56422a79b9443feaee7531b4312',1,'Console']]],
-  ['logwarning_241',['logWarning',['../class_console.html#a2054519b116f008978abf324a9007a30',1,'Console']]]
+  ['handle_791',['handle',['../class_keyboard_event_handler.html#ab575dcd8f2456ba2fd83af5409ce4f3c',1,'KeyboardEventHandler']]],
+  ['hasbom_792',['HasBOM',['../classtinyxml2_1_1_x_m_l_document.html#a33fc5d159db873a179fa26338adb05bd',1,'tinyxml2::XMLDocument']]]
 ];

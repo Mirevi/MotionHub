@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['configreader_171',['ConfigReader',['../class_config_reader.html',1,'']]],
-  ['console_172',['Console',['../class_console.html',1,'']]]
+  ['block_605',['Block',['../structtinyxml2_1_1_mem_pool_t_1_1_block.html',1,'tinyxml2::MemPoolT']]]
 ];

@@ -1,6 +1,0 @@
-<map id="MotionHub" name="MotionHub">
-<area shape="rect" id="node1" title=" " alt="" coords="177,461,335,568"/>
-<area shape="rect" id="node2" href="$class_config_reader.html" title="This class reads the ClayMore XML configuration file located in /data." alt="" coords="5,160,208,399"/>
-<area shape="rect" id="node3" href="$class_tracker_manager.html" title="Manager for all types of tracker." alt="" coords="402,197,537,362"/>
-<area shape="rect" id="node4" href="$class_network_manager.html" title="Manager for different Network Sender and skeleton sending." alt="" coords="247,5,393,97"/>
-</map>

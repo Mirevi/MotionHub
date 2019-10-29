@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.16"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>MotionHub: src/Skeleton.h Source File</title>
+<title>MotionHub: src/MotionHubUtil/Skeleton.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -61,7 +61,7 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_b4817ea3b0dc3a781298faaa4ae67ebf.html">MotionHubUtil</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -71,52 +71,77 @@ $(function() {
 <div class="contents">
 <a href="_skeleton_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#pragma once</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160; </div>
-<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="_joint_8h.html">Joint.h</a>&gt;</span></div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;map&gt;</span></div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160; </div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160; </div>
-<div class="line"><a name="l00014"></a><span class="lineno"><a class="line" href="class_skeleton.html">   14</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_skeleton.html">Skeleton</a></div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;{</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160; </div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    <a class="code" href="class_skeleton.html#af01a02f1ce9ae4c801cd6e66ccf7407f">Skeleton</a>();</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    <a class="code" href="class_skeleton.html#af01a02f1ce9ae4c801cd6e66ccf7407f">Skeleton</a>(<span class="keywordtype">int</span> sid);</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160; </div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="class_skeleton.html#a743cb6ac7a6177fe863d36d37beb8b4e">parseJoint</a>(<a class="code" href="class_joint.html#a4585063fdb4bca4f2898c27ee1bfabe8">Joint::JointNames</a> name, <a class="code" href="class_vector3.html">Vector3</a> position, <a class="code" href="class_vector4.html">Vector4</a> rotation);</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    <span class="keywordtype">int</span> <a class="code" href="class_skeleton.html#aab77a9adb8d6e24a7061cf45efb26c91">getSid</a>();</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160; </div>
-<div class="line"><a name="l00038"></a><span class="lineno"><a class="line" href="class_skeleton.html#a555ae029f286a8c4741af9a36fa239e2">   38</a></span>&#160;    std::map&lt;Joint::JointNames, Joint&gt; <a class="code" href="class_skeleton.html#a555ae029f286a8c4741af9a36fa239e2">m_joints</a>;</div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="_config_dll_export_motion_hub_util_8h.html">ConfigDllExportMotionHubUtil.h</a>&quot;</span></div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160; </div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="_joint_8h.html">Joint.h</a>&quot;</span></div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &lt;map&gt;</span></div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160; </div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160; </div>
+<div class="line"><a name="l00016"></a><span class="lineno"><a class="line" href="class_skeleton.html">   16</a></span>&#160;<span class="keyword">class </span><a class="code" href="_config_dll_export_motion_hub_util_8h.html#a9168c0de7bea215e119ca8c15f3b4df7">MotionHubUtil_DLL_import_export</a> <a class="code" href="class_skeleton.html">Skeleton</a></div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;{</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160; </div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    <a class="code" href="class_skeleton.html">Skeleton</a>();</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    <a class="code" href="class_skeleton.html">Skeleton</a>(<span class="keywordtype">int</span> sid);</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    <span class="keywordtype">void</span> parseJoint(<a class="code" href="class_joint.html#a4585063fdb4bca4f2898c27ee1bfabe8">Joint::JointNames</a> name, <a class="code" href="class_vector3.html">Vector3</a> position, <a class="code" href="class_vector4.html">Vector4</a> rotation, <a class="code" href="class_joint.html#a7d36d6681128a681d2d0b7bb5ff11529">Joint::JointConfidence</a> confidence);</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    <span class="keywordtype">int</span> getSid();</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160; </div>
-<div class="line"><a name="l00040"></a><span class="lineno"><a class="line" href="class_skeleton.html#aa3ffb248b5904d59422c5cb875e32e7a">   40</a></span>&#160;    <span class="keyword">enum</span> <a class="code" href="class_skeleton.html#aa3ffb248b5904d59422c5cb875e32e7a">StateSkeleton</a></div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    {</div>
-<div class="line"><a name="l00042"></a><span class="lineno"><a class="line" href="class_skeleton.html#aa3ffb248b5904d59422c5cb875e32e7aa9013f54588a4b42058faf534e5070f7b">   42</a></span>&#160;        <a class="code" href="class_skeleton.html#aa3ffb248b5904d59422c5cb875e32e7aa9013f54588a4b42058faf534e5070f7b">NONE</a>,</div>
-<div class="line"><a name="l00043"></a><span class="lineno"><a class="line" href="class_skeleton.html#aa3ffb248b5904d59422c5cb875e32e7aaef4948f2f63428fea11bad19229a87a6">   43</a></span>&#160;        <a class="code" href="class_skeleton.html#aa3ffb248b5904d59422c5cb875e32e7aaef4948f2f63428fea11bad19229a87a6">INIT</a>,</div>
-<div class="line"><a name="l00044"></a><span class="lineno"><a class="line" href="class_skeleton.html#aa3ffb248b5904d59422c5cb875e32e7aa09dbb8d6c5747fdef11e6e7129a16eaa">   44</a></span>&#160;        <a class="code" href="class_skeleton.html#aa3ffb248b5904d59422c5cb875e32e7aa09dbb8d6c5747fdef11e6e7129a16eaa">ACTIVE</a>,</div>
-<div class="line"><a name="l00045"></a><span class="lineno"><a class="line" href="class_skeleton.html#aa3ffb248b5904d59422c5cb875e32e7aa5c0c967f59049a1a491f0b7f39e59354">   45</a></span>&#160;        <a class="code" href="class_skeleton.html#aa3ffb248b5904d59422c5cb875e32e7aa5c0c967f59049a1a491f0b7f39e59354">INACTIVE</a></div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    };</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160; </div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00049"></a><span class="lineno"><a class="line" href="class_skeleton.html#ae6ecf0938adeaeada1166932a23da0d6">   49</a></span>&#160;    <span class="keywordtype">int</span> <a class="code" href="class_skeleton.html#ae6ecf0938adeaeada1166932a23da0d6">m_sid</a>;</div>
-<div class="line"><a name="l00050"></a><span class="lineno"><a class="line" href="class_skeleton.html#af15479f8fe388d2b096a54eb2a7b083e">   50</a></span>&#160;    <a class="code" href="class_skeleton.html#aa3ffb248b5904d59422c5cb875e32e7a">StateSkeleton</a> <a class="code" href="class_skeleton.html#af15479f8fe388d2b096a54eb2a7b083e">m_state</a>;</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160; </div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;};</div>
+<div class="line"><a name="l00040"></a><span class="lineno"><a class="line" href="class_skeleton.html#a555ae029f286a8c4741af9a36fa239e2">   40</a></span>&#160;    std::map&lt;Joint::JointNames, Joint&gt; <a class="code" href="class_skeleton.html#a555ae029f286a8c4741af9a36fa239e2">m_joints</a>;</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160; </div>
+<div class="line"><a name="l00042"></a><span class="lineno"><a class="line" href="class_skeleton.html#aa3ffb248b5904d59422c5cb875e32e7a">   42</a></span>&#160;    <span class="keyword">enum</span> <a class="code" href="class_skeleton.html#aa3ffb248b5904d59422c5cb875e32e7a">StateSkeleton</a></div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    {</div>
+<div class="line"><a name="l00044"></a><span class="lineno"><a class="line" href="class_skeleton.html#aa3ffb248b5904d59422c5cb875e32e7aa9013f54588a4b42058faf534e5070f7b">   44</a></span>&#160;        <a class="code" href="class_skeleton.html#aa3ffb248b5904d59422c5cb875e32e7aa9013f54588a4b42058faf534e5070f7b">NONE</a>,</div>
+<div class="line"><a name="l00045"></a><span class="lineno"><a class="line" href="class_skeleton.html#aa3ffb248b5904d59422c5cb875e32e7aaef4948f2f63428fea11bad19229a87a6">   45</a></span>&#160;        <a class="code" href="class_skeleton.html#aa3ffb248b5904d59422c5cb875e32e7aaef4948f2f63428fea11bad19229a87a6">INIT</a>,</div>
+<div class="line"><a name="l00046"></a><span class="lineno"><a class="line" href="class_skeleton.html#aa3ffb248b5904d59422c5cb875e32e7aa09dbb8d6c5747fdef11e6e7129a16eaa">   46</a></span>&#160;        <a class="code" href="class_skeleton.html#aa3ffb248b5904d59422c5cb875e32e7aa09dbb8d6c5747fdef11e6e7129a16eaa">ACTIVE</a>,</div>
+<div class="line"><a name="l00047"></a><span class="lineno"><a class="line" href="class_skeleton.html#aa3ffb248b5904d59422c5cb875e32e7aa5c0c967f59049a1a491f0b7f39e59354">   47</a></span>&#160;        INACTIVE</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    };</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
+<div class="line"><a name="l00050"></a><span class="lineno"><a class="line" href="class_skeleton.html#a7ec4be41dc2982eaf7ff1a25cf074d77">   50</a></span>&#160;    <span class="keyword">enum</span> <a class="code" href="class_skeleton.html#a7ec4be41dc2982eaf7ff1a25cf074d77">StatePosture</a></div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    {</div>
+<div class="line"><a name="l00052"></a><span class="lineno"><a class="line" href="class_skeleton.html#a7ec4be41dc2982eaf7ff1a25cf074d77a709ef6c1d61a6fd8c03192a13631b0b9">   52</a></span>&#160;        <a class="code" href="class_skeleton.html#a7ec4be41dc2982eaf7ff1a25cf074d77a709ef6c1d61a6fd8c03192a13631b0b9">UNKNOWN</a>,</div>
+<div class="line"><a name="l00053"></a><span class="lineno"><a class="line" href="class_skeleton.html#a7ec4be41dc2982eaf7ff1a25cf074d77a08e1dc7e949daad5ff67d7867ea7e0f8">   53</a></span>&#160;        <a class="code" href="class_skeleton.html#a7ec4be41dc2982eaf7ff1a25cf074d77a08e1dc7e949daad5ff67d7867ea7e0f8">STAND</a>,</div>
+<div class="line"><a name="l00054"></a><span class="lineno"><a class="line" href="class_skeleton.html#a7ec4be41dc2982eaf7ff1a25cf074d77ac010ee531bdd6be04951d7fef99ee04f">   54</a></span>&#160;        <a class="code" href="class_skeleton.html#a7ec4be41dc2982eaf7ff1a25cf074d77ac010ee531bdd6be04951d7fef99ee04f">SIT</a>,</div>
+<div class="line"><a name="l00055"></a><span class="lineno"><a class="line" href="class_skeleton.html#a7ec4be41dc2982eaf7ff1a25cf074d77a274ec638ea38c55a549248d0e2c15efd">   55</a></span>&#160;        <a class="code" href="class_skeleton.html#a7ec4be41dc2982eaf7ff1a25cf074d77a274ec638ea38c55a549248d0e2c15efd">CROUCH</a>,</div>
+<div class="line"><a name="l00056"></a><span class="lineno"><a class="line" href="class_skeleton.html#a7ec4be41dc2982eaf7ff1a25cf074d77a834baaca2ea7ee3c301fd3acd312f3b5">   56</a></span>&#160;        <a class="code" href="class_skeleton.html#a7ec4be41dc2982eaf7ff1a25cf074d77a834baaca2ea7ee3c301fd3acd312f3b5">JUMP</a>,</div>
+<div class="line"><a name="l00057"></a><span class="lineno"><a class="line" href="class_skeleton.html#a7ec4be41dc2982eaf7ff1a25cf074d77a8e2c40aa6064bb289a1a34dda8bf913b">   57</a></span>&#160;        LIE</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    };</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160; </div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    StatePosture getPosture();</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    <span class="keywordtype">void</span> setPosture(StatePosture posture);</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    <span class="keywordtype">float</span> getHeight();</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    <span class="keywordtype">void</span> setHeight(<span class="keywordtype">float</span> height);</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00066"></a><span class="lineno"><a class="line" href="class_skeleton.html#ae6ecf0938adeaeada1166932a23da0d6">   66</a></span>&#160;    <span class="keywordtype">int</span> <a class="code" href="class_skeleton.html#ae6ecf0938adeaeada1166932a23da0d6">m_sid</a>;</div>
+<div class="line"><a name="l00067"></a><span class="lineno"><a class="line" href="class_skeleton.html#af15479f8fe388d2b096a54eb2a7b083e">   67</a></span>&#160;    <a class="code" href="class_skeleton.html#aa3ffb248b5904d59422c5cb875e32e7a">StateSkeleton</a> <a class="code" href="class_skeleton.html#af15479f8fe388d2b096a54eb2a7b083e">m_state</a>;</div>
+<div class="line"><a name="l00068"></a><span class="lineno"><a class="line" href="class_skeleton.html#a776d2bbfef0f51e6fa4eca1fe71e1257">   68</a></span>&#160;    <a class="code" href="class_skeleton.html#a7ec4be41dc2982eaf7ff1a25cf074d77">StatePosture</a> <a class="code" href="class_skeleton.html#a776d2bbfef0f51e6fa4eca1fe71e1257">m_posture</a>;</div>
+<div class="line"><a name="l00069"></a><span class="lineno"><a class="line" href="class_skeleton.html#aa55e3b9358177e0b61adace406e48593">   69</a></span>&#160;    <span class="keywordtype">float</span> <a class="code" href="class_skeleton.html#aa55e3b9358177e0b61adace406e48593">m_height</a>;</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;};</div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="aclass_skeleton_html_af15479f8fe388d2b096a54eb2a7b083e"><div class="ttname"><a href="class_skeleton.html#af15479f8fe388d2b096a54eb2a7b083e">Skeleton::m_state</a></div><div class="ttdeci">StateSkeleton m_state</div><div class="ttdef"><b>Definition:</b> Skeleton.h:50</div></div>
-<div class="ttc" id="aclass_vector3_html"><div class="ttname"><a href="class_vector3.html">Vector3</a></div><div class="ttdoc">Utility Class.</div><div class="ttdef"><b>Definition:</b> Vector3.h:12</div></div>
-<div class="ttc" id="aclass_skeleton_html_a555ae029f286a8c4741af9a36fa239e2"><div class="ttname"><a href="class_skeleton.html#a555ae029f286a8c4741af9a36fa239e2">Skeleton::m_joints</a></div><div class="ttdeci">std::map&lt; Joint::JointNames, Joint &gt; m_joints</div><div class="ttdef"><b>Definition:</b> Skeleton.h:38</div></div>
-<div class="ttc" id="aclass_skeleton_html_aa3ffb248b5904d59422c5cb875e32e7aa09dbb8d6c5747fdef11e6e7129a16eaa"><div class="ttname"><a href="class_skeleton.html#aa3ffb248b5904d59422c5cb875e32e7aa09dbb8d6c5747fdef11e6e7129a16eaa">Skeleton::ACTIVE</a></div><div class="ttdef"><b>Definition:</b> Skeleton.h:44</div></div>
+<div class="ttc" id="a_config_dll_export_motion_hub_util_8h_html_a9168c0de7bea215e119ca8c15f3b4df7"><div class="ttname"><a href="_config_dll_export_motion_hub_util_8h.html#a9168c0de7bea215e119ca8c15f3b4df7">MotionHubUtil_DLL_import_export</a></div><div class="ttdeci">#define MotionHubUtil_DLL_import_export</div><div class="ttdef"><b>Definition:</b> ConfigDllExportMotionHubUtil.h:2</div></div>
+<div class="ttc" id="aclass_joint_html_a7d36d6681128a681d2d0b7bb5ff11529"><div class="ttname"><a href="class_joint.html#a7d36d6681128a681d2d0b7bb5ff11529">Joint::JointConfidence</a></div><div class="ttdeci">JointConfidence</div><div class="ttdef"><b>Definition:</b> Joint.h:48</div></div>
+<div class="ttc" id="aclass_skeleton_html_af15479f8fe388d2b096a54eb2a7b083e"><div class="ttname"><a href="class_skeleton.html#af15479f8fe388d2b096a54eb2a7b083e">Skeleton::m_state</a></div><div class="ttdeci">StateSkeleton m_state</div><div class="ttdef"><b>Definition:</b> Skeleton.h:67</div></div>
+<div class="ttc" id="aclass_vector3_html"><div class="ttname"><a href="class_vector3.html">Vector3</a></div><div class="ttdoc">Utility Class.</div><div class="ttdef"><b>Definition:</b> Vector3.h:14</div></div>
+<div class="ttc" id="aclass_skeleton_html_a7ec4be41dc2982eaf7ff1a25cf074d77"><div class="ttname"><a href="class_skeleton.html#a7ec4be41dc2982eaf7ff1a25cf074d77">Skeleton::StatePosture</a></div><div class="ttdeci">StatePosture</div><div class="ttdef"><b>Definition:</b> Skeleton.h:50</div></div>
+<div class="ttc" id="aclass_skeleton_html_a555ae029f286a8c4741af9a36fa239e2"><div class="ttname"><a href="class_skeleton.html#a555ae029f286a8c4741af9a36fa239e2">Skeleton::m_joints</a></div><div class="ttdeci">std::map&lt; Joint::JointNames, Joint &gt; m_joints</div><div class="ttdef"><b>Definition:</b> Skeleton.h:40</div></div>
+<div class="ttc" id="aclass_skeleton_html_aa3ffb248b5904d59422c5cb875e32e7aa09dbb8d6c5747fdef11e6e7129a16eaa"><div class="ttname"><a href="class_skeleton.html#aa3ffb248b5904d59422c5cb875e32e7aa09dbb8d6c5747fdef11e6e7129a16eaa">Skeleton::ACTIVE</a></div><div class="ttdef"><b>Definition:</b> Skeleton.h:46</div></div>
+<div class="ttc" id="a_config_dll_export_motion_hub_util_8h_html"><div class="ttname"><a href="_config_dll_export_motion_hub_util_8h.html">ConfigDllExportMotionHubUtil.h</a></div></div>
+<div class="ttc" id="aclass_skeleton_html_a7ec4be41dc2982eaf7ff1a25cf074d77a274ec638ea38c55a549248d0e2c15efd"><div class="ttname"><a href="class_skeleton.html#a7ec4be41dc2982eaf7ff1a25cf074d77a274ec638ea38c55a549248d0e2c15efd">Skeleton::CROUCH</a></div><div class="ttdef"><b>Definition:</b> Skeleton.h:55</div></div>
 <div class="ttc" id="a_joint_8h_html"><div class="ttname"><a href="_joint_8h.html">Joint.h</a></div></div>
-<div class="ttc" id="aclass_skeleton_html_aa3ffb248b5904d59422c5cb875e32e7aaef4948f2f63428fea11bad19229a87a6"><div class="ttname"><a href="class_skeleton.html#aa3ffb248b5904d59422c5cb875e32e7aaef4948f2f63428fea11bad19229a87a6">Skeleton::INIT</a></div><div class="ttdef"><b>Definition:</b> Skeleton.h:43</div></div>
-<div class="ttc" id="aclass_skeleton_html_aab77a9adb8d6e24a7061cf45efb26c91"><div class="ttname"><a href="class_skeleton.html#aab77a9adb8d6e24a7061cf45efb26c91">Skeleton::getSid</a></div><div class="ttdeci">int getSid()</div><div class="ttdef"><b>Definition:</b> Skeleton.cpp:25</div></div>
-<div class="ttc" id="aclass_skeleton_html_aa3ffb248b5904d59422c5cb875e32e7a"><div class="ttname"><a href="class_skeleton.html#aa3ffb248b5904d59422c5cb875e32e7a">Skeleton::StateSkeleton</a></div><div class="ttdeci">StateSkeleton</div><div class="ttdef"><b>Definition:</b> Skeleton.h:40</div></div>
-<div class="ttc" id="aclass_skeleton_html"><div class="ttname"><a href="class_skeleton.html">Skeleton</a></div><div class="ttdoc">Default Skeleton with all Joint poses.</div><div class="ttdef"><b>Definition:</b> Skeleton.h:14</div></div>
-<div class="ttc" id="aclass_skeleton_html_aa3ffb248b5904d59422c5cb875e32e7aa9013f54588a4b42058faf534e5070f7b"><div class="ttname"><a href="class_skeleton.html#aa3ffb248b5904d59422c5cb875e32e7aa9013f54588a4b42058faf534e5070f7b">Skeleton::NONE</a></div><div class="ttdef"><b>Definition:</b> Skeleton.h:42</div></div>
-<div class="ttc" id="aclass_skeleton_html_ae6ecf0938adeaeada1166932a23da0d6"><div class="ttname"><a href="class_skeleton.html#ae6ecf0938adeaeada1166932a23da0d6">Skeleton::m_sid</a></div><div class="ttdeci">int m_sid</div><div class="ttdef"><b>Definition:</b> Skeleton.h:49</div></div>
-<div class="ttc" id="aclass_skeleton_html_af01a02f1ce9ae4c801cd6e66ccf7407f"><div class="ttname"><a href="class_skeleton.html#af01a02f1ce9ae4c801cd6e66ccf7407f">Skeleton::Skeleton</a></div><div class="ttdeci">Skeleton()</div><div class="ttdef"><b>Definition:</b> Skeleton.cpp:3</div></div>
-<div class="ttc" id="aclass_skeleton_html_aa3ffb248b5904d59422c5cb875e32e7aa5c0c967f59049a1a491f0b7f39e59354"><div class="ttname"><a href="class_skeleton.html#aa3ffb248b5904d59422c5cb875e32e7aa5c0c967f59049a1a491f0b7f39e59354">Skeleton::INACTIVE</a></div><div class="ttdef"><b>Definition:</b> Skeleton.h:45</div></div>
-<div class="ttc" id="aclass_joint_html_a4585063fdb4bca4f2898c27ee1bfabe8"><div class="ttname"><a href="class_joint.html#a4585063fdb4bca4f2898c27ee1bfabe8">Joint::JointNames</a></div><div class="ttdeci">JointNames</div><div class="ttdef"><b>Definition:</b> Joint.h:31</div></div>
-<div class="ttc" id="aclass_vector4_html"><div class="ttname"><a href="class_vector4.html">Vector4</a></div><div class="ttdoc">Utility Class.</div><div class="ttdef"><b>Definition:</b> Vector4.h:12</div></div>
-<div class="ttc" id="aclass_skeleton_html_a743cb6ac7a6177fe863d36d37beb8b4e"><div class="ttname"><a href="class_skeleton.html#a743cb6ac7a6177fe863d36d37beb8b4e">Skeleton::parseJoint</a></div><div class="ttdeci">void parseJoint(Joint::JointNames name, Vector3 position, Vector4 rotation)</div><div class="ttdef"><b>Definition:</b> Skeleton.cpp:17</div></div>
+<div class="ttc" id="aclass_skeleton_html_aa3ffb248b5904d59422c5cb875e32e7aaef4948f2f63428fea11bad19229a87a6"><div class="ttname"><a href="class_skeleton.html#aa3ffb248b5904d59422c5cb875e32e7aaef4948f2f63428fea11bad19229a87a6">Skeleton::INIT</a></div><div class="ttdef"><b>Definition:</b> Skeleton.h:45</div></div>
+<div class="ttc" id="aclass_skeleton_html_aa3ffb248b5904d59422c5cb875e32e7a"><div class="ttname"><a href="class_skeleton.html#aa3ffb248b5904d59422c5cb875e32e7a">Skeleton::StateSkeleton</a></div><div class="ttdeci">StateSkeleton</div><div class="ttdef"><b>Definition:</b> Skeleton.h:42</div></div>
+<div class="ttc" id="aclass_skeleton_html"><div class="ttname"><a href="class_skeleton.html">Skeleton</a></div><div class="ttdoc">Default Skeleton with all Joint poses.</div><div class="ttdef"><b>Definition:</b> Skeleton.h:16</div></div>
+<div class="ttc" id="aclass_skeleton_html_a776d2bbfef0f51e6fa4eca1fe71e1257"><div class="ttname"><a href="class_skeleton.html#a776d2bbfef0f51e6fa4eca1fe71e1257">Skeleton::m_posture</a></div><div class="ttdeci">StatePosture m_posture</div><div class="ttdef"><b>Definition:</b> Skeleton.h:68</div></div>
+<div class="ttc" id="aclass_skeleton_html_aa3ffb248b5904d59422c5cb875e32e7aa9013f54588a4b42058faf534e5070f7b"><div class="ttname"><a href="class_skeleton.html#aa3ffb248b5904d59422c5cb875e32e7aa9013f54588a4b42058faf534e5070f7b">Skeleton::NONE</a></div><div class="ttdef"><b>Definition:</b> Skeleton.h:44</div></div>
+<div class="ttc" id="aclass_skeleton_html_ae6ecf0938adeaeada1166932a23da0d6"><div class="ttname"><a href="class_skeleton.html#ae6ecf0938adeaeada1166932a23da0d6">Skeleton::m_sid</a></div><div class="ttdeci">int m_sid</div><div class="ttdef"><b>Definition:</b> Skeleton.h:66</div></div>
+<div class="ttc" id="aclass_skeleton_html_a7ec4be41dc2982eaf7ff1a25cf074d77a834baaca2ea7ee3c301fd3acd312f3b5"><div class="ttname"><a href="class_skeleton.html#a7ec4be41dc2982eaf7ff1a25cf074d77a834baaca2ea7ee3c301fd3acd312f3b5">Skeleton::JUMP</a></div><div class="ttdef"><b>Definition:</b> Skeleton.h:56</div></div>
+<div class="ttc" id="aclass_skeleton_html_aa55e3b9358177e0b61adace406e48593"><div class="ttname"><a href="class_skeleton.html#aa55e3b9358177e0b61adace406e48593">Skeleton::m_height</a></div><div class="ttdeci">float m_height</div><div class="ttdef"><b>Definition:</b> Skeleton.h:69</div></div>
+<div class="ttc" id="aclass_skeleton_html_a7ec4be41dc2982eaf7ff1a25cf074d77a08e1dc7e949daad5ff67d7867ea7e0f8"><div class="ttname"><a href="class_skeleton.html#a7ec4be41dc2982eaf7ff1a25cf074d77a08e1dc7e949daad5ff67d7867ea7e0f8">Skeleton::STAND</a></div><div class="ttdef"><b>Definition:</b> Skeleton.h:53</div></div>
+<div class="ttc" id="aclass_skeleton_html_a7ec4be41dc2982eaf7ff1a25cf074d77a709ef6c1d61a6fd8c03192a13631b0b9"><div class="ttname"><a href="class_skeleton.html#a7ec4be41dc2982eaf7ff1a25cf074d77a709ef6c1d61a6fd8c03192a13631b0b9">Skeleton::UNKNOWN</a></div><div class="ttdef"><b>Definition:</b> Skeleton.h:52</div></div>
+<div class="ttc" id="aclass_skeleton_html_a7ec4be41dc2982eaf7ff1a25cf074d77ac010ee531bdd6be04951d7fef99ee04f"><div class="ttname"><a href="class_skeleton.html#a7ec4be41dc2982eaf7ff1a25cf074d77ac010ee531bdd6be04951d7fef99ee04f">Skeleton::SIT</a></div><div class="ttdef"><b>Definition:</b> Skeleton.h:54</div></div>
+<div class="ttc" id="aclass_joint_html_a4585063fdb4bca4f2898c27ee1bfabe8"><div class="ttname"><a href="class_joint.html#a4585063fdb4bca4f2898c27ee1bfabe8">Joint::JointNames</a></div><div class="ttdeci">JointNames</div><div class="ttdef"><b>Definition:</b> Joint.h:22</div></div>
+<div class="ttc" id="aclass_vector4_html"><div class="ttname"><a href="class_vector4.html">Vector4</a></div><div class="ttdoc">Utility Class.</div><div class="ttdef"><b>Definition:</b> Vector4.h:14</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

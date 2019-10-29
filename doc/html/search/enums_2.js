@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['stateskeleton_318',['StateSkeleton',['../class_skeleton.html#aa3ffb248b5904d59422c5cb875e32e7a',1,'Skeleton']]],
-  ['statetracker_319',['StateTracker',['../class_tracker.html#a0044081294d9750f1023ad47555c1014',1,'Tracker']]]
+  ['jointconfidence_1146',['JointConfidence',['../class_joint.html#a7d36d6681128a681d2d0b7bb5ff11529',1,'Joint']]],
+  ['jointnames_1147',['JointNames',['../class_joint.html#a4585063fdb4bca4f2898c27ee1bfabe8',1,'Joint']]]
 ];

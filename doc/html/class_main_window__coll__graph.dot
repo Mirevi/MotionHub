@@ -1,0 +1,16 @@
+digraph "MainWindow"
+{
+ // LATEX_PDF_SIZE
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  Node1 [label="{MainWindow\n|- ui\l- m_isTracking\l|+ MainWindow()\l+ ~MainWindow()\l- removeTrackerFromList()\l- on_actionExit_triggered()\l- startAllTracker()\l- addTracker()\l- removeTracker()\l}",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip="Qt main Window wrapper containing slot methods."];
+  Node2 -> Node1 [dir="back",color="midnightblue",fontsize="10",style="solid",arrowtail="onormal",fontname="Helvetica"];
+  Node2 [label="{QMainWindow\n||}",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled",tooltip=" "];
+  Node3 -> Node1 [color="grey25",fontsize="10",style="solid",label=" -m_createTrackerWindow" ,arrowhead="odiamond",fontname="Helvetica"];
+  Node3 [label="{CreateTrackerWindow\n|- ui\l- m_refListViewTracker\l|+ CreateTrackerWindow()\l+ ~CreateTrackerWindow()\l- createTracker()\l- switchTrackerType()\l}",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_create_tracker_window.html",tooltip="dialog for creating new trackers"];
+  Node4 -> Node3 [dir="back",color="midnightblue",fontsize="10",style="solid",arrowtail="onormal",fontname="Helvetica"];
+  Node4 [label="{QDialog\n||}",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled",tooltip=" "];
+  Node5 -> Node3 [color="grey25",fontsize="10",style="solid",label=" -m_refInputManager" ,arrowhead="odiamond",fontname="Helvetica"];
+  Node5 [label="{InputManager\n|- poolButtonState\l- m_isLocked\l- m_selectedTrackerIdInDropdown\l- m_selectedTrackerIdInList\l|+ InputManager()\l+ isButtonPressed()\l+ setButtonPressed()\l+ registerButton()\l+ getSelectedTrackerIdInDropdown()\l+ setSelectedTrackerIdInDropdown()\l+ getSelectedTrackerIdInList()\l+ setSelectedTrackerIdInList()\l}",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_input_manager.html",tooltip="container for input data"];
+  Node5 -> Node1 [color="grey25",fontsize="10",style="solid",label=" -m_refInputManager" ,arrowhead="odiamond",fontname="Helvetica"];
+}

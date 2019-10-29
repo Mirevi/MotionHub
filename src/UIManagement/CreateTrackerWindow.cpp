@@ -8,7 +8,7 @@ CreateTrackerWindow::CreateTrackerWindow(InputManager* inputManager, QListView* 
 	ui->setupUi(this);
 
 	m_refInputManager = inputManager;
-	m_listViewTracker = listViewTracker;
+	m_refListViewTracker = listViewTracker;
 
 	m_refInputManager->registerButton(2);
 }
@@ -24,7 +24,7 @@ void CreateTrackerWindow::createTracker()
 	QStringListModel* model = new QStringListModel(this);
 	QStringList stringList;
 
-	QAbstractItemModel* oldModel = m_listViewTracker->model();
+	QAbstractItemModel* oldModel = m_refListViewTracker->model();
 
 	if(oldModel != nullptr)
 	{
@@ -39,7 +39,7 @@ void CreateTrackerWindow::createTracker()
 
 	model->setStringList(stringList);
 
-	m_listViewTracker->setModel(model);
+	m_refListViewTracker->setModel(model);
 
 	m_refInputManager->setButtonPressed(2, 1);
 	close();

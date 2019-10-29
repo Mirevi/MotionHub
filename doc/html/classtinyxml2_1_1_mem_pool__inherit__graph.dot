@@ -1,0 +1,17 @@
+digraph "tinyxml2::MemPool"
+{
+ // LATEX_PDF_SIZE
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  Node1 [label="{tinyxml2::MemPool\n||+ MemPool()\l+ ~MemPool()\l+ ItemSize()\l+ Alloc()\l+ Free()\l+ SetTracked()\l}",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip=" "];
+  Node1 -> Node2 [dir="back",color="midnightblue",fontsize="10",style="solid",arrowtail="onormal",fontname="Helvetica"];
+  Node2 [label="{tinyxml2::MemPoolT\l\< sizeof(tinyxml2::XMLAttribute) \>\n|- _blockPtrs\l- _root\l- _currentAllocs\l- _nAllocs\l- _maxAllocs\l- _nUntracked\l|+ MemPoolT()\l+ ~MemPoolT()\l+ Clear()\l+ ItemSize()\l+ CurrentAllocs()\l+ Alloc()\l+ Free()\l+ Trace()\l+ SetTracked()\l+ Untracked()\l- MemPoolT()\l- operator=()\l}",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classtinyxml2_1_1_mem_pool_t.html",tooltip=" "];
+  Node1 -> Node3 [dir="back",color="midnightblue",fontsize="10",style="solid",arrowtail="onormal",fontname="Helvetica"];
+  Node3 [label="{tinyxml2::MemPoolT\l\< sizeof(tinyxml2::XMLComment) \>\n|- _blockPtrs\l- _root\l- _currentAllocs\l- _nAllocs\l- _maxAllocs\l- _nUntracked\l|+ MemPoolT()\l+ ~MemPoolT()\l+ Clear()\l+ ItemSize()\l+ CurrentAllocs()\l+ Alloc()\l+ Free()\l+ Trace()\l+ SetTracked()\l+ Untracked()\l- MemPoolT()\l- operator=()\l}",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classtinyxml2_1_1_mem_pool_t.html",tooltip=" "];
+  Node1 -> Node4 [dir="back",color="midnightblue",fontsize="10",style="solid",arrowtail="onormal",fontname="Helvetica"];
+  Node4 [label="{tinyxml2::MemPoolT\l\< sizeof(tinyxml2::XMLElement) \>\n|- _blockPtrs\l- _root\l- _currentAllocs\l- _nAllocs\l- _maxAllocs\l- _nUntracked\l|+ MemPoolT()\l+ ~MemPoolT()\l+ Clear()\l+ ItemSize()\l+ CurrentAllocs()\l+ Alloc()\l+ Free()\l+ Trace()\l+ SetTracked()\l+ Untracked()\l- MemPoolT()\l- operator=()\l}",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classtinyxml2_1_1_mem_pool_t.html",tooltip=" "];
+  Node1 -> Node5 [dir="back",color="midnightblue",fontsize="10",style="solid",arrowtail="onormal",fontname="Helvetica"];
+  Node5 [label="{tinyxml2::MemPoolT\l\< sizeof(tinyxml2::XMLText) \>\n|- _blockPtrs\l- _root\l- _currentAllocs\l- _nAllocs\l- _maxAllocs\l- _nUntracked\l|+ MemPoolT()\l+ ~MemPoolT()\l+ Clear()\l+ ItemSize()\l+ CurrentAllocs()\l+ Alloc()\l+ Free()\l+ Trace()\l+ SetTracked()\l+ Untracked()\l- MemPoolT()\l- operator=()\l}",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classtinyxml2_1_1_mem_pool_t.html",tooltip=" "];
+  Node1 -> Node6 [dir="back",color="midnightblue",fontsize="10",style="solid",arrowtail="onormal",fontname="Helvetica"];
+  Node6 [label="{tinyxml2::MemPoolT\l\< ITEM_SIZE \>\n|- _blockPtrs\l- _root\l- _currentAllocs\l- _nAllocs\l- _maxAllocs\l- _nUntracked\l|+ MemPoolT()\l+ ~MemPoolT()\l+ Clear()\l+ ItemSize()\l+ CurrentAllocs()\l+ Alloc()\l+ Free()\l+ Trace()\l+ SetTracked()\l+ Untracked()\l- MemPoolT()\l- operator=()\l}",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classtinyxml2_1_1_mem_pool_t.html",tooltip=" "];
+}

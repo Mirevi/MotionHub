@@ -1,7 +1,5 @@
 var searchData=
 [
-  ['tracker_2ecpp_210',['Tracker.cpp',['../_tracker_8cpp.html',1,'']]],
-  ['tracker_2eh_211',['Tracker.h',['../_tracker_8h.html',1,'']]],
-  ['trackermanager_2ecpp_212',['TrackerManager.cpp',['../_tracker_manager_8cpp.html',1,'']]],
-  ['trackermanager_2eh_213',['TrackerManager.h',['../_tracker_manager_8h.html',1,'']]]
+  ['oscsender_2ecpp_691',['OSCSender.cpp',['../_o_s_c_sender_8cpp.html',1,'']]],
+  ['oscsender_2eh_692',['OSCSender.h',['../_o_s_c_sender_8h.html',1,'']]]
 ];

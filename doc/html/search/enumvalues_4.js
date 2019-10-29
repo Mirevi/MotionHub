@@ -1,5 +1,7 @@
 var searchData=
 [
-  ['inactive_334',['INACTIVE',['../class_skeleton.html#aa3ffb248b5904d59422c5cb875e32e7aa5c0c967f59049a1a491f0b7f39e59354',1,'Skeleton']]],
-  ['init_335',['INIT',['../class_skeleton.html#aa3ffb248b5904d59422c5cb875e32e7aaef4948f2f63428fea11bad19229a87a6',1,'Skeleton::INIT()'],['../class_tracker.html#a0044081294d9750f1023ad47555c1014a048e0510ba2efa480fc419b9f0acff1a',1,'Tracker::INIT()']]]
+  ['foot_5fl_1168',['FOOT_L',['../class_joint.html#a4585063fdb4bca4f2898c27ee1bfabe8a0045fc892735b6c6df316d6bac01cd7a',1,'Joint']]],
+  ['foot_5fr_1169',['FOOT_R',['../class_joint.html#a4585063fdb4bca4f2898c27ee1bfabe8a6f23b19c559a1dd23dd3f02d885a339c',1,'Joint']]],
+  ['forearm_5fl_1170',['FOREARM_L',['../class_joint.html#a4585063fdb4bca4f2898c27ee1bfabe8a9a42d7fee83875668596f13d0528d021',1,'Joint']]],
+  ['forearm_5fr_1171',['FOREARM_R',['../class_joint.html#a4585063fdb4bca4f2898c27ee1bfabe8a4b81a06256602f2bae66a08b07194458',1,'Joint']]]
 ];

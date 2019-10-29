@@ -1,0 +1,7 @@
+digraph "tinyxml2::XMLUtil"
+{
+ // LATEX_PDF_SIZE
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  Node1 [label="{tinyxml2::XMLUtil\n|- writeBoolTrue\l- writeBoolFalse\l|+ SkipWhiteSpace()\l+ SkipWhiteSpace()\l+ IsWhiteSpace()\l+ IsNameStartChar()\l+ IsNameChar()\l+ StringEqual()\l+ IsUTF8Continuation()\l+ ReadBOM()\l+ GetCharacterRef()\l+ ConvertUTF32ToUTF8()\land 15 more...\l}",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip=" "];
+}

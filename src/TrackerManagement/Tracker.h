@@ -17,27 +17,44 @@ class Tracker
 {
 
 public:
+
+	/*!
+	 * default constructor 
+	 */
 	Tracker();
+	/*!
+	 * true when Tracker is active
+	 */
 	bool m_tracking = false;
 
+	/*!
+	 * starts Tracker in new temporary thread
+	 */
 	virtual void start();
+	/*!
+	 *  sets m_tracking to false
+	 */
 	virtual void stop();
-	//captures one frame of body tracking data and saves all data in the skeleton pool
+
+	/*!
+	 * main tracking method
+	 * captures one frame of body tracking data and saves all data in the skeleton pool 
+	 */
 	virtual void track();
+	/*!
+	 * resets the Trackers init data
+	 */
 	virtual void shutdown();
 
-	enum StateTracker
-	{
-		INIT,
-		TRACKING,
-		PAUSED
-	};
-
+	/*!
+	 * pool containing all skeletons detected by this Tracker 
+	 */
 	std::map<int, Skeleton*> poolSkeletons;
 
 private:
-	StateTracker state;
-
+	/*!
+	 * thread for track() method 
+	 */
 	std::thread* trackThread;
 
 };

@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['keyboardeventhandler_2ecpp_195',['KeyboardEventHandler.cpp',['../_keyboard_event_handler_8cpp.html',1,'']]],
-  ['keyboardeventhandler_2eh_196',['KeyboardEventHandler.h',['../_keyboard_event_handler_8h.html',1,'']]]
+  ['inputmanager_2ecpp_676',['InputManager.cpp',['../_input_manager_8cpp.html',1,'']]],
+  ['inputmanager_2eh_677',['InputManager.h',['../_input_manager_8h.html',1,'']]]
 ];

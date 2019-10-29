@@ -1,31 +1,4 @@
 var searchData=
 [
-  ['m_5factive_281',['m_active',['../class_network_sender.html#a0ded69e4cbcb81e2ef6bad6a383f03d6',1,'NetworkSender']]],
-  ['m_5faddress_282',['m_address',['../class_network_sender.html#a2864a9461c86bdf9006aa1510d2d1fb2',1,'NetworkSender']]],
-  ['m_5fcalibrationcam_283',['m_calibrationCam',['../class_a_k_tracker.html#a4c76116b701715afca0c986d8114a0dd',1,'AKTracker']]],
-  ['m_5fcam_284',['m_cam',['../class_a_k_tracker.html#a5f8aa3c2226e2478596c0a2f545f40c7',1,'AKTracker']]],
-  ['m_5fconfigcam_285',['m_configCam',['../class_a_k_tracker.html#af51c870cbab1b9b8bb06a808dd4c6189',1,'AKTracker']]],
-  ['m_5fconfigreader_286',['m_configReader',['../class_motion_hub.html#aacae9fd2012548ad79a7023d5698131e',1,'MotionHub']]],
-  ['m_5fconfigtracker_287',['m_configTracker',['../class_a_k_tracker.html#a7670115a03666943d500d5aa7291bfd7',1,'AKTracker']]],
-  ['m_5fdebuglevel_288',['m_debugLevel',['../class_config_reader.html#af9f372489781d17cb117d72ad90ed3b2',1,'ConfigReader']]],
-  ['m_5fidcam_289',['m_idCam',['../class_a_k_tracker.html#ac4c6dcf3325e16e2aa57d861145a9201',1,'AKTracker']]],
-  ['m_5fidcurrmaxskeletons_290',['m_idCurrMaxSkeletons',['../class_a_k_tracker.html#a6b1f6ded254993568a682665a8dac5fc',1,'AKTracker']]],
-  ['m_5fjoints_291',['m_joints',['../class_skeleton.html#a555ae029f286a8c4741af9a36fa239e2',1,'Skeleton']]],
-  ['m_5fnetworkmanager_292',['m_networkManager',['../class_motion_hub.html#a36597aaac231894d6db6be329cb98d91',1,'MotionHub::m_networkManager()'],['../class_tracker_manager.html#a0f9b112d5b54bb390cdfa1c790fd43d5',1,'TrackerManager::m_networkManager()']]],
-  ['m_5fnumbodies_293',['m_numBodies',['../class_a_k_tracker.html#ac8f2d8cea5178b14f8724ed0d2515fb5',1,'AKTracker']]],
-  ['m_5fpacketstream_294',['m_packetStream',['../class_o_s_c_sender.html#a45e154f1c622646c599d94fc2cfb4a4c',1,'OSCSender']]],
-  ['m_5fpooltracker_295',['m_poolTracker',['../class_tracker_manager.html#a83f226c8f142e4d46125a51a551be401',1,'TrackerManager']]],
-  ['m_5fport_296',['m_port',['../class_network_sender.html#a310a464039a7790bfe11a72b73816d63',1,'NetworkSender']]],
-  ['m_5fposition_297',['m_position',['../class_joint.html#aa74344b6caa78ff687de025a2141380a',1,'Joint']]],
-  ['m_5frotation_298',['m_rotation',['../class_joint.html#a9bd1f15fb66812e00594a9449ba726a5',1,'Joint']]],
-  ['m_5fsid_299',['m_sid',['../class_skeleton.html#ae6ecf0938adeaeada1166932a23da0d6',1,'Skeleton']]],
-  ['m_5fstartupconfig_300',['m_startupConfig',['../class_config_reader.html#aa31cd1bd4a5649dd5fea615a142fbb0e',1,'ConfigReader']]],
-  ['m_5fstate_301',['m_state',['../class_skeleton.html#af15479f8fe388d2b096a54eb2a7b083e',1,'Skeleton']]],
-  ['m_5ftracker_302',['m_tracker',['../class_a_k_tracker.html#a8bfcc47eb65d4781a60fe702e958e2d7',1,'AKTracker']]],
-  ['m_5ftrackermanager_303',['m_trackerManager',['../class_motion_hub.html#a99001a940ae1a5cb915b1dffdb081900',1,'MotionHub']]],
-  ['m_5ftracking_304',['m_tracking',['../class_tracker.html#ae22477addd3a2701af97f27f0bebd2f0',1,'Tracker::m_tracking()'],['../class_tracker_manager.html#aced2ef331b0f237611fab48cd4ed9dfd',1,'TrackerManager::m_tracking()']]],
-  ['m_5ftransmitsocket_305',['m_transmitSocket',['../class_o_s_c_sender.html#a3f051f4964138a1273bedaba47db77ce',1,'OSCSender']]],
-  ['m_5fvalue_306',['m_value',['../class_keyboard_event_handler.html#af7941d6233d0e0c46191ba58996fe0f3',1,'KeyboardEventHandler']]],
-  ['m_5fxyz_307',['m_xyz',['../class_vector3.html#a14ca74ff5750e1b466c6d15a47c73cf2',1,'Vector3']]],
-  ['m_5fxyzw_308',['m_xyzw',['../class_vector4.html#a52eec9949141ec4bb0d6d2d4c3423aa5',1,'Vector4']]]
+  ['buffer_1080',['buffer',['../class_o_s_c_sender.html#a574a2f176b535f02b66d81cc69d0ff0d',1,'OSCSender']]]
 ];

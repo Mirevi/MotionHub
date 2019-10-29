@@ -1,7 +1,10 @@
 var searchData=
 [
-  ['update_149',['update',['../class_tracker_manager.html#abbe4ddd7497482f0fc12c751139004e2',1,'TrackerManager']]],
-  ['updateskeletons_150',['updateSkeletons',['../class_a_k_tracker.html#a9f9a73d2f64609b9a2b8ecc51e7f5df9',1,'AKTracker']]],
-  ['upleg_5fl_151',['UPLEG_L',['../class_joint.html#a4585063fdb4bca4f2898c27ee1bfabe8ac542032954c6ed41e721497a53a2d98f',1,'Joint']]],
-  ['upleg_5fr_152',['UPLEG_R',['../class_joint.html#a4585063fdb4bca4f2898c27ee1bfabe8a735584fc9c9efa2eb2190774c342f5fd',1,'Joint']]]
+  ['readbom_409',['ReadBOM',['../classtinyxml2_1_1_x_m_l_util.html#ae9bcb2bc3cd6475fdc644c8c17790555',1,'tinyxml2::XMLUtil']]],
+  ['readconfigfile_410',['readConfigFile',['../class_config_reader.html#a8f3432132171f23d17fb5bbc4cb1b1d8',1,'ConfigReader']]],
+  ['registerbutton_411',['registerButton',['../class_input_manager.html#a0adc0bb17b3e39a818e2042a2d1d2355',1,'InputManager']]],
+  ['removetracker_412',['removeTracker',['../class_tracker_manager.html#a74c6e2197193f394372479e0a71f4089',1,'TrackerManager::removeTracker()'],['../class_main_window.html#a77c56760aa22557f43e1f733cd88cf83',1,'MainWindow::removeTracker()']]],
+  ['removetrackerfromlist_413',['removeTrackerFromList',['../class_main_window.html#afea1f777420d43c61b0acabad8c3ffe0',1,'MainWindow']]],
+  ['reset_414',['Reset',['../classtinyxml2_1_1_str_pair.html#a80c1b3bd99bf62ae85c94a29ce537125',1,'tinyxml2::StrPair']]],
+  ['rootelement_415',['RootElement',['../classtinyxml2_1_1_x_m_l_document.html#ad2b70320d3c2a071c2f36928edff3e1c',1,'tinyxml2::XMLDocument::RootElement()'],['../classtinyxml2_1_1_x_m_l_document.html#a2be8ef9d6346bdef34311f91529afae4',1,'tinyxml2::XMLDocument::RootElement() const']]]
 ];

@@ -1,0 +1,8 @@
+digraph "Graphical Class Hierarchy"
+{
+ // LATEX_PDF_SIZE
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node0 [label="tinyxml2::LongFitsIntoSize\lTMinusOne\< bool \>",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structtinyxml2_1_1_long_fits_into_size_t_minus_one.html",tooltip=" "];
+}

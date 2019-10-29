@@ -52,6 +52,9 @@ public:
 	*/
 	void stop();
 
+	/*!
+	 * stops and closes tracker and camera
+	 */
 	void shutdown();
 
 private:

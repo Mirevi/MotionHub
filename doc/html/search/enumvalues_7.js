@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['paused_342',['PAUSED',['../class_tracker.html#a0044081294d9750f1023ad47555c1014abb819628d0f202a58b3814a59b67002a',1,'Tracker']]]
+  ['jump_1180',['JUMP',['../class_skeleton.html#a7ec4be41dc2982eaf7ff1a25cf074d77a834baaca2ea7ee3c301fd3acd312f3b5',1,'Skeleton']]]
 ];

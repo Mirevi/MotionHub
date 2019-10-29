@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.16"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>MotionHub: src/ConfigReader.h Source File</title>
+<title>MotionHub: src/MotionHubUtil/ConfigReader.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -61,7 +61,7 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_b4817ea3b0dc3a781298faaa4ae67ebf.html">MotionHubUtil</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -69,75 +69,63 @@ $(function() {
 <div class="title">ConfigReader.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<a href="_config_reader_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">// ClayMore - Immersive Mesh Modelling --- Copyright (c) 2014-2017 Philipp Ladwig, Jannik Fiedler, Jan Beutgen</span></div>
-<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#pragma once</span></div>
-<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#pragma warning (disable : 4251)    //--&gt; It&#39;s for surpressing the wanring about the need of a dll-interface for the STL map class...</span></div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;                                    <span class="comment">//... but can be ignored, because theoretically no &quot;client&quot; of configReader will ...</span></div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;                                    <span class="comment">//... ever use the member m_startupConfig. This means, there is no need for exporting Map to the dll.</span></div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;                                    <span class="comment">//Before january 2017, it was a static public STL Map, which is now a private member and can&#39;t directly accessed</span></div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;                                    <span class="comment">//by &quot;clients&quot;/&quot;users&quot; of ConfigReader. The warning could be some kind of minor bug in the compiler</span></div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160; </div>
+<a href="_config_reader_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#pragma once</span></div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#pragma warning (disable : 4251)    //--&gt; It&#39;s for surpressing the wanring about the need of a dll-interface for the STL map class...</span></div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;                                    <span class="comment">//... but can be ignored, because theoretically no &quot;client&quot; of configReader will ...</span></div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;                                    <span class="comment">//... ever use the member m_startupConfig. This means, there is no need for exporting Map to the dll.</span></div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;                                    <span class="comment">//Before january 2017, it was a static public STL Map, which is now a private member and can&#39;t directly accessed</span></div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;                                    <span class="comment">//by &quot;clients&quot;/&quot;users&quot; of ConfigReader. The warning could be some kind of minor bug in the compiler</span></div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160; </div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="_config_dll_export_motion_hub_util_8h.html">ConfigDllExportMotionHubUtil.h</a>&quot;</span></div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160; </div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="comment">//Doxygen Example for a class</span></div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="comment"></span><span class="preprocessor">#include &lt;map&gt;</span></div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160; </div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">#include &lt;osg/Array&gt;</span></div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160; </div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="preprocessor">#include &quot;tinyxml2.h&quot;</span></div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160; </div>
-<div class="line"><a name="l00038"></a><span class="lineno"><a class="line" href="class_config_reader.html">   38</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_config_reader.html">ConfigReader</a></div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;{</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <span class="comment">// #### CONSTRUCTOR &amp; DESTRUCTOR ###############</span></div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <a class="code" href="class_config_reader.html#ac137685c6f48f5090c376aa21619384b">ConfigReader</a>();</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    <a class="code" href="class_config_reader.html#a4c4009264e63a116bdc8d5a24ef4142d">~ConfigReader</a>();</div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &lt;map&gt;</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160; </div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="tinyxml2_8h.html">tinyxml2.h</a>&quot;</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160; </div>
+<div class="line"><a name="l00015"></a><span class="lineno"><a class="line" href="class_config_reader.html">   15</a></span>&#160;<span class="keyword">class </span><a class="code" href="_config_dll_export_motion_hub_util_8h.html#a9168c0de7bea215e119ca8c15f3b4df7">MotionHubUtil_DLL_import_export</a> <a class="code" href="class_config_reader.html">ConfigReader</a></div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;{</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    <span class="comment">// #### CONSTRUCTOR &amp; DESTRUCTOR ###############</span></div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    <a class="code" href="class_config_reader.html">ConfigReader</a>();</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    ~<a class="code" href="class_config_reader.html">ConfigReader</a>();</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160; </div>
+<div class="line"><a name="l00022"></a><span class="lineno"><a class="line" href="class_config_reader.html#adee445654c84d6f4ef5152c57e58e344">   22</a></span>&#160;    <span class="keyword">enum</span> <a class="code" href="class_config_reader.html#adee445654c84d6f4ef5152c57e58e344">DebugLevel</a></div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    {</div>
+<div class="line"><a name="l00024"></a><span class="lineno"><a class="line" href="class_config_reader.html#adee445654c84d6f4ef5152c57e58e344a3dd5dbd1d3a85df6224a8310c88efdb4">   24</a></span>&#160;        <a class="code" href="class_config_reader.html#adee445654c84d6f4ef5152c57e58e344a3dd5dbd1d3a85df6224a8310c88efdb4">NO_OUTPUT</a>,</div>
+<div class="line"><a name="l00025"></a><span class="lineno"><a class="line" href="class_config_reader.html#adee445654c84d6f4ef5152c57e58e344a2990b16a0723f854fef5ca5c4d72a7b4">   25</a></span>&#160;        <a class="code" href="class_config_reader.html#adee445654c84d6f4ef5152c57e58e344a2990b16a0723f854fef5ca5c4d72a7b4">NOT_IN_LOOPS</a>,</div>
+<div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="class_config_reader.html#adee445654c84d6f4ef5152c57e58e344a7799940bc016f7808e538d34509821e1">   26</a></span>&#160;        VERBOSE</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    };</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160; </div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00030"></a><span class="lineno"><a class="line" href="class_config_reader.html#aa31cd1bd4a5649dd5fea615a142fbb0e">   30</a></span>&#160;    std::map&lt;std::string, std::string&gt; <a class="code" href="class_config_reader.html#aa31cd1bd4a5649dd5fea615a142fbb0e">m_startupConfig</a>;</div>
+<div class="line"><a name="l00031"></a><span class="lineno"><a class="line" href="class_config_reader.html#af9f372489781d17cb117d72ad90ed3b2">   31</a></span>&#160;    <a class="code" href="class_config_reader.html#adee445654c84d6f4ef5152c57e58e344">DebugLevel</a> <a class="code" href="class_config_reader.html#af9f372489781d17cb117d72ad90ed3b2">m_debugLevel</a>;</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160; </div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <a class="code" href="class_config_reader.html#adee445654c84d6f4ef5152c57e58e344">DebugLevel</a> getDebugLevel();</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    <span class="comment">//TODO: Remove Warning for not dll exported stl class -&gt;look here: http://stackoverflow.com/questions/4145605/stdvector-needs-to-have-dll-interface-to-be-used-by-clients-of-class-xt-war</span></div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    std::string getStringFromStartupConfig(std::string mapKeyIn);</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    <span class="keywordtype">float</span> getFloatFromStartupConfig(std::string mapKeyIn);</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    <span class="keywordtype">int</span> getIntFromStartupConfig(std::string mapKeyIn);</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    <span class="keywordtype">bool</span> getBoolFromStartupConfig(std::string mapKeyIn);</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <span class="comment">//osg::Vec3f getVec3fFromStartupConfig(std::string mapKeyIn);</span></div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <span class="comment">//osg::Vec4f getVec4fFromStartupConfig(std::string mapKeyIn);</span></div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160; </div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    <span class="keywordtype">bool</span> readConfigFile(<span class="keyword">const</span> <span class="keywordtype">char</span> * filePath);</div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160; </div>
-<div class="line"><a name="l00045"></a><span class="lineno"><a class="line" href="class_config_reader.html#adee445654c84d6f4ef5152c57e58e344">   45</a></span>&#160;    <span class="keyword">enum</span> <a class="code" href="class_config_reader.html#adee445654c84d6f4ef5152c57e58e344">DebugLevel</a></div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    {</div>
-<div class="line"><a name="l00047"></a><span class="lineno"><a class="line" href="class_config_reader.html#adee445654c84d6f4ef5152c57e58e344a3dd5dbd1d3a85df6224a8310c88efdb4">   47</a></span>&#160;        <a class="code" href="class_config_reader.html#adee445654c84d6f4ef5152c57e58e344a3dd5dbd1d3a85df6224a8310c88efdb4">NO_OUTPUT</a>,</div>
-<div class="line"><a name="l00048"></a><span class="lineno"><a class="line" href="class_config_reader.html#adee445654c84d6f4ef5152c57e58e344a2990b16a0723f854fef5ca5c4d72a7b4">   48</a></span>&#160;        <a class="code" href="class_config_reader.html#adee445654c84d6f4ef5152c57e58e344a2990b16a0723f854fef5ca5c4d72a7b4">NOT_IN_LOOPS</a>,</div>
-<div class="line"><a name="l00049"></a><span class="lineno"><a class="line" href="class_config_reader.html#adee445654c84d6f4ef5152c57e58e344a7799940bc016f7808e538d34509821e1">   49</a></span>&#160;        <a class="code" href="class_config_reader.html#adee445654c84d6f4ef5152c57e58e344a7799940bc016f7808e538d34509821e1">VERBOSE</a></div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    };</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160; </div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00053"></a><span class="lineno"><a class="line" href="class_config_reader.html#aa31cd1bd4a5649dd5fea615a142fbb0e">   53</a></span>&#160;    std::map&lt;std::string, std::string&gt; <a class="code" href="class_config_reader.html#aa31cd1bd4a5649dd5fea615a142fbb0e">m_startupConfig</a>;</div>
-<div class="line"><a name="l00054"></a><span class="lineno"><a class="line" href="class_config_reader.html#af9f372489781d17cb117d72ad90ed3b2">   54</a></span>&#160;    <a class="code" href="class_config_reader.html#adee445654c84d6f4ef5152c57e58e344">DebugLevel</a> <a class="code" href="class_config_reader.html#af9f372489781d17cb117d72ad90ed3b2">m_debugLevel</a>;</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160; </div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    <a class="code" href="class_config_reader.html#adee445654c84d6f4ef5152c57e58e344">DebugLevel</a> <a class="code" href="class_config_reader.html#aef47e22716ffb7e373d95a49b7da70d4">getDebugLevel</a>();</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    <span class="comment">//TODO: Remove Warning for not dll exported stl class -&gt;look here: http://stackoverflow.com/questions/4145605/stdvector-needs-to-have-dll-interface-to-be-used-by-clients-of-class-xt-war</span></div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    std::string <a class="code" href="class_config_reader.html#a3855aa7d97aafe6160357e95cd44f973">getStringFromStartupConfig</a>(std::string mapKeyIn);</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    <span class="keywordtype">float</span> <a class="code" href="class_config_reader.html#a2caf29e59fce38615bdd6785eade8973">getFloatFromStartupConfig</a>(std::string mapKeyIn);</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    <span class="keywordtype">int</span> <a class="code" href="class_config_reader.html#a1c765c9cb0196a97cb496c65f59e3dae">getIntFromStartupConfig</a>(std::string mapKeyIn);</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="class_config_reader.html#a37b7d800d4c44698d8e9b8cc1c6e7b0f">getBoolFromStartupConfig</a>(std::string mapKeyIn);</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    osg::Vec3f <a class="code" href="class_config_reader.html#a0800eedf65ce4f37887511b2bde15f22">getVec3fFromStartupConfig</a>(std::string mapKeyIn);</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    osg::Vec4f <a class="code" href="class_config_reader.html#ae462f30c106fd5be05af8cd49acd20d5">getVec4fFromStartupConfig</a>(std::string mapKeyIn);</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160; </div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="class_config_reader.html#a8f3432132171f23d17fb5bbc4cb1b1d8">readConfigFile</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> * filePath);</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160; </div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code" href="class_config_reader.html#a7f06458e63c8578a93bffffdf1fcd11a">printDebugMessage</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> * message);</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160; </div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;};</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> printDebugMessage(<span class="keyword">const</span> <span class="keywordtype">char</span> * message);</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160; </div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;};</div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="aclass_config_reader_html_a37b7d800d4c44698d8e9b8cc1c6e7b0f"><div class="ttname"><a href="class_config_reader.html#a37b7d800d4c44698d8e9b8cc1c6e7b0f">ConfigReader::getBoolFromStartupConfig</a></div><div class="ttdeci">bool getBoolFromStartupConfig(std::string mapKeyIn)</div><div class="ttdef"><b>Definition:</b> ConfigReader.cpp:45</div></div>
-<div class="ttc" id="aclass_config_reader_html_aef47e22716ffb7e373d95a49b7da70d4"><div class="ttname"><a href="class_config_reader.html#aef47e22716ffb7e373d95a49b7da70d4">ConfigReader::getDebugLevel</a></div><div class="ttdeci">DebugLevel getDebugLevel()</div><div class="ttdef"><b>Definition:</b> ConfigReader.cpp:20</div></div>
-<div class="ttc" id="aclass_config_reader_html_aa31cd1bd4a5649dd5fea615a142fbb0e"><div class="ttname"><a href="class_config_reader.html#aa31cd1bd4a5649dd5fea615a142fbb0e">ConfigReader::m_startupConfig</a></div><div class="ttdeci">std::map&lt; std::string, std::string &gt; m_startupConfig</div><div class="ttdef"><b>Definition:</b> ConfigReader.h:53</div></div>
-<div class="ttc" id="aclass_config_reader_html_ae462f30c106fd5be05af8cd49acd20d5"><div class="ttname"><a href="class_config_reader.html#ae462f30c106fd5be05af8cd49acd20d5">ConfigReader::getVec4fFromStartupConfig</a></div><div class="ttdeci">osg::Vec4f getVec4fFromStartupConfig(std::string mapKeyIn)</div><div class="ttdef"><b>Definition:</b> ConfigReader.cpp:64</div></div>
-<div class="ttc" id="aclass_config_reader_html_ac137685c6f48f5090c376aa21619384b"><div class="ttname"><a href="class_config_reader.html#ac137685c6f48f5090c376aa21619384b">ConfigReader::ConfigReader</a></div><div class="ttdeci">ConfigReader()</div><div class="ttdef"><b>Definition:</b> ConfigReader.cpp:10</div></div>
-<div class="ttc" id="aclass_config_reader_html_a0800eedf65ce4f37887511b2bde15f22"><div class="ttname"><a href="class_config_reader.html#a0800eedf65ce4f37887511b2bde15f22">ConfigReader::getVec3fFromStartupConfig</a></div><div class="ttdeci">osg::Vec3f getVec3fFromStartupConfig(std::string mapKeyIn)</div><div class="ttdef"><b>Definition:</b> ConfigReader.cpp:57</div></div>
-<div class="ttc" id="aclass_config_reader_html_a4c4009264e63a116bdc8d5a24ef4142d"><div class="ttname"><a href="class_config_reader.html#a4c4009264e63a116bdc8d5a24ef4142d">ConfigReader::~ConfigReader</a></div><div class="ttdeci">~ConfigReader()</div><div class="ttdef"><b>Definition:</b> ConfigReader.cpp:15</div></div>
-<div class="ttc" id="aclass_config_reader_html_a1c765c9cb0196a97cb496c65f59e3dae"><div class="ttname"><a href="class_config_reader.html#a1c765c9cb0196a97cb496c65f59e3dae">ConfigReader::getIntFromStartupConfig</a></div><div class="ttdeci">int getIntFromStartupConfig(std::string mapKeyIn)</div><div class="ttdef"><b>Definition:</b> ConfigReader.cpp:40</div></div>
-<div class="ttc" id="aclass_config_reader_html_a2caf29e59fce38615bdd6785eade8973"><div class="ttname"><a href="class_config_reader.html#a2caf29e59fce38615bdd6785eade8973">ConfigReader::getFloatFromStartupConfig</a></div><div class="ttdeci">float getFloatFromStartupConfig(std::string mapKeyIn)</div><div class="ttdef"><b>Definition:</b> ConfigReader.cpp:35</div></div>
-<div class="ttc" id="aclass_config_reader_html"><div class="ttname"><a href="class_config_reader.html">ConfigReader</a></div><div class="ttdoc">This class reads the ClayMore XML configuration file located in /data.</div><div class="ttdef"><b>Definition:</b> ConfigReader.h:38</div></div>
-<div class="ttc" id="aclass_config_reader_html_a8f3432132171f23d17fb5bbc4cb1b1d8"><div class="ttname"><a href="class_config_reader.html#a8f3432132171f23d17fb5bbc4cb1b1d8">ConfigReader::readConfigFile</a></div><div class="ttdeci">bool readConfigFile(const char *filePath)</div><div class="ttdef"><b>Definition:</b> ConfigReader.cpp:71</div></div>
-<div class="ttc" id="aclass_config_reader_html_adee445654c84d6f4ef5152c57e58e344a7799940bc016f7808e538d34509821e1"><div class="ttname"><a href="class_config_reader.html#adee445654c84d6f4ef5152c57e58e344a7799940bc016f7808e538d34509821e1">ConfigReader::VERBOSE</a></div><div class="ttdef"><b>Definition:</b> ConfigReader.h:49</div></div>
-<div class="ttc" id="aclass_config_reader_html_a7f06458e63c8578a93bffffdf1fcd11a"><div class="ttname"><a href="class_config_reader.html#a7f06458e63c8578a93bffffdf1fcd11a">ConfigReader::printDebugMessage</a></div><div class="ttdeci">static void printDebugMessage(const char *message)</div><div class="ttdef"><b>Definition:</b> ConfigReader.cpp:158</div></div>
-<div class="ttc" id="aclass_config_reader_html_af9f372489781d17cb117d72ad90ed3b2"><div class="ttname"><a href="class_config_reader.html#af9f372489781d17cb117d72ad90ed3b2">ConfigReader::m_debugLevel</a></div><div class="ttdeci">DebugLevel m_debugLevel</div><div class="ttdef"><b>Definition:</b> ConfigReader.h:54</div></div>
-<div class="ttc" id="aclass_config_reader_html_adee445654c84d6f4ef5152c57e58e344a3dd5dbd1d3a85df6224a8310c88efdb4"><div class="ttname"><a href="class_config_reader.html#adee445654c84d6f4ef5152c57e58e344a3dd5dbd1d3a85df6224a8310c88efdb4">ConfigReader::NO_OUTPUT</a></div><div class="ttdef"><b>Definition:</b> ConfigReader.h:47</div></div>
-<div class="ttc" id="aclass_config_reader_html_adee445654c84d6f4ef5152c57e58e344a2990b16a0723f854fef5ca5c4d72a7b4"><div class="ttname"><a href="class_config_reader.html#adee445654c84d6f4ef5152c57e58e344a2990b16a0723f854fef5ca5c4d72a7b4">ConfigReader::NOT_IN_LOOPS</a></div><div class="ttdef"><b>Definition:</b> ConfigReader.h:48</div></div>
-<div class="ttc" id="aclass_config_reader_html_adee445654c84d6f4ef5152c57e58e344"><div class="ttname"><a href="class_config_reader.html#adee445654c84d6f4ef5152c57e58e344">ConfigReader::DebugLevel</a></div><div class="ttdeci">DebugLevel</div><div class="ttdef"><b>Definition:</b> ConfigReader.h:45</div></div>
-<div class="ttc" id="aclass_config_reader_html_a3855aa7d97aafe6160357e95cd44f973"><div class="ttname"><a href="class_config_reader.html#a3855aa7d97aafe6160357e95cd44f973">ConfigReader::getStringFromStartupConfig</a></div><div class="ttdeci">std::string getStringFromStartupConfig(std::string mapKeyIn)</div><div class="ttdef"><b>Definition:</b> ConfigReader.cpp:25</div></div>
+<div class="ttc" id="a_config_dll_export_motion_hub_util_8h_html_a9168c0de7bea215e119ca8c15f3b4df7"><div class="ttname"><a href="_config_dll_export_motion_hub_util_8h.html#a9168c0de7bea215e119ca8c15f3b4df7">MotionHubUtil_DLL_import_export</a></div><div class="ttdeci">#define MotionHubUtil_DLL_import_export</div><div class="ttdef"><b>Definition:</b> ConfigDllExportMotionHubUtil.h:2</div></div>
+<div class="ttc" id="aclass_config_reader_html_aa31cd1bd4a5649dd5fea615a142fbb0e"><div class="ttname"><a href="class_config_reader.html#aa31cd1bd4a5649dd5fea615a142fbb0e">ConfigReader::m_startupConfig</a></div><div class="ttdeci">std::map&lt; std::string, std::string &gt; m_startupConfig</div><div class="ttdef"><b>Definition:</b> ConfigReader.h:30</div></div>
+<div class="ttc" id="a_config_dll_export_motion_hub_util_8h_html"><div class="ttname"><a href="_config_dll_export_motion_hub_util_8h.html">ConfigDllExportMotionHubUtil.h</a></div></div>
+<div class="ttc" id="aclass_config_reader_html"><div class="ttname"><a href="class_config_reader.html">ConfigReader</a></div><div class="ttdef"><b>Definition:</b> ConfigReader.h:15</div></div>
+<div class="ttc" id="aclass_config_reader_html_af9f372489781d17cb117d72ad90ed3b2"><div class="ttname"><a href="class_config_reader.html#af9f372489781d17cb117d72ad90ed3b2">ConfigReader::m_debugLevel</a></div><div class="ttdeci">DebugLevel m_debugLevel</div><div class="ttdef"><b>Definition:</b> ConfigReader.h:31</div></div>
+<div class="ttc" id="atinyxml2_8h_html"><div class="ttname"><a href="tinyxml2_8h.html">tinyxml2.h</a></div></div>
+<div class="ttc" id="aclass_config_reader_html_adee445654c84d6f4ef5152c57e58e344a3dd5dbd1d3a85df6224a8310c88efdb4"><div class="ttname"><a href="class_config_reader.html#adee445654c84d6f4ef5152c57e58e344a3dd5dbd1d3a85df6224a8310c88efdb4">ConfigReader::NO_OUTPUT</a></div><div class="ttdef"><b>Definition:</b> ConfigReader.h:24</div></div>
+<div class="ttc" id="aclass_config_reader_html_adee445654c84d6f4ef5152c57e58e344a2990b16a0723f854fef5ca5c4d72a7b4"><div class="ttname"><a href="class_config_reader.html#adee445654c84d6f4ef5152c57e58e344a2990b16a0723f854fef5ca5c4d72a7b4">ConfigReader::NOT_IN_LOOPS</a></div><div class="ttdef"><b>Definition:</b> ConfigReader.h:25</div></div>
+<div class="ttc" id="aclass_config_reader_html_adee445654c84d6f4ef5152c57e58e344"><div class="ttname"><a href="class_config_reader.html#adee445654c84d6f4ef5152c57e58e344">ConfigReader::DebugLevel</a></div><div class="ttdeci">DebugLevel</div><div class="ttdef"><b>Definition:</b> ConfigReader.h:22</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

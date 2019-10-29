@@ -1,0 +1,11 @@
+digraph "src/TrackerManagement" {
+  compound=true
+  node [ fontsize="10", fontname="Helvetica"];
+  edge [ labelfontsize="10", labelfontname="Helvetica"];
+  subgraph clusterdir_68267d1309a1af8e8297ef4c3efbcdba {
+    graph [ bgcolor="#ddddee", pencolor="black", label="src" fontname="Helvetica", fontsize="10", URL="dir_68267d1309a1af8e8297ef4c3efbcdba.html"]
+  dir_e3fd89a57cdae034d7aa0e28cf438a8d [shape=box, label="TrackerManagement", style="filled", fillcolor="#eeeeff", pencolor="black", URL="dir_e3fd89a57cdae034d7aa0e28cf438a8d.html"];
+  }
+  dir_b4817ea3b0dc3a781298faaa4ae67ebf [shape=box label="MotionHubUtil" URL="dir_b4817ea3b0dc3a781298faaa4ae67ebf.html"];
+  dir_e3fd89a57cdae034d7aa0e28cf438a8d->dir_b4817ea3b0dc3a781298faaa4ae67ebf [headlabel="3", labeldistance=1.5 headhref="dir_000006_000004.html"];
+}

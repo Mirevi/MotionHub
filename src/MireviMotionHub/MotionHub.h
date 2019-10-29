@@ -24,6 +24,14 @@ class MotionHub
 {
 
 public:
+	/*!
+	 * 
+	 * default constructor
+	 * inititalizes all member objects and starts threads
+	 * 
+	 * \param argc
+	 * \param argv
+	 */
 	MotionHub(int argc, char** argv);
 	TrackerManager* getTrackerManager();
 	NetworkManager* getNetworkmanager();

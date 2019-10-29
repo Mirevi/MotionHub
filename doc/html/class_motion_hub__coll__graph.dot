@@ -1,0 +1,30 @@
+digraph "MotionHub"
+{
+ // LATEX_PDF_SIZE
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  Node1 [label="{MotionHub\n|- m_isTracking\l- m_argc\l- m_argv\l- m_threadInputLoop\l- m_threadTrackingLoop\l|+ MotionHub()\l+ getTrackerManager()\l+ getNetworkmanager()\l+ getGestureManager()\l+ getUiManager()\l+ getInputManager()\l+ isTracking()\l+ start()\l+ stop()\l- update()\l- inputLoop()\l}",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip="Hub for combining different body tracking solutions and sending position and rotation data of skeleto..."];
+  Node2 -> Node1 [color="grey25",fontsize="10",style="solid",label=" -m_uiManager" ,arrowhead="odiamond",fontname="Helvetica"];
+  Node2 [label="{UIManager\n|- m_app\l|+ UIManager()\l}",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_u_i_manager.html",tooltip=" "];
+  Node3 -> Node2 [color="grey25",fontsize="10",style="solid",label=" -m_refInputManager" ,arrowhead="odiamond",fontname="Helvetica"];
+  Node3 [label="{InputManager\n|- poolButtonState\l- m_isLocked\l- m_selectedTrackerIdInDropdown\l- m_selectedTrackerIdInList\l|+ InputManager()\l+ isButtonPressed()\l+ setButtonPressed()\l+ registerButton()\l+ getSelectedTrackerIdInDropdown()\l+ setSelectedTrackerIdInDropdown()\l+ getSelectedTrackerIdInList()\l+ setSelectedTrackerIdInList()\l}",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_input_manager.html",tooltip="container for input data"];
+  Node4 -> Node2 [color="grey25",fontsize="10",style="solid",label=" -m_mainWindow" ,arrowhead="odiamond",fontname="Helvetica"];
+  Node4 [label="{MainWindow\n|- ui\l- m_isTracking\l|+ MainWindow()\l+ ~MainWindow()\l- removeTrackerFromList()\l- on_actionExit_triggered()\l- startAllTracker()\l- addTracker()\l- removeTracker()\l}",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_main_window.html",tooltip="Qt main Window wrapper containing slot methods."];
+  Node5 -> Node4 [dir="back",color="midnightblue",fontsize="10",style="solid",arrowtail="onormal",fontname="Helvetica"];
+  Node5 [label="{QMainWindow\n||}",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled",tooltip=" "];
+  Node6 -> Node4 [color="grey25",fontsize="10",style="solid",label=" -m_createTrackerWindow" ,arrowhead="odiamond",fontname="Helvetica"];
+  Node6 [label="{CreateTrackerWindow\n|- ui\l- m_refListViewTracker\l|+ CreateTrackerWindow()\l+ ~CreateTrackerWindow()\l- createTracker()\l- switchTrackerType()\l}",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_create_tracker_window.html",tooltip="dialog for creating new trackers"];
+  Node7 -> Node6 [dir="back",color="midnightblue",fontsize="10",style="solid",arrowtail="onormal",fontname="Helvetica"];
+  Node7 [label="{QDialog\n||}",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled",tooltip=" "];
+  Node3 -> Node6 [color="grey25",fontsize="10",style="solid",label=" -m_refInputManager" ,arrowhead="odiamond",fontname="Helvetica"];
+  Node3 -> Node4 [color="grey25",fontsize="10",style="solid",label=" -m_refInputManager" ,arrowhead="odiamond",fontname="Helvetica"];
+  Node8 -> Node1 [color="grey25",fontsize="10",style="solid",label=" -m_configReader" ,arrowhead="odiamond",fontname="Helvetica"];
+  Node8 [label="{ConfigReader\n|- m_startupConfig\l- m_debugLevel\l|+ ConfigReader()\l+ ~ConfigReader()\l+ getDebugLevel()\l+ getStringFromStartupConfig()\l+ getFloatFromStartupConfig()\l+ getIntFromStartupConfig()\l+ getBoolFromStartupConfig()\l+ readConfigFile()\l+ printDebugMessage()\l}",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_config_reader.html",tooltip=" "];
+  Node9 -> Node1 [color="grey25",fontsize="10",style="solid",label=" -m_trackerManager" ,arrowhead="odiamond",fontname="Helvetica"];
+  Node9 [label="{TrackerManager\n|- m_poolTracker\l|+ TrackerManager()\l+ createTracker()\l+ removeTracker()\l+ getPoolTracker()\l}",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_tracker_manager.html",tooltip="Manager for all types of tracker."];
+  Node10 -> Node1 [color="grey25",fontsize="10",style="solid",label=" -m_networkManager" ,arrowhead="odiamond",fontname="Helvetica"];
+  Node10 [label="{NetworkManager\n|- poolSender\l|+ NetworkManager()\l+ sendSkeletonPool()\l}",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_network_manager.html",tooltip="Manager for different Network Sender and skeleton sending."];
+  Node3 -> Node1 [color="grey25",fontsize="10",style="solid",label=" -m_inputManager" ,arrowhead="odiamond",fontname="Helvetica"];
+  Node11 -> Node1 [color="grey25",fontsize="10",style="solid",label=" -m_gestureManager" ,arrowhead="odiamond",fontname="Helvetica"];
+  Node11 [label="{GestureManager\n||+ GestureManager()\l+ updateAllSkeletonPostures()\l}",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_gesture_manager.html",tooltip=" "];
+}

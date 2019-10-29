@@ -1,0 +1,7 @@
+digraph "Skeleton"
+{
+ // LATEX_PDF_SIZE
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  Node1 [label="{Skeleton\n|+ m_joints\l- m_sid\l- m_state\l- m_posture\l- m_height\l|+ Skeleton()\l+ Skeleton()\l+ parseJoint()\l+ getSid()\l+ getPosture()\l+ setPosture()\l+ getHeight()\l+ setHeight()\l}",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip="Default Skeleton with all Joint poses."];
+}
