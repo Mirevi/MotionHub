@@ -9,15 +9,19 @@ NetworkManager::NetworkManager()
 
 void NetworkManager::sendSkeletonPool(std::map<int, Skeleton*>* skeletonPool)
 {
-	for (auto itSkeletonPool = skeletonPool->begin(); itSkeletonPool != skeletonPool->end(); itSkeletonPool++)
+	if (skeletonPool != nullptr)
 	{
 
-		for (auto itSenderPool = poolSender.begin(); itSenderPool != poolSender.end(); itSenderPool++)
+		for (auto itSkeletonPool = skeletonPool->begin(); itSkeletonPool != skeletonPool->end(); itSkeletonPool++)
 		{
 
-			if ((*itSenderPool)->isActive())
+			for (auto itSenderPool = poolSender.begin(); itSenderPool != poolSender.end(); itSenderPool++)
 			{
-				(*itSenderPool)->sendSkeleton(itSkeletonPool->second, DEFAULT_URI);
+
+				if ((*itSenderPool)->isActive())
+				{
+					(*itSenderPool)->sendSkeleton(itSkeletonPool->second, DEFAULT_URI);
+				}
 			}
 		}
 	}

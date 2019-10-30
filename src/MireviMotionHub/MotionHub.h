@@ -33,17 +33,11 @@ public:
 	 * \param argv
 	 */
 	MotionHub(int argc, char** argv);
-	TrackerManager* getTrackerManager();
-	NetworkManager* getNetworkmanager();
-	GestureManager* getGestureManager();
-	UIManager* getUiManager();
-	InputManager* getInputManager();
-	bool isTracking();
-
-	void start();
-	void stop();
 
 private:
+	int m_argc;
+	char** m_argv;
+
 	ConfigReader* m_configReader;
 	TrackerManager* m_trackerManager;
 	GestureManager* m_gestureManager;
@@ -51,13 +45,15 @@ private:
 	UIManager* m_uiManager;
 	InputManager* m_inputManager;
 
-	bool m_isTracking;
-	void update();
-	int m_argc;
-	char** m_argv;
+	bool m_isTracking = false;
 
-	void inputLoop();
-	std::thread* m_threadInputLoop;
-	std::thread* m_threadTrackingLoop;
+	void start();
+
+	void update();
+	std::thread* m_updateThread;
+
+	void checkInput();
+
+	void stop();
 
 };

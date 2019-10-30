@@ -6,8 +6,6 @@ MotionHub::MotionHub(int argc, char** argv)
 	m_argc = argc;
 	m_argv = argv;
 
-	m_isTracking = false;
-
 	Console::printHeader();
 
 	m_configReader = new ConfigReader();
@@ -19,75 +17,124 @@ MotionHub::MotionHub(int argc, char** argv)
 	m_gestureManager = new GestureManager();
 	m_networkManager = new NetworkManager();
 
-	m_threadInputLoop = new std::thread(&MotionHub::inputLoop, this);
-	m_threadInputLoop->detach();
+	start();
 
 	m_uiManager = new UIManager(m_argc, m_argv, m_inputManager);
 
 }
 
-TrackerManager* MotionHub::getTrackerManager()
-{ 
-
-	return m_trackerManager; 
-
-}
-
-NetworkManager* MotionHub::getNetworkmanager()
+void MotionHub::start()
 {
 
-	return m_networkManager;
+	if(m_updateThread != nullptr)
+	{
+
+		m_updateThread = new std::thread(&MotionHub::update, this);
+		m_updateThread->detach();
+
+		Console::log("MotionHub::start(): Started update thread.");
+
+	}
+	else
+		Console::logError("MotionHub::start(): Can not start update thread. Thread is already running!");
 
 }
-
-GestureManager* MotionHub::getGestureManager()
-{
-
-	return m_gestureManager;
-
-}
-
 
 // motion hub loop
 void MotionHub::update()
 {
 
-	while (m_isTracking)
-	{	
+	while (true)
+	{
 
-		// tracker loop
-		for (auto itTracker = m_trackerManager->getPoolTracker()->begin(); itTracker != m_trackerManager->getPoolTracker()->end(); itTracker++)
+		checkInput();
+
+		if (m_isTracking)
 		{
-			
-			if (!itTracker->second->m_tracking)
+
+			// tracker loop
+			for (auto itTracker = m_trackerManager->getPoolTracker()->begin(); itTracker != m_trackerManager->getPoolTracker()->end(); itTracker++)
 			{
 
-				m_gestureManager->updateAllSkeletonPostures(&(itTracker->second->poolSkeletons));
-				m_networkManager->sendSkeletonPool(&(itTracker->second->poolSkeletons));
-				itTracker->second->start();
+				if (itTracker->second->isDataAvailable())
+				{
 
+					//m_gestureManager->updateAllSkeletonPostures(&(itTracker->second->m_skeletonPool));
+					m_networkManager->sendSkeletonPool(itTracker->second->getSkeletonPool());
+
+				}
 			}
 		}
 	}
 }
 
-void MotionHub::start()
+void MotionHub::checkInput()
 {
 
-	if (!m_isTracking)
+	if (m_inputManager->isButtonPressed(0))
 	{
-		
-		m_isTracking = true;
 
-		m_threadInputLoop = new std::thread(&MotionHub::update, this);
-		m_threadInputLoop->detach();
+		if (!m_isTracking)
+		{
 
-		Console::log("MotionHub::start(): Started tracking loop.");
+			m_trackerManager->startTracker();
+			m_isTracking = true;
 
+			Console::log("MotionHub::checkInput(): Started tracking.");
+
+		}
+		else
+		{
+
+			m_trackerManager->stopTracker();
+			m_isTracking = false;
+
+			Console::log("MotionHub::checkInput(): Stopped tracking.");
+
+		}
 	}
-	else
-		Console::logError("MotionHub::start(): Can not start tracking loop. Thread is already running!");
 
+	if (m_inputManager->isButtonPressed(1))
+	{
+
+		bool wasTracking = m_isTracking;
+
+		// stop tracking loop if running
+		if (m_isTracking)
+		{
+
+			stop();
+
+		}
+
+		m_trackerManager->removeTracker(m_inputManager->getSelectedTrackerIdInList());
+
+		// start tracking loop if it was running
+		if (wasTracking)
+		{
+
+			start();
+
+		}
+	}
+
+	if (m_inputManager->isButtonPressed(2))
+	{
+
+		switch (m_inputManager->getSelectedTrackerIdInDropdown())
+		{
+
+			case 0:
+				Console::log("MotionHub::checkInput(): Creating Azure Kinect tracker ...");
+				m_trackerManager->createTracker(TrackerManager::AKT);
+				break;
+
+			default:
+				Console::logError("MotionHub::checkInput(): Tracker type not yet implemented.");
+				break;
+
+		}
+	}
 }
 
 void MotionHub::stop()
@@ -97,85 +144,4 @@ void MotionHub::stop()
 
 	Console::log("MotionHub::start(): Stopped tracking loop.");
 
-}
-
-UIManager* MotionHub::getUiManager()
-{
-
-	return m_uiManager;
-
-}
-
-InputManager* MotionHub::getInputManager()
-{
-
-	return m_inputManager;
-
-}
-
-bool MotionHub::isTracking()
-{
-
-	return m_isTracking;
-
-}
-
-void MotionHub::inputLoop()
-{
-
-	Console::log("MotionHub::inputLoop(): Started input loop.");
-
-	// input loop
-	while (true)
-	{
-
-		if (m_inputManager->isButtonPressed(0))
-		{
-
-			if (!m_isTracking)
-				start();
-			else
-				stop();
-
-		}
-
-		if (m_inputManager->isButtonPressed(1))
-		{
-
-			bool wasTracking = m_isTracking;
-
-			// stop tracking loop if running
-			if (m_isTracking)
-			{
-
-				stop();
-
-			}
-
-			m_trackerManager->removeTracker(m_inputManager->getSelectedTrackerIdInList());
-
-			// start tracking loop if it was running
-			if (wasTracking)
-			{
-
-				start();
-
-			}
-		}
-
-		if (m_inputManager->isButtonPressed(2))
-		{
-			switch (m_inputManager->getSelectedTrackerIdInDropdown())
-			{
-				case 0:
-					m_trackerManager->createTracker(TrackerManager::AKT);
-					break;
-
-				default:
-					Console::logError("MotionHub::inputLoop(): Tracker type not yet implemented.");
-					break;
-
-			}
-		}
-	}
 }

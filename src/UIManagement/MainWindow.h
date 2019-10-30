@@ -76,4 +76,6 @@ private:
 	 *  tracking state for changing icon
 	 */
 	bool m_isTracking = false;
+
+	void toggleIconStartButton();
 };

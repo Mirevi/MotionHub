@@ -30,9 +30,9 @@ void TrackerManager::createTracker(TypeTracker type)
 				}
 			}
 
-			m_poolTracker.insert({ { AKT, idCam }, new AKTracker(K4A_DEVICE_CONFIG_INIT_DISABLE_ALL, idCam) });
+			m_poolTracker.insert({ { AKT, idCam }, new AKTracker(idCam) });
 
-			Console::log("TrackerManager::createTracker(): Created AKTracker with cam id = " + std::to_string(idCam) + ".");
+			Console::log("TrackerManager::createTracker(): Created Azure Kinect tracker with cam id = " + std::to_string(idCam) + ".");
 
 			break;
 
@@ -66,11 +66,27 @@ void TrackerManager::removeTracker(int idToRemove)
 		}
 	}
 
-	m_poolTracker.at(key)->shutdown();
+	m_poolTracker.at(key)->destroy();
 	m_poolTracker.erase(key);
 
 	Console::log("TrackerManager::removeTracker(): Removed tracker with id = " + std::to_string(key.second) + ".");
 
+}
+
+void TrackerManager::startTracker()
+{
+	for (auto itTracker = m_poolTracker.begin(); itTracker != m_poolTracker.end(); itTracker++)
+	{
+		itTracker->second->start();
+	}
+}
+
+void TrackerManager::stopTracker()
+{
+	for (auto itTracker = m_poolTracker.begin(); itTracker != m_poolTracker.end(); itTracker++)
+	{
+		itTracker->second->stop();
+	}
 }
 
 std::map<std::pair<TrackerManager::TypeTracker, int>, Tracker*>* TrackerManager::getPoolTracker()

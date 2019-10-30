@@ -3,6 +3,13 @@
 Tracker::Tracker()
 {
 
+	init();
+
+}
+
+void Tracker::init()
+{
+
 
 
 }
@@ -10,32 +17,68 @@ Tracker::Tracker()
 void Tracker::start()
 {
 
-	m_tracking = true;
+	m_isTracking = true;
 
-	trackThread = new std::thread(&Tracker::track, this);
-	trackThread->detach();
-
-	//Console::log("Started tracking thread.");
-
-}
-
-void Tracker::stop()
-{
-
-	m_tracking = false;
+	trackingThread = new std::thread(&Tracker::track, this);
+	trackingThread->detach();
 
 }
 
 void Tracker::track()
 {
 
-	stop();
+	while (m_isTracking)
+	{
+
+		if (!m_isDataAvailable)
+			update();
+
+	}
+}
+
+void Tracker::update()
+{
+
+	m_isDataAvailable = true;
 
 }
 
-void Tracker::shutdown()
+void Tracker::stop()
 {
 
+	m_isTracking = false;
 
+}
 
+void Tracker::destroy()
+{
+
+	delete this;
+
+}
+
+bool Tracker::isDataAvailable()
+{
+
+	return m_isDataAvailable;
+
+}
+
+std::map<int, Skeleton*>* Tracker::getSkeletonPool()
+{
+
+	if (m_isDataAvailable)
+	{
+
+		m_isDataAvailable = false;
+		return &m_skeletonPool;
+
+	}
+	else
+	{
+
+		Console::logError("Tracker::getSkeletonPool(): No new data available!");
+		return nullptr;
+
+	}
 }

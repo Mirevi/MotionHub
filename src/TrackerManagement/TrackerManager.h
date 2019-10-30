@@ -51,6 +51,9 @@ public:
 	 */
 	void removeTracker(int idToRemove);
 
+	void startTracker();
+	void stopTracker();
+
 	std::map<std::pair<TypeTracker, int>, Tracker*>* getPoolTracker();
 
 private:

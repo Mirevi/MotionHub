@@ -22,39 +22,53 @@ public:
 	 * default constructor 
 	 */
 	Tracker();
-	/*!
-	 * true when Tracker is active
-	 */
-	bool m_tracking = false;
 
 	/*!
 	 * starts Tracker in new temporary thread
 	 */
-	virtual void start();
+	virtual void start() = 0;
+
 	/*!
 	 *  sets m_tracking to false
 	 */
-	virtual void stop();
+	virtual void stop() = 0;
 
-	/*!
-	 * main tracking method
-	 * captures one frame of body tracking data and saves all data in the skeleton pool 
-	 */
-	virtual void track();
 	/*!
 	 * resets the Trackers init data
 	 */
-	virtual void shutdown();
+	virtual void destroy() = 0;
+
+	virtual std::map<int, Skeleton*>* getSkeletonPool();
+
+	virtual bool isDataAvailable();
+
+protected:
 
 	/*!
-	 * pool containing all skeletons detected by this Tracker 
+	 * true when Tracker is active
 	 */
-	std::map<int, Skeleton*> poolSkeletons;
+	bool m_isTracking = false;
 
-private:
+	bool m_isDataAvailable = false;
+
+	virtual void init() = 0;
+
 	/*!
-	 * thread for track() method 
+	 * thread for track() method
 	 */
-	std::thread* trackThread;
+	std::thread* trackingThread;
+
+	virtual void track() = 0;
+
+	/*!
+	 * main tracking method
+	 * captures one frame of body tracking data and saves all data in the skeleton pool
+	 */
+	virtual void update() = 0;
+
+	/*!
+	 * pool containing all skeletons detected by this Tracker
+	 */
+	std::map<int, Skeleton*> m_skeletonPool;
 
 };

@@ -26,26 +26,25 @@ void MainWindow::on_actionExit_triggered()
 void MainWindow::startAllTracker()
 {
 
-	QIcon icon;
-
-	if (!m_isTracking)
-	{
-
-		icon.addFile(QStringLiteral(":/ressources/icons/icons8-stop-30.png"), QSize(), QIcon::Normal, QIcon::Off);
-
-	}
-	else
-	{
-
-		icon.addFile(QStringLiteral(":/ressources/icons/icons8-play-32.png"), QSize(), QIcon::Normal, QIcon::Off);
-	
-	}
+	toggleIconStartButton();
 
 	m_isTracking = !m_isTracking;
 
-	ui->btn_startTracker->setIcon(icon);
-
 	m_refInputManager->setButtonPressed(0, 1);
+
+}
+
+void MainWindow::toggleIconStartButton()
+{
+
+	QIcon icon;
+
+	if (!m_isTracking)
+		icon.addFile(QStringLiteral(":/ressources/icons/icons8-stop-30.png"), QSize(), QIcon::Normal, QIcon::Off);
+	else
+		icon.addFile(QStringLiteral(":/ressources/icons/icons8-play-32.png"), QSize(), QIcon::Normal, QIcon::Off);
+
+	ui->btn_startTracker->setIcon(icon);
 
 }
 
@@ -107,6 +106,8 @@ void MainWindow::removeTracker()
 
 		// remove tracker from list
 		removeTrackerFromList(idToRemove);
+
+		//toggleIconStartButton();
 
 	}
 }

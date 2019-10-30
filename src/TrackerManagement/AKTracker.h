@@ -30,34 +30,34 @@ class AKTracker : public Tracker
 {
 
 public:
-
-	/*!
-	 * default constructor
-	 * init with DISABLE_ALL
-	 */
-	AKTracker();
+	
 	/*!
 	 * constructor with config
-	 * \param configDevice config settings
 	 * \param idCam the cameras id number
 	 */
-	AKTracker(k4a_device_configuration_t configDevice, int idCam);
+	AKTracker(int idCam);
+
 	/*!
 	 * calls the start() method of the base class which sets m_tracking to true 
 	 */
-	void start();
+	void start() override;
 
 	/*!
 	* executes the stop() method of the base class which sets m_tracking to false
 	*/
-	void stop();
+	void stop() override;
 
 	/*!
 	 * stops and closes tracker and camera
 	 */
-	void shutdown();
+	void destroy() override;
 
 private:
+
+	/*!
+	 * default constructor
+	 */
+	AKTracker();
 
 	/*!
 	 * id of the Azure Kinect Camera
@@ -96,23 +96,25 @@ private:
 	
 	/*!
 	 * initializes the camera, must only be called once in the beginning
-	 * stop() resets all initialization 
+	 * stop() resets all initialization
 	 * \param configDevice configuration parameters, standart: DISABLE_ALL
 	 */
-	void init(k4a_device_configuration_t configDevice);
+	void init() override;
+
+	void track() override;
 
 	/*!
 	 * starts tracking by getting the capture result and body frame
 	 * calls updateSkeletons(...)
 	 */
-	void track();
+	void update() override;
 
 	/*!
 	 * gets the current skeleton data from the current body frame
 	 * pushes new skeleton into the pool or updates existing one
 	 * \param body_frame
 	 */
-	void updateSkeletons(k4abt_frame_t* body_frame);
+	void extractSkeleton(k4abt_frame_t* body_frame);
 
 	/*!
 	 *convertes k4a skeleton to default skeleton
