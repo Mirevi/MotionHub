@@ -19,8 +19,8 @@ void Tracker::start()
 
 	m_isTracking = true;
 
-	trackingThread = new std::thread(&Tracker::track, this);
-	trackingThread->detach();
+	m_trackingThread = new std::thread(&Tracker::track, this);
+	m_trackingThread->detach();
 
 }
 
@@ -47,6 +47,7 @@ void Tracker::stop()
 {
 
 	m_isTracking = false;
+	m_trackingThread->join();
 
 }
 
@@ -64,16 +65,18 @@ bool Tracker::isDataAvailable()
 
 }
 
+void Tracker::resetIsDataAvailable()
+{
+
+	m_isDataAvailable = false;
+
+}
+
 std::map<int, Skeleton*>* Tracker::getSkeletonPool()
 {
 
 	if (m_isDataAvailable)
-	{
-
-		m_isDataAvailable = false;
 		return &m_skeletonPool;
-
-	}
 	else
 	{
 

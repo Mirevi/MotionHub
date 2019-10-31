@@ -81,11 +81,11 @@ private:
 	 * values: 0 = not pressed, 1 = pressed
 	 *
 	 */
-	std::map<int, int>* poolButtonState;
+	std::map<int, int>* m_poolButtonState;
 	/*!
 	 * toggle for write and read rights
 	 */
-	bool m_isLocked;
+	bool m_isLocked = true;
 	/*!
 	 * selected tracker id in create tracker dialog  
 	 */

@@ -7,55 +7,61 @@ TrackerManager::TrackerManager()
 
 }
 
-void TrackerManager::createTracker(TypeTracker type)
+// create new tracker based on the tracker type
+void TrackerManager::createTracker(TrackerType type)
 {
 
-	// error handling in method -> work with pointers
+	Console::log("TrackerManager::createTracker(): Creating tracker ...");
 
-	int idCam = 0;
+	// get the next tracker id based on the tracker count
+	int id = m_trackerPool.size();
+	// var for azure kinect tracker id calculation
+	int nextCamIdAk = 0;
 
+	// create new tracker based on the tracker type
 	switch (type)
 	{
 
+		// azure kinect
 		case AKT:
 
-			for (auto itPoolTracker = m_poolTracker.begin(); itPoolTracker != m_poolTracker.end(); itPoolTracker++)
+			// get next azure kinect camera id
+			for (auto itPoolTracker = m_trackerPool.begin(); itPoolTracker != m_trackerPool.end(); itPoolTracker++)
 			{
 
 				if (itPoolTracker->first.first == AKT)
 				{
 
-					idCam = itPoolTracker->first.second + 1;
+					nextCamIdAk = itPoolTracker->first.second + 1;
 
 				}
-			}
+			}			
 
-			m_poolTracker.insert({ { AKT, idCam }, new AKTracker(idCam) });
+			// create new azure kinect tracker and insert the tracker in the tracker pool
+			m_trackerPool.insert({ { AKT, id }, new AKTracker(nextCamIdAk) });
 
-			Console::log("TrackerManager::createTracker(): Created Azure Kinect tracker with cam id = " + std::to_string(idCam) + ".");
-
-			break;
-
-		case XST:
-
-			//poolTracker.insert({ "NULL", new XSTracker() });
-
-			Console::log("Created tracker: XSTracker.");
+			Console::log("TrackerManager::createTracker(): Created Azure Kinect tracker with cam id = " + std::to_string(nextCamIdAk) + ".");
 
 			break;
 
 		default:
+			Console::log("TrackerManager::createTracker(): Can not create tracker. Unknown tracker type!");
 			break;
 
 	}
 }
 
+// remove tracker with id from the tracker pool
 void TrackerManager::removeTracker(int idToRemove)
 {
 
-	std::pair<TypeTracker, int> key;
+	Console::log("MotionHub::checkInput(): Removing tracker ...");
 
-	for (auto itPoolTracker = m_poolTracker.begin(); itPoolTracker != m_poolTracker.end(); itPoolTracker++)
+	// key for tracker identification
+	std::pair<TrackerType, int> key;
+
+	// get key of tracker with id
+	for (auto itPoolTracker = m_trackerPool.begin(); itPoolTracker != m_trackerPool.end(); itPoolTracker++)
 	{
 
 		if (itPoolTracker->first.second == idToRemove)
@@ -66,32 +72,47 @@ void TrackerManager::removeTracker(int idToRemove)
 		}
 	}
 
-	m_poolTracker.at(key)->destroy();
-	m_poolTracker.erase(key);
+	// destroy tracker with key
+	m_trackerPool.at(key)->destroy();
+	// remove tracker with key from tracker pool
+	m_trackerPool.erase(key);
 
 	Console::log("TrackerManager::removeTracker(): Removed tracker with id = " + std::to_string(key.second) + ".");
 
 }
 
+// start all tracker in the tracker pool
 void TrackerManager::startTracker()
 {
-	for (auto itTracker = m_poolTracker.begin(); itTracker != m_poolTracker.end(); itTracker++)
+
+	Console::log("TrackerManager::startTracker(): Starting all tracker ...");
+
+	for (auto itTracker = m_trackerPool.begin(); itTracker != m_trackerPool.end(); itTracker++)
 	{
 		itTracker->second->start();
 	}
+
+	Console::log("TrackerManager::startTracker(): Started all tracker.");
 }
 
+// stop all tracker in the tracker pool
 void TrackerManager::stopTracker()
 {
-	for (auto itTracker = m_poolTracker.begin(); itTracker != m_poolTracker.end(); itTracker++)
+
+	Console::log("TrackerManager::stopTracker(): Stopping all tracker ...");
+
+	for (auto itTracker = m_trackerPool.begin(); itTracker != m_trackerPool.end(); itTracker++)
 	{
 		itTracker->second->stop();
 	}
+
+	Console::log("TrackerManager::stopTracker(): Stopped all tracker.");
 }
 
-std::map<std::pair<TrackerManager::TypeTracker, int>, Tracker*>* TrackerManager::getPoolTracker()
+// return refference pointer to the tracker poll
+std::map<std::pair<TrackerManager::TrackerType, int>, Tracker*>* TrackerManager::getPoolTracker()
 {
 
-	return &m_poolTracker;
+	return &m_trackerPool;
 
 }

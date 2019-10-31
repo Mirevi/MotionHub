@@ -41,6 +41,7 @@ public:
 	virtual std::map<int, Skeleton*>* getSkeletonPool();
 
 	virtual bool isDataAvailable();
+	virtual void resetIsDataAvailable();
 
 protected:
 
@@ -56,7 +57,7 @@ protected:
 	/*!
 	 * thread for track() method
 	 */
-	std::thread* trackingThread;
+	std::thread* m_trackingThread;
 
 	virtual void track() = 0;
 

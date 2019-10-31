@@ -557,10 +557,13 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
              <bool>false</bool>
             </property>
             <property name="frameShape">
-             <enum>QFrame::Box</enum>
+             <enum>QFrame::StyledPanel</enum>
             </property>
             <property name="frameShadow">
              <enum>QFrame::Plain</enum>
+            </property>
+            <property name="lineWidth">
+             <number>1</number>
             </property>
             <widget class="QLabel" name="label_hirachy">
              <property name="geometry">
@@ -584,6 +587,12 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
               <horstretch>0</horstretch>
               <verstretch>1</verstretch>
              </sizepolicy>
+            </property>
+            <property name="frameShape">
+             <enum>QFrame::NoFrame</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Plain</enum>
             </property>
            </widget>
           </item>
@@ -643,10 +652,13 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
              <bool>false</bool>
             </property>
             <property name="frameShape">
-             <enum>QFrame::Box</enum>
+             <enum>QFrame::StyledPanel</enum>
             </property>
             <property name="frameShadow">
              <enum>QFrame::Plain</enum>
+            </property>
+            <property name="lineWidth">
+             <number>1</number>
             </property>
             <widget class="QLabel" name="label_trackerInfo">
              <property name="geometry">
@@ -664,9 +676,9 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
             <widget class="QPushButton" name="btn_addTracker">
              <property name="geometry">
               <rect>
-               <x>140</x>
+               <x>10</x>
                <y>20</y>
-               <width>40</width>
+               <width>60</width>
                <height>20</height>
               </rect>
              </property>
@@ -675,9 +687,12 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
              </property>
             </widget>
             <widget class="QPushButton" name="btn_removeTracker">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
              <property name="geometry">
               <rect>
-               <x>190</x>
+               <x>80</x>
                <y>20</y>
                <width>60</width>
                <height>20</height>
@@ -690,11 +705,17 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
             <widget class="QPushButton" name="btn_startTracker">
              <property name="geometry">
               <rect>
-               <x>100</x>
-               <y>20</y>
-               <width>20</width>
-               <height>20</height>
+               <x>180</x>
+               <y>10</y>
+               <width>30</width>
+               <height>30</height>
               </rect>
+             </property>
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
              </property>
              <property name="text">
               <string/>
@@ -702,6 +723,9 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
              <property name="icon">
               <iconset resource="MainWindow.qrc">
                <normaloff>:/ressources/icons/icons8-play-32.png</normaloff>:/ressources/icons/icons8-play-32.png</iconset>
+             </property>
+             <property name="flat">
+              <bool>false</bool>
              </property>
             </widget>
            </widget>
@@ -716,6 +740,12 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
             </property>
             <property name="whatsThis">
              <string/>
+            </property>
+            <property name="frameShape">
+             <enum>QFrame::NoFrame</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Plain</enum>
             </property>
             <property name="lineWidth">
              <number>1</number>
@@ -746,10 +776,13 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
              <bool>false</bool>
             </property>
             <property name="frameShape">
-             <enum>QFrame::Box</enum>
+             <enum>QFrame::StyledPanel</enum>
             </property>
             <property name="frameShadow">
              <enum>QFrame::Plain</enum>
+            </property>
+            <property name="lineWidth">
+             <number>1</number>
             </property>
             <widget class="QLabel" name="label_inspektor">
              <property name="geometry">
@@ -759,6 +792,12 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
                <width>241</width>
                <height>21</height>
               </rect>
+             </property>
+             <property name="frameShape">
+              <enum>QFrame::NoFrame</enum>
+             </property>
+             <property name="frameShadow">
+              <enum>QFrame::Plain</enum>
              </property>
              <property name="text">
               <string>Inspektor</string>
@@ -788,33 +827,11 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
       </item>
       <item>
        <widget class="Line" name="line_borderTimeline">
+        <property name="lineWidth">
+         <number>2</number>
+        </property>
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QWidget" name="widget_timeline" native="true">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>1920</width>
-          <height>216</height>
-         </size>
-        </property>
-        <property name="autoFillBackground">
-         <bool>false</bool>
         </property>
        </widget>
       </item>
@@ -836,10 +853,38 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
          <bool>false</bool>
         </property>
         <property name="frameShape">
-         <enum>QFrame::Box</enum>
+         <enum>QFrame::StyledPanel</enum>
         </property>
         <property name="frameShadow">
          <enum>QFrame::Plain</enum>
+        </property>
+        <property name="lineWidth">
+         <number>1</number>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QWidget" name="widget_timeline" native="true">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>1920</width>
+          <height>128</height>
+         </size>
+        </property>
+        <property name="autoFillBackground">
+         <bool>false</bool>
         </property>
        </widget>
       </item>
@@ -905,8 +950,8 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
    <slot>startAllTracker()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1742</x>
-     <y>58</y>
+     <x>1221</x>
+     <y>72</y>
     </hint>
     <hint type="destinationlabel">
      <x>1659</x>
@@ -921,8 +966,8 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
    <slot>addTracker()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1820</x>
-     <y>50</y>
+     <x>1081</x>
+     <y>72</y>
     </hint>
     <hint type="destinationlabel">
      <x>1800</x>
@@ -937,8 +982,8 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
    <slot>removeTracker()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1874</x>
-     <y>47</y>
+     <x>1151</x>
+     <y>72</y>
     </hint>
     <hint type="destinationlabel">
      <x>1767</x>

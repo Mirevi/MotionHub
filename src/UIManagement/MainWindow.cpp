@@ -1,39 +1,56 @@
 #include "MainWindow.h"
 #include "ui_mainwindow.h"
 
+// default constructor
 MainWindow::MainWindow(InputManager* inputManager, QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
 
+	// setup base class
 	ui->setupUi(this);
 
+	// assign reference to input manager
 	m_refInputManager = inputManager;
 
-	m_refInputManager->registerButton(0); //Button: startAllTracker
-	m_refInputManager->registerButton(1); //Button: removeTracker
+	// register buttons of the window in input manager
+	m_refInputManager->registerButton(0); // button: startAllTracker
+	m_refInputManager->registerButton(1); // button: removeTracker
 
 }
 
+// default destructor
 MainWindow::~MainWindow()
 {
+
+	// delete ui
 	delete ui;
+
 }
 
+// SLOT: close window / application
 void MainWindow::on_actionExit_triggered()
 {
+
+	// close window
 	this->close();
+
 }
 
+// SLOT: start all tracker
 void MainWindow::startAllTracker()
 {
 
+	// toggle icon
 	toggleIconStartButton();
 
+	// set tracking
 	m_isTracking = !m_isTracking;
 
+	// set button start / stop pressed
 	m_refInputManager->setButtonPressed(0, 1);
 
 }
 
+// toogle icon of start / stop tracking button
 void MainWindow::toggleIconStartButton()
 {
 
@@ -48,29 +65,36 @@ void MainWindow::toggleIconStartButton()
 
 }
 
+// SLOT: add new tracker
 void MainWindow::addTracker()
 {
 	
-
+	// create dialog for creating new tracker
 	m_createTrackerWindow = new CreateTrackerWindow(m_refInputManager, ui->listView_tracker);
 	
+	// set modal and execute
 	m_createTrackerWindow->setModal(true);
 	m_createTrackerWindow->exec();
 
+
 }
 
+// SLOT: remove tracker button
 void MainWindow::removeTracker()
 {
 
+	// id of tracker to remove
 	int idToRemove = -1;
 
+	// check if tracker exist in list
 	if (ui->listView_tracker->selectionModel() != NULL)
 	{
 
+		// check if user selected tracker
 		if (ui->listView_tracker->selectionModel()->selectedIndexes().count() == 0)
 		{
 
-			Console::logError("MainWindow::removeTracker(): No tracker in list selected!");
+			Console::logWarning("MainWindow::removeTracker(): No tracker in list selected!");
 			return;
 
 		}
@@ -107,19 +131,21 @@ void MainWindow::removeTracker()
 		// remove tracker from list
 		removeTrackerFromList(idToRemove);
 
-		//toggleIconStartButton();
-
 	}
 }
 
+// remove tracker with id from list
 void MainWindow::removeTrackerFromList(int id)
 {
 
+	// create new model and list
 	QStringListModel* model = new QStringListModel(this);
 	QStringList stringList;
 
+	// create and get old model
 	QAbstractItemModel* oldModel = ui->listView_tracker->model();
 
+	// add old model data to list
 	if (oldModel != nullptr)
 	{
 		for (size_t i = 0; i < oldModel->rowCount(); ++i)
@@ -130,7 +156,9 @@ void MainWindow::removeTrackerFromList(int id)
 		}
 	}
 
+	// fill new model
 	model->setStringList(stringList);
+	// set model
 	ui->listView_tracker->setModel(model);
 
 }

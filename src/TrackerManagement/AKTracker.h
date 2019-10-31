@@ -55,11 +55,6 @@ public:
 private:
 
 	/*!
-	 * default constructor
-	 */
-	AKTracker();
-
-	/*!
 	 * id of the Azure Kinect Camera
 	 * k4a SDK assigns the ids internally and automatically
 	 * if only one camera is connected, this id should be 0

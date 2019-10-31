@@ -47,13 +47,14 @@ private:
 
 	bool m_isTracking = false;
 
-	void start();
+	void startUpdateThread();
 
 	void update();
-	std::thread* m_updateThread;
+	std::thread* m_updateThread = nullptr;
 
-	void checkInput();
+	void processInput();
 
-	void stop();
+	void startTracking();
+	void stopTracking();
 
 };

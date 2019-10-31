@@ -1,24 +1,29 @@
 #include "InputManager.h"
 
+// default constructor
 InputManager::InputManager()
 {
 
-	m_isLocked = false;
-
-	poolButtonState = new std::map<int, int>;
+	m_isLocked;
+	// create new map with button state and id
+	m_poolButtonState = new std::map<int, int>;
 
 
 }
 
+// get the state of a button with id
 bool InputManager::isButtonPressed(int buttonId)
 {
 	
+	// get state if locked is false
 	if (!m_isLocked)
 	{
 
-		if (!(poolButtonState->find(buttonId) == poolButtonState->end()) && poolButtonState->at(buttonId))
+		// check if button exists in pool and is pressed
+		if (!(m_poolButtonState->find(buttonId) == m_poolButtonState->end()) && m_poolButtonState->at(buttonId) == 1)
 		{
 
+			// reset button state to none
 			setButtonPressed(buttonId, 0);
 			return true;
 
@@ -37,32 +42,41 @@ bool InputManager::isButtonPressed(int buttonId)
 	}
 }
 
+
+// set button with id to pressed true / false
 void InputManager::setButtonPressed(int buttonId, bool pressed)
 {
 
+	// lock in order to write state
 	m_isLocked = true;
 
-	if (!(poolButtonState->find(buttonId) == poolButtonState->end()))
+	// check if button exists in pool
+	if (!(m_poolButtonState->find(buttonId) == m_poolButtonState->end()))
 	{
 
-		poolButtonState->at(buttonId) = pressed;
+		// set state to argument "pressed" true / false
+		m_poolButtonState->at(buttonId) = pressed;
 		//Console::log("Button " + std::to_string(buttonId) + " set to " + std::to_string(pressed));
 
 	}
 	else
 		Console::logError("Unknown button id = " + std::to_string(buttonId) + ". Button is not registered!");
 
+	// unlock
 	m_isLocked = false;
 
 }
 
+// register button with id in button state pool
 void InputManager::registerButton(int buttonId)
 {
 
-	poolButtonState->insert( { buttonId, 0 } );
+	// insert button with id in pool and set state to none
+	m_poolButtonState->insert( { buttonId, 0 } );
 
 }
 
+// set tracker id selected in create new tracker dialog dropdown
 void InputManager::setSelectedTrackerIdInDropdown(int id)
 {
 
@@ -84,6 +98,7 @@ int InputManager::getSelectedTrackerIdInList()
 
 }
 
+// set tracker id selected in main window list
 void InputManager::setSelectedTrackerIdInList(int id) 
 {
 

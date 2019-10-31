@@ -32,7 +32,7 @@ public:
 	/*!
 	 * enum for all tracker types 
 	 */
-	enum TypeTracker 
+	enum TrackerType 
 	{
 		AKT,	// Azure Kinect Tracker
 		XST		// XSense Tracker
@@ -43,7 +43,7 @@ public:
 	 * 
 	 * \param type type of the tracker (Azure Kinect, XSense, ...)
 	 */
-	void createTracker(TypeTracker type);
+	void createTracker(TrackerType type);
 	/*!
 	 * removes a tracker from the pool
 	 * 
@@ -54,13 +54,13 @@ public:
 	void startTracker();
 	void stopTracker();
 
-	std::map<std::pair<TypeTracker, int>, Tracker*>* getPoolTracker();
+	std::map<std::pair<TrackerType, int>, Tracker*>* getPoolTracker();
 
 private:
 
 	/*!
 	 * pool of all created tracker 
 	 */
-	std::map<std::pair<TypeTracker, int>, Tracker*> m_poolTracker;
+	std::map<std::pair<TrackerType, int>, Tracker*> m_trackerPool;
 
 };

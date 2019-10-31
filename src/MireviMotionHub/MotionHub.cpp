@@ -3,64 +3,85 @@
 MotionHub::MotionHub(int argc, char** argv)
 {
 
+	Console::log("MotionHub::MotionHub(): Starting Mirevi MotionHub ...");
+
+	// save arguments
 	m_argc = argc;
 	m_argv = argv;
 
+	// print header with information in console
 	Console::printHeader();
 
+	// create new config reader
 	m_configReader = new ConfigReader();
+	// load config file
 	m_configReader->readConfigFile(CONFIG_PATH);
 	
+	// create manager
 	m_inputManager = new InputManager();
-
 	m_trackerManager = new TrackerManager();
 	m_gestureManager = new GestureManager();
 	m_networkManager = new NetworkManager();
 
-	start();
+	// start main loop
+	startUpdateThread();
 
+	// main thread continues in m_uiManager QApplication::exec() method
 	m_uiManager = new UIManager(m_argc, m_argv, m_inputManager);
 
 }
 
-void MotionHub::start()
+// start thread for main loop
+void MotionHub::startUpdateThread()
 {
 
-	if(m_updateThread != nullptr)
+	// check if update thread exists
+	if(m_updateThread == nullptr)
 	{
 
+		// create and start new thread if none exists
 		m_updateThread = new std::thread(&MotionHub::update, this);
+		// detach thread from method scope runtime
 		m_updateThread->detach();
 
-		Console::log("MotionHub::start(): Started update thread.");
+		Console::log("MotionHub::startUpdateThread(): Started update thread.");
 
 	}
 	else
-		Console::logError("MotionHub::start(): Can not start update thread. Thread is already running!");
+		Console::logError("MotionHub::startUpdateThread(): Can not start update thread. Thread is already running!");
 
 }
 
-// motion hub loop
+// motion hub main loop
 void MotionHub::update()
 {
 
+	// main loop
 	while (true)
 	{
 
-		checkInput();
+		// process ui input
+		processInput();
 
+		// tracking loop
 		if (m_isTracking)
 		{
 
-			// tracker loop
+			// iterates threw all tracker located in the tracker manager tracker pool 
 			for (auto itTracker = m_trackerManager->getPoolTracker()->begin(); itTracker != m_trackerManager->getPoolTracker()->end(); itTracker++)
 			{
 
+				// check if new skeleton data is available
 				if (itTracker->second->isDataAvailable())
 				{
 
-					//m_gestureManager->updateAllSkeletonPostures(&(itTracker->second->m_skeletonPool));
+					// send skeleton pool reference to gesture manager in order to update all postures
+					m_gestureManager->updateAllSkeletonPostures(itTracker->second->getSkeletonPool());
+					// send skeleton pool 
 					m_networkManager->sendSkeletonPool(itTracker->second->getSkeletonPool());
+
+					// reset bool and start new tracking cycle
+					itTracker->second->resetIsDataAvailable();
 
 				}
 			}
@@ -68,80 +89,90 @@ void MotionHub::update()
 	}
 }
 
-void MotionHub::checkInput()
+// process input based on input manager button handling
+void MotionHub::processInput()
 {
 
+	// toggle tracking
+	// check if start / stop tracking button is pressed
 	if (m_inputManager->isButtonPressed(0))
 	{
 
+		// check if motion hub is tracking
 		if (!m_isTracking)
-		{
-
-			m_trackerManager->startTracker();
-			m_isTracking = true;
-
-			Console::log("MotionHub::checkInput(): Started tracking.");
-
-		}
+			startTracking(); // start tracking if false
 		else
-		{
+			stopTracking(); // stop tracking hub is true
 
-			m_trackerManager->stopTracker();
-			m_isTracking = false;
-
-			Console::log("MotionHub::checkInput(): Stopped tracking.");
-
-		}
 	}
 
+	// check if remove tracker button is pressed
 	if (m_inputManager->isButtonPressed(1))
 	{
 
+		// save current tracking state
 		bool wasTracking = m_isTracking;
 
-		// stop tracking loop if running
+		// check if motion hub is tracking
 		if (m_isTracking)
-		{
+			stopTracking(); // stop tracking if true
 
-			stop();
-
-		}
-
+		// get selected tracker id in ui list
+		// remove selected tracker from tracker pool
 		m_trackerManager->removeTracker(m_inputManager->getSelectedTrackerIdInList());
 
-		// start tracking loop if it was running
+		// check if motion hub was tracking
 		if (wasTracking)
-		{
+			startTracking(); // start tracking if true
 
-			start();
-
-		}
 	}
 
+	// check if add tracker button in dialog is pressed
 	if (m_inputManager->isButtonPressed(2))
 	{
 
+		// get selected tracker id
 		switch (m_inputManager->getSelectedTrackerIdInDropdown())
 		{
 
 			case 0:
-				Console::log("MotionHub::checkInput(): Creating Azure Kinect tracker ...");
-				m_trackerManager->createTracker(TrackerManager::AKT);
+				m_trackerManager->createTracker(TrackerManager::AKT); // create new azure kinect tracker and add tracker to the tracking manager tracker pool
 				break;
 
 			default:
-				Console::logError("MotionHub::checkInput(): Tracker type not yet implemented.");
+				Console::logError("MotionHub::checkInput(): Can not create tracker. Tracker type unkown!");
 				break;
 
 		}
 	}
 }
 
-void MotionHub::stop()
+// starts tracking
+void MotionHub::startTracking()
 {
 
+	Console::log("MotionHub::startTracking(): Starting tracking ...");
+
+	// start the tracking thread for each tracker in the tracker manager tracker pool
+	m_trackerManager->startTracker();
+	// set tracking to true in order to execute the tracking loop in main loop / update() method
+	m_isTracking = true;
+
+	Console::log("MotionHub::startTracking(): Started tracking loop.");
+
+}
+
+// stops tracking
+void MotionHub::stopTracking()
+{
+
+	Console::log("MotionHub::stopTracking(): Stopping tracking ...");
+
+	// stop the tracking thread for each tracker in the tracker manager tracker pool
+	m_trackerManager->stopTracker();
+	// set tracking to false in order to stop the tracking loop in main loop / update() method
 	m_isTracking = false;
 
-	Console::log("MotionHub::start(): Stopped tracking loop.");
+	Console::log("MotionHub::stopTracking(): Stopped tracking loop.");
 
 }

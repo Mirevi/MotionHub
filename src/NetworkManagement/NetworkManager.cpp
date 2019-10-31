@@ -1,25 +1,36 @@
 #include "NetworkManager.h"
 
+// default constructor
 NetworkManager::NetworkManager()
 {
+	// TEMP!
 
-	poolSender.push_back(new OSCSender(BROADCAST, DEFAULT_PORT));
+	// create new osc sender and add to sender pool
+	poolSender.push_back(new OSCSender(LOCALHOST, DEFAULT_PORT));
 
 }
 
+// send skeleton pool with all active sender
 void NetworkManager::sendSkeletonPool(std::map<int, Skeleton*>* skeletonPool)
 {
+
+	// check if skeleton pool exists
 	if (skeletonPool != nullptr)
 	{
 
+		// skeleton loop
 		for (auto itSkeletonPool = skeletonPool->begin(); itSkeletonPool != skeletonPool->end(); itSkeletonPool++)
 		{
 
+			// sender loop
 			for (auto itSenderPool = poolSender.begin(); itSenderPool != poolSender.end(); itSenderPool++)
 			{
 
+				// check if current sender is active
 				if ((*itSenderPool)->isActive())
 				{
+
+					// send skeleton pool
 					(*itSenderPool)->sendSkeleton(itSkeletonPool->second, DEFAULT_URI);
 				}
 			}
