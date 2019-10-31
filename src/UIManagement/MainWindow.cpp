@@ -15,6 +15,26 @@ MainWindow::MainWindow(InputManager* inputManager, QWidget *parent) : QMainWindo
 	m_refInputManager->registerButton(0); // button: startAllTracker
 	m_refInputManager->registerButton(1); // button: removeTracker
 
+	m_updateThread = new std::thread(&MainWindow::update, this);
+	m_updateThread->detach();
+
+	//QTreeWidgetItem* tracker0 = new QTreeWidgetItem();
+
+	//QTreeWidgetItem* skeleton0 = new QTreeWidgetItem();
+	//QTreeWidgetItem* skeleton1 = new QTreeWidgetItem();
+	//QTreeWidgetItem* skeleton2 = new QTreeWidgetItem();
+
+	//tracker0->setText(0, QStringLiteral("tracker_0"));
+	//skeleton0->setText(0, QStringLiteral("skeleton_0"));
+	//skeleton1->setText(0, QStringLiteral("skeleton_1"));
+	//skeleton2->setText(0, QStringLiteral("skeleton_2"));
+
+	//tracker0->addChild(skeleton0);
+	//tracker0->addChild(skeleton1);
+	//tracker0->addChild(skeleton2);
+
+	//ui->treeWidget_hirachy->addTopLevelItem(tracker0);
+
 }
 
 // default destructor
@@ -24,6 +44,33 @@ MainWindow::~MainWindow()
 	// delete ui
 	delete ui;
 
+}
+
+void MainWindow::update()
+{
+
+	m_refTrackerPool = m_refInputManager->getTrackerPool();
+
+	// tracker loop
+	for (auto itTrackerPool = m_refTrackerPool->begin(); itTrackerPool != m_refTrackerPool->end(); itTrackerPool++)
+	{
+		
+		QTreeWidgetItem* tracker = new QTreeWidgetItem();
+		tracker->setText(0, QStringLiteral("tracker_" /*+ itTrackerPool->first()*/));
+
+		for (auto itSkeletonPool = itTrackerPool->second->begin(); itSkeletonPool != itTrackerPool->second->end(); itSkeletonPool++)
+		{
+
+			QTreeWidgetItem* skeleton = new QTreeWidgetItem();
+			skeleton->setText(0, QStringLiteral("skeleton_" /*+ itTrackerPool->first()*/));
+
+			tracker->addChild(skeleton);
+
+		}
+
+		ui->treeWidget_hirachy->addTopLevelItem(tracker);
+
+	}
 }
 
 // SLOT: close window / application
@@ -47,21 +94,6 @@ void MainWindow::startAllTracker()
 
 	// set button start / stop pressed
 	m_refInputManager->setButtonPressed(0, 1);
-
-}
-
-// toogle icon of start / stop tracking button
-void MainWindow::toggleIconStartButton()
-{
-
-	QIcon icon;
-
-	if (!m_isTracking)
-		icon.addFile(QStringLiteral(":/ressources/icons/icons8-stop-30.png"), QSize(), QIcon::Normal, QIcon::Off);
-	else
-		icon.addFile(QStringLiteral(":/ressources/icons/icons8-play-32.png"), QSize(), QIcon::Normal, QIcon::Off);
-
-	ui->btn_startTracker->setIcon(icon);
 
 }
 
@@ -160,5 +192,20 @@ void MainWindow::removeTrackerFromList(int id)
 	model->setStringList(stringList);
 	// set model
 	ui->listView_tracker->setModel(model);
+
+}
+
+// toogle icon of start / stop tracking button
+void MainWindow::toggleIconStartButton()
+{
+
+	QIcon icon;
+
+	if (!m_isTracking)
+		icon.addFile(QStringLiteral(":/ressources/icons/icons8-stop-30.png"), QSize(), QIcon::Normal, QIcon::Off);
+	else
+		icon.addFile(QStringLiteral(":/ressources/icons/icons8-play-32.png"), QSize(), QIcon::Normal, QIcon::Off);
+
+	ui->btn_startTracker->setIcon(icon);
 
 }

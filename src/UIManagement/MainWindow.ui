@@ -581,11 +581,11 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
            </widget>
           </item>
           <item>
-           <widget class="QTreeView" name="treeView_hirachy">
+           <widget class="QTreeWidget" name="treeWidget_hirachy">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
               <horstretch>0</horstretch>
-              <verstretch>1</verstretch>
+              <verstretch>0</verstretch>
              </sizepolicy>
             </property>
             <property name="frameShape">
@@ -594,6 +594,23 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
             <property name="frameShadow">
              <enum>QFrame::Plain</enum>
             </property>
+            <property name="lineWidth">
+             <number>0</number>
+            </property>
+            <property name="showDropIndicator" stdset="0">
+             <bool>true</bool>
+            </property>
+            <attribute name="headerVisible">
+             <bool>false</bool>
+            </attribute>
+            <attribute name="headerCascadingSectionResizes">
+             <bool>false</bool>
+            </attribute>
+            <column>
+             <property name="text">
+              <string notr="true">1</string>
+             </property>
+            </column>
            </widget>
           </item>
          </layout>

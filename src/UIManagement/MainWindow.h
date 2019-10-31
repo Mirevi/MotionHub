@@ -8,7 +8,8 @@
 #include "QtCore/qstringlistmodel.h"
 #include "QtCore/qstring.h"
 
-namespace Ui {
+namespace Ui
+{
 	class MainWindow;
 }
 
@@ -78,4 +79,10 @@ private:
 	bool m_isTracking = false;
 
 	void toggleIconStartButton();
+
+	void update();
+
+	std::thread* m_updateThread;
+
+	std::map<int, std::map<int, Skeleton*>*>* m_refTrackerPool;
 };

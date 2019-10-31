@@ -13,7 +13,11 @@
 
 #include "defines.h"
 
+#include <atomic>
 #include <mutex>
+#include <thread>
+#include <chrono>
+
 
 /*!
  * \class Console
@@ -31,5 +35,6 @@ public:
 	static void logError(std::string message);
 	static void printHeader();
 	static void writeToLogfile(std::string message);
-
+	
+	
 };

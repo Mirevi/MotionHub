@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ConfigDllExportMotionHubUtil.h"
+#include "Skeleton.h"
 #include <map>
 #include "MotionHubUtil/Console.h"
 
@@ -73,6 +74,10 @@ public:
 	 */
 	void setSelectedTrackerIdInList(int id);
 
+	void setTrackerPool(std::map<int, std::map<int, Skeleton*>*>* trackerPool);
+
+	std::map<int, std::map<int, Skeleton*>*>* getTrackerPool();
+
 private:
 	/*!
 	 *
@@ -94,5 +99,7 @@ private:
 	 * selected tracker id in main window tracker list 
 	 */
 	int m_selectedTrackerIdInList;
+
+	std::map<int, std::map<int, Skeleton*>*>* m_trackerPool;
 
 };

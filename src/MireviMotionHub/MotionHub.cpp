@@ -19,7 +19,7 @@ MotionHub::MotionHub(int argc, char** argv)
 	
 	// create manager
 	m_inputManager = new InputManager();
-	m_trackerManager = new TrackerManager();
+	m_trackerManager = new TrackerManager(m_inputManager);
 	m_gestureManager = new GestureManager();
 	m_networkManager = new NetworkManager();
 
@@ -28,6 +28,8 @@ MotionHub::MotionHub(int argc, char** argv)
 
 	// main thread continues in m_uiManager QApplication::exec() method
 	m_uiManager = new UIManager(m_argc, m_argv, m_inputManager);
+
+
 
 }
 

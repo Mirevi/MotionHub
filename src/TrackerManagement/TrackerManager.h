@@ -9,6 +9,7 @@
 #include <vector>
 
 #include "AKTracker.h"
+#include "MotionHubUtil/InputManager.h"
 
 /*!
  * \class TrackerManager
@@ -27,7 +28,7 @@ public:
 	/*!
 	 * default constructor (empty)
 	 */
-	TrackerManager();
+	TrackerManager(InputManager* inputManager);
 
 	/*!
 	 * enum for all tracker types 
@@ -62,5 +63,7 @@ private:
 	 * pool of all created tracker 
 	 */
 	std::map<std::pair<TrackerType, int>, Tracker*> m_trackerPool;
+
+	InputManager* m_refInputManager;
 
 };

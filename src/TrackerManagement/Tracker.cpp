@@ -75,13 +75,15 @@ void Tracker::resetIsDataAvailable()
 std::map<int, Skeleton*>* Tracker::getSkeletonPool()
 {
 
-	if (m_isDataAvailable)
-		return &m_skeletonPool;
-	else
-	{
+	return &m_skeletonPool;
 
-		Console::logError("Tracker::getSkeletonPool(): No new data available!");
-		return nullptr;
+	//if (m_isDataAvailable)
+	//	return &m_skeletonPool;
+	//else
+	//{
 
-	}
+	//	Console::logError("Tracker::getSkeletonPool(): No new data available!");
+	//	return nullptr;
+
+	//}
 }

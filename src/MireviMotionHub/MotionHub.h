@@ -1,5 +1,9 @@
 #pragma once
 
+
+
+
+
 #include "defines.h"
 
 #include "MotionHubUtil/Console.h"
@@ -12,6 +16,10 @@
 #include "MotionHubUtil/InputManager.h"
 
 #include <string>
+
+
+
+
 
 /*!
  * \class MotionHub
