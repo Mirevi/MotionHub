@@ -1,6 +1,7 @@
 #include "MainWindow.h"
 #include "ui_mainwindow.h"
 
+#include "TrackerManagement/TrackerManager.h"
 
 // default constructor
 MainWindow::MainWindow(InputManager* inputManager, QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
