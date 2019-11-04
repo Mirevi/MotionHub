@@ -63,6 +63,8 @@ void MainWindow::update()
 
 				ui->treeWidget_hirachy->addTopLevelItem(tracker);
 
+				ui->treeWidget_hirachy->expandAll(); 
+
 			}
 		}
 	}	

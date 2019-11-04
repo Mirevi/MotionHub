@@ -185,6 +185,8 @@ void AKTracker::extractSkeleton(k4abt_frame_t* body_frame)
 	// set number of detected bodies in frame
 	m_numBodies = k4abt_frame_get_num_bodies(*body_frame);
 
+	//Console::log(std::to_string(m_numBodies));
+
 	// skeleton loop
 	for (int indexSkeleton = 0; indexSkeleton < m_numBodies; indexSkeleton++)
 	{
@@ -200,7 +202,7 @@ void AKTracker::extractSkeleton(k4abt_frame_t* body_frame)
 		for (auto itPoolSkeletons = m_skeletonPool.begin(); itPoolSkeletons != m_skeletonPool.end(); itPoolSkeletons++)
 		{
 
-			if (id = itPoolSkeletons->first)
+			if (id == itPoolSkeletons->first)
 			{
 
 				// update all joints of existing skeleon with new data
