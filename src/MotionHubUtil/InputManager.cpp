@@ -8,7 +8,7 @@ InputManager::InputManager()
 	// create new map with button state and id
 	m_poolButtonState = new std::map<int, int>;
 
-	m_trackerPool = new std::map<int, std::map<int, Skeleton*>*>;
+	m_trackerPool = new std::map<std::pair<std::string, int>, std::map<int, Skeleton*>*>;
 
 }
 
@@ -107,16 +107,34 @@ void InputManager::setSelectedTrackerIdInList(int id)
 
 }
 
-void InputManager::setTrackerPool(std::map<int, std::map<int, Skeleton*>*>* trackerPool)
+void InputManager::setTrackerPool(std::map<std::pair<std::string, int>, std::map<int, Skeleton*>*>* trackerPool)
 {
 
 	m_trackerPool = trackerPool;
 
 }
 
-std::map<int, std::map<int, Skeleton*>*>* InputManager::getTrackerPool()
+std::map<std::pair<std::string, int>, std::map<int, Skeleton*>*>* InputManager::getTrackerPool()
 {
 
 	return m_trackerPool;
 
+}
+
+bool InputManager::isTrackerDataAvailable()
+{
+
+	if (m_isTrackerDataAvailable)
+	{
+		m_isTrackerDataAvailable = false;
+		return true;
+	}
+	else
+		return false;
+
+}
+
+void InputManager::setTrackerDataAvailable(bool state)
+{
+	m_isTrackerDataAvailable = state;
 }

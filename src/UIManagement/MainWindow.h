@@ -84,5 +84,5 @@ private:
 
 	std::thread* m_updateThread;
 
-	std::map<int, std::map<int, Skeleton*>*>* m_refTrackerPool;
+	std::map<std::pair<std::string, int>, std::map<int, Skeleton*>*>* m_refTrackerPool;
 };

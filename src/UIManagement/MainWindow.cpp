@@ -18,23 +18,6 @@ MainWindow::MainWindow(InputManager* inputManager, QWidget *parent) : QMainWindo
 	m_updateThread = new std::thread(&MainWindow::update, this);
 	m_updateThread->detach();
 
-	//QTreeWidgetItem* tracker0 = new QTreeWidgetItem();
-
-	//QTreeWidgetItem* skeleton0 = new QTreeWidgetItem();
-	//QTreeWidgetItem* skeleton1 = new QTreeWidgetItem();
-	//QTreeWidgetItem* skeleton2 = new QTreeWidgetItem();
-
-	//tracker0->setText(0, QStringLiteral("tracker_0"));
-	//skeleton0->setText(0, QStringLiteral("skeleton_0"));
-	//skeleton1->setText(0, QStringLiteral("skeleton_1"));
-	//skeleton2->setText(0, QStringLiteral("skeleton_2"));
-
-	//tracker0->addChild(skeleton0);
-	//tracker0->addChild(skeleton1);
-	//tracker0->addChild(skeleton2);
-
-	//ui->treeWidget_hirachy->addTopLevelItem(tracker0);
-
 }
 
 // default destructor
@@ -51,26 +34,38 @@ void MainWindow::update()
 
 	m_refTrackerPool = m_refInputManager->getTrackerPool();
 
-	// tracker loop
-	for (auto itTrackerPool = m_refTrackerPool->begin(); itTrackerPool != m_refTrackerPool->end(); itTrackerPool++)
+	while (true)
 	{
-		
-		QTreeWidgetItem* tracker = new QTreeWidgetItem();
-		tracker->setText(0, QStringLiteral("tracker_" /*+ itTrackerPool->first()*/));
 
-		for (auto itSkeletonPool = itTrackerPool->second->begin(); itSkeletonPool != itTrackerPool->second->end(); itSkeletonPool++)
+		if (m_refInputManager->isTrackerDataAvailable())
 		{
 
-			QTreeWidgetItem* skeleton = new QTreeWidgetItem();
-			skeleton->setText(0, QStringLiteral("skeleton_" /*+ itTrackerPool->first()*/));
+			ui->treeWidget_hirachy->clear();
 
-			tracker->addChild(skeleton);
+			// tracker loop
+			for (auto itTrackerPool = m_refTrackerPool->begin(); itTrackerPool != m_refTrackerPool->end(); itTrackerPool++)
+			{
 
+				QTreeWidgetItem* tracker = new QTreeWidgetItem();
+				std::string trackerName = "tracker_" + itTrackerPool->first.first + "_" + std::to_string(itTrackerPool->first.second);
+				tracker->setText(0, QString::fromStdString(trackerName));
+
+				for (auto itSkeletonPool = itTrackerPool->second->begin(); itSkeletonPool != itTrackerPool->second->end(); itSkeletonPool++)
+				{
+
+					QTreeWidgetItem* skeleton = new QTreeWidgetItem();
+					std::string skeletonName = "skeleton_" + std::to_string(itSkeletonPool->first);
+					skeleton->setText(0, QString::fromStdString(skeletonName));
+
+					tracker->addChild(skeleton);
+
+				}
+
+				ui->treeWidget_hirachy->addTopLevelItem(tracker);
+
+			}
 		}
-
-		ui->treeWidget_hirachy->addTopLevelItem(tracker);
-
-	}
+	}	
 }
 
 // SLOT: close window / application
