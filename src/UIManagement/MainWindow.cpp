@@ -1,6 +1,7 @@
 #include "MainWindow.h"
 #include "ui_mainwindow.h"
 
+
 // default constructor
 MainWindow::MainWindow(InputManager* inputManager, QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
@@ -63,9 +64,9 @@ void MainWindow::update()
 
 				ui->treeWidget_hirachy->addTopLevelItem(tracker);
 
-				ui->treeWidget_hirachy->expandAll(); 
-
 			}
+
+			//ui->treeWidget_hirachy->expandAll();
 		}
 	}	
 }

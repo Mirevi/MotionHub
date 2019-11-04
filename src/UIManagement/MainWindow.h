@@ -8,6 +8,9 @@
 #include "QtCore/qstringlistmodel.h"
 #include "QtCore/qstring.h"
 
+//#include "TrackerManagement/TrackerManager.h"
+
+
 namespace Ui
 {
 	class MainWindow;
