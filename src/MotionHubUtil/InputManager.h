@@ -74,9 +74,12 @@ public:
 	 */
 	void setSelectedTrackerIdInList(int id);
 
-	void setTrackerPool(std::map<int, std::map<int, Skeleton*>*>* trackerPool);
+	void setTrackerPool(std::map<std::pair<std::string, int>, std::map<int, Skeleton*>*>* trackerPool);
 
-	std::map<int, std::map<int, Skeleton*>*>* getTrackerPool();
+	std::map<std::pair<std::string, int>, std::map<int, Skeleton*>*>* getTrackerPool();
+
+	bool isTrackerDataAvailable();
+	void setTrackerDataAvailable(bool state);
 
 private:
 	/*!
@@ -100,6 +103,8 @@ private:
 	 */
 	int m_selectedTrackerIdInList;
 
-	std::map<int, std::map<int, Skeleton*>*>* m_trackerPool;
+	std::map<std::pair<std::string, int>, std::map<int, Skeleton*>*>* m_trackerPool;
+
+	bool m_isTrackerDataAvailable = false;
 
 };

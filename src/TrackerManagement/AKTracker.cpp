@@ -1,11 +1,14 @@
 #include "AKTracker.h"
 
 // default constructor
-AKTracker::AKTracker(int idCam)
+AKTracker::AKTracker(int idCam, InputManager* inputManager)
 {
 
 	// assign cam id
 	m_idCam = idCam;
+
+	m_refInputManager = inputManager;
+
 	// initialize azure kinect camera and body tracker
 	init();
 
@@ -182,6 +185,8 @@ void AKTracker::extractSkeleton(k4abt_frame_t* body_frame)
 	// set number of detected bodies in frame
 	m_numBodies = k4abt_frame_get_num_bodies(*body_frame);
 
+	//Console::log(std::to_string(m_numBodies));
+
 	// skeleton loop
 	for (int indexSkeleton = 0; indexSkeleton < m_numBodies; indexSkeleton++)
 	{
@@ -197,7 +202,7 @@ void AKTracker::extractSkeleton(k4abt_frame_t* body_frame)
 		for (auto itPoolSkeletons = m_skeletonPool.begin(); itPoolSkeletons != m_skeletonPool.end(); itPoolSkeletons++)
 		{
 
-			if (id = itPoolSkeletons->first)
+			if (id == itPoolSkeletons->first)
 			{
 
 				// update all joints of existing skeleon with new data
@@ -220,6 +225,8 @@ void AKTracker::extractSkeleton(k4abt_frame_t* body_frame)
 
 			// create new skeleton and add it to the skeleton pool
 			m_skeletonPool.insert(std::pair<int, Skeleton*>(id, parseSkeleton(&skeleton, id)));
+
+			m_refInputManager->setTrackerDataAvailable(true);
 
 			Console::log("[cam id = " + std::to_string(m_idCam) + "] AkTracker::updateSkeleton(): Created new skeleton with id = " + std::to_string(id) + ".");
 
@@ -390,6 +397,8 @@ void AKTracker::cleanSkeletonPool(k4abt_frame_t* bodyFrame)
 
 		// erase skeleton with id
 		m_skeletonPool.erase(*itIndexIdSkeletonsToErase);
+
+		m_refInputManager->setTrackerDataAvailable(true);
 
 		Console::log("[cam id = " + std::to_string(m_idCam) + "] AkTracker::cleanSkeletonList(): Removed skeleton with id = " + std::to_string(*itIndexIdSkeletonsToErase) + " from pool!");
 
