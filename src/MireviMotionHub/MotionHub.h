@@ -51,7 +51,7 @@ private:
 	GestureManager* m_gestureManager;
 	NetworkManager* m_networkManager;
 	UIManager* m_uiManager;
-	InputManager* m_inputManager;
+	//InputManager* m_inputManager;
 
 	//bool m_isTracking = false;
 

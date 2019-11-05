@@ -31,7 +31,7 @@ public:
 	/*!
 	 * default constructor  
 	 */
-	explicit MainWindow(InputManager* inputManager, TrackerManager* trackerManager, QWidget *parent = 0);
+	explicit MainWindow(/*InputManager* inputManager, */TrackerManager* trackerManager, QWidget *parent = 0);
 	/*!
 	 * default destructor 
 	 */
@@ -64,7 +64,7 @@ private:
 	/*!
 	 * reference to the inputManager
 	*/
-	InputManager* m_refInputManager;
+	/*InputManager* m_refInputManager;*/
 
 	TrackerManager* m_refTrackerManager;
 	/*!
@@ -86,7 +86,9 @@ private:
 
 	void update();
 
+	void updateHirachy();
+
 	std::thread* m_updateThread;
 
-	std::map<std::pair<std::string, int>, std::map<int, Skeleton*>*>* m_refTrackerPool;
+	std::map<std::pair<TrackerManager::TrackerType, int>, Tracker*>* m_refTrackerPool;
 };

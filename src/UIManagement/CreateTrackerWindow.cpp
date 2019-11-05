@@ -2,19 +2,19 @@
 #include "ui_createtrackerwindow.h"
 
 // default constructor
-CreateTrackerWindow::CreateTrackerWindow(InputManager* inputManager, TrackerManager* trackerManager, QListView* listViewTracker, QWidget *parent) : QDialog(parent), ui(new Ui::CreateTrackerWindow)
+CreateTrackerWindow::CreateTrackerWindow(/*InputManager* inputManager, */TrackerManager* trackerManager, QListView* listViewTracker, QWidget *parent) : QDialog(parent), ui(new Ui::CreateTrackerWindow)
 {
 
 	// setup dialog
 	ui->setupUi(this);
 
 	// assign refference to input manager and list view of main window
-	m_refInputManager = inputManager;
+	//m_refInputManager = inputManager;
 	m_refTrackerManager = trackerManager;
 	m_refListViewTracker = listViewTracker;
 
 	// register buttons of the dialog in input manager
-	m_refInputManager->registerButton(2); // button: create tracker
+	//m_refInputManager->registerButton(2); // button: create tracker
 }
 
 // default destructor

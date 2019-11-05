@@ -32,7 +32,7 @@ public:
 	 * \param argv
 	 * \param inputManager reference to the InputManager
 	 */
-	UIManager(int argc, char** argv, InputManager* inputManager, TrackerManager* trackerManager);
+	UIManager(int argc, char** argv/*, InputManager* inputManager*/, TrackerManager* trackerManager);
 
 private:
 	/*!
@@ -46,7 +46,7 @@ private:
 	/*!
 	 * reference to the InputManager
 	 */
-	InputManager* m_refInputManager;
+	//InputManager* m_refInputManager;
 
 	TrackerManager* m_refTrackerManager;
 

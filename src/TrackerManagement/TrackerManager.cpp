@@ -1,9 +1,9 @@
 #include "TrackerManager.h"
 
-TrackerManager::TrackerManager(InputManager* inputManager)
+TrackerManager::TrackerManager(/*InputManager* inputManager*/)
 {
 	
-	m_refInputManager = inputManager;
+	//m_refInputManager = inputManager;
 
 }
 
@@ -23,24 +23,26 @@ void TrackerManager::createTracker(TrackerType type)
 	{
 
 		// azure kinect
-	case AKT:
+		case AKT:
 
-		// get next azure kinect camera id
-		for (auto itPoolTracker = m_trackerPool.begin(); itPoolTracker != m_trackerPool.end(); itPoolTracker++)
-		{
-
-			if (itPoolTracker->first.first == AKT)
+			// get next azure kinect camera id
+			for (auto itPoolTracker = m_trackerPool.begin(); itPoolTracker != m_trackerPool.end(); itPoolTracker++)
 			{
 
-				nextCamIdAk = itPoolTracker->first.second + 1;
+				if (itPoolTracker->first.first == AKT)
+				{
 
+					nextCamIdAk = itPoolTracker->first.second + 1;
+
+				}
 			}
-		}
 
-		// create new azure kinect tracker and insert the tracker in the tracker pool
-		m_trackerPool.insert({ { AKT, id }, new AKTracker(nextCamIdAk, m_refInputManager) });
+			// create new azure kinect tracker and insert the tracker in the tracker pool
+			m_trackerPool.insert({ { AKT, id }, new AKTracker(nextCamIdAk/*, m_refInputManager*/) });
 
-		m_refInputManager->getTrackerPool()->insert({ { "ak", id }, m_trackerPool.at({AKT, id})->getSkeletonPool() });
+			m_hasTrackerPoolChanged = true;
+
+			/*m_refInputManager->getTrackerPool()->insert({ { "ak", id }, m_trackerPool.at({AKT, id})->getSkeletonPool() });*/
 
 			Console::log("TrackerManager::createTracker(): Created Azure Kinect tracker with cam id = " + std::to_string(nextCamIdAk) + ".");
 
@@ -53,7 +55,7 @@ void TrackerManager::createTracker(TrackerType type)
 
 	}
 
-	m_refInputManager->setTrackerDataAvailable(true);
+	//m_refInputManager->setTrackerDataAvailable(true);
 }
 
 // remove tracker with id from the tracker pool
@@ -69,6 +71,8 @@ void TrackerManager::removeTracker(int idToRemove)
 		if (itPoolTracker->first.second == idToRemove)
 		{
 
+			m_hasTrackerPoolChanged = true;
+
 			// destroy tracker with key
 			m_trackerPool.at(itPoolTracker->first)->destroy();
 			// remove tracker with key from tracker pool
@@ -81,19 +85,37 @@ void TrackerManager::removeTracker(int idToRemove)
 		}
 	}
 
-	for (auto itRefTracker = m_refInputManager->getTrackerPool()->begin(); itRefTracker != m_refInputManager->getTrackerPool()->end(); itRefTracker++)
+	//for (auto itRefTracker = m_refInputManager->getTrackerPool()->begin(); itRefTracker != m_refInputManager->getTrackerPool()->end(); itRefTracker++)
+	//{
+
+	//	if (itRefTracker->first.second == idToRemove)
+	//	{
+
+	//		m_refInputManager->getTrackerPool()->erase(itRefTracker->first);
+	//		break;
+
+	//	}
+	//}
+
+	//m_refInputManager->setTrackerDataAvailable(true);
+}
+
+bool TrackerManager::hasTrackerPoolChanged()
+{
+
+	if (m_hasTrackerPoolChanged)
 	{
 
-		if (itRefTracker->first.second == idToRemove)
-		{
+		m_hasTrackerPoolChanged = false;
+		return true;
 
-			m_refInputManager->getTrackerPool()->erase(itRefTracker->first);
-			break;
-
-		}
 	}
+	else
+	{
 
-	m_refInputManager->setTrackerDataAvailable(true);
+		return false;
+
+	}
 }
 
 // start all tracker in the tracker pool

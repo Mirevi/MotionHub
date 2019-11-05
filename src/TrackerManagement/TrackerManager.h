@@ -28,7 +28,7 @@ public:
 	/*!
 	 * default constructor (empty)
 	 */
-	TrackerManager(InputManager* inputManager);
+	TrackerManager(/*InputManager* inputManager*/);
 
 	/*!
 	 * enum for all tracker types 
@@ -57,6 +57,8 @@ public:
 
 	bool isTracking();
 
+	bool hasTrackerPoolChanged();
+
 	std::map<std::pair<TrackerType, int>, Tracker*>* getPoolTracker();
 
 private:
@@ -66,8 +68,10 @@ private:
 	 */
 	std::map<std::pair<TrackerType, int>, Tracker*> m_trackerPool;
 
-	InputManager* m_refInputManager;
+	//InputManager* m_refInputManager;
 
 	bool m_isTracking = false;
+
+	bool m_hasTrackerPoolChanged = false;
 
 };

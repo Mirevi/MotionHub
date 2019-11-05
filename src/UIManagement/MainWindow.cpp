@@ -3,21 +3,22 @@
 
 
 // default constructor
-MainWindow::MainWindow(InputManager* inputManager, TrackerManager* trackerManager, QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
+MainWindow::MainWindow(/*InputManager* inputManager, */TrackerManager* trackerManager, QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
 
 	// setup base class
 	ui->setupUi(this);
 
 	// assign reference to input manager
-	m_refInputManager = inputManager;
+	//m_refInputManager = inputManager;
 
 	// assign reference to tracker manager
 	m_refTrackerManager = trackerManager;
+	m_refTrackerPool = m_refTrackerManager->getPoolTracker();
 
 	// register buttons of the window in input manager
-	m_refInputManager->registerButton(0); // button: startAllTracker
-	m_refInputManager->registerButton(1); // button: removeTracker
+	//m_refInputManager->registerButton(0); // button: startAllTracker
+	//m_refInputManager->registerButton(1); // button: removeTracker
 
 	m_updateThread = new std::thread(&MainWindow::update, this);
 	m_updateThread->detach();
@@ -35,43 +36,61 @@ MainWindow::~MainWindow()
 
 void MainWindow::update()
 {
-
-	m_refTrackerPool = m_refInputManager->getTrackerPool();
-
+	
 	while (true)
 	{
 
-		if (m_refInputManager->isTrackerDataAvailable())
+		std::this_thread::sleep_for(std::chrono::milliseconds(33));
+
+
+		for (auto itTrackerPool = m_refTrackerPool->begin(); itTrackerPool != m_refTrackerPool->end(); itTrackerPool++)
 		{
-
-			ui->treeWidget_hirachy->clear();
-
-			// tracker loop
-			for (auto itTrackerPool = m_refTrackerPool->begin(); itTrackerPool != m_refTrackerPool->end(); itTrackerPool++)
+			if (itTrackerPool->second != nullptr && itTrackerPool->second->hasSkeletonPoolChanged())
 			{
 
-				QTreeWidgetItem* tracker = new QTreeWidgetItem();
-				std::string trackerName = "tracker_" + itTrackerPool->first.first + "_" + std::to_string(itTrackerPool->first.second);
-				tracker->setText(0, QString::fromStdString(trackerName));
+				updateHirachy();
+				break;
 
-				for (auto itSkeletonPool = itTrackerPool->second->begin(); itSkeletonPool != itTrackerPool->second->end(); itSkeletonPool++)
-				{
-
-					QTreeWidgetItem* skeleton = new QTreeWidgetItem();
-					std::string skeletonName = "skeleton_" + std::to_string(itSkeletonPool->first);
-					skeleton->setText(0, QString::fromStdString(skeletonName));
-
-					tracker->addChild(skeleton);
-
-				}
-
-				ui->treeWidget_hirachy->addTopLevelItem(tracker);
-
-			}
-
-			//ui->treeWidget_hirachy->expandAll();
+			}		
 		}
+		
 	}	
+}
+
+void MainWindow::updateHirachy()
+{
+
+	Console::log("updateHirachy()");
+
+	if (ui->treeWidget_hirachy->topLevelItemCount() > 0)
+	{
+
+		ui->treeWidget_hirachy->clear();
+
+	}
+
+	// tracker loop
+	for (auto itTrackerPool = m_refTrackerPool->begin(); itTrackerPool != m_refTrackerPool->end(); itTrackerPool++)
+	{
+
+		QTreeWidgetItem* tracker = new QTreeWidgetItem();
+		std::string trackerName = "tracker_"/* + std::to_string(itTrackerPool->first.first) + "_" + std::to_string(itTrackerPool->first.second)*/;
+		tracker->setText(0, QString::fromStdString(trackerName));
+
+		for (auto itSkeletonPool = itTrackerPool->second->getSkeletonPool()->begin(); itSkeletonPool != itTrackerPool->second->getSkeletonPool()->end(); itSkeletonPool++)
+		{
+
+			QTreeWidgetItem* skeleton = new QTreeWidgetItem();
+			std::string skeletonName = "skeleton_" + std::to_string(itSkeletonPool->first);
+			skeleton->setText(0, QString::fromStdString(skeletonName));
+
+			tracker->addChild(skeleton);
+
+		}
+
+		ui->treeWidget_hirachy->addTopLevelItem(tracker);
+
+	}
 }
 
 // SLOT: close window / application
@@ -112,12 +131,13 @@ void MainWindow::addTracker()
 {
 	
 	// create dialog for creating new tracker
-	m_createTrackerWindow = new CreateTrackerWindow(m_refInputManager, m_refTrackerManager, ui->listView_tracker);
+	m_createTrackerWindow = new CreateTrackerWindow(/*m_refInputManager, */m_refTrackerManager, ui->listView_tracker);
 	
 	// set modal and execute
 	m_createTrackerWindow->setModal(true);
 	m_createTrackerWindow->exec();
 
+	updateHirachy();
 
 }
 
@@ -170,11 +190,7 @@ void MainWindow::removeTracker()
 		// set button press for input loop
 		//m_refInputManager->setButtonPressed(1, 1);
 
-
-
-
-
-				// save current tracking state
+		// save current tracking state
 		bool wasTracking = m_refTrackerManager->isTracking();
 
 		// check if motion hub is tracking
@@ -189,13 +205,10 @@ void MainWindow::removeTracker()
 		if (wasTracking)
 			m_refTrackerManager->startTracker(); // start tracking if true
 
-
-
-
-
 		// remove tracker from list
 		removeTrackerFromList(idToRemove);
 
+		updateHirachy();
 	}
 }
 

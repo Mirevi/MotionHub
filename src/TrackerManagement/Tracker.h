@@ -45,6 +45,8 @@ public:
 	virtual bool isDataAvailable();
 	virtual void resetIsDataAvailable();
 
+	virtual bool hasSkeletonPoolChanged();
+
 protected:
 
 	/*!
@@ -53,6 +55,7 @@ protected:
 	bool m_isTracking = false;
 
 	bool m_isDataAvailable = false;
+	bool m_hasSkeletonPoolChanged = false;
 
 	virtual void init() = 0;
 

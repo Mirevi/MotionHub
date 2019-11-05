@@ -31,7 +31,7 @@ public:
 	/*!
 	 * default constructor 
 	 */
-	explicit CreateTrackerWindow(InputManager* inputManager, TrackerManager* trackerManager, QListView* listViewTracker, QWidget *parent = 0);
+	explicit CreateTrackerWindow(/*InputManager* inputManager, */TrackerManager* trackerManager, QListView* listViewTracker, QWidget *parent = 0);
 	~CreateTrackerWindow();
 
 private slots:
@@ -55,7 +55,7 @@ private:
 	/*!
 	 * reference to the inputManager 
 	 */
-	InputManager* m_refInputManager;
+	//InputManager* m_refInputManager;
 
 	TrackerManager* m_refTrackerManager;
 	/*!

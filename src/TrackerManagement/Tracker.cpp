@@ -72,6 +72,24 @@ void Tracker::resetIsDataAvailable()
 
 }
 
+bool Tracker::hasSkeletonPoolChanged()
+{
+
+	if (m_hasSkeletonPoolChanged)
+	{
+
+		m_hasSkeletonPoolChanged = false;
+		return true;
+
+	}
+	else
+	{
+
+		return false;
+
+	}
+}
+
 std::map<int, Skeleton*>* Tracker::getSkeletonPool()
 {
 
