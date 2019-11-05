@@ -1,11 +1,8 @@
 #include "UIManager.h"
 
 // default constructor
-UIManager::UIManager(int argc, char** argv/*, InputManager* inputManager*/, TrackerManager* trackerManager)
+UIManager::UIManager(int argc, char** argv, TrackerManager* trackerManager)
 {
-	
-	// get reference to input manger
-	//m_refInputManager = inputManager;
 
 	// get reference to tracker manager
 	m_refTrackerManager = trackerManager;
@@ -14,7 +11,7 @@ UIManager::UIManager(int argc, char** argv/*, InputManager* inputManager*/, Trac
 	m_app = new QApplication(argc, argv);
 
 	// create new main window and show window
-	m_mainWindow = new MainWindow(/*m_refInputManager, */m_refTrackerManager);
+	m_mainWindow = new MainWindow(m_refTrackerManager);
 	m_mainWindow->show();
 
 	// MAIN THREAD CONTINUES HERE:

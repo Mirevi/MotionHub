@@ -47,7 +47,6 @@ void Tracker::stop()
 {
 
 	m_isTracking = false;
-	//m_trackingThread->join();
 
 }
 
@@ -95,13 +94,4 @@ std::map<int, Skeleton*>* Tracker::getSkeletonPool()
 
 	return &m_skeletonPool;
 
-	//if (m_isDataAvailable)
-	//	return &m_skeletonPool;
-	//else
-	//{
-
-	//	Console::logError("Tracker::getSkeletonPool(): No new data available!");
-	//	return nullptr;
-
-	//}
 }

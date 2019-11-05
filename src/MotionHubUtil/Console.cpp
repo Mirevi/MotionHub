@@ -46,13 +46,28 @@ void Console::log(std::string message)
 
 	SetConsoleTextAttribute(handle_console, 15);
 
-
 	g_consoleIsLocked.store(false);
+
 }
 
 //outputs a string in console as warning
 void Console::logWarning(std::string message)
 {
+
+	//static member that works without a object
+	static std::atomic<bool> g_consoleIsLocked(false);
+
+	//chek if console is locked
+	while (g_consoleIsLocked.load())
+	{
+
+		//wait 5 milliseconds before trying again
+		std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
+	}
+
+	//lock console
+	g_consoleIsLocked.store(true);
 
 	HANDLE  handle_console;
 	handle_console = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -79,11 +94,28 @@ void Console::logWarning(std::string message)
 
 	SetConsoleTextAttribute(handle_console, 15);
 
+	g_consoleIsLocked.store(false);
+
 }
 
 //outputs a string in console as error
 void Console::logError(std::string message)
 {
+
+	//static member that works without a object
+	static std::atomic<bool> g_consoleIsLocked(false);
+
+	//chek if console is locked
+	while (g_consoleIsLocked.load())
+	{
+
+		//wait 5 milliseconds before trying again
+		std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
+	}
+
+	//lock console
+	g_consoleIsLocked.store(true);
 
 	HANDLE  handle_console;
 	handle_console = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -109,6 +141,8 @@ void Console::logError(std::string message)
 	std::cout << message << std::endl;
 
 	SetConsoleTextAttribute(handle_console, 15);
+
+	g_consoleIsLocked.store(false);
 
 }
 

@@ -1,9 +1,9 @@
 #include "TrackerManager.h"
 
-TrackerManager::TrackerManager(/*InputManager* inputManager*/)
+TrackerManager::TrackerManager()
 {
 	
-	//m_refInputManager = inputManager;
+	Console::log("TrackerManager::TrackerManager(): Created tracker manager.");
 
 }
 
@@ -38,11 +38,9 @@ void TrackerManager::createTracker(TrackerType type)
 			}
 
 			// create new azure kinect tracker and insert the tracker in the tracker pool
-			m_trackerPool.insert({ { AKT, id }, new AKTracker(nextCamIdAk/*, m_refInputManager*/) });
+			m_trackerPool.insert({ { AKT, id }, new AKTracker(nextCamIdAk) });
 
 			m_hasTrackerPoolChanged = true;
-
-			/*m_refInputManager->getTrackerPool()->insert({ { "ak", id }, m_trackerPool.at({AKT, id})->getSkeletonPool() });*/
 
 			Console::log("TrackerManager::createTracker(): Created Azure Kinect tracker with cam id = " + std::to_string(nextCamIdAk) + ".");
 
@@ -54,8 +52,6 @@ void TrackerManager::createTracker(TrackerType type)
 			break;
 
 	}
-
-	//m_refInputManager->setTrackerDataAvailable(true);
 }
 
 // remove tracker with id from the tracker pool
@@ -84,20 +80,6 @@ void TrackerManager::removeTracker(int idToRemove)
 
 		}
 	}
-
-	//for (auto itRefTracker = m_refInputManager->getTrackerPool()->begin(); itRefTracker != m_refInputManager->getTrackerPool()->end(); itRefTracker++)
-	//{
-
-	//	if (itRefTracker->first.second == idToRemove)
-	//	{
-
-	//		m_refInputManager->getTrackerPool()->erase(itRefTracker->first);
-	//		break;
-
-	//	}
-	//}
-
-	//m_refInputManager->setTrackerDataAvailable(true);
 }
 
 bool TrackerManager::hasTrackerPoolChanged()
@@ -160,5 +142,7 @@ std::map<std::pair<TrackerManager::TrackerType, int>, Tracker*>* TrackerManager:
 
 bool TrackerManager::isTracking()
 {
+
 	return m_isTracking;
+
 }

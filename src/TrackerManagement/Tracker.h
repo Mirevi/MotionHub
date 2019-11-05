@@ -6,8 +6,6 @@
 #include "MotionHubUtil/Skeleton.h"
 #include "MotionHubUtil/Console.h"
 
-#include "MotionHubUtil/InputManager.h"
-
 /*!
  * \class Tracker
  *

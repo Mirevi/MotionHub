@@ -2,19 +2,16 @@
 #include "ui_createtrackerwindow.h"
 
 // default constructor
-CreateTrackerWindow::CreateTrackerWindow(/*InputManager* inputManager, */TrackerManager* trackerManager, QListView* listViewTracker, QWidget *parent) : QDialog(parent), ui(new Ui::CreateTrackerWindow)
+CreateTrackerWindow::CreateTrackerWindow(TrackerManager* trackerManager, QListView* listViewTracker, QWidget *parent) : QDialog(parent), ui(new Ui::CreateTrackerWindow)
 {
 
 	// setup dialog
 	ui->setupUi(this);
 
-	// assign refference to input manager and list view of main window
-	//m_refInputManager = inputManager;
+	// assign refference to tracker manager and list view of main window
 	m_refTrackerManager = trackerManager;
 	m_refListViewTracker = listViewTracker;
 
-	// register buttons of the dialog in input manager
-	//m_refInputManager->registerButton(2); // button: create tracker
 }
 
 // default destructor
@@ -52,10 +49,6 @@ void CreateTrackerWindow::slotCreateTracker()
 	model->setStringList(stringList);
 	m_refListViewTracker->setModel(model);
 
-	// set button pressed
-	//m_refInputManager->setButtonPressed(2, 1);
-
-
 	switch (m_selectedTrackerIdInDropdown)
 	{
 
@@ -64,7 +57,7 @@ void CreateTrackerWindow::slotCreateTracker()
 		break;
 
 	default:
-		Console::logError("MotionHub::checkInput(): Can not create tracker. Tracker type unkown!");
+		Console::logError("CreateTrackerWindow::slotCreateTracker(): Can not create tracker. Tracker type unkown!");
 		break;
 
 	}
@@ -75,7 +68,7 @@ void CreateTrackerWindow::slotCreateTracker()
 }
 
 // SLOT: get tracker id of current selected tracker type in dropdown list
-void CreateTrackerWindow::switchTrackerType(int id)
+void CreateTrackerWindow::slotSelectTrackerInDropdown(int id)
 {
 
 	m_selectedTrackerIdInDropdown = id;

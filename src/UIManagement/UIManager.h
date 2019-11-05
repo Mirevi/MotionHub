@@ -7,9 +7,6 @@
 
 #include "MainWindow.h"
 #include "CreateTrackerWindow.h"
-#include "MotionHubUtil/InputManager.h"
-
-//#include "TrackerManagement/TrackerManager.h"
 
 #include <thread>
 
@@ -32,7 +29,7 @@ public:
 	 * \param argv
 	 * \param inputManager reference to the InputManager
 	 */
-	UIManager(int argc, char** argv/*, InputManager* inputManager*/, TrackerManager* trackerManager);
+	UIManager(int argc, char** argv, TrackerManager* trackerManager);
 
 private:
 	/*!
@@ -43,10 +40,6 @@ private:
 	 * main window containing all other windows 
 	 */
 	MainWindow* m_mainWindow;
-	/*!
-	 * reference to the InputManager
-	 */
-	//InputManager* m_refInputManager;
 
 	TrackerManager* m_refTrackerManager;
 
