@@ -47,7 +47,7 @@ void Tracker::stop()
 {
 
 	m_isTracking = false;
-	m_trackingThread->join();
+	//m_trackingThread->join();
 
 }
 

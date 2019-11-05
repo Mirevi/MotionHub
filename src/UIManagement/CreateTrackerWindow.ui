@@ -649,7 +649,7 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
    <sender>btn_create</sender>
    <signal>pressed()</signal>
    <receiver>CreateTrackerWindow</receiver>
-   <slot>createTracker()</slot>
+   <slot>slotCreateTracker()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>257</x>
@@ -664,6 +664,6 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
  </connections>
  <slots>
   <slot>switchTrackerType(int)</slot>
-  <slot>createTracker()</slot>
+  <slot>slotCreateTracker()</slot>
  </slots>
 </ui>

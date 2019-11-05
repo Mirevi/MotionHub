@@ -32,6 +32,7 @@ add_library(UIManagement SHARED ${UIManagement_HEADER} ${UIManagement_SRC} ${UIM
 target_link_libraries(UIManagement
 	Qt5::Widgets
 	debug MotionHubUtil${CMAKE_DEBUG_POSTFIX} optimized MotionHubUtil
+	debug TrackerManagement${CMAKE_DEBUG_POSTFIX} optimized TrackerManagement
 	debug k4a optimized k4a
 	debug k4abt optimized k4abt
 	debug cudnn optimized cudnn

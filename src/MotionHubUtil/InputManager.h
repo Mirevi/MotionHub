@@ -45,20 +45,20 @@ public:
 	 * \param buttonId button id
 	 */
 	void registerButton(int buttonId);
-	/*!
-	 * 
-	 * get id of selected tracker in create tracker dialog
-	 * 
-	 * \return tracker id
-	 */
-	int getSelectedTrackerIdInDropdown();
-	/*!
-	 * 
-	 * set id of selected tracker in create tracker dialog
-	 * 
-	 * \param id tracker id
-	 */
-	void setSelectedTrackerIdInDropdown(int id);
+	///*!
+	// * 
+	// * get id of selected tracker in create tracker dialog
+	// * 
+	// * \return tracker id
+	// */
+	//int getSelectedTrackerIdInDropdown();
+	///*!
+	// * 
+	// * set id of selected tracker in create tracker dialog
+	// * 
+	// * \param id tracker id
+	// */
+	//void setSelectedTrackerIdInDropdown(int id);
 	/*!
 	 *
 	 * get id of selected tracker in main window tracker list
@@ -94,10 +94,10 @@ private:
 	 * toggle for write and read rights
 	 */
 	bool m_isLocked = true;
-	/*!
-	 * selected tracker id in create tracker dialog  
-	 */
-	int m_selectedTrackerIdInDropdown = 0;
+	///*!
+	// * selected tracker id in create tracker dialog  
+	// */
+	//int m_selectedTrackerIdInDropdown = 0;
 	/*!
 	 * selected tracker id in main window tracker list 
 	 */

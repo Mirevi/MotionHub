@@ -53,7 +53,7 @@ private:
 	UIManager* m_uiManager;
 	InputManager* m_inputManager;
 
-	bool m_isTracking = false;
+	//bool m_isTracking = false;
 
 	void startUpdateThread();
 
@@ -62,7 +62,7 @@ private:
 
 	void processInput();
 
-	void startTracking();
-	void stopTracking();
+	//void startTracking();
+	//void stopTracking();
 
 };

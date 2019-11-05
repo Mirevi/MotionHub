@@ -1,10 +1,9 @@
 #include "MainWindow.h"
 #include "ui_mainwindow.h"
 
-#include "TrackerManagement/TrackerManager.h"
 
 // default constructor
-MainWindow::MainWindow(InputManager* inputManager, QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
+MainWindow::MainWindow(InputManager* inputManager, TrackerManager* trackerManager, QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
 
 	// setup base class
@@ -12,6 +11,9 @@ MainWindow::MainWindow(InputManager* inputManager, QWidget *parent) : QMainWindo
 
 	// assign reference to input manager
 	m_refInputManager = inputManager;
+
+	// assign reference to tracker manager
+	m_refTrackerManager = trackerManager;
 
 	// register buttons of the window in input manager
 	m_refInputManager->registerButton(0); // button: startAllTracker
@@ -101,7 +103,7 @@ void MainWindow::addTracker()
 {
 	
 	// create dialog for creating new tracker
-	m_createTrackerWindow = new CreateTrackerWindow(m_refInputManager, ui->listView_tracker);
+	m_createTrackerWindow = new CreateTrackerWindow(m_refInputManager, m_refTrackerManager, ui->listView_tracker);
 	
 	// set modal and execute
 	m_createTrackerWindow->setModal(true);
@@ -154,10 +156,33 @@ void MainWindow::removeTracker()
 	{
 
 		// save id in input manager
-		m_refInputManager->setSelectedTrackerIdInList(idToRemove);
+		//m_refInputManager->setSelectedTrackerIdInList(idToRemove);
 
 		// set button press for input loop
-		m_refInputManager->setButtonPressed(1, 1);
+		//m_refInputManager->setButtonPressed(1, 1);
+
+
+
+
+
+				// save current tracking state
+		bool wasTracking = m_refTrackerManager->isTracking();
+
+		// check if motion hub is tracking
+		if (m_refTrackerManager->isTracking())
+			m_refTrackerManager->stopTracker(); // stop tracking if true
+
+		// get selected tracker id in ui list
+		// remove selected tracker from tracker pool
+		m_refTrackerManager->removeTracker(idToRemove);
+
+		// check if motion hub was tracking
+		if (wasTracking)
+			m_refTrackerManager->startTracker(); // start tracking if true
+
+
+
+
 
 		// remove tracker from list
 		removeTrackerFromList(idToRemove);

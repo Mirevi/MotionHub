@@ -8,7 +8,6 @@
 #include "QtCore/qstringlistmodel.h"
 #include "QtCore/qstring.h"
 
-//#include "TrackerManagement/TrackerManager.h"
 
 
 namespace Ui
@@ -32,7 +31,7 @@ public:
 	/*!
 	 * default constructor  
 	 */
-	explicit MainWindow(InputManager* inputManager, QWidget *parent = 0);
+	explicit MainWindow(InputManager* inputManager, TrackerManager* trackerManager, QWidget *parent = 0);
 	/*!
 	 * default destructor 
 	 */
@@ -66,6 +65,8 @@ private:
 	 * reference to the inputManager
 	*/
 	InputManager* m_refInputManager;
+
+	TrackerManager* m_refTrackerManager;
 	/*!
 	 * createTracker dialog 
 	 */

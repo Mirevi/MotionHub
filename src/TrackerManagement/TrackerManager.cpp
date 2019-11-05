@@ -107,6 +107,8 @@ void TrackerManager::startTracker()
 		itTracker->second->start();
 	}
 
+	m_isTracking = true;
+
 	Console::log("TrackerManager::startTracker(): Started all tracker.");
 }
 
@@ -115,6 +117,8 @@ void TrackerManager::stopTracker()
 {
 
 	Console::log("TrackerManager::stopTracker(): Stopping all tracker ...");
+
+	m_isTracking = false;
 
 	for (auto itTracker = m_trackerPool.begin(); itTracker != m_trackerPool.end(); itTracker++)
 	{
@@ -130,4 +134,9 @@ std::map<std::pair<TrackerManager::TrackerType, int>, Tracker*>* TrackerManager:
 
 	return &m_trackerPool;
 
+}
+
+bool TrackerManager::isTracking()
+{
+	return m_isTracking;
 }

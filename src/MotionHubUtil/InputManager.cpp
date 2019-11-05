@@ -77,20 +77,20 @@ void InputManager::registerButton(int buttonId)
 
 }
 
-// set tracker id selected in create new tracker dialog dropdown
-void InputManager::setSelectedTrackerIdInDropdown(int id)
-{
-
-	m_selectedTrackerIdInDropdown = id;
-
-}
-
-int InputManager::getSelectedTrackerIdInDropdown()
-{
-
-	return m_selectedTrackerIdInDropdown;
-
-}
+//// set tracker id selected in create new tracker dialog dropdown
+//void InputManager::setSelectedTrackerIdInDropdown(int id)
+//{
+//
+//	m_selectedTrackerIdInDropdown = id;
+//
+//}
+//
+//int InputManager::getSelectedTrackerIdInDropdown()
+//{
+//
+//	return m_selectedTrackerIdInDropdown;
+//
+//}
 
 int InputManager::getSelectedTrackerIdInList()
 {

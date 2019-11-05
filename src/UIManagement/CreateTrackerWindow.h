@@ -8,6 +8,9 @@
 #include "QtCore/qstring.h"
 #include "QtWidgets/qlistview.h"
 
+#include "TrackerManagement/TrackerManager.h"
+
+
 namespace Ui {
 	class CreateTrackerWindow;
 }
@@ -28,14 +31,14 @@ public:
 	/*!
 	 * default constructor 
 	 */
-	explicit CreateTrackerWindow(InputManager* inputManager, QListView* listViewTracker, QWidget *parent = 0);
+	explicit CreateTrackerWindow(InputManager* inputManager, TrackerManager* trackerManager, QListView* listViewTracker, QWidget *parent = 0);
 	~CreateTrackerWindow();
 
 private slots:
 	/*!
 	 * slot for button create 
 	 */
-	void createTracker();
+	void slotCreateTracker();
 	/*!
 	 * 
 	 * slot for dropdown selection
@@ -53,9 +56,13 @@ private:
 	 * reference to the inputManager 
 	 */
 	InputManager* m_refInputManager;
+
+	TrackerManager* m_refTrackerManager;
 	/*!
 	 *  reference to the tracker list in main window
 	 */
 	QListView* m_refListViewTracker;
+
+	int m_selectedTrackerIdInDropdown = 0;
 
 };

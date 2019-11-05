@@ -6,15 +6,17 @@
 //outputs a string in console as info text
 void Console::log(std::string message)
 {
+	//static member that works without a object
 	static std::atomic<bool> g_consoleIsLocked(false);
+
 	//chek if console is locked
-	//while (g_consoleIsLocked.load())
-	//{
+	while (g_consoleIsLocked.load())
+	{
 
-	//	//wait 5 milliseconds before trying again
-	//	std::this_thread::sleep_for(std::chrono::milliseconds(100));
+		//wait 5 milliseconds before trying again
+		std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
-	//}
+	}
 
 	//lock console
 	g_consoleIsLocked.store(true);

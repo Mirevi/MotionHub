@@ -2,7 +2,7 @@
 #include "ui_createtrackerwindow.h"
 
 // default constructor
-CreateTrackerWindow::CreateTrackerWindow(InputManager* inputManager, QListView* listViewTracker, QWidget *parent) : QDialog(parent), ui(new Ui::CreateTrackerWindow)
+CreateTrackerWindow::CreateTrackerWindow(InputManager* inputManager, TrackerManager* trackerManager, QListView* listViewTracker, QWidget *parent) : QDialog(parent), ui(new Ui::CreateTrackerWindow)
 {
 
 	// setup dialog
@@ -10,6 +10,7 @@ CreateTrackerWindow::CreateTrackerWindow(InputManager* inputManager, QListView* 
 
 	// assign refference to input manager and list view of main window
 	m_refInputManager = inputManager;
+	m_refTrackerManager = trackerManager;
 	m_refListViewTracker = listViewTracker;
 
 	// register buttons of the dialog in input manager
@@ -26,7 +27,7 @@ CreateTrackerWindow::~CreateTrackerWindow()
 }
 
 // SLOT: create new tracker
-void CreateTrackerWindow::createTracker()
+void CreateTrackerWindow::slotCreateTracker()
 {
 
 	// create new model and list
@@ -52,7 +53,21 @@ void CreateTrackerWindow::createTracker()
 	m_refListViewTracker->setModel(model);
 
 	// set button pressed
-	m_refInputManager->setButtonPressed(2, 1);
+	//m_refInputManager->setButtonPressed(2, 1);
+
+
+	switch (m_selectedTrackerIdInDropdown)
+	{
+
+	case 0:
+		m_refTrackerManager->createTracker(TrackerManager::AKT); // create new azure kinect tracker and add tracker to the tracking manager tracker pool
+		break;
+
+	default:
+		Console::logError("MotionHub::checkInput(): Can not create tracker. Tracker type unkown!");
+		break;
+
+	}
 
 	// close dialog
 	close();
@@ -63,6 +78,6 @@ void CreateTrackerWindow::createTracker()
 void CreateTrackerWindow::switchTrackerType(int id)
 {
 
-	m_refInputManager->setSelectedTrackerIdInDropdown(id);
+	m_selectedTrackerIdInDropdown = id;
 
 }
