@@ -74,7 +74,7 @@ void TrackerManager::removeTracker(int idToRemove)
 			// remove tracker with key from tracker pool
 			m_trackerPool.erase(itPoolTracker->first);
 
-			Console::log("TrackerManager::removeTracker(): Removed tracker with id = " + std::to_string(itPoolTracker->first.second) + ".");
+			Console::log("TrackerManager::removeTracker(): Removed tracker with id = " + std::to_string(idToRemove) + ".");
 
 			break;
 

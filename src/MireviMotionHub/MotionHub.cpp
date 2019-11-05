@@ -63,7 +63,7 @@ void MotionHub::update()
 	{
 
 		// process ui input
-		processInput();
+		//processInput();
 
 		// tracking loop
 		if (m_trackerManager->isTracking())
@@ -97,16 +97,16 @@ void MotionHub::processInput()
 
 	// toggle tracking
 	// check if start / stop tracking button is pressed
-	if (m_inputManager->isButtonPressed(0))
-	{
+	//if (m_inputManager->isButtonPressed(0))
+	//{
 
-		// check if motion hub is tracking
-		if (!m_trackerManager->isTracking())
-			m_trackerManager->startTracker(); // start tracking if false
-		else
-			m_trackerManager->stopTracker(); // stop tracking hub is true
+	//	//// check if motion hub is tracking
+	//	//if (!m_trackerManager->isTracking())
+	//	//	m_trackerManager->startTracker(); // start tracking if false
+	//	//else
+	//	//	m_trackerManager->stopTracker(); // stop tracking hub is true
 
-	}
+	//}
 
 	// check if remove tracker button is pressed
 	//if (m_inputManager->isButtonPressed(1))

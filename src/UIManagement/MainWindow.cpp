@@ -94,8 +94,17 @@ void MainWindow::startAllTracker()
 	m_isTracking = !m_isTracking;
 
 	// set button start / stop pressed
-	m_refInputManager->setButtonPressed(0, 1);
+	//m_refInputManager->setButtonPressed(0, 1);
 
+	// check if motion hub is tracking
+	if (!m_refTrackerManager->isTracking())
+	{
+		m_refTrackerManager->startTracker(); // start tracking if false
+	}
+	else
+	{
+		m_refTrackerManager->stopTracker(); // stop tracking hub is true
+	}
 }
 
 // SLOT: add new tracker
