@@ -1,8 +1,11 @@
 #include "AKTracker.h"
 
 // default constructor
-AKTracker::AKTracker(int idCam)
+AKTracker::AKTracker(int id, int idCam)
 {
+
+	m_id = id;
+	m_name = "tracker_azureKinect_" + std::to_string(id);
 
 	// assign cam id
 	m_idCam = idCam;

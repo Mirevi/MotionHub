@@ -95,3 +95,8 @@ std::map<int, Skeleton*>* Tracker::getSkeletonPool()
 	return &m_skeletonPool;
 
 }
+
+std::string Tracker::getName()
+{
+	return m_name;
+}

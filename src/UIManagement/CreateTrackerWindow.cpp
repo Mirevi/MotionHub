@@ -27,6 +27,19 @@ CreateTrackerWindow::~CreateTrackerWindow()
 void CreateTrackerWindow::slotCreateTracker()
 {
 
+	switch (m_selectedTrackerIdInDropdown)
+	{
+
+		case 0:
+			m_refTrackerManager->createTracker(TrackerManager::azureKinect); // create new azure kinect tracker and add tracker to the tracking manager tracker pool
+			break;
+
+		default:
+			Console::logError("CreateTrackerWindow::slotCreateTracker(): Can not create tracker. Tracker type unkown!");
+			break;
+
+	}
+
 	// create new model and list
 	QStringListModel* model = new QStringListModel(this);
 	QStringList stringList;
@@ -34,7 +47,7 @@ void CreateTrackerWindow::slotCreateTracker()
 	// create old model and assign current model
 	QAbstractItemModel* oldModel = m_refListViewTracker->model();
 
-	if(oldModel != nullptr)
+	if (oldModel != nullptr)
 	{
 		for (size_t i = 0; i < oldModel->rowCount(); ++i)
 		{
@@ -43,24 +56,11 @@ void CreateTrackerWindow::slotCreateTracker()
 	}
 
 	// append new tracker
-	stringList.append(ui->dropdown_tracker->currentText());
+	stringList.append(m_refTrackerManager->getPoolTracker()->rbegin()->second->getName().c_str());
 
 	// display new list text
 	model->setStringList(stringList);
 	m_refListViewTracker->setModel(model);
-
-	switch (m_selectedTrackerIdInDropdown)
-	{
-
-	case 0:
-		m_refTrackerManager->createTracker(TrackerManager::AKT); // create new azure kinect tracker and add tracker to the tracking manager tracker pool
-		break;
-
-	default:
-		Console::logError("CreateTrackerWindow::slotCreateTracker(): Can not create tracker. Tracker type unkown!");
-		break;
-
-	}
 
 	// close dialog
 	close();

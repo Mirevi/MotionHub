@@ -33,31 +33,28 @@ void MainWindow::update()
 	while (true)
 	{
 
-		std::this_thread::sleep_for(std::chrono::milliseconds(33));
-
-
-		for (auto itTrackerPool = m_refTrackerPool->begin(); itTrackerPool != m_refTrackerPool->end(); itTrackerPool++)
-		{
-			if (itTrackerPool->second == nullptr)
-			{
-
-				break;
-
-			}
-			else if(itTrackerPool->second->hasSkeletonPoolChanged())
-			{
-
-				updateHirachy();
-				break;
-
-			}		
-		}
+		if(!m_refTrackerManager->isTrackerPoolLocked())
+		{ 
 		
+			for (auto itTrackerPool = m_refTrackerPool->begin(); itTrackerPool != m_refTrackerPool->end(); itTrackerPool++)
+			{
+
+				if (itTrackerPool->second->hasSkeletonPoolChanged())
+				{
+
+					updateHirachy();
+					break;
+
+				}
+			}		
+		}		
 	}	
 }
 
 void MainWindow::updateHirachy()
 {
+	
+	// Console::log("MainWindow::updateHirachy(): Updating hirachy ...");
 
 	if (ui->treeWidget_hirachy->topLevelItemCount() > 0)
 	{
@@ -71,7 +68,7 @@ void MainWindow::updateHirachy()
 	{
 
 		QTreeWidgetItem* tracker = new QTreeWidgetItem();
-		std::string trackerName = "tracker_" + std::to_string(itTrackerPool->first.first) + "_" + std::to_string(itTrackerPool->first.second);
+		std::string trackerName = itTrackerPool->second->getName();
 		tracker->setText(0, QString::fromStdString(trackerName));
 
 		for (auto itSkeletonPool = itTrackerPool->second->getSkeletonPool()->begin(); itSkeletonPool != itTrackerPool->second->getSkeletonPool()->end(); itSkeletonPool++)
@@ -87,10 +84,15 @@ void MainWindow::updateHirachy()
 
 		ui->treeWidget_hirachy->addTopLevelItem(tracker);
 
-		if (tracker->childCount() > 0)
-			tracker->setExpanded(true);
-		 
+		//tracker->setExpanded(true);
+
+		//std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
+
 	}
+
+	// Console::log("MainWindow::updateHirachy(): Updated hirachy.");
+
 }
 
 // SLOT: close window / application

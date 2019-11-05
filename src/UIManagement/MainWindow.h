@@ -7,6 +7,8 @@
 #include "QtCore/qstringlistmodel.h"
 #include "QtCore/qstring.h"
 
+#include <chrono>
+
 namespace Ui
 {
 	class MainWindow;
@@ -80,5 +82,5 @@ private:
 
 	std::thread* m_updateThread;
 
-	std::map<std::pair<TrackerManager::TrackerType, int>, Tracker*>* m_refTrackerPool;
+	std::map<std::pair<std::string, int>, Tracker*>* m_refTrackerPool;
 };

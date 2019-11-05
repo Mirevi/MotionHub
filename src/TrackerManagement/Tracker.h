@@ -45,6 +45,8 @@ public:
 
 	virtual bool hasSkeletonPoolChanged();
 
+	virtual std::string getName();
+
 protected:
 
 	/*!
@@ -54,6 +56,9 @@ protected:
 
 	bool m_isDataAvailable = false;
 	bool m_hasSkeletonPoolChanged = false;
+
+	std::string m_name;
+	int m_id;
 
 	virtual void init() = 0;
 

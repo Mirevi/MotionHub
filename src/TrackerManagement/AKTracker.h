@@ -35,7 +35,7 @@ public:
 	 * constructor with config
 	 * \param idCam the cameras id number
 	 */
-	AKTracker(int idCam);
+	AKTracker(int id, int idCam);
 
 	/*!
 	 * calls the start() method of the base class which sets m_tracking to true 
