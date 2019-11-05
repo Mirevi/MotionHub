@@ -47,7 +47,6 @@ void Tracker::stop()
 {
 
 	m_isTracking = false;
-	m_trackingThread->join();
 
 }
 
@@ -72,18 +71,32 @@ void Tracker::resetIsDataAvailable()
 
 }
 
+bool Tracker::hasSkeletonPoolChanged()
+{
+
+	if (m_hasSkeletonPoolChanged)
+	{
+
+		m_hasSkeletonPoolChanged = false;
+		return true;
+
+	}
+	else
+	{
+
+		return false;
+
+	}
+}
+
 std::map<int, Skeleton*>* Tracker::getSkeletonPool()
 {
 
 	return &m_skeletonPool;
 
-	//if (m_isDataAvailable)
-	//	return &m_skeletonPool;
-	//else
-	//{
+}
 
-	//	Console::logError("Tracker::getSkeletonPool(): No new data available!");
-	//	return nullptr;
-
-	//}
+std::string Tracker::getName()
+{
+	return m_name;
 }

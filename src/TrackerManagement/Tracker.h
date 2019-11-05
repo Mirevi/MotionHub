@@ -6,8 +6,6 @@
 #include "MotionHubUtil/Skeleton.h"
 #include "MotionHubUtil/Console.h"
 
-#include "MotionHubUtil/InputManager.h"
-
 /*!
  * \class Tracker
  *
@@ -45,6 +43,10 @@ public:
 	virtual bool isDataAvailable();
 	virtual void resetIsDataAvailable();
 
+	virtual bool hasSkeletonPoolChanged();
+
+	virtual std::string getName();
+
 protected:
 
 	/*!
@@ -53,6 +55,10 @@ protected:
 	bool m_isTracking = false;
 
 	bool m_isDataAvailable = false;
+	bool m_hasSkeletonPoolChanged = false;
+
+	std::string m_name;
+	int m_id;
 
 	virtual void init() = 0;
 

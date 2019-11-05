@@ -7,9 +7,9 @@
 
 #include <map>
 #include <vector>
+#include <atomic>
 
 #include "AKTracker.h"
-#include "MotionHubUtil/InputManager.h"
 
 /*!
  * \class TrackerManager
@@ -28,15 +28,14 @@ public:
 	/*!
 	 * default constructor (empty)
 	 */
-	TrackerManager(InputManager* inputManager);
+	TrackerManager();
 
 	/*!
 	 * enum for all tracker types 
 	 */
 	enum TrackerType 
 	{
-		AKT,	// Azure Kinect Tracker
-		XST		// XSense Tracker
+		azureKinect	// Azure Kinect Tracker
 	};;
 
 	/*!
@@ -55,15 +54,25 @@ public:
 	void startTracker();
 	void stopTracker();
 
-	std::map<std::pair<TrackerType, int>, Tracker*>* getPoolTracker();
+	bool isTracking();
+
+	bool hasTrackerPoolChanged();
+
+	bool isTrackerPoolLocked();
+
+	std::map<std::pair<std::string, int>, Tracker*>* getPoolTracker();
 
 private:
 
 	/*!
 	 * pool of all created tracker 
 	 */
-	std::map<std::pair<TrackerType, int>, Tracker*> m_trackerPool;
+	std::map<std::pair<std::string, int>, Tracker*> m_trackerPool;
 
-	InputManager* m_refInputManager;
+	bool m_isTracking = false;
+
+	bool m_hasTrackerPoolChanged = false;
+
+	std::atomic<bool> m_isTrackerPoolLocked;
 
 };

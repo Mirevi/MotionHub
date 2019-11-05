@@ -4,7 +4,7 @@
 GestureManager::GestureManager()
 {
 
-
+	Console::log("GestureManager::GestureManager(): Created gesture manager.");
 
 }
 

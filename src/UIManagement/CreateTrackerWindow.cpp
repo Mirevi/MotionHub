@@ -2,18 +2,16 @@
 #include "ui_createtrackerwindow.h"
 
 // default constructor
-CreateTrackerWindow::CreateTrackerWindow(InputManager* inputManager, QListView* listViewTracker, QWidget *parent) : QDialog(parent), ui(new Ui::CreateTrackerWindow)
+CreateTrackerWindow::CreateTrackerWindow(TrackerManager* trackerManager, QListView* listViewTracker, QWidget *parent) : QDialog(parent), ui(new Ui::CreateTrackerWindow)
 {
 
 	// setup dialog
 	ui->setupUi(this);
 
-	// assign refference to input manager and list view of main window
-	m_refInputManager = inputManager;
+	// assign refference to tracker manager and list view of main window
+	m_refTrackerManager = trackerManager;
 	m_refListViewTracker = listViewTracker;
 
-	// register buttons of the dialog in input manager
-	m_refInputManager->registerButton(2); // button: create tracker
 }
 
 // default destructor
@@ -26,8 +24,21 @@ CreateTrackerWindow::~CreateTrackerWindow()
 }
 
 // SLOT: create new tracker
-void CreateTrackerWindow::createTracker()
+void CreateTrackerWindow::slotCreateTracker()
 {
+
+	switch (m_selectedTrackerIdInDropdown)
+	{
+
+		case 0:
+			m_refTrackerManager->createTracker(TrackerManager::azureKinect); // create new azure kinect tracker and add tracker to the tracking manager tracker pool
+			break;
+
+		default:
+			Console::logError("CreateTrackerWindow::slotCreateTracker(): Can not create tracker. Tracker type unkown!");
+			break;
+
+	}
 
 	// create new model and list
 	QStringListModel* model = new QStringListModel(this);
@@ -36,7 +47,7 @@ void CreateTrackerWindow::createTracker()
 	// create old model and assign current model
 	QAbstractItemModel* oldModel = m_refListViewTracker->model();
 
-	if(oldModel != nullptr)
+	if (oldModel != nullptr)
 	{
 		for (size_t i = 0; i < oldModel->rowCount(); ++i)
 		{
@@ -45,14 +56,11 @@ void CreateTrackerWindow::createTracker()
 	}
 
 	// append new tracker
-	stringList.append(ui->dropdown_tracker->currentText());
+	stringList.append(m_refTrackerManager->getPoolTracker()->rbegin()->second->getName().c_str());
 
 	// display new list text
 	model->setStringList(stringList);
 	m_refListViewTracker->setModel(model);
-
-	// set button pressed
-	m_refInputManager->setButtonPressed(2, 1);
 
 	// close dialog
 	close();
@@ -60,9 +68,9 @@ void CreateTrackerWindow::createTracker()
 }
 
 // SLOT: get tracker id of current selected tracker type in dropdown list
-void CreateTrackerWindow::switchTrackerType(int id)
+void CreateTrackerWindow::slotSelectTrackerInDropdown(int id)
 {
 
-	m_refInputManager->setSelectedTrackerIdInDropdown(id);
+	m_selectedTrackerIdInDropdown = id;
 
 }

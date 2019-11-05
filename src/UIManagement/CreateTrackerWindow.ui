@@ -617,7 +617,7 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
    <sender>dropdown_tracker</sender>
    <signal>currentIndexChanged(int)</signal>
    <receiver>CreateTrackerWindow</receiver>
-   <slot>switchTrackerType(int)</slot>
+   <slot>slotSelectTrackerInDropdown(int)</slot>
    <hints>
     <hint type="sourcelabel">
      <x>90</x>
@@ -649,7 +649,7 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
    <sender>btn_create</sender>
    <signal>pressed()</signal>
    <receiver>CreateTrackerWindow</receiver>
-   <slot>createTracker()</slot>
+   <slot>slotCreateTracker()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>257</x>
@@ -663,7 +663,7 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
   </connection>
  </connections>
  <slots>
-  <slot>switchTrackerType(int)</slot>
-  <slot>createTracker()</slot>
+  <slot>slotSelectTrackerInDropdown(int)</slot>
+  <slot>slotCreateTracker()</slot>
  </slots>
 </ui>

@@ -1,9 +1,9 @@
 #include "TrackerManager.h"
 
-TrackerManager::TrackerManager(InputManager* inputManager)
+TrackerManager::TrackerManager()
 {
 	
-	m_refInputManager = inputManager;
+	Console::log("TrackerManager::TrackerManager(): Created tracker manager.");
 
 }
 
@@ -23,24 +23,28 @@ void TrackerManager::createTracker(TrackerType type)
 	{
 
 		// azure kinect
-	case AKT:
+		case azureKinect:
 
-		// get next azure kinect camera id
-		for (auto itPoolTracker = m_trackerPool.begin(); itPoolTracker != m_trackerPool.end(); itPoolTracker++)
-		{
+			m_isTrackerPoolLocked.store(true);
 
-			if (itPoolTracker->first.first == AKT)
+			// get next azure kinect camera id
+			for (auto itPoolTracker = m_trackerPool.begin(); itPoolTracker != m_trackerPool.end(); itPoolTracker++)
 			{
 
-				nextCamIdAk = itPoolTracker->first.second + 1;
+				if (itPoolTracker->first.first == "azureKinect")
+				{
 
+					nextCamIdAk = itPoolTracker->first.second + 1;
+
+				}
 			}
-		}
 
-		// create new azure kinect tracker and insert the tracker in the tracker pool
-		m_trackerPool.insert({ { AKT, id }, new AKTracker(nextCamIdAk, m_refInputManager) });
+			// create new azure kinect tracker and insert the tracker in the tracker pool
+			m_trackerPool.insert({ { "azureKinect", id }, new AKTracker(id, nextCamIdAk) });
 
-		m_refInputManager->getTrackerPool()->insert({ { "ak", id }, m_trackerPool.at({AKT, id})->getSkeletonPool() });
+			m_isTrackerPoolLocked.store(false);
+
+			m_hasTrackerPoolChanged = true;
 
 			Console::log("TrackerManager::createTracker(): Created Azure Kinect tracker with cam id = " + std::to_string(nextCamIdAk) + ".");
 
@@ -52,8 +56,6 @@ void TrackerManager::createTracker(TrackerType type)
 			break;
 
 	}
-
-	m_refInputManager->setTrackerDataAvailable(true);
 }
 
 // remove tracker with id from the tracker pool
@@ -61,6 +63,8 @@ void TrackerManager::removeTracker(int idToRemove)
 {
 
 	Console::log("MotionHub::checkInput(): Removing tracker ...");
+
+	m_isTrackerPoolLocked.store(true);
 
 	// get key of tracker with id
 	for (auto itPoolTracker = m_trackerPool.begin(); itPoolTracker != m_trackerPool.end(); itPoolTracker++)
@@ -74,26 +78,35 @@ void TrackerManager::removeTracker(int idToRemove)
 			// remove tracker with key from tracker pool
 			m_trackerPool.erase(itPoolTracker->first);
 
-			Console::log("TrackerManager::removeTracker(): Removed tracker with id = " + std::to_string(itPoolTracker->first.second) + ".");
+			m_hasTrackerPoolChanged = true;
+
+			Console::log("TrackerManager::removeTracker(): Removed tracker with id = " + std::to_string(idToRemove) + ".");
 
 			break;
 
 		}
 	}
 
-	for (auto itRefTracker = m_refInputManager->getTrackerPool()->begin(); itRefTracker != m_refInputManager->getTrackerPool()->end(); itRefTracker++)
+	m_isTrackerPoolLocked.store(false);
+
+}
+
+bool TrackerManager::hasTrackerPoolChanged()
+{
+
+	if (m_hasTrackerPoolChanged)
 	{
 
-		if (itRefTracker->first.second == idToRemove)
-		{
+		m_hasTrackerPoolChanged = false;
+		return true;
 
-			m_refInputManager->getTrackerPool()->erase(itRefTracker->first);
-			break;
-
-		}
 	}
+	else
+	{
 
-	m_refInputManager->setTrackerDataAvailable(true);
+		return false;
+
+	}
 }
 
 // start all tracker in the tracker pool
@@ -102,10 +115,16 @@ void TrackerManager::startTracker()
 
 	Console::log("TrackerManager::startTracker(): Starting all tracker ...");
 
+	m_isTrackerPoolLocked.store(true);
+
 	for (auto itTracker = m_trackerPool.begin(); itTracker != m_trackerPool.end(); itTracker++)
 	{
 		itTracker->second->start();
 	}
+
+	m_isTrackerPoolLocked.store(false);
+
+	m_isTracking = true;
 
 	Console::log("TrackerManager::startTracker(): Started all tracker.");
 }
@@ -116,18 +135,36 @@ void TrackerManager::stopTracker()
 
 	Console::log("TrackerManager::stopTracker(): Stopping all tracker ...");
 
+	m_isTracking = false;
+
+	m_isTrackerPoolLocked.store(true);
+
 	for (auto itTracker = m_trackerPool.begin(); itTracker != m_trackerPool.end(); itTracker++)
 	{
 		itTracker->second->stop();
 	}
 
+	m_isTrackerPoolLocked.store(false);
+
 	Console::log("TrackerManager::stopTracker(): Stopped all tracker.");
 }
 
 // return refference pointer to the tracker poll
-std::map<std::pair<TrackerManager::TrackerType, int>, Tracker*>* TrackerManager::getPoolTracker()
+std::map<std::pair<std::string, int>, Tracker*>* TrackerManager::getPoolTracker()
 {
 
 	return &m_trackerPool;
 
+}
+
+bool TrackerManager::isTracking()
+{
+
+	return m_isTracking;
+
+}
+
+bool TrackerManager::isTrackerPoolLocked()
+{
+	return m_isTrackerPoolLocked.load();
 }

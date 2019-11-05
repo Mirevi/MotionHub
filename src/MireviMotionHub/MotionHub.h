@@ -1,9 +1,5 @@
 #pragma once
 
-
-
-
-
 #include "defines.h"
 
 #include "MotionHubUtil/Console.h"
@@ -13,13 +9,8 @@
 #include "NetworkManagement/NetworkManager.h"
 #include "GestureManagement/GestureManager.h"
 #include "UIManagement/UIManager.h"
-#include "MotionHubUtil/InputManager.h"
 
 #include <string>
-
-
-
-
 
 /*!
  * \class MotionHub
@@ -51,18 +42,10 @@ private:
 	GestureManager* m_gestureManager;
 	NetworkManager* m_networkManager;
 	UIManager* m_uiManager;
-	InputManager* m_inputManager;
-
-	bool m_isTracking = false;
 
 	void startUpdateThread();
-
 	void update();
+
 	std::thread* m_updateThread = nullptr;
-
-	void processInput();
-
-	void startTracking();
-	void stopTracking();
 
 };

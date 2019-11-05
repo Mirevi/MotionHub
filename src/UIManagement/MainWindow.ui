@@ -964,7 +964,7 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
    <sender>btn_startTracker</sender>
    <signal>pressed()</signal>
    <receiver>MainWindow</receiver>
-   <slot>startAllTracker()</slot>
+   <slot>slotStartTracker()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>1221</x>
@@ -980,7 +980,7 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
    <sender>btn_addTracker</sender>
    <signal>pressed()</signal>
    <receiver>MainWindow</receiver>
-   <slot>addTracker()</slot>
+   <slot>slotAddTracker()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>1081</x>
@@ -996,7 +996,7 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
    <sender>btn_removeTracker</sender>
    <signal>pressed()</signal>
    <receiver>MainWindow</receiver>
-   <slot>removeTracker()</slot>
+   <slot>slotRemoveTracker()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>1151</x>
@@ -1010,8 +1010,8 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
   </connection>
  </connections>
  <slots>
-  <slot>startAllTracker()</slot>
-  <slot>addTracker()</slot>
-  <slot>removeTracker()</slot>
+  <slot>slotStartTracker()</slot>
+  <slot>slotAddTracker()</slot>
+  <slot>slotRemoveTracker()</slot>
  </slots>
 </ui>

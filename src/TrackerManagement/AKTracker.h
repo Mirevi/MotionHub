@@ -35,7 +35,7 @@ public:
 	 * constructor with config
 	 * \param idCam the cameras id number
 	 */
-	AKTracker(int idCam, InputManager* inputManager);
+	AKTracker(int id, int idCam);
 
 	/*!
 	 * calls the start() method of the base class which sets m_tracking to true 
@@ -124,7 +124,5 @@ private:
 	 * \param bodyFrame the k4a frame with all skeleton data
 	 */
 	void cleanSkeletonPool(k4abt_frame_t* bodyFrame);
-
-	InputManager* m_refInputManager;
 
 };
