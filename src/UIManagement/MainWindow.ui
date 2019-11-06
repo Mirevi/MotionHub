@@ -34,6 +34,10 @@
   <property name="windowTitle">
    <string>MireviMotionHub</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="MainWindow.qrc">
+    <normaloff>:/ressources/icons/mmh-icon.png</normaloff>:/ressources/icons/mmh-icon.png</iconset>
+  </property>
   <property name="layoutDirection">
    <enum>Qt::LeftToRight</enum>
   </property>

@@ -26,6 +26,10 @@ CreateTrackerWindow::~CreateTrackerWindow()
 // SLOT: create new tracker
 void CreateTrackerWindow::slotCreateTracker()
 {
+	//change curser to wait (Hourglass)
+	QApplication::setOverrideCursor(Qt::WaitCursor);
+	QApplication::processEvents();
+
 
 	switch (m_selectedTrackerIdInDropdown)
 	{
@@ -61,6 +65,9 @@ void CreateTrackerWindow::slotCreateTracker()
 	// display new list text
 	model->setStringList(stringList);
 	m_refListViewTracker->setModel(model);
+
+	QApplication::restoreOverrideCursor();
+	QApplication::processEvents();
 
 	// close dialog
 	close();

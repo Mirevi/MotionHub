@@ -6,8 +6,11 @@
 #include "CreateTrackerWindow.h"
 #include "QtCore/qstringlistmodel.h"
 #include "QtCore/qstring.h"
+#include "QtWidgets/qtreewidget.h"
 
 #include <chrono>
+#include <atomic>
+#include <list>
 
 namespace Ui
 {
@@ -74,6 +77,8 @@ private:
 	 */
 	bool m_isTracking = false;
 
+	std::list<QTreeWidgetItem*> m_topLevelItemPool;
+
 	void toggleIconStartButton();
 
 	void update();
@@ -83,4 +88,6 @@ private:
 	std::thread* m_updateThread;
 
 	std::map<std::pair<std::string, int>, Tracker*>* m_refTrackerPool;
+
+	std::atomic<bool> m_isHirachyLocked = false;
 };

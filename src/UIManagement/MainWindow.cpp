@@ -53,23 +53,22 @@ void MainWindow::update()
 
 void MainWindow::updateHirachy()
 {
-	
+
+	m_isHirachyLocked.store(true);
+
 	// Console::log("MainWindow::updateHirachy(): Updating hirachy ...");
 
-	if (ui->treeWidget_hirachy->topLevelItemCount() > 0)
-	{
-
-		ui->treeWidget_hirachy->clear();
-
-	}
+	ui->treeWidget_hirachy->clear();
+	m_topLevelItemPool.clear();
 
 	// tracker loop
 	for (auto itTrackerPool = m_refTrackerPool->begin(); itTrackerPool != m_refTrackerPool->end(); itTrackerPool++)
 	{
 
-		QTreeWidgetItem* tracker = new QTreeWidgetItem();
+		m_topLevelItemPool.push_back(new QTreeWidgetItem());
+
 		std::string trackerName = itTrackerPool->second->getName();
-		tracker->setText(0, QString::fromStdString(trackerName));
+		m_topLevelItemPool.back()->setText(0, QString::fromStdString(trackerName));
 
 		for (auto itSkeletonPool = itTrackerPool->second->getSkeletonPool()->begin(); itSkeletonPool != itTrackerPool->second->getSkeletonPool()->end(); itSkeletonPool++)
 		{
@@ -78,18 +77,29 @@ void MainWindow::updateHirachy()
 			std::string skeletonName = "skeleton_" + std::to_string(itSkeletonPool->first);
 			skeleton->setText(0, QString::fromStdString(skeletonName));
 
-			tracker->addChild(skeleton);
+			m_topLevelItemPool.back()->addChild(skeleton);
 
 		}
 
-		ui->treeWidget_hirachy->addTopLevelItem(tracker);
+		ui->treeWidget_hirachy->addTopLevelItem(m_topLevelItemPool.back());
+
+		//m_topLevelItemPool.back()->setExpanded(true);
 
 		//tracker->setExpanded(true);
 
-		//std::this_thread::sleep_for(std::chrono::milliseconds(100));
-
-
 	}
+
+	m_isHirachyLocked.store(false);
+
+	//for (int indexItems = 0; indexItems < ui->treeWidget_hirachy->topLevelItemCount(); indexItems++)
+	//{
+
+	//	if(ui->treeWidget_hirachy->itemAt(indexItems, 0)->childCount() > 0)
+	//		ui->treeWidget_hirachy->itemAt(indexItems, 0)->setExpanded(true);
+
+	//}
+
+	// ui->treeWidget_hirachy->expandToDepth(1);
 
 	// Console::log("MainWindow::updateHirachy(): Updated hirachy.");
 
@@ -143,6 +153,8 @@ void MainWindow::slotAddTracker()
 // SLOT: remove tracker button
 void MainWindow::slotRemoveTracker()
 {
+	QApplication::setOverrideCursor(Qt::WaitCursor);
+	QApplication::processEvents();
 
 	// id of tracker to remove
 	int idToRemove = -1;
@@ -203,6 +215,9 @@ void MainWindow::slotRemoveTracker()
 
 		updateHirachy();
 	}
+
+	QApplication::restoreOverrideCursor();
+	QApplication::processEvents();
 }
 
 // remove tracker with id from list

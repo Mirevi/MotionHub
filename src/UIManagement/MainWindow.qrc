@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="/">
+    <file>ressources/icons/mmh-icon.png</file>
     <file>ressources/icons/icons8-stop-30.png</file>
     <file>ressources/icons/icons8-stop-64.png</file>
     <file>ressources/icons/icons8-play-32.png</file>
