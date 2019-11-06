@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 
 
+
 // default constructor
 MainWindow::MainWindow(TrackerManager* trackerManager, QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
@@ -140,7 +141,7 @@ void MainWindow::slotAddTracker()
 {
 	
 	// create dialog for creating new tracker
-	m_createTrackerWindow = new CreateTrackerWindow(m_refTrackerManager, ui->listView_tracker);
+	m_createTrackerWindow = new CreateTrackerWindow(m_refTrackerManager, ui->listWidget_tracker);
 	
 	// set modal and execute
 	m_createTrackerWindow->setModal(true);
@@ -160,33 +161,36 @@ void MainWindow::slotRemoveTracker()
 	int idToRemove = -1;
 
 	// check if tracker exist in list
-	if (ui->listView_tracker->selectionModel() != NULL)
+	if (ui->listWidget_tracker->count() > 0)
 	{
 
 		// check if user selected tracker
-		if (ui->listView_tracker->selectionModel()->selectedIndexes().count() == 0)
+		if (ui->listWidget_tracker->selectedItems().size() < 1)
 		{
 
 			Console::logWarning("MainWindow::removeTracker(): No tracker in list selected!");
+
+			QApplication::restoreOverrideCursor();
+			QApplication::processEvents();
+
 			return;
 
 		}
 		else
 		{
 
-			// get selected item id
-			for each (QModelIndex index in ui->listView_tracker->selectionModel()->selectedIndexes())
-			{
+			idToRemove = ui->listWidget_tracker->currentIndex().data().toInt();
 
-				idToRemove = index.data().toInt();
-
-			}
 		}
 	}
 	else
 	{
 
 		Console::logError("MainWindow::removeTracker(): No tracker in list!");
+
+		QApplication::restoreOverrideCursor();
+		QApplication::processEvents();
+
 		return;
 
 	}
@@ -206,46 +210,17 @@ void MainWindow::slotRemoveTracker()
 		// remove selected tracker from tracker pool
 		m_refTrackerManager->removeTracker(idToRemove);
 
+		ui->listWidget_tracker->takeItem(idToRemove);
+
 		// check if motion hub was tracking
 		if (wasTracking)
 			m_refTrackerManager->startTracker(); // start tracking if true
-
-		// remove tracker from list
-		removeTrackerFromList(idToRemove);
 
 		updateHirachy();
 	}
 
 	QApplication::restoreOverrideCursor();
 	QApplication::processEvents();
-}
-
-// remove tracker with id from list
-void MainWindow::removeTrackerFromList(int id)
-{
-
-	// create new model and list
-	QStringListModel* model = new QStringListModel(this);
-	QStringList stringList;
-
-	// create and get old model
-	QAbstractItemModel* oldModel = ui->listView_tracker->model();
-
-	// add old model data to list
-	if (oldModel != nullptr)
-	{
-		for (size_t i = 0; i < oldModel->rowCount(); ++i)
-		{
-
-			if(i != id)
-				stringList << oldModel->index(i, 0).data(Qt::DisplayRole).toString();
-		}
-	}
-
-	// fill new model
-	model->setStringList(stringList);
-	// set model
-	ui->listView_tracker->setModel(model);
 
 }
 
@@ -261,5 +236,48 @@ void MainWindow::toggleIconStartButton()
 		icon.addFile(QStringLiteral(":/ressources/icons/icons8-play-32.png"), QSize(), QIcon::Normal, QIcon::Off);
 
 	ui->btn_startTracker->setIcon(icon);
+
+}
+
+void MainWindow::slotSelectTracker(QModelIndex index)
+{
+	int currIndex = index.data().toInt();
+
+	Console::log("MainWindow::slotSelectTracker(): Selected tracker with id = " + std::to_string(currIndex));
+
+
+	if (m_selectedTrackerInList != currIndex)
+	{
+
+		m_selectedTrackerInList = index.data().toInt();
+
+		showTrackerPropertiesInInspector(currIndex);
+	}
+}
+
+void MainWindow::showTrackerPropertiesInInspector(int index)
+{
+
+	ui->tableWidget_inspector->setRowCount(1);
+
+	//for (size_t i = 0; i < property.count; i++)
+	//{
+
+	//}
+
+	QTableWidgetItem* property = new QTableWidgetItem();
+	property->setText("id");
+
+	ui->tableWidget_inspector->setItem(0, 0, property);
+
+	QTableWidgetItem* value = new QTableWidgetItem();
+	value->setText(std::to_string(index).c_str());
+
+	ui->tableWidget_inspector->setItem(0, 1, value);
+
+	int var = 0;
+	char* var_name = GET_VARIABLE_NAME(var);
+
+	Console::log(var_name);
 
 }

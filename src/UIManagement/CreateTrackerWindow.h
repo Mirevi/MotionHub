@@ -5,7 +5,7 @@
 #include "MotionHubUtil/Console.h"
 #include "QtCore/qstringlistmodel.h"
 #include "QtCore/qstring.h"
-#include "QtWidgets/qlistview.h"
+#include "QtWidgets/qlistwidget.h"
 #include "TrackerManagement/TrackerManager.h"
 
 
@@ -29,7 +29,7 @@ public:
 	/*!
 	 * default constructor 
 	 */
-	explicit CreateTrackerWindow(TrackerManager* trackerManager, QListView* listViewTracker, QWidget *parent = 0);
+	explicit CreateTrackerWindow(TrackerManager* trackerManager, QListWidget* listWidgetTracker, QWidget *parent = 0);
 	~CreateTrackerWindow();
 
 private slots:
@@ -55,7 +55,7 @@ private:
 	/*!
 	 *  reference to the tracker list in main window
 	 */
-	QListView* m_refListViewTracker;
+	QListWidget* m_refListWidgetTracker;
 
 	int m_selectedTrackerIdInDropdown = 0;
 

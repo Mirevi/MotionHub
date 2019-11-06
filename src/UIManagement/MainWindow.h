@@ -8,6 +8,9 @@
 #include "QtCore/qstring.h"
 #include "QtWidgets/qtreewidget.h"
 
+#define GET_VARIABLE_NAME(Variable) (#Variable)
+
+
 #include <chrono>
 #include <atomic>
 #include <list>
@@ -54,6 +57,7 @@ private slots:
 	 */
 	void slotRemoveTracker();
 	void on_actionExit_triggered();
+	void slotSelectTracker(QModelIndex index);
 
 private:
 	/*!
@@ -66,12 +70,6 @@ private:
 	 * createTracker dialog 
 	 */
 	CreateTrackerWindow* m_createTrackerWindow;
-	/*!
-	 * removes tracker from List view widget
-	 *  
-	 * \param id the id to remove
-	 */
-	void removeTrackerFromList(int id);
 	/*!
 	 *  tracking state for changing icon
 	 */
@@ -90,4 +88,8 @@ private:
 	std::map<std::pair<std::string, int>, Tracker*>* m_refTrackerPool;
 
 	std::atomic<bool> m_isHirachyLocked = false;
+
+	int m_selectedTrackerInList;
+
+	void showTrackerPropertiesInInspector(int index);
 };

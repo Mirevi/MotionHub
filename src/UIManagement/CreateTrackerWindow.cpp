@@ -2,7 +2,7 @@
 #include "ui_createtrackerwindow.h"
 
 // default constructor
-CreateTrackerWindow::CreateTrackerWindow(TrackerManager* trackerManager, QListView* listViewTracker, QWidget *parent) : QDialog(parent), ui(new Ui::CreateTrackerWindow)
+CreateTrackerWindow::CreateTrackerWindow(TrackerManager* trackerManager, QListWidget* listWidgetTracker, QWidget *parent) : QDialog(parent), ui(new Ui::CreateTrackerWindow)
 {
 
 	// setup dialog
@@ -10,7 +10,7 @@ CreateTrackerWindow::CreateTrackerWindow(TrackerManager* trackerManager, QListVi
 
 	// assign refference to tracker manager and list view of main window
 	m_refTrackerManager = trackerManager;
-	m_refListViewTracker = listViewTracker;
+	m_refListWidgetTracker = listWidgetTracker;
 
 }
 
@@ -30,7 +30,6 @@ void CreateTrackerWindow::slotCreateTracker()
 	QApplication::setOverrideCursor(Qt::WaitCursor);
 	QApplication::processEvents();
 
-
 	switch (m_selectedTrackerIdInDropdown)
 	{
 
@@ -44,27 +43,32 @@ void CreateTrackerWindow::slotCreateTracker()
 
 	}
 
-	// create new model and list
-	QStringListModel* model = new QStringListModel(this);
-	QStringList stringList;
+	QListWidgetItem* item = new QListWidgetItem();
+	item->setText(m_refTrackerManager->getPoolTracker()->rbegin()->second->getName().c_str());
 
-	// create old model and assign current model
-	QAbstractItemModel* oldModel = m_refListViewTracker->model();
+	m_refListWidgetTracker->addItem(item);
 
-	if (oldModel != nullptr)
-	{
-		for (size_t i = 0; i < oldModel->rowCount(); ++i)
-		{
-			stringList << oldModel->index(i, 0).data(Qt::DisplayRole).toString();
-		}
-	}
+	//// create new model and list
+	//QStringListModel* model = new QStringListModel(this);
+	//QStringList stringList;
 
-	// append new tracker
-	stringList.append(m_refTrackerManager->getPoolTracker()->rbegin()->second->getName().c_str());
+	//// create old model and assign current model
+	//QAbstractItemModel* oldModel = m_refListViewTracker->model();
 
-	// display new list text
-	model->setStringList(stringList);
-	m_refListViewTracker->setModel(model);
+	//if (oldModel != nullptr)
+	//{
+	//	for (size_t i = 0; i < oldModel->rowCount(); ++i)
+	//	{
+	//		stringList << oldModel->index(i, 0).data(Qt::DisplayRole).toString();
+	//	}
+	//}
+
+	//// append new tracker
+	//stringList.append(m_refTrackerManager->getPoolTracker()->rbegin()->second->getName().c_str());
+
+	//// display new list text
+	//model->setStringList(stringList);
+	//m_refListViewTracker->setModel(model);
 
 	QApplication::restoreOverrideCursor();
 	QApplication::processEvents();
