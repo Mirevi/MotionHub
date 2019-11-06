@@ -44,7 +44,7 @@ void CreateTrackerWindow::slotCreateTracker()
 	}
 
 	QListWidgetItem* item = new QListWidgetItem();
-	item->setText(m_refTrackerManager->getPoolTracker()->rbegin()->second->getName().c_str());
+	item->setText(m_refTrackerManager->getPoolTracker()->rbegin()->second->getProperties()->name.c_str());
 
 	m_refListWidgetTracker->addItem(item);
 

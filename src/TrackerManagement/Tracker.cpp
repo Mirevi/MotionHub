@@ -3,6 +3,8 @@
 Tracker::Tracker()
 {
 
+	m_properties = new Properties();
+
 	init();
 
 }
@@ -17,7 +19,7 @@ void Tracker::init()
 void Tracker::start()
 {
 
-	m_isTracking = true;
+	m_properties->isTracking = true;
 
 	m_trackingThread = new std::thread(&Tracker::track, this);
 	m_trackingThread->detach();
@@ -27,7 +29,7 @@ void Tracker::start()
 void Tracker::track()
 {
 
-	while (m_isTracking)
+	while (m_properties->isTracking)
 	{
 
 		if (!m_isDataAvailable)
@@ -46,7 +48,7 @@ void Tracker::update()
 void Tracker::stop()
 {
 
-	m_isTracking = false;
+	m_properties->isTracking = false;
 
 }
 
@@ -96,7 +98,9 @@ std::map<int, Skeleton*>* Tracker::getSkeletonPool()
 
 }
 
-std::string Tracker::getName()
+Tracker::Properties* Tracker::getProperties()
 {
-	return m_name;
+
+	return m_properties;
+
 }

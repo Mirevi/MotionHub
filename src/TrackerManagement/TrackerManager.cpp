@@ -168,3 +168,18 @@ bool TrackerManager::isTrackerPoolLocked()
 {
 	return m_isTrackerPoolLocked.load();
 }
+
+Tracker* TrackerManager::getTrackerRef(int id)
+{
+
+	for (auto itTracker = m_trackerPool.begin(); itTracker != m_trackerPool.end(); itTracker++)
+	{
+
+		if (itTracker->first.second == id)
+			return itTracker->second;
+
+	}
+
+	return nullptr;
+
+}

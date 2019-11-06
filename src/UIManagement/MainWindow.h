@@ -47,7 +47,7 @@ private slots:
 	/*!
 	 * slot for start/stop button 
 	 */
-	void slotStartTracker();
+	void slotToggleTracking();
 	/*!
 	 * slot for "add" tracker button 
 	 */
@@ -91,5 +91,9 @@ private:
 
 	int m_selectedTrackerInList;
 
-	void showTrackerPropertiesInInspector(int index);
+	void updatePropertiesInInspector();
+	void insertPropertiesIntoInspector();
+	void removePropertiesFromInspector();
+
+	void addRowToInspector(std::string propertyName, std::string valueName);
 };

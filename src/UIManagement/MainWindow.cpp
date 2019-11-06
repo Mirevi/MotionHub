@@ -44,6 +44,7 @@ void MainWindow::update()
 				{
 
 					updateHirachy();
+					updatePropertiesInInspector();
 					break;
 
 				}
@@ -68,7 +69,7 @@ void MainWindow::updateHirachy()
 
 		m_topLevelItemPool.push_back(new QTreeWidgetItem());
 
-		std::string trackerName = itTrackerPool->second->getName();
+		std::string trackerName = itTrackerPool->second->getProperties()->name;
 		m_topLevelItemPool.back()->setText(0, QString::fromStdString(trackerName));
 
 		for (auto itSkeletonPool = itTrackerPool->second->getSkeletonPool()->begin(); itSkeletonPool != itTrackerPool->second->getSkeletonPool()->end(); itSkeletonPool++)
@@ -84,11 +85,15 @@ void MainWindow::updateHirachy()
 
 		ui->treeWidget_hirachy->addTopLevelItem(m_topLevelItemPool.back());
 
+
+
 		//m_topLevelItemPool.back()->setExpanded(true);
 
 		//tracker->setExpanded(true);
 
 	}
+
+	//updateInspector(m_selectedTrackerInList);
 
 	m_isHirachyLocked.store(false);
 
@@ -116,7 +121,7 @@ void MainWindow::on_actionExit_triggered()
 }
 
 // SLOT: start all tracker
-void MainWindow::slotStartTracker()
+void MainWindow::slotToggleTracking()
 {
 
 	// toggle icon
@@ -134,6 +139,9 @@ void MainWindow::slotStartTracker()
 	{
 		m_refTrackerManager->stopTracker(); // stop tracking hub is true
 	}
+
+	updatePropertiesInInspector();
+
 }
 
 // SLOT: add new tracker
@@ -158,7 +166,7 @@ void MainWindow::slotRemoveTracker()
 	QApplication::processEvents();
 
 	// id of tracker to remove
-	int idToRemove = -1;
+	m_selectedTrackerInList = -1;
 
 	// check if tracker exist in list
 	if (ui->listWidget_tracker->count() > 0)
@@ -179,7 +187,7 @@ void MainWindow::slotRemoveTracker()
 		else
 		{
 
-			idToRemove = ui->listWidget_tracker->currentIndex().data().toInt();
+			m_selectedTrackerInList = ui->listWidget_tracker->currentIndex().data().toInt();
 
 		}
 	}
@@ -196,7 +204,7 @@ void MainWindow::slotRemoveTracker()
 	}
 
 	// check if user selected item
-	if (idToRemove > -1)
+	if (m_selectedTrackerInList > -1)
 	{
 
 		// save current tracking state
@@ -208,16 +216,21 @@ void MainWindow::slotRemoveTracker()
 
 		// get selected tracker id in ui list
 		// remove selected tracker from tracker pool
-		m_refTrackerManager->removeTracker(idToRemove);
+		m_refTrackerManager->removeTracker(m_selectedTrackerInList);
 
-		ui->listWidget_tracker->takeItem(idToRemove);
+		ui->listWidget_tracker->takeItem(m_selectedTrackerInList);
+
+		m_selectedTrackerInList = -1;
 
 		// check if motion hub was tracking
 		if (wasTracking)
 			m_refTrackerManager->startTracker(); // start tracking if true
 
 		updateHirachy();
+
 	}
+
+	removePropertiesFromInspector();
 
 	QApplication::restoreOverrideCursor();
 	QApplication::processEvents();
@@ -241,43 +254,85 @@ void MainWindow::toggleIconStartButton()
 
 void MainWindow::slotSelectTracker(QModelIndex index)
 {
-	int currIndex = index.data().toInt();
 
-	Console::log("MainWindow::slotSelectTracker(): Selected tracker with id = " + std::to_string(currIndex));
+	int previousSelectedTrackerInList = m_selectedTrackerInList;
 
+	m_selectedTrackerInList = index.data().toInt();
 
-	if (m_selectedTrackerInList != currIndex)
-	{
+	Console::log("MainWindow::slotSelectTracker(): Selected tracker with id = " + std::to_string(m_selectedTrackerInList));
 
-		m_selectedTrackerInList = index.data().toInt();
+	if (previousSelectedTrackerInList == m_selectedTrackerInList)
+		updatePropertiesInInspector();
+	else
+		insertPropertiesIntoInspector();
 
-		showTrackerPropertiesInInspector(currIndex);
-	}
 }
 
-void MainWindow::showTrackerPropertiesInInspector(int index)
+void MainWindow::updatePropertiesInInspector()
 {
 
-	ui->tableWidget_inspector->setRowCount(1);
+	if (m_refTrackerManager->getTrackerRef(m_selectedTrackerInList) == nullptr)
+	{
 
-	//for (size_t i = 0; i < property.count; i++)
-	//{
+		m_selectedTrackerInList = -1;
+		return;
 
-	//}
+	}
 
-	QTableWidgetItem* property = new QTableWidgetItem();
-	property->setText("id");
+	Tracker::Properties* trackerProperties = m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->getProperties();
 
-	ui->tableWidget_inspector->setItem(0, 0, property);
-
-	QTableWidgetItem* value = new QTableWidgetItem();
-	value->setText(std::to_string(index).c_str());
-
-	ui->tableWidget_inspector->setItem(0, 1, value);
-
-	int var = 0;
-	char* var_name = GET_VARIABLE_NAME(var);
-
-	Console::log(var_name);
+	ui->tableWidget_inspector->item(0, 1)->setText(std::to_string(trackerProperties->id).c_str());
+	ui->tableWidget_inspector->item(1, 1)->setText(trackerProperties->name.c_str());
+	ui->tableWidget_inspector->item(2, 1)->setText(std::to_string(trackerProperties->isTracking).c_str());
+	ui->tableWidget_inspector->item(3, 1)->setText(std::to_string(trackerProperties->isEnabled).c_str());
+	ui->tableWidget_inspector->item(4, 1)->setText(std::to_string(trackerProperties->countDetectedSkeleton).c_str());
 
 }
+
+void MainWindow::insertPropertiesIntoInspector()
+{
+
+	if (m_refTrackerManager->getTrackerRef(m_selectedTrackerInList) == nullptr)
+	{
+
+		m_selectedTrackerInList = -1;
+		return;
+
+	}
+
+	Tracker::Properties* trackerProperties = m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->getProperties();
+
+	addRowToInspector("id", std::to_string(trackerProperties->id));
+	addRowToInspector("name", trackerProperties->name);
+	addRowToInspector("isTracking", std::to_string(trackerProperties->isTracking));
+	addRowToInspector("isEnabled", std::to_string(trackerProperties->isEnabled));
+	addRowToInspector("countDetectedSkeleton", std::to_string(trackerProperties->countDetectedSkeleton));
+
+}
+
+void MainWindow::removePropertiesFromInspector()
+{
+
+	ui->tableWidget_inspector->clearContents();
+	ui->tableWidget_inspector->setRowCount(0);
+
+}
+
+void MainWindow::addRowToInspector(std::string propertyName, std::string valueName)
+{
+
+	int currRow = ui->tableWidget_inspector->rowCount();
+	ui->tableWidget_inspector->setRowCount(ui->tableWidget_inspector->rowCount() + 1);
+
+	QTableWidgetItem* property = new QTableWidgetItem();
+	property->setText(propertyName.c_str());
+
+	ui->tableWidget_inspector->setItem(currRow, 0, property);
+
+	QTableWidgetItem* value = new QTableWidgetItem();
+	value->setText(valueName.c_str());
+
+	ui->tableWidget_inspector->setItem(currRow, 1, value);
+
+}
+

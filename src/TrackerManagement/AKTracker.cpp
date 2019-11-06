@@ -4,11 +4,16 @@
 AKTracker::AKTracker(int id, int idCam)
 {
 
-	m_id = id;
-	m_name = "tracker_azureKinect_" + std::to_string(id);
+	m_properties = new Properties();
+
+
+	m_properties->id = id;
+	m_properties->name = "tracker_azureKinect_" + std::to_string(id);
 
 	// assign cam id
 	m_idCam = idCam;
+
+	m_properties->isEnabled = true;
 
 	// initialize azure kinect camera and body tracker
 	init();
@@ -45,7 +50,7 @@ void AKTracker::start()
 {
 
 	// set tracking to true
-	m_isTracking = true;
+	m_properties->isTracking = true;
 
 	// start tracking thread and detach the thread from method scope runtime
 	m_trackingThread = new std::thread(&AKTracker::track, this);
@@ -60,7 +65,7 @@ void AKTracker::track()
 	Console::log("[cam id = " + std::to_string(m_idCam) + "] AKTracker::track(): Started tracking thread.");
 
 	// track while tracking is true
-	while (m_isTracking)
+	while (m_properties->isTracking)
 	{
 
 		// if no new data is procressed
@@ -157,7 +162,7 @@ void AKTracker::update()
 void AKTracker::stop()
 {
 
-	m_isTracking = false;
+	m_properties->isTracking = false;
 
 }
 
@@ -184,12 +189,12 @@ void AKTracker::extractSkeleton(k4abt_frame_t* body_frame)
 {
 
 	// set number of detected bodies in frame
-	m_numBodies = k4abt_frame_get_num_bodies(*body_frame);
+	m_properties->countDetectedSkeleton = k4abt_frame_get_num_bodies(*body_frame);
 
 	//Console::log(std::to_string(m_numBodies));
 
 	// skeleton loop
-	for (int indexSkeleton = 0; indexSkeleton < m_numBodies; indexSkeleton++)
+	for (int indexSkeleton = 0; indexSkeleton < m_properties->countDetectedSkeleton; indexSkeleton++)
 	{
 
 		// get the skeleton and the id
@@ -375,7 +380,7 @@ void AKTracker::cleanSkeletonPool(k4abt_frame_t* bodyFrame)
 		bool isK4aSkeletonInPool = false;
 
 		//loop thorugh all k4a skeletons in frame
-		for (int indexK4aSkeleton = 0; indexK4aSkeleton < m_numBodies; indexK4aSkeleton++)
+		for (int indexK4aSkeleton = 0; indexK4aSkeleton < m_properties->countDetectedSkeleton; indexK4aSkeleton++)
 		{
 			// current k4a skeleton id
 			int idCurrK4aSkeleton = k4abt_frame_get_body_id(*bodyFrame, indexK4aSkeleton);

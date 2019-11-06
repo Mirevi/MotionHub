@@ -60,7 +60,7 @@ private:
 	 * if only one camera is connected, this id should be 0
 	 */
 	int m_idCam = 0;
-
+	 
 	/*!
 	 * k4a camera handle
 	 */
@@ -82,12 +82,6 @@ private:
 	 * k4a tracker configuration parameters
 	 */
 	k4abt_tracker_configuration_t m_configTracker;
-
-	/*!
-	 * current number of tracked skeletons
-	 * is updated by updateSkeletons(...) method
-	 */
-	int m_numBodies;
 	
 	/*!
 	 * initializes the camera, must only be called once in the beginning

@@ -589,7 +589,7 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
               <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
+              <verstretch>1</verstretch>
              </sizepolicy>
             </property>
             <property name="frameShape">
@@ -756,8 +756,23 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
               <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
+              <verstretch>1</verstretch>
              </sizepolicy>
+            </property>
+            <property name="sizeIncrement">
+             <size>
+              <width>0</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="baseSize">
+             <size>
+              <width>0</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="autoFillBackground">
+             <bool>false</bool>
             </property>
             <property name="frameShape">
              <enum>QFrame::NoFrame</enum>
@@ -828,8 +843,14 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
               <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
+              <verstretch>4</verstretch>
              </sizepolicy>
+            </property>
+            <property name="baseSize">
+             <size>
+              <width>0</width>
+              <height>0</height>
+             </size>
             </property>
             <property name="focusPolicy">
              <enum>Qt::NoFocus</enum>
@@ -1065,7 +1086,7 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
    <sender>btn_startTracker</sender>
    <signal>pressed()</signal>
    <receiver>MainWindow</receiver>
-   <slot>slotStartTracker()</slot>
+   <slot>slotToggleTracking()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>1221</x>
@@ -1117,7 +1138,7 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
    <hints>
     <hint type="sourcelabel">
      <x>1092</x>
-     <y>165</y>
+     <y>164</y>
     </hint>
     <hint type="destinationlabel">
      <x>1068</x>
@@ -1127,7 +1148,7 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
   </connection>
  </connections>
  <slots>
-  <slot>slotStartTracker()</slot>
+  <slot>slotToggleTracking()</slot>
   <slot>slotAddTracker()</slot>
   <slot>slotRemoveTracker()</slot>
   <slot>slotSelectTracker(QModelIndex)</slot>

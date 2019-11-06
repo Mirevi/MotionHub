@@ -68,7 +68,7 @@ void MotionHub::update()
 			{
 
 				// check if new skeleton data is available
-				if (itTracker->second->isDataAvailable())
+				if (itTracker->second->getProperties()->isEnabled && itTracker->second->isDataAvailable())
 				{
 
 					// send skeleton pool reference to gesture manager in order to update all postures
