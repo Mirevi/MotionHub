@@ -115,7 +115,7 @@ QMenu::item:selected
 
 QWidget:disabled
 {
-    color: #404040;
+    color: #b1b1b1;
     background-color: #323232;
 }
 
@@ -743,7 +743,7 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
              </property>
              <property name="icon">
               <iconset resource="MainWindow.qrc">
-               <normaloff>:/ressources/icons/icons8-play-32.png</normaloff>:/ressources/icons/icons8-play-32.png</iconset>
+               <normaloff>:/ressources/icons/icons8-play-32_converted.png</normaloff>:/ressources/icons/icons8-play-32_converted.png</iconset>
              </property>
              <property name="flat">
               <bool>false</bool>
@@ -827,7 +827,7 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
               <enum>QFrame::Plain</enum>
              </property>
              <property name="text">
-              <string>Inspektor</string>
+              <string>Inspector</string>
              </property>
              <property name="scaledContents">
               <bool>false</bool>
@@ -889,7 +889,7 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
              <bool>false</bool>
             </property>
             <property name="selectionMode">
-             <enum>QAbstractItemView::NoSelection</enum>
+             <enum>QAbstractItemView::SingleSelection</enum>
             </property>
             <property name="selectionBehavior">
              <enum>QAbstractItemView::SelectItems</enum>

@@ -15,6 +15,7 @@ MainWindow::MainWindow(TrackerManager* trackerManager, QWidget *parent) : QMainW
 	m_refTrackerPool = m_refTrackerManager->getPoolTracker();
 
 	qRegisterMetaType<QVector<int>>();
+	ui->tableWidget_inspector->setStyleSheet("::item:hover {background-color:rgba(0,0,0,0)}\n");
 
 	m_updateThread = new std::thread(&MainWindow::update, this);
 	m_updateThread->detach();
@@ -42,7 +43,7 @@ void MainWindow::update()
 			for (auto itTrackerPool = m_refTrackerPool->begin(); itTrackerPool != m_refTrackerPool->end(); itTrackerPool++)
 			{
 
-				if (itTrackerPool->second->hasSkeletonPoolChanged())
+				if (itTrackerPool->second->hasSkeletonPoolChanged() && itTrackerPool->second->getProperties()->isEnabled)
 				{
 
 					updateHirachy();
@@ -51,7 +52,32 @@ void MainWindow::update()
 
 				}
 			}		
-		}		
+		}
+
+		if (ui->tableWidget_inspector->rowCount() == 5 && m_wasTrackerInInspectorEnabled != ui->tableWidget_inspector->item(3, 1)->checkState())
+		{
+
+			m_wasTrackerInInspectorEnabled = ui->tableWidget_inspector->item(3, 1)->checkState();
+
+			if (m_wasTrackerInInspectorEnabled == Qt::Checked)
+			{
+
+				m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->enable();
+
+				updateHirachy();
+				updatePropertiesInInspector();
+
+			}
+			else
+			{
+
+				m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->disable();
+
+				updateHirachy();
+				updatePropertiesInInspector();
+
+			}
+		}
 	}	
 }
 
@@ -244,9 +270,9 @@ void MainWindow::toggleIconStartButton()
 	QIcon icon;
 
 	if (!m_isTracking)
-		icon.addFile(QStringLiteral(":/ressources/icons/icons8-stop-30.png"), QSize(), QIcon::Normal, QIcon::Off);
+		icon.addFile(QStringLiteral(":/ressources/icons/icons8-stop-32_converted.png"), QSize(), QIcon::Normal, QIcon::Off);
 	else
-		icon.addFile(QStringLiteral(":/ressources/icons/icons8-play-32.png"), QSize(), QIcon::Normal, QIcon::Off);
+		icon.addFile(QStringLiteral(":/ressources/icons/icons8-play-32_converted.png"), QSize(), QIcon::Normal, QIcon::Off);
 
 	ui->btn_startTracker->setIcon(icon);
 
@@ -294,8 +320,18 @@ void MainWindow::updatePropertiesInInspector()
 
 	ui->tableWidget_inspector->item(0, 1)->setText(std::to_string(trackerProperties->id).c_str());
 	ui->tableWidget_inspector->item(1, 1)->setText(trackerProperties->name.c_str());
-	ui->tableWidget_inspector->item(2, 1)->setText(boolToString(trackerProperties->isTracking).c_str());
-	ui->tableWidget_inspector->item(3, 1)->setText(boolToString(trackerProperties->isEnabled).c_str());
+
+	if (trackerProperties->isTracking)
+		ui->tableWidget_inspector->item(2, 1)->setCheckState(Qt::Checked);
+	else
+		ui->tableWidget_inspector->item(2, 1)->setCheckState(Qt::Unchecked);
+
+
+	if (trackerProperties->isEnabled)
+		ui->tableWidget_inspector->item(3, 1)->setCheckState(Qt::Checked);
+	else
+		ui->tableWidget_inspector->item(3, 1)->setCheckState(Qt::Unchecked);
+
 	ui->tableWidget_inspector->item(4, 1)->setText(std::to_string(trackerProperties->countDetectedSkeleton).c_str());
 
 	ui->tableWidget_inspector->update();
@@ -318,10 +354,33 @@ void MainWindow::insertPropertiesIntoInspector()
 	Tracker::Properties* trackerProperties = m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->getProperties();
 
 	addRowToInspector("id", std::to_string(trackerProperties->id));
+	ui->tableWidget_inspector->item(0, 0)->setFlags(Qt::NoItemFlags);
+	ui->tableWidget_inspector->item(0, 1)->setFlags(Qt::NoItemFlags);
+
 	addRowToInspector("name", trackerProperties->name);
-	addRowToInspector("isTracking", boolToString(trackerProperties->isTracking));
-	addRowToInspector("isEnabled", boolToString(trackerProperties->isEnabled));
+	ui->tableWidget_inspector->item(1, 0)->setFlags(Qt::NoItemFlags);
+	ui->tableWidget_inspector->item(1, 1)->setFlags(Qt::NoItemFlags);
+
+	addRowToInspector("isTracking", "");
+	ui->tableWidget_inspector->item(2, 0)->setFlags(Qt::NoItemFlags);
+	ui->tableWidget_inspector->item(2, 1)->setFlags(Qt::NoItemFlags);
+
+	if (trackerProperties->isTracking)
+		ui->tableWidget_inspector->item(2, 1)->setCheckState(Qt::Checked);
+	else
+		ui->tableWidget_inspector->item(2, 1)->setCheckState(Qt::Unchecked);
+
+	addRowToInspector("isEnabled", "");
+	ui->tableWidget_inspector->item(3, 0)->setFlags(Qt::NoItemFlags);
+
+	if (trackerProperties->isEnabled)
+		ui->tableWidget_inspector->item(3, 1)->setCheckState(Qt::Checked);
+	else
+		ui->tableWidget_inspector->item(3, 1)->setCheckState(Qt::Unchecked);
+
 	addRowToInspector("countDetectedSkeleton", std::to_string(trackerProperties->countDetectedSkeleton));
+	ui->tableWidget_inspector->item(4, 0)->setFlags(Qt::NoItemFlags);
+	ui->tableWidget_inspector->item(4, 1)->setFlags(Qt::NoItemFlags);
 
 }
 

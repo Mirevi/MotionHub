@@ -101,4 +101,6 @@ private:
 
 	std::string boolToString(bool b);
 
+	Qt::CheckState m_wasTrackerInInspectorEnabled = Qt::Checked;
+
 };

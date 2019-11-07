@@ -58,6 +58,10 @@ public:
 
 	virtual Properties* getProperties();
 
+	virtual void disable();
+
+	virtual void enable();
+
 protected:
 
 	Properties* m_properties;
