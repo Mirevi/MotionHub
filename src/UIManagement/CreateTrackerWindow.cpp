@@ -42,12 +42,12 @@ void CreateTrackerWindow::slotCreateTracker()
 			{
 				Console::logError("CreateTrackerWindow::slotCreateTracker(): Can not create tracker. Azure Kinect cannot initialize!");
 
-
 				QApplication::restoreOverrideCursor();
 				QApplication::processEvents();
 
 				// close dialog
 				close();
+
 			}
 			break;
 
@@ -57,10 +57,7 @@ void CreateTrackerWindow::slotCreateTracker()
 
 	}
 
-	QListWidgetItem* item = new QListWidgetItem();
-	item->setText(m_refTrackerManager->getPoolTracker()->rbegin()->second->getProperties()->name.c_str());
-
-	m_refListWidgetTracker->addItem(item);
+	m_refListWidgetTracker->addItem(m_refTrackerManager->getPoolTracker()->rbegin()->second->getProperties()->name.c_str());
 
 	QApplication::restoreOverrideCursor();
 	QApplication::processEvents();
