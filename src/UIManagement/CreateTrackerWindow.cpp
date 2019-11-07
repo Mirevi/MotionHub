@@ -62,7 +62,6 @@ void CreateTrackerWindow::slotCreateTracker()
 
 	m_refListWidgetTracker->addItem(item);
 
-
 	QApplication::restoreOverrideCursor();
 	QApplication::processEvents();
 

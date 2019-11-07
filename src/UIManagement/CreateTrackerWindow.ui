@@ -535,6 +535,9 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
           <height>16777215</height>
          </size>
         </property>
+        <property name="cursor">
+         <cursorShape>SizeVerCursor</cursorShape>
+        </property>
         <property name="currentText">
          <string>Azure Kinect</string>
         </property>
@@ -569,6 +572,9 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
+        <property name="cursor">
+         <cursorShape>PointingHandCursor</cursorShape>
+        </property>
         <property name="text">
          <string>Create</string>
         </property>
@@ -587,6 +593,9 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
+        </property>
+        <property name="cursor">
+         <cursorShape>PointingHandCursor</cursorShape>
         </property>
         <property name="text">
          <string>Cancel</string>

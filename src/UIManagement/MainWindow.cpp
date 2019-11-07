@@ -1,14 +1,16 @@
 #include "MainWindow.h"
 #include "ui_mainwindow.h"
 
-
-
 // default constructor
 MainWindow::MainWindow(TrackerManager* trackerManager, QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
 
 	// setup base class
 	ui->setupUi(this);
+
+	m_isHirachyLocked.store(false);
+	m_isInspectorLocked.store(false);
+	m_isUpdating.store(true);
 
 	// assign reference to tracker manager
 	m_refTrackerManager = trackerManager;
@@ -34,7 +36,7 @@ MainWindow::~MainWindow()
 void MainWindow::update()
 {
 	
-	while (true)
+	while (m_isUpdating.load())
 	{
 
 		if(!m_refTrackerManager->isTrackerPoolLocked())
@@ -54,31 +56,41 @@ void MainWindow::update()
 			}		
 		}
 
-		if (ui->tableWidget_inspector->rowCount() == 5 && m_wasTrackerInInspectorEnabled != ui->tableWidget_inspector->item(3, 1)->checkState())
+		if (ui->tableWidget_inspector->rowCount() == 5)
 		{
 
-			m_wasTrackerInInspectorEnabled = ui->tableWidget_inspector->item(3, 1)->checkState();
+			//Console::log("MainWindow::update(): Inspector row count = " + std::to_string(ui->tableWidget_inspector->rowCount()));
+			Qt::CheckState isTrackerInInspectorEnabled = ui->tableWidget_inspector->item(3, 1)->checkState();
 
-			if (m_wasTrackerInInspectorEnabled == Qt::Checked)
+			if (m_wasTrackerInInspectorEnabled != isTrackerInInspectorEnabled)
 			{
 
-				m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->enable();
+				m_wasTrackerInInspectorEnabled = isTrackerInInspectorEnabled;
 
-				updateHirachy();
-				updatePropertiesInInspector();
+				if (m_wasTrackerInInspectorEnabled == Qt::Checked)
+				{
 
-			}
-			else
-			{
+					m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->enable();
 
-				m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->disable();
+					updateHirachy();
+					updatePropertiesInInspector();
 
-				updateHirachy();
-				updatePropertiesInInspector();
+				}
+				else
+				{
 
+					m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->disable();
+
+					updateHirachy();
+					updatePropertiesInInspector();
+
+				}
 			}
 		}
-	}	
+	}
+
+	Console::log("MainWindow::update(): Stopped update.");
+
 }
 
 void MainWindow::updateHirachy()
@@ -149,6 +161,9 @@ void MainWindow::on_actionExit_triggered()
 // SLOT: start all tracker
 void MainWindow::slotToggleTracking()
 {
+	   
+	QApplication::setOverrideCursor(Qt::WaitCursor);
+	QApplication::processEvents();
 
 	// toggle icon
 	toggleIconStartButton();
@@ -159,14 +174,22 @@ void MainWindow::slotToggleTracking()
 	// check if motion hub is tracking
 	if (!m_refTrackerManager->isTracking())
 	{
+		ui->btn_addTracker->setDisabled(true);
+		ui->btn_removeTracker->setDisabled(true);
 		m_refTrackerManager->startTracker(); // start tracking if false
 	}
 	else
 	{
+		ui->btn_addTracker->setDisabled(false);
+		ui->btn_removeTracker->setDisabled(false);
 		m_refTrackerManager->stopTracker(); // stop tracking hub is true
 	}
-
+	   
+	updateHirachy();
 	updatePropertiesInInspector();
+
+	QApplication::restoreOverrideCursor();
+	QApplication::processEvents();
 
 }
 
@@ -181,6 +204,14 @@ void MainWindow::slotAddTracker()
 	m_createTrackerWindow->setModal(true);
 	m_createTrackerWindow->exec();
 
+	//if (m_refTrackerManager->isTracking())
+	//{
+
+	//	m_refTrackerManager->stopTracker();
+	//	m_refTrackerManager->startTracker();
+
+	//}
+
 	updateHirachy();
 
 }
@@ -188,57 +219,61 @@ void MainWindow::slotAddTracker()
 // SLOT: remove tracker button
 void MainWindow::slotRemoveTracker()
 {
+
 	QApplication::setOverrideCursor(Qt::WaitCursor);
 	QApplication::processEvents();
 
-	// id of tracker to remove
-	m_selectedTrackerInList = -1;
+	//// id of tracker to remove
+	//m_selectedTrackerInList = -1;
 
-	// check if tracker exist in list
-	if (ui->listWidget_tracker->count() > 0)
-	{
+	//// check if tracker exist in list
+	//if (ui->listWidget_tracker->count() > 0)
+	//{
 
-		// check if user selected tracker
-		if (ui->listWidget_tracker->selectedItems().size() < 1)
-		{
+	//	// check if user selected tracker
+	//	if (ui->listWidget_tracker->selectedItems().size() < 1)
+	//	{
 
-			Console::logWarning("MainWindow::removeTracker(): No tracker in list selected!");
+	//		Console::logWarning("MainWindow::removeTracker(): No tracker in list selected!");
 
-			QApplication::restoreOverrideCursor();
-			QApplication::processEvents();
+	//		QApplication::restoreOverrideCursor();
+	//		QApplication::processEvents();
 
-			return;
+	//		return;
 
-		}
-		else
-		{
+	//	}
+	//	else
+	//	{
 
-			m_selectedTrackerInList = ui->listWidget_tracker->currentIndex().data().toInt();
+	//		m_selectedTrackerInList = ui->listWidget_tracker->currentIndex().data().toInt();
 
-		}
-	}
-	else
-	{
+	//	}
+	//}
+	//else
+	//{
 
-		Console::logError("MainWindow::removeTracker(): No tracker in list!");
+	//	Console::logError("MainWindow::removeTracker(): No tracker in list!");
 
-		QApplication::restoreOverrideCursor();
-		QApplication::processEvents();
+	//	QApplication::restoreOverrideCursor();
+	//	QApplication::processEvents();
 
-		return;
+	//	return;
 
-	}
+	//}
 
 	// check if user selected item
 	if (m_selectedTrackerInList > -1)
 	{
 
-		// save current tracking state
-		bool wasTracking = m_refTrackerManager->isTracking();
+		m_isUpdating.store(false);
+		//std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
-		// check if motion hub is tracking
-		if (m_refTrackerManager->isTracking())
-			m_refTrackerManager->stopTracker(); // stop tracking if true
+		//// save current tracking state
+		//bool wasTracking = m_refTrackerManager->isTracking();
+
+		//// check if motion hub is tracking
+		//if (m_refTrackerManager->isTracking())
+		//	m_refTrackerManager->stopTracker(); // stop tracking if true
 
 		// get selected tracker id in ui list
 		// remove selected tracker from tracker pool
@@ -246,17 +281,19 @@ void MainWindow::slotRemoveTracker()
 
 		ui->listWidget_tracker->takeItem(m_selectedTrackerInList);
 
-		m_selectedTrackerInList = -1;
+		updateHirachy();
+		removePropertiesFromInspector();
 
 		// check if motion hub was tracking
-		if (wasTracking)
-			m_refTrackerManager->startTracker(); // start tracking if true
+		//if (wasTracking)
+		//	m_refTrackerManager->startTracker(); // start tracking if true
 
-		updateHirachy();
+		m_selectedTrackerInList = -1;
+
+		m_updateThread = new std::thread(&MainWindow::update, this);
+		m_updateThread->detach();
 
 	}
-
-	removePropertiesFromInspector();
 
 	QApplication::restoreOverrideCursor();
 	QApplication::processEvents();

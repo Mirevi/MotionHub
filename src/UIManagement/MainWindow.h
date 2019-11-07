@@ -88,8 +88,9 @@ private:
 
 	std::map<std::pair<std::string, int>, Tracker*>* m_refTrackerPool;
 
-	std::atomic<bool> m_isHirachyLocked = false;
-	std::atomic<bool> m_isInspectorLocked = false;
+	std::atomic<bool> m_isHirachyLocked;
+	std::atomic<bool> m_isInspectorLocked;
+	std::atomic<bool> m_isUpdating;
 
 	int m_selectedTrackerInList;
 
