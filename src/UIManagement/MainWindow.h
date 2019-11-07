@@ -8,9 +8,13 @@
 #include "QtCore/qstring.h"
 #include "QtWidgets/qtreewidget.h"
 
+#define GET_VARIABLE_NAME(Variable) (#Variable)
+
+
 #include <chrono>
 #include <atomic>
 #include <list>
+#include <map>
 
 namespace Ui
 {
@@ -44,7 +48,7 @@ private slots:
 	/*!
 	 * slot for start/stop button 
 	 */
-	void slotStartTracker();
+	void slotToggleTracking();
 	/*!
 	 * slot for "add" tracker button 
 	 */
@@ -54,6 +58,7 @@ private slots:
 	 */
 	void slotRemoveTracker();
 	void on_actionExit_triggered();
+	void slotSelectTracker(QModelIndex index);
 
 private:
 	/*!
@@ -67,17 +72,11 @@ private:
 	 */
 	CreateTrackerWindow* m_createTrackerWindow;
 	/*!
-	 * removes tracker from List view widget
-	 *  
-	 * \param id the id to remove
-	 */
-	void removeTrackerFromList(int id);
-	/*!
 	 *  tracking state for changing icon
 	 */
 	bool m_isTracking = false;
 
-	std::list<QTreeWidgetItem*> m_topLevelItemPool;
+	std::map<QTreeWidgetItem*, std::list<QTreeWidgetItem*>> m_hirachyItemPool;
 
 	void toggleIconStartButton();
 
@@ -90,4 +89,16 @@ private:
 	std::map<std::pair<std::string, int>, Tracker*>* m_refTrackerPool;
 
 	std::atomic<bool> m_isHirachyLocked = false;
+	std::atomic<bool> m_isInspectorLocked = false;
+
+	int m_selectedTrackerInList;
+
+	void updatePropertiesInInspector();
+	void insertPropertiesIntoInspector();
+	void removePropertiesFromInspector();
+
+	void addRowToInspector(std::string propertyName, std::string valueName);
+
+	std::string boolToString(bool b);
+
 };

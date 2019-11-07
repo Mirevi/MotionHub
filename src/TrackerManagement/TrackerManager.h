@@ -62,6 +62,8 @@ public:
 
 	std::map<std::pair<std::string, int>, Tracker*>* getPoolTracker();
 
+	Tracker* getTrackerRef(int id);
+
 private:
 
 	/*!

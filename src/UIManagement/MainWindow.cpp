@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 
 
+
 // default constructor
 MainWindow::MainWindow(TrackerManager* trackerManager, QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
@@ -12,6 +13,8 @@ MainWindow::MainWindow(TrackerManager* trackerManager, QWidget *parent) : QMainW
 	// assign reference to tracker manager
 	m_refTrackerManager = trackerManager;
 	m_refTrackerPool = m_refTrackerManager->getPoolTracker();
+
+	qRegisterMetaType<QVector<int>>();
 
 	m_updateThread = new std::thread(&MainWindow::update, this);
 	m_updateThread->detach();
@@ -43,6 +46,7 @@ void MainWindow::update()
 				{
 
 					updateHirachy();
+					updatePropertiesInInspector();
 					break;
 
 				}
@@ -59,35 +63,37 @@ void MainWindow::updateHirachy()
 	// Console::log("MainWindow::updateHirachy(): Updating hirachy ...");
 
 	ui->treeWidget_hirachy->clear();
-	m_topLevelItemPool.clear();
+	m_hirachyItemPool.clear();
 
 	// tracker loop
 	for (auto itTrackerPool = m_refTrackerPool->begin(); itTrackerPool != m_refTrackerPool->end(); itTrackerPool++)
 	{
 
-		m_topLevelItemPool.push_back(new QTreeWidgetItem());
+		m_hirachyItemPool.insert({ new QTreeWidgetItem(), std::list<QTreeWidgetItem*>() });
 
-		std::string trackerName = itTrackerPool->second->getName();
-		m_topLevelItemPool.back()->setText(0, QString::fromStdString(trackerName));
+		std::string trackerName = itTrackerPool->second->getProperties()->name;
+		m_hirachyItemPool.rbegin()->first->setText(0, QString::fromStdString(trackerName));
 
 		for (auto itSkeletonPool = itTrackerPool->second->getSkeletonPool()->begin(); itSkeletonPool != itTrackerPool->second->getSkeletonPool()->end(); itSkeletonPool++)
 		{
 
-			QTreeWidgetItem* skeleton = new QTreeWidgetItem();
+			m_hirachyItemPool.rbegin()->second.push_back(new QTreeWidgetItem());
 			std::string skeletonName = "skeleton_" + std::to_string(itSkeletonPool->first);
-			skeleton->setText(0, QString::fromStdString(skeletonName));
+			m_hirachyItemPool.rbegin()->second.back()->setText(0, QString::fromStdString(skeletonName));
 
-			m_topLevelItemPool.back()->addChild(skeleton);
+			m_hirachyItemPool.rbegin()->first->addChild(m_hirachyItemPool.rbegin()->second.back());
 
 		}
 
-		ui->treeWidget_hirachy->addTopLevelItem(m_topLevelItemPool.back());
-
-		//m_topLevelItemPool.back()->setExpanded(true);
+		ui->treeWidget_hirachy->addTopLevelItem(m_hirachyItemPool.rbegin()->first);
+			   
+		m_hirachyItemPool.rbegin()->first->setExpanded(true);
 
 		//tracker->setExpanded(true);
 
 	}
+
+	//updateInspector(m_selectedTrackerInList);
 
 	m_isHirachyLocked.store(false);
 
@@ -115,7 +121,7 @@ void MainWindow::on_actionExit_triggered()
 }
 
 // SLOT: start all tracker
-void MainWindow::slotStartTracker()
+void MainWindow::slotToggleTracking()
 {
 
 	// toggle icon
@@ -133,6 +139,9 @@ void MainWindow::slotStartTracker()
 	{
 		m_refTrackerManager->stopTracker(); // stop tracking hub is true
 	}
+
+	updatePropertiesInInspector();
+
 }
 
 // SLOT: add new tracker
@@ -140,7 +149,7 @@ void MainWindow::slotAddTracker()
 {
 	
 	// create dialog for creating new tracker
-	m_createTrackerWindow = new CreateTrackerWindow(m_refTrackerManager, ui->listView_tracker);
+	m_createTrackerWindow = new CreateTrackerWindow(m_refTrackerManager, ui->listWidget_tracker);
 	
 	// set modal and execute
 	m_createTrackerWindow->setModal(true);
@@ -157,42 +166,45 @@ void MainWindow::slotRemoveTracker()
 	QApplication::processEvents();
 
 	// id of tracker to remove
-	int idToRemove = -1;
+	m_selectedTrackerInList = -1;
 
 	// check if tracker exist in list
-	if (ui->listView_tracker->selectionModel() != NULL)
+	if (ui->listWidget_tracker->count() > 0)
 	{
 
 		// check if user selected tracker
-		if (ui->listView_tracker->selectionModel()->selectedIndexes().count() == 0)
+		if (ui->listWidget_tracker->selectedItems().size() < 1)
 		{
 
 			Console::logWarning("MainWindow::removeTracker(): No tracker in list selected!");
+
+			QApplication::restoreOverrideCursor();
+			QApplication::processEvents();
+
 			return;
 
 		}
 		else
 		{
 
-			// get selected item id
-			for each (QModelIndex index in ui->listView_tracker->selectionModel()->selectedIndexes())
-			{
+			m_selectedTrackerInList = ui->listWidget_tracker->currentIndex().data().toInt();
 
-				idToRemove = index.data().toInt();
-
-			}
 		}
 	}
 	else
 	{
 
 		Console::logError("MainWindow::removeTracker(): No tracker in list!");
+
+		QApplication::restoreOverrideCursor();
+		QApplication::processEvents();
+
 		return;
 
 	}
 
 	// check if user selected item
-	if (idToRemove > -1)
+	if (m_selectedTrackerInList > -1)
 	{
 
 		// save current tracking state
@@ -204,48 +216,24 @@ void MainWindow::slotRemoveTracker()
 
 		// get selected tracker id in ui list
 		// remove selected tracker from tracker pool
-		m_refTrackerManager->removeTracker(idToRemove);
+		m_refTrackerManager->removeTracker(m_selectedTrackerInList);
+
+		ui->listWidget_tracker->takeItem(m_selectedTrackerInList);
+
+		m_selectedTrackerInList = -1;
 
 		// check if motion hub was tracking
 		if (wasTracking)
 			m_refTrackerManager->startTracker(); // start tracking if true
 
-		// remove tracker from list
-		removeTrackerFromList(idToRemove);
-
 		updateHirachy();
+
 	}
+
+	removePropertiesFromInspector();
 
 	QApplication::restoreOverrideCursor();
 	QApplication::processEvents();
-}
-
-// remove tracker with id from list
-void MainWindow::removeTrackerFromList(int id)
-{
-
-	// create new model and list
-	QStringListModel* model = new QStringListModel(this);
-	QStringList stringList;
-
-	// create and get old model
-	QAbstractItemModel* oldModel = ui->listView_tracker->model();
-
-	// add old model data to list
-	if (oldModel != nullptr)
-	{
-		for (size_t i = 0; i < oldModel->rowCount(); ++i)
-		{
-
-			if(i != id)
-				stringList << oldModel->index(i, 0).data(Qt::DisplayRole).toString();
-		}
-	}
-
-	// fill new model
-	model->setStringList(stringList);
-	// set model
-	ui->listView_tracker->setModel(model);
 
 }
 
@@ -261,5 +249,111 @@ void MainWindow::toggleIconStartButton()
 		icon.addFile(QStringLiteral(":/ressources/icons/icons8-play-32.png"), QSize(), QIcon::Normal, QIcon::Off);
 
 	ui->btn_startTracker->setIcon(icon);
+
+}
+
+void MainWindow::slotSelectTracker(QModelIndex index)
+{
+
+	int previousSelectedTrackerInList = m_selectedTrackerInList;
+
+	m_selectedTrackerInList = index.data().toInt();
+
+	Console::log("MainWindow::slotSelectTracker(): Selected tracker with id = " + std::to_string(m_selectedTrackerInList));
+
+	if (previousSelectedTrackerInList == m_selectedTrackerInList)
+		updatePropertiesInInspector();
+	else
+		insertPropertiesIntoInspector();
+
+}
+
+void MainWindow::updatePropertiesInInspector()
+{
+
+	if (m_refTrackerManager->getTrackerRef(m_selectedTrackerInList) == nullptr)
+	{
+
+		m_selectedTrackerInList = -1;
+		return;
+
+	}
+
+	while (m_isInspectorLocked.load())
+	{
+
+		std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
+	}
+
+	m_isInspectorLocked.store(true);
+
+
+
+	Tracker::Properties* trackerProperties = m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->getProperties();
+
+	ui->tableWidget_inspector->item(0, 1)->setText(std::to_string(trackerProperties->id).c_str());
+	ui->tableWidget_inspector->item(1, 1)->setText(trackerProperties->name.c_str());
+	ui->tableWidget_inspector->item(2, 1)->setText(boolToString(trackerProperties->isTracking).c_str());
+	ui->tableWidget_inspector->item(3, 1)->setText(boolToString(trackerProperties->isEnabled).c_str());
+	ui->tableWidget_inspector->item(4, 1)->setText(std::to_string(trackerProperties->countDetectedSkeleton).c_str());
+
+	ui->tableWidget_inspector->update();
+
+	m_isInspectorLocked.store(false);
+
+}
+
+void MainWindow::insertPropertiesIntoInspector()
+{
+
+	if (m_refTrackerManager->getTrackerRef(m_selectedTrackerInList) == nullptr)
+	{
+
+		m_selectedTrackerInList = -1;
+		return;
+
+	}
+
+	Tracker::Properties* trackerProperties = m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->getProperties();
+
+	addRowToInspector("id", std::to_string(trackerProperties->id));
+	addRowToInspector("name", trackerProperties->name);
+	addRowToInspector("isTracking", boolToString(trackerProperties->isTracking));
+	addRowToInspector("isEnabled", boolToString(trackerProperties->isEnabled));
+	addRowToInspector("countDetectedSkeleton", std::to_string(trackerProperties->countDetectedSkeleton));
+
+}
+
+void MainWindow::removePropertiesFromInspector()
+{
+
+	ui->tableWidget_inspector->clearContents();
+	ui->tableWidget_inspector->setRowCount(0);
+
+}
+
+void MainWindow::addRowToInspector(std::string propertyName, std::string valueName)
+{
+
+	int currRow = ui->tableWidget_inspector->rowCount();
+	ui->tableWidget_inspector->setRowCount(ui->tableWidget_inspector->rowCount() + 1);
+
+	QTableWidgetItem* property = new QTableWidgetItem();
+	property->setText(propertyName.c_str());
+
+	ui->tableWidget_inspector->setItem(currRow, 0, property);
+
+	QTableWidgetItem* value = new QTableWidgetItem();
+	value->setText(valueName.c_str());
+
+	ui->tableWidget_inspector->setItem(currRow, 1, value);
+
+}
+
+std::string MainWindow::boolToString(bool b)
+{
+
+	return b ? "true" : "false";
 
 }

@@ -18,6 +18,17 @@ class Tracker
 
 public:
 
+	struct Properties
+	{
+
+		int id = -1;
+		std::string name = "none";
+		bool isTracking = false;
+		bool isEnabled = false;
+		int countDetectedSkeleton = 0;
+
+	};
+
 	/*!
 	 * default constructor 
 	 */
@@ -45,20 +56,15 @@ public:
 
 	virtual bool hasSkeletonPoolChanged();
 
-	virtual std::string getName();
+	virtual Properties* getProperties();
 
 protected:
 
-	/*!
-	 * true when Tracker is active
-	 */
-	bool m_isTracking = false;
+	Properties* m_properties;
 
 	bool m_isDataAvailable = false;
 	bool m_hasSkeletonPoolChanged = false;
 
-	std::string m_name;
-	int m_id;
 
 	virtual void init() = 0;
 
@@ -79,5 +85,6 @@ protected:
 	 * pool containing all skeletons detected by this Tracker
 	 */
 	std::map<int, Skeleton*> m_skeletonPool;
+
 
 };
