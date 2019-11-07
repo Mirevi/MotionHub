@@ -14,6 +14,7 @@
 #include <chrono>
 #include <atomic>
 #include <list>
+#include <map>
 
 namespace Ui
 {
@@ -75,7 +76,7 @@ private:
 	 */
 	bool m_isTracking = false;
 
-	std::list<QTreeWidgetItem*> m_topLevelItemPool;
+	std::map<QTreeWidgetItem*, std::list<QTreeWidgetItem*>> m_hirachyItemPool;
 
 	void toggleIconStartButton();
 
@@ -88,6 +89,7 @@ private:
 	std::map<std::pair<std::string, int>, Tracker*>* m_refTrackerPool;
 
 	std::atomic<bool> m_isHirachyLocked = false;
+	std::atomic<bool> m_isInspectorLocked = false;
 
 	int m_selectedTrackerInList;
 
@@ -96,4 +98,7 @@ private:
 	void removePropertiesFromInspector();
 
 	void addRowToInspector(std::string propertyName, std::string valueName);
+
+	std::string boolToString(bool b);
+
 };

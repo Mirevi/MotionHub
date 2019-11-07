@@ -14,6 +14,8 @@ MainWindow::MainWindow(TrackerManager* trackerManager, QWidget *parent) : QMainW
 	m_refTrackerManager = trackerManager;
 	m_refTrackerPool = m_refTrackerManager->getPoolTracker();
 
+	qRegisterMetaType<QVector<int>>();
+
 	m_updateThread = new std::thread(&MainWindow::update, this);
 	m_updateThread->detach();
 
@@ -61,33 +63,31 @@ void MainWindow::updateHirachy()
 	// Console::log("MainWindow::updateHirachy(): Updating hirachy ...");
 
 	ui->treeWidget_hirachy->clear();
-	m_topLevelItemPool.clear();
+	m_hirachyItemPool.clear();
 
 	// tracker loop
 	for (auto itTrackerPool = m_refTrackerPool->begin(); itTrackerPool != m_refTrackerPool->end(); itTrackerPool++)
 	{
 
-		m_topLevelItemPool.push_back(new QTreeWidgetItem());
+		m_hirachyItemPool.insert({ new QTreeWidgetItem(), std::list<QTreeWidgetItem*>() });
 
 		std::string trackerName = itTrackerPool->second->getProperties()->name;
-		m_topLevelItemPool.back()->setText(0, QString::fromStdString(trackerName));
+		m_hirachyItemPool.rbegin()->first->setText(0, QString::fromStdString(trackerName));
 
 		for (auto itSkeletonPool = itTrackerPool->second->getSkeletonPool()->begin(); itSkeletonPool != itTrackerPool->second->getSkeletonPool()->end(); itSkeletonPool++)
 		{
 
-			QTreeWidgetItem* skeleton = new QTreeWidgetItem();
+			m_hirachyItemPool.rbegin()->second.push_back(new QTreeWidgetItem());
 			std::string skeletonName = "skeleton_" + std::to_string(itSkeletonPool->first);
-			skeleton->setText(0, QString::fromStdString(skeletonName));
+			m_hirachyItemPool.rbegin()->second.back()->setText(0, QString::fromStdString(skeletonName));
 
-			m_topLevelItemPool.back()->addChild(skeleton);
+			m_hirachyItemPool.rbegin()->first->addChild(m_hirachyItemPool.rbegin()->second.back());
 
 		}
 
-		ui->treeWidget_hirachy->addTopLevelItem(m_topLevelItemPool.back());
-
-
-
-		//m_topLevelItemPool.back()->setExpanded(true);
+		ui->treeWidget_hirachy->addTopLevelItem(m_hirachyItemPool.rbegin()->first);
+			   
+		m_hirachyItemPool.rbegin()->first->setExpanded(true);
 
 		//tracker->setExpanded(true);
 
@@ -279,13 +279,28 @@ void MainWindow::updatePropertiesInInspector()
 
 	}
 
+	while (m_isInspectorLocked.load())
+	{
+
+		std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
+	}
+
+	m_isInspectorLocked.store(true);
+
+
+
 	Tracker::Properties* trackerProperties = m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->getProperties();
 
 	ui->tableWidget_inspector->item(0, 1)->setText(std::to_string(trackerProperties->id).c_str());
 	ui->tableWidget_inspector->item(1, 1)->setText(trackerProperties->name.c_str());
-	ui->tableWidget_inspector->item(2, 1)->setText(std::to_string(trackerProperties->isTracking).c_str());
-	ui->tableWidget_inspector->item(3, 1)->setText(std::to_string(trackerProperties->isEnabled).c_str());
+	ui->tableWidget_inspector->item(2, 1)->setText(boolToString(trackerProperties->isTracking).c_str());
+	ui->tableWidget_inspector->item(3, 1)->setText(boolToString(trackerProperties->isEnabled).c_str());
 	ui->tableWidget_inspector->item(4, 1)->setText(std::to_string(trackerProperties->countDetectedSkeleton).c_str());
+
+	ui->tableWidget_inspector->update();
+
+	m_isInspectorLocked.store(false);
 
 }
 
@@ -304,8 +319,8 @@ void MainWindow::insertPropertiesIntoInspector()
 
 	addRowToInspector("id", std::to_string(trackerProperties->id));
 	addRowToInspector("name", trackerProperties->name);
-	addRowToInspector("isTracking", std::to_string(trackerProperties->isTracking));
-	addRowToInspector("isEnabled", std::to_string(trackerProperties->isEnabled));
+	addRowToInspector("isTracking", boolToString(trackerProperties->isTracking));
+	addRowToInspector("isEnabled", boolToString(trackerProperties->isEnabled));
 	addRowToInspector("countDetectedSkeleton", std::to_string(trackerProperties->countDetectedSkeleton));
 
 }
@@ -336,3 +351,9 @@ void MainWindow::addRowToInspector(std::string propertyName, std::string valueNa
 
 }
 
+std::string MainWindow::boolToString(bool b)
+{
+
+	return b ? "true" : "false";
+
+}
