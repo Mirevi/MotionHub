@@ -47,7 +47,7 @@ void MainWindow::update()
 			for (auto itTrackerPool = m_refTrackerPool->begin(); itTrackerPool != m_refTrackerPool->end(); itTrackerPool++)
 			{
 
-				if (itTrackerPool->second->hasSkeletonPoolChanged() && itTrackerPool->second->getProperties()->isEnabled)
+				if (itTrackerPool->second->isDataAvailable() && itTrackerPool->second->hasSkeletonPoolChanged() && itTrackerPool->second->getProperties()->isEnabled)
 				{
 
 					updateHirachy();
@@ -64,7 +64,7 @@ void MainWindow::update()
 			//Console::log("MainWindow::update(): Inspector row count = " + std::to_string(ui->tableWidget_inspector->rowCount()));
 			Qt::CheckState isTrackerInInspectorEnabled = ui->tableWidget_inspector->item(3, 1)->checkState();
 
-			if (m_wasTrackerInInspectorEnabled != isTrackerInInspectorEnabled)
+			if (m_wasTrackerInInspectorEnabled != isTrackerInInspectorEnabled && m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->isDataAvailable())
 			{
 
 				m_wasTrackerInInspectorEnabled = isTrackerInInspectorEnabled;
@@ -74,19 +74,16 @@ void MainWindow::update()
 
 					m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->enable();
 
-					updateHirachy();
-					updatePropertiesInInspector();
-
-				}
+				} 
 				else
 				{
 
 					m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->disable();
 
-					updateHirachy();
-					updatePropertiesInInspector();
-
 				}
+
+				updateHirachy();
+				updatePropertiesInInspector();
 			}
 		}
 	}
@@ -166,14 +163,27 @@ void MainWindow::slotToggleTracking()
 	}
 	else
 	{
+
+		m_refTrackerManager->stopTracker(); // stop tracking hub is true
+
 		ui->btn_addTracker->setDisabled(false);
 		ui->btn_removeTracker->setDisabled(false);
-		m_refTrackerManager->stopTracker(); // stop tracking hub is true
-	}
-	   
-	updatePropertiesInInspector();
-	updateHirachy();
 
+		m_isUpdating.store(false);
+
+		std::this_thread::sleep_for(std::chrono::milliseconds(500));
+
+		m_updateThread->~thread();
+
+		updateHirachy();
+		updatePropertiesInInspector();
+
+		m_isUpdating.store(true);
+
+		m_updateThread = new std::thread(&MainWindow::update, this);
+		m_updateThread->detach();
+
+	}
 
 	QApplication::restoreOverrideCursor();
 	QApplication::processEvents();

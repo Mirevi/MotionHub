@@ -61,6 +61,7 @@ public:
 	virtual void disable();
 
 	virtual void enable();
+	virtual void clean();
 
 protected:
 

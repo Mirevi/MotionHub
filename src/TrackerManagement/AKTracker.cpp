@@ -74,6 +74,8 @@ void AKTracker::track()
 
 	}
 
+	clean();
+
 	Console::log("[cam id = " + std::to_string(m_idCam) + "] AKTracker::track(): Stopped tracking thread.");
 
 }

@@ -109,9 +109,8 @@ void Tracker::disable()
 {
 
 	m_properties->isEnabled = false;
-	m_properties->countDetectedSkeleton = 0;
 
-	m_skeletonPool.clear();
+	clean();
 
 	Console::log("Tracker::disable(): Disabled tracker with id = " + std::to_string(m_properties->id));
 
@@ -123,5 +122,13 @@ void Tracker::enable()
 	m_properties->isEnabled = true;
 
 	Console::log("Tracker::enable(): Enabled tracker with id = " + std::to_string(m_properties->id));
+
+}
+
+void Tracker::clean()
+{
+
+	m_properties->countDetectedSkeleton = 0;
+	m_skeletonPool.clear();
 
 }
