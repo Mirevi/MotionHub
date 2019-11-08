@@ -21,33 +21,10 @@ MotionHub::MotionHub(int argc, char** argv)
 	m_trackerManager = new TrackerManager();
 	m_gestureManager = new GestureManager();
 	m_networkManager = new NetworkManager();
-
-	// start main loop
-	startUpdateThread();
-
-	// main thread continues in m_uiManager QApplication::exec() method
 	m_uiManager = new UIManager(m_argc, m_argv, m_trackerManager);
 
-}
-
-// start thread for main loop
-void MotionHub::startUpdateThread()
-{
-
-	// check if update thread exists
-	if(m_updateThread == nullptr)
-	{
-
-		// create and start new thread if none exists
-		m_updateThread = new std::thread(&MotionHub::update, this);
-		// detach thread from method scope runtime
-		m_updateThread->detach();
-
-		Console::log("MotionHub::startUpdateThread(): Started update thread.");
-
-	}
-	else
-		Console::logError("MotionHub::startUpdateThread(): Can not start update thread. Thread is already running!");
+	// start update loop
+	update();
 
 }
 
@@ -55,11 +32,16 @@ void MotionHub::startUpdateThread()
 void MotionHub::update()
 {
 
+	Console::log("MotionHub::update(): Started update loop.");
+
 	// main loop
-	while (true)
+	while (m_uiManager->getMainWindow()->isVisible())
 	{
 
-		// tracking loop
+		// process ui input
+		m_uiManager->processInput();
+
+		// send skeleton pools to other managers
 		if (m_trackerManager->isTracking())
 		{
 
@@ -82,5 +64,9 @@ void MotionHub::update()
 				}
 			}
 		}
+
+		// update / redraw ui
+		m_uiManager->getMainWindow()->update();
+
 	}
 }

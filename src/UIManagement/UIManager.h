@@ -31,6 +31,9 @@ public:
 	 */
 	UIManager(int argc, char** argv, TrackerManager* trackerManager);
 
+	MainWindow* getMainWindow();
+	void processInput();
+
 private:
 	/*!
 	 * Main UI Qt application  
@@ -40,8 +43,5 @@ private:
 	 * main window containing all other windows 
 	 */
 	MainWindow* m_mainWindow;
-
-	TrackerManager* m_refTrackerManager;
-
 
 };

@@ -53,13 +53,13 @@ void AKTracker::start()
 	m_properties->isTracking = true;
 
 	// start tracking thread and detach the thread from method scope runtime
-	m_trackingThread = new std::thread(&AKTracker::track, this);
+	m_trackingThread = new std::thread(&AKTracker::update, this);
 	m_trackingThread->detach();
 	
 }
 
 // tracking loop
-void AKTracker::track()
+void AKTracker::update()
 {
 
 	Console::log("[cam id = " + std::to_string(m_idCam) + "] AKTracker::track(): Started tracking thread.");
@@ -70,7 +70,7 @@ void AKTracker::track()
 
 		// if no new data is procressed
 		if(!m_isDataAvailable)
-			update(); // get new data
+			track(); // get new data
 
 	}
 
@@ -81,7 +81,7 @@ void AKTracker::track()
 }
 
 // get new skeleton data and parse it into the default skeleton
-void AKTracker::update()
+void AKTracker::track()
 {
 
 	// create sensor capture and result
@@ -260,6 +260,7 @@ Skeleton* AKTracker::parseSkeleton(k4abt_skeleton_t* skeleton, int id)
 		// convert from k4a Vectors and quaternions into custom vectors
 		Vector3 pos = Vector3(skeleton_position.xyz.x, skeleton_position.xyz.y, skeleton_position.xyz.z);
 		Vector4 rot = Vector4(skeleton_rotation.wxyz.x, skeleton_rotation.wxyz.y, skeleton_rotation.wxyz.z, skeleton_rotation.wxyz.w);
+
 		// get joint confidence level from azure kinect body tracker API
 		Joint::JointConfidence confidence = (Joint::JointConfidence)skeleton->joints[jointIndex].confidence_level;
 

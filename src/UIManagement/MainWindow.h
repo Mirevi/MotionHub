@@ -7,6 +7,7 @@
 #include "QtCore/qstringlistmodel.h"
 #include "QtCore/qstring.h"
 #include "QtWidgets/qtreewidget.h"
+#include "QtWidgets/qtablewidget.h"
 
 #define GET_VARIABLE_NAME(Variable) (#Variable)
 
@@ -18,7 +19,9 @@
 
 namespace Ui
 {
+
 	class MainWindow;
+
 }
 
 /*!
@@ -43,6 +46,8 @@ public:
 	 */
 	~MainWindow();
 
+	void update();
+
 
 private slots:
 	/*!
@@ -59,6 +64,7 @@ private slots:
 	void slotRemoveTracker();
 	void on_actionExit_triggered();
 	void slotSelectTracker(QModelIndex index);
+	void slotInspectorItemChanged(QTableWidgetItem *item);
 
 private:
 	/*!
@@ -78,9 +84,9 @@ private:
 
 	std::map<QTreeWidgetItem*, std::list<QTreeWidgetItem*>> m_hirachyItemPool;
 
-	void toggleIconStartButton();
+	void toggleTrackingButtons();
 
-	void update();
+
 
 	void updateHirachy();
 
@@ -90,18 +96,19 @@ private:
 
 	std::atomic<bool> m_isHirachyLocked;
 	std::atomic<bool> m_isInspectorLocked;
-	std::atomic<bool> m_isUpdating;
 
 	int m_selectedTrackerInList;
 
-	void updatePropertiesInInspector();
-	void insertPropertiesIntoInspector();
-	void removePropertiesFromInspector();
+	void updateInspector();
+	void drawInspector();
+	void clearInspector();
 
 	void addRowToInspector(std::string propertyName, std::string valueName);
 
 	std::string boolToString(bool b);
 
 	Qt::CheckState m_wasTrackerInInspectorEnabled = Qt::Checked;
+
+	bool m_isInspectorInit = false;
 
 };

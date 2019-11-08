@@ -43,7 +43,7 @@ private:
 	NetworkManager* m_networkManager;
 	UIManager* m_uiManager;
 
-	void startUpdateThread();
+	void start();
 	void update();
 
 	std::thread* m_updateThread = nullptr;

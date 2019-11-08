@@ -78,13 +78,13 @@ protected:
 	 */
 	std::thread* m_trackingThread;
 
-	virtual void track() = 0;
+	virtual void update() = 0;
 
 	/*!
 	 * main tracking method
 	 * captures one frame of body tracking data and saves all data in the skeleton pool
 	 */
-	virtual void update() = 0;
+	virtual void track() = 0;
 
 	/*!
 	 * pool containing all skeletons detected by this Tracker

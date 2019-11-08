@@ -1107,8 +1107,8 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
    <slot>slotToggleTracking()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1221</x>
-     <y>72</y>
+     <x>1257</x>
+     <y>74</y>
     </hint>
     <hint type="destinationlabel">
      <x>1659</x>
@@ -1164,6 +1164,22 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>tableWidget_inspector</sender>
+   <signal>itemChanged(QTableWidgetItem*)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>slotInspectorItemChanged(QTableWidgetItem*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1156</x>
+     <y>350</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>778</x>
+     <y>-15</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>slotToggleTracking()</slot>
@@ -1171,5 +1187,6 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
   <slot>slotRemoveTracker()</slot>
   <slot>slotSelectTracker(QModelIndex)</slot>
   <slot>slotTrackerSelectionChanged()</slot>
+  <slot>slotInspectorItemChanged(QTableWidgetItem*)</slot>
  </slots>
 </ui>

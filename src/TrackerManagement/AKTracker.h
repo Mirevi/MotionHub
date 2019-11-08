@@ -90,13 +90,13 @@ private:
 	 */
 	void init() override;
 
-	void track() override;
+	void update() override;
 
 	/*!
 	 * starts tracking by getting the capture result and body frame
 	 * calls updateSkeletons(...)
 	 */
-	void update() override;
+	void track() override;
 
 	/*!
 	 * gets the current skeleton data from the current body frame

@@ -21,24 +21,24 @@ void Tracker::start()
 
 	m_properties->isTracking = true;
 
-	m_trackingThread = new std::thread(&Tracker::track, this);
+	m_trackingThread = new std::thread(&Tracker::update, this);
 	m_trackingThread->detach();
 
 }
 
-void Tracker::track()
+void Tracker::update()
 {
 
 	while (m_properties->isTracking)
 	{
 
 		if (!m_isDataAvailable)
-			update();
+			track();
 
 	}
 }
 
-void Tracker::update()
+void Tracker::track()
 {
 
 	m_isDataAvailable = true;
@@ -109,6 +109,8 @@ void Tracker::disable()
 {
 
 	m_properties->isEnabled = false;
+
+	std::this_thread::sleep_for(std::chrono::milliseconds(50));
 
 	clean();
 
