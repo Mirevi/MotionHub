@@ -33,38 +33,15 @@ MainWindow::~MainWindow()
 void MainWindow::update()
 {
 
-	// update hirachy and inspector if skeleton was added or removed
-	if(!m_refTrackerManager->isTrackerPoolLocked())
-	{ 
-		
-		for (auto itTrackerPool = m_refTrackerPool->begin(); itTrackerPool != m_refTrackerPool->end(); itTrackerPool++)
-		{
+	updateHirachy();
+	updateInspector();
 
-			if (/*itTrackerPool->second->isDataAvailable() && */itTrackerPool->second->hasSkeletonPoolChanged() && itTrackerPool->second->getProperties()->isEnabled)
-			{
-
-				updateHirachy();
-				updateInspector();
-				return;
-
-			}
-		}		
-	}
 }
   
+#pragma region Region
+
 void MainWindow::updateHirachy()
 {
-
-	//while (m_isInspectorLocked.load())
-	//{
-
-	//	std::this_thread::sleep_for(std::chrono::milliseconds(100));
-
-	//}
-
-	//m_isHirachyLocked.store(true);
-
-	// Console::log("MainWindow::updateHirachy(): Updating hirachy ...");
 
 	ui->treeWidget_hirachy->clear();
 	m_hirachyItemPool.clear();
@@ -103,89 +80,70 @@ void MainWindow::updateHirachy()
 
 	}
 
-	//m_isHirachyLocked.store(false);
-
-}
-
-// SLOT: close window / application
-void MainWindow::on_actionExit_triggered()
-{
-
-	// close window
-	this->close();
-
-}
-
-// toogle icon of start / stop tracking button
-void MainWindow::toggleTrackingButtons()
-{
-
-	QIcon icon;
-
-	if (!m_isTracking)
-	{
-
-		icon.addFile(QStringLiteral(":/ressources/icons/icons8-stop-32_converted.png"), QSize(), QIcon::Normal, QIcon::Off);
-
-		ui->btn_addTracker->setDisabled(true);
-		ui->btn_removeTracker->setDisabled(true);
-
-	}
-	else
-	{
-
-		icon.addFile(QStringLiteral(":/ressources/icons/icons8-play-32_converted.png"), QSize(), QIcon::Normal, QIcon::Off);
-
-		ui->btn_addTracker->setDisabled(false);
-		ui->btn_removeTracker->setDisabled(false);
-
-	}
-
-	ui->btn_startTracker->setIcon(icon);
-
 }
 
 void MainWindow::updateInspector()
 {
-
+	//check if selected tracker exists
 	if (m_refTrackerManager->getTrackerRef(m_selectedTrackerInList) == nullptr)
 	{
-
+		//when this tracker doesn't exist, updating the inspector is not needed
 		m_selectedTrackerInList = -1;
 		return;
 
 	}
 
-	while (m_isInspectorLocked.load())
-	{
+	//while (m_isInspectorLocked.load())
+	//{
 
-		std::this_thread::sleep_for(std::chrono::milliseconds(100));
+	//	std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
-	}
+	//}
 
-	m_isInspectorLocked.store(true);
+	//m_isInspectorLocked.store(true);
 
+
+	//get properties of selected tracker
 	Tracker::Properties* trackerProperties = m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->getProperties();
 
+	//set ID and name in inspector
 	ui->tableWidget_inspector->item(0, 1)->setText(std::to_string(trackerProperties->id).c_str());
 	ui->tableWidget_inspector->item(1, 1)->setText(trackerProperties->name.c_str());
 
+	//check if tracker is tracking and set checkbox in inspector
 	if (trackerProperties->isTracking)
+	{
+		
 		ui->tableWidget_inspector->item(2, 1)->setCheckState(Qt::Checked);
+
+	}
 	else
+	{
+
 		ui->tableWidget_inspector->item(2, 1)->setCheckState(Qt::Unchecked);
 
+	}
 
+	//check if tracker is énabled and set checkbox in inspector
 	if (trackerProperties->isEnabled)
+	{
+
 		ui->tableWidget_inspector->item(3, 1)->setCheckState(Qt::Checked);
+
+	}
 	else
+	{
+
 		ui->tableWidget_inspector->item(3, 1)->setCheckState(Qt::Unchecked);
+
+	}
+
 
 	ui->tableWidget_inspector->item(4, 1)->setText(std::to_string(trackerProperties->countDetectedSkeleton).c_str());
 
 	ui->tableWidget_inspector->update();
 
-	m_isInspectorLocked.store(false);
+	//m_isInspectorLocked.store(false);
 
 }
 
@@ -265,7 +223,7 @@ void MainWindow::addRowToInspector(std::string propertyName, std::string valueNa
 
 }
 
-
+#pragma endregion Components
 
 #pragma region Region
 
@@ -290,8 +248,7 @@ void MainWindow::slotToggleTracking()
 
 	std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
-	updateHirachy();
-	updateInspector();
+	update();
 
 	QApplication::restoreOverrideCursor();
 	QApplication::processEvents();
@@ -309,7 +266,7 @@ void MainWindow::slotAddTracker()
 	m_createTrackerWindow->setModal(true);
 	m_createTrackerWindow->exec();
 
-	updateHirachy();
+	//updateHirachy();
 
 }
 
@@ -328,10 +285,10 @@ void MainWindow::slotRemoveTracker()
 
 		ui->listWidget_tracker->takeItem(m_selectedTrackerInList);
 
-		updateHirachy();
+		m_selectedTrackerInList = -1;
 		clearInspector();
 
-		m_selectedTrackerInList = -1;
+		//updateHirachy();
 
 	}
 	else
@@ -376,13 +333,21 @@ void MainWindow::slotInspectorItemChanged(QTableWidgetItem* item)
 		else if (item->checkState() == Qt::Unchecked)
 			m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->disable();
 
-		updateHirachy();
-		updateInspector();
+		update();
 
 		QApplication::restoreOverrideCursor();
 		QApplication::processEvents();
 
 	}
+}
+
+// SLOT: close window / application
+void MainWindow::on_actionExit_triggered()
+{
+
+	// close window
+	this->close();
+
 }
 
 #pragma endregion Slots
@@ -393,6 +358,35 @@ std::string MainWindow::boolToString(bool b)
 {
 
 	return b ? "true" : "false";
+
+}
+
+// toogle icon of start / stop tracking button
+void MainWindow::toggleTrackingButtons()
+{
+
+	QIcon icon;
+
+	if (!m_isTracking)
+	{
+
+		icon.addFile(QStringLiteral(":/ressources/icons/icons8-stop-32_converted.png"), QSize(), QIcon::Normal, QIcon::Off);
+
+		ui->btn_addTracker->setDisabled(true);
+		ui->btn_removeTracker->setDisabled(true);
+
+	}
+	else
+	{
+
+		icon.addFile(QStringLiteral(":/ressources/icons/icons8-play-32_converted.png"), QSize(), QIcon::Normal, QIcon::Off);
+
+		ui->btn_addTracker->setDisabled(false);
+		ui->btn_removeTracker->setDisabled(false);
+
+	}
+
+	ui->btn_startTracker->setIcon(icon);
 
 }
 

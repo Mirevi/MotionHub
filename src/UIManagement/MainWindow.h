@@ -86,11 +86,7 @@ private:
 
 	void toggleTrackingButtons();
 
-
-
 	void updateHirachy();
-
-	std::thread* m_updateThread;
 
 	std::map<std::pair<std::string, int>, Tracker*>* m_refTrackerPool;
 
@@ -106,8 +102,6 @@ private:
 	void addRowToInspector(std::string propertyName, std::string valueName);
 
 	std::string boolToString(bool b);
-
-	Qt::CheckState m_wasTrackerInInspectorEnabled = Qt::Checked;
 
 	bool m_isInspectorInit = false;
 

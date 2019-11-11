@@ -58,15 +58,26 @@ void MotionHub::update()
 					// send skeleton pool 
 					m_networkManager->sendSkeletonPool(itTracker->second->getSkeletonPool());
 
+					// update ui if skeleton was added or removed from pool
+					if (itTracker->second->hasSkeletonPoolChanged())
+					{
+						//update UI
+						m_uiManager->getMainWindow()->update();	
+
+					}
+
 					// reset bool and start new tracking cycle
 					itTracker->second->resetIsDataAvailable();
 
 				}
 			}
 		}
+		else if(m_trackerManager->hasTrackerPoolChanged())
+		{
 
-		// update / redraw ui
-		m_uiManager->getMainWindow()->update();
+			//update UI
+			m_uiManager->getMainWindow()->update();
 
+		}
 	}
 }
