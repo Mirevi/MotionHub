@@ -9,5 +9,5 @@ Currently *MotionHub* is developed by Kester Evers, Eric Jansen and supervised b
 
 ## Dependencies
 
-Download [all dependencies](https://1drv.ms/u/s!ApZ4gzhGh6Rfx_UC_2K5DdSIT7HPDg?e=rBstlw) and unzip the file and place the "deps" folder in the project root directory.
+Download [all dependencies](https://1drv.ms/u/s!ApZ4gzhGh6Rfx_UDhsWPawn3otvqmQ?e=CROM9f), extract the file and place the folders in the project root directory.
 Use [CMake](https://cmake.org/) to link all dependencies and build the project. After that put all files from "bin" next to the .exe.
