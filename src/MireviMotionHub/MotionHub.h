@@ -8,7 +8,7 @@
 #include "TrackerManagement/TrackerManager.h"
 #include "NetworkManagement/NetworkManager.h"
 #include "GestureManagement/GestureManager.h"
-#include "UIManagement/UIManager.h"
+#include "RenderManagement/UIManager.h"
 
 #include <string>
 

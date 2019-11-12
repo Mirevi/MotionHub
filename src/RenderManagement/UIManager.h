@@ -3,7 +3,7 @@
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QApplication>
 
-#include "ConfigDllExportUIManagement.h"
+#include "ConfigDllExportRenderManagement.h"
 
 #include "MainWindow.h"
 #include "CreateTrackerWindow.h"
@@ -18,7 +18,7 @@
  * \author Kester Evers and Eric Jansen
  * 
  */
-class UIManagement_DLL_import_export UIManager
+class RenderManagement_DLL_import_export UIManager
 {
 
 public:

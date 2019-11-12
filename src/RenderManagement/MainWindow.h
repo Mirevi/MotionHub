@@ -1,6 +1,7 @@
 #pragma once
 
-#include "ConfigDllExportUIManagement.h"
+#include "ConfigDllExportRenderManagement.h"
+//#include "ConfigDllExportRenderManagement.h"
 #include <QtWidgets/QMainWindow>
 #include "MotionHubUtil/Console.h"
 #include "CreateTrackerWindow.h"
@@ -32,7 +33,7 @@ namespace Ui
  * \author Eric Jansen and Kester Evers
  * 
  */
-class UIManagement_DLL_import_export MainWindow : public QMainWindow
+class RenderManagement_DLL_import_export MainWindow : public QMainWindow
 {
 	Q_OBJECT
 public:

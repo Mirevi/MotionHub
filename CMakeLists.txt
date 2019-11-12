@@ -56,7 +56,7 @@ FIND_PACKAGE( Qt5ForMireviMotionHub REQUIRED )
 add_subdirectory("${CMAKE_SOURCE_DIR}/src/MireviMotionHub") # CMake look for further CMakeLists.txt in that directory
 add_subdirectory("${CMAKE_SOURCE_DIR}/src/TrackerManagement")
 add_subdirectory("${CMAKE_SOURCE_DIR}/src/NetworkManagement")
-add_subdirectory("${CMAKE_SOURCE_DIR}/src/UIManagement")
+add_subdirectory("${CMAKE_SOURCE_DIR}/src/RenderManagement")
 # add_subdirectory("${CMAKE_SOURCE_DIR}/src/3DRenderManagement")
 add_subdirectory("${CMAKE_SOURCE_DIR}/src/GestureManagement")
 add_subdirectory("${CMAKE_SOURCE_DIR}/src/MotionHubUtil")

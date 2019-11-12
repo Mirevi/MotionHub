@@ -1,4 +1,4 @@
-# CmakeLists for UIManagement
+# CmakeLists for RenderManagement
 
 #k4a
 include_directories(${CMAKE_BINARY_DIR}/src ${K4A_INCLUDE_DIR})
@@ -23,13 +23,13 @@ set(CMAKE_AUTOUIC ON)
 include_directories(${CMAKE_BINARY_DIR}/src/MotionHubUtil ${Qt5ForMireviMotionHub_INCLUDE_DIR})
 link_directories(${CMAKE_BINARY_DIR}/lib ${Qt5ForMireviMotionHub_LIBRARIES_DIR})
 
-file(GLOB_RECURSE UIManagement_HEADER "${CMAKE_CURRENT_SRC_DIR}" *.h)
-file(GLOB_RECURSE UIManagement_SRC "${CMAKE_CURRENT_SRC_DIR}" *.cpp)
-file(GLOB_RECURSE UIManagement_QRC "${CMAKE_CURRENT_SRC_DIR}" *.qrc)
-file(GLOB_RECURSE UIManagement_UI "${CMAKE_CURRENT_SRC_DIR}" *.ui)
-add_library(UIManagement SHARED ${UIManagement_HEADER} ${UIManagement_SRC} ${UIManagement_QRC} ${UIManagement_UI})
+file(GLOB_RECURSE RenderManagement_HEADER "${CMAKE_CURRENT_SRC_DIR}" *.h)
+file(GLOB_RECURSE RenderManagement_SRC "${CMAKE_CURRENT_SRC_DIR}" *.cpp)
+file(GLOB_RECURSE RenderManagement_QRC "${CMAKE_CURRENT_SRC_DIR}" *.qrc)
+file(GLOB_RECURSE RenderManagement_UI "${CMAKE_CURRENT_SRC_DIR}" *.ui)
+add_library(RenderManagement SHARED ${RenderManagement_HEADER} ${RenderManagement_SRC} ${RenderManagement_QRC} ${RenderManagement_UI})
 
-target_link_libraries(UIManagement
+target_link_libraries(RenderManagement
 	Qt5::Widgets
 	debug MotionHubUtil${CMAKE_DEBUG_POSTFIX} optimized MotionHubUtil
 	debug TrackerManagement${CMAKE_DEBUG_POSTFIX} optimized TrackerManagement

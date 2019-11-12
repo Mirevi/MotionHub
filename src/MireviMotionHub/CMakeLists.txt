@@ -23,7 +23,7 @@ link_directories(${CMAKE_BINARY_DIR}/lib "${CMAKE_BINARY_DIR}/lib" ${Qt5ForMirev
 include_directories(${CMAKE_BINARY_DIR}/src/MotionHubUtil)
 include_directories(${CMAKE_BINARY_DIR}/src/NetworkManagement)
 include_directories(${CMAKE_BINARY_DIR}/src/TrackerManagement)
-include_directories(${CMAKE_BINARY_DIR}/src/UIManagement)
+include_directories(${CMAKE_BINARY_DIR}/src/RenderManagement)
 include_directories(${CMAKE_BINARY_DIR}/src/3DRenderManagement)
 include_directories(${CMAKE_BINARY_DIR}/src/GestureManagement)
 link_directories(${CMAKE_BINARY_DIR}/lib)
@@ -52,7 +52,7 @@ target_link_libraries(MireviMotionHub
 	debug NetworkManagement${CMAKE_DEBUG_POSTFIX} optimized NetworkManagement
 	debug TrackerManagement${CMAKE_DEBUG_POSTFIX} optimized TrackerManagement
 	debug GestureManagement${CMAKE_DEBUG_POSTFIX} optimized GestureManagement
-	debug UIManagement${CMAKE_DEBUG_POSTFIX} optimized UIManagement
+	debug RenderManagement${CMAKE_DEBUG_POSTFIX} optimized RenderManagement
 	# debug 3DRenderManagement${CMAKE_DEBUG_POSTFIX} optimized 3DRenderManagement	
 )
 
