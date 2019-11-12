@@ -25,10 +25,20 @@ class NetworkManagement_DLL_import_export NetworkManager
 {
 
 public:
+	/*!
+	 * default constructor 
+	 */
 	NetworkManager();
+	/*!
+	 * sends skeleton pool to all network sender
+	 * \param skeletonPool skeleton pool to send
+	 */
 	void sendSkeletonPool(std::map<int, Skeleton*>* skeletonPool);
 
 private:
-	std::list<NetworkSender*> poolSender;
+	/*!
+	 *  pool of all network sender
+	 */
+	std::list<NetworkSender*> m_poolSender;
 	
 };

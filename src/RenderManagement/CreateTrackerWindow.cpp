@@ -59,6 +59,7 @@ void CreateTrackerWindow::slotCreateTracker()
 
 	m_refListWidgetTracker->addItem(m_refTrackerManager->getPoolTracker()->rbegin()->second->getProperties()->name.c_str());
 
+	//set the curser to default
 	QApplication::restoreOverrideCursor();
 	QApplication::processEvents();
 

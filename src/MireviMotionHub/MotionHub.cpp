@@ -71,7 +71,7 @@ void MotionHub::update()
 
 				}
 			}
-		}
+		}	//check if tracker is added or removed
 		else if(m_trackerManager->hasTrackerPoolChanged())
 		{
 

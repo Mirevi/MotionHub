@@ -8,7 +8,7 @@ NetworkManager::NetworkManager()
 
 	// TEMP!
 	// create new osc sender and add to sender pool
-	poolSender.push_back(new OSCSender(LOCALHOST, DEFAULT_PORT));
+	m_poolSender.push_back(new OSCSender(LOCALHOST, DEFAULT_PORT));
 
 }
 
@@ -25,7 +25,7 @@ void NetworkManager::sendSkeletonPool(std::map<int, Skeleton*>* skeletonPool)
 		{
 
 			// sender loop
-			for (auto itSenderPool = poolSender.begin(); itSenderPool != poolSender.end(); itSenderPool++)
+			for (auto itSenderPool = m_poolSender.begin(); itSenderPool != m_poolSender.end(); itSenderPool++)
 			{
 
 				// check if current sender is active

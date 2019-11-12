@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ConfigDllExportUIManagement.h"
+#include "ConfigDllExportRenderManagement.h"
 #include <QtWidgets/QDialog>
 #include "MotionHubUtil/Console.h"
 #include "QtCore/qstringlistmodel.h"
@@ -22,7 +22,7 @@ namespace Ui {
  * \author Kester Evers and Eric Jansen
  * 
  */
-class UIManagement_DLL_import_export CreateTrackerWindow : public QDialog
+class RenderManagement_DLL_import_export CreateTrackerWindow : public QDialog
 {
 	Q_OBJECT
 public:
