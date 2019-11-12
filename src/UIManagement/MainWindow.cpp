@@ -392,18 +392,20 @@ void MainWindow::toggleTrackingButtons()
 	// if tracking is false set icon to start arrow and enbable add / remove tracker buttons
 	if (!m_isTracking)
 	{
-
+		//load stop button
 		icon.addFile(QStringLiteral(":/ressources/icons/icons8-stop-32_converted.png"), QSize(), QIcon::Normal, QIcon::Off);
 
+		//disable add/remove buttons
 		ui->btn_addTracker->setDisabled(true);
 		ui->btn_removeTracker->setDisabled(true);
 
 	}
 	else
 	{
-
+		//load start button
 		icon.addFile(QStringLiteral(":/ressources/icons/icons8-play-32_converted.png"), QSize(), QIcon::Normal, QIcon::Off);
 
+		//enable add/remove buttons
 		ui->btn_addTracker->setDisabled(false);
 		ui->btn_removeTracker->setDisabled(false);
 

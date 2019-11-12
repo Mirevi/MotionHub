@@ -31,7 +31,14 @@ public:
 	 */
 	UIManager(int argc, char** argv, TrackerManager* trackerManager);
 
+	/*!
+	 * getter for MainWindow pointer 
+	 * \return pointer to the MainWindow Object
+	 */
 	MainWindow* getMainWindow();
+	/*!
+	 *  updates Qt UI
+	 */
 	void processInput();
 
 private:
