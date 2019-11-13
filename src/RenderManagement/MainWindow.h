@@ -9,9 +9,8 @@
 #include "QtCore/qstring.h"
 #include "QtWidgets/qtreewidget.h"
 #include "QtWidgets/qtablewidget.h"
-
+#include "GlWidget.h"
 #define GET_VARIABLE_NAME(Variable) (#Variable)
-
 
 #include <chrono>
 #include <atomic>
@@ -90,6 +89,8 @@ private:
 	 * createTracker dialog
 	 */
 	CreateTrackerWindow* m_createTrackerWindow;
+
+	GlWidget* render_ogl;
 	/*!
 	 * reference to the tracker manager 
 	 */

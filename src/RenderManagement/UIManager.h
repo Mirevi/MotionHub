@@ -2,6 +2,7 @@
 
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QApplication>
+#include <QtGui/qsurfaceformat.h>
 
 #include "ConfigDllExportRenderManagement.h"
 
