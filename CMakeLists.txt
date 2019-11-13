@@ -1,4 +1,4 @@
-# top level cmake file
+# top level cmake file MireviMotionHub
 
 cmake_minimum_required (VERSION 2.6 FATAL_ERROR)
 project (MireviMotionHub)
@@ -51,6 +51,16 @@ set(URL http://mirevi.de/claymore_deps/qt-5920.zip)
 getsTheDepsNameFromURL("${URL}")
 set(CHECK_IF_DEPS_EXIST "${CURRENT_DEPS_PATH}/include/QtCore/5.9.2/QtCore/private/qcoreapplication_p.h")
 FIND_PACKAGE( Qt5ForMireviMotionHub REQUIRED )
+
+# NatNetSDK (NaturalPoint Optitrack Tracking SDK - Streaming over network)
+set( EXPECTED_SHA256 29c71ebbc2374f4ddfb5af2fa45dd1c4c0def076c4a595ab3b046192bd86fd5d ) 
+set(CURRENT_DEPS_PATH ${CMAKE_BINARY_DIR}/../deps/netnatsdk-2100/)  # TODO: Does not exist yet
+set( URL https://claymore.mirevi.com/netnatsdk-2100.zip )
+getsTheDepsNameFromURL("${URL}")
+set(CHECK_IF_DEPS_EXIST "${CURRENT_DEPS_PATH}/include/NatNetClient.h")
+message(STATUS "searching NatNet")
+FIND_PACKAGE( NatNetSDK REQUIRED )
+message(STATUS "done  searching NatNet")
 
 # Add subdir with additional CMakeLists.txt and files
 add_subdirectory("${CMAKE_SOURCE_DIR}/src/MireviMotionHub") # CMake look for further CMakeLists.txt in that directory

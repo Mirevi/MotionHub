@@ -1,21 +1,44 @@
 # CmakeLists for TrackerManagement
 
 #k4a
-include_directories(${CMAKE_BINARY_DIR}/src ${K4A_INCLUDE_DIR})
-link_directories(${CMAKE_BINARY_DIR}/lib "${CMAKE_BINARY_DIR}/lib" ${K4A_LIBRARIES_DIR})
+#include_directories(${CMAKE_BINARY_DIR}/src ${K4A_INCLUDE_DIR})
+#link_directories(${CMAKE_BINARY_DIR}/lib "${CMAKE_BINARY_DIR}/lib" ${K4A_LIBRARIES_DIR})
 #k4abt
-include_directories(${CMAKE_BINARY_DIR}/src ${K4ABT_INCLUDE_DIR})
-link_directories(${CMAKE_BINARY_DIR}/lib "${CMAKE_BINARY_DIR}/lib" ${K4ABT_LIBRARIES_DIR})
+#include_directories(${CMAKE_BINARY_DIR}/src ${K4ABT_INCLUDE_DIR})
+#link_directories(${CMAKE_BINARY_DIR}/lib "${CMAKE_BINARY_DIR}/lib" ${K4ABT_LIBRARIES_DIR})
 #Cudnn
-include_directories(${CMAKE_BINARY_DIR}/src ${Cudnn_INCLUDE_DIR})
-link_directories(${CMAKE_BINARY_DIR}/lib "${CMAKE_BINARY_DIR}/lib" ${Cudnn_LIBRARIES_DIR})
+#include_directories(${CMAKE_BINARY_DIR}/src ${Cudnn_INCLUDE_DIR})
+#link_directories(${CMAKE_BINARY_DIR}/lib "${CMAKE_BINARY_DIR}/lib" ${Cudnn_LIBRARIES_DIR})
 #OSCPack
-include_directories(${CMAKE_BINARY_DIR}/src ${OSCp_INCLUDE_DIR})
-link_directories(${CMAKE_BINARY_DIR}/lib "${CMAKE_BINARY_DIR}/lib" ${OSCp_LIBRARIES_DIR})
+#include_directories(${CMAKE_BINARY_DIR}/src ${OSCp_INCLUDE_DIR})
+#link_directories(${CMAKE_BINARY_DIR}/lib "${CMAKE_BINARY_DIR}/lib" ${OSCp_LIBRARIES_DIR})
+#NatNetSDK
+#include_directories(${CMAKE_BINARY_DIR}/src ${NatNetSDK_INCLUDE_DIR})
+#link_directories(${CMAKE_BINARY_DIR}/lib "${CMAKE_BINARY_DIR}/lib" ${NatNetSDK_LIBRARIES_DIR})
+
+
 
 #include internal source files
 include_directories(${CMAKE_BINARY_DIR}/src/MotionHubUtil)
 link_directories(${CMAKE_BINARY_DIR}/lib)
+
+
+include_directories(${CMAKE_BINARY_DIR}/src 
+${K4A_INCLUDE_DIR}
+${K4ABT_INCLUDE_DIR}
+${Cudnn_INCLUDE_DIR}
+${NatNetSDK_INCLUDE_DIR}
+)
+
+
+link_directories(${CMAKE_BINARY_DIR}/lib
+ "${CMAKE_BINARY_DIR}/lib"
+${K4A_LIBRARIES_DIR}
+${K4ABT_LIBRARIES_DIR}
+${Cudnn_LIBRARIES_DIR}
+${NatNetSDK_LIBRARIES_DIR}
+)
+
 
 file(GLOB_RECURSE TrackerManagement_HEADER "${CMAKE_CURRENT_SRC_DIR}" *.h)
 file(GLOB_RECURSE TrackerManagement_SRC "${CMAKE_CURRENT_SRC_DIR}" *.cpp)
@@ -27,6 +50,7 @@ target_link_libraries(TrackerManagement
 	debug cudnn optimized cudnn
 	debug Ws2_32 optimized Ws2_32
 	debug winmm optimized winmm
+    debug NatNetLibStatic optimized NatNetLibStatic
 	
 	debug MotionHubUtil${CMAKE_DEBUG_POSTFIX} optimized MotionHubUtil
 )

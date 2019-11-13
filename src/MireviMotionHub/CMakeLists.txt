@@ -18,6 +18,10 @@ link_directories(${CMAKE_BINARY_DIR}/lib "${CMAKE_BINARY_DIR}/lib" ${OSCp_LIBRAR
 #Qt
 include_directories(${CMAKE_BINARY_DIR}/src ${Qt5ForMireviMotionHub_INCLUDE_DIR})
 link_directories(${CMAKE_BINARY_DIR}/lib "${CMAKE_BINARY_DIR}/lib" ${Qt5ForMireviMotionHub_LIBRARIES_DIR})
+#NatNetSDK
+include_directories(${CMAKE_BINARY_DIR}/src ${NatNetSDK_INCLUDE_DIR})
+link_directories(${CMAKE_BINARY_DIR}/lib "${CMAKE_BINARY_DIR}/lib" ${NatNetSDK_LIBRARIES_DIR})
+
 
 #include internal source files
 include_directories(${CMAKE_BINARY_DIR}/src/MotionHubUtil)
@@ -47,6 +51,7 @@ target_link_libraries(MireviMotionHub
 	debug winmm optimized winmm		
 	debug Qt5Core${CMAKE_DEBUG_POSTFIX} optimized Qt5Core
 	debug Qt5Widgets${CMAKE_DEBUG_POSTFIX} optimized Qt5Widgets
+    debug NatNetLibStatic optimized NatNetLibStatic
 	
 	debug MotionHubUtil${CMAKE_DEBUG_POSTFIX} optimized MotionHubUtil
 	debug NetworkManagement${CMAKE_DEBUG_POSTFIX} optimized NetworkManagement
