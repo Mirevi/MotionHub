@@ -4,7 +4,7 @@ GlWidget::GlWidget(QWidget* parent)
 	: QOpenGLWidget(parent),
 	clearColor(Qt::black),
 	xRot(0),
-	yRot(0),
+	yRot(900),
 	zRot(0),
 	program(0)
 {
@@ -17,16 +17,6 @@ GlWidget::~GlWidget()
 	delete m_texChecker01;
 	delete program;
 	doneCurrent();
-}
-
-QSize GlWidget::minimumSizeHint() const
-{
-	return QSize(50, 50);
-}
-
-QSize GlWidget::sizeHint() const
-{
-	return QSize(200, 200);
 }
 
 void GlWidget::rotateBy(int xAngle, int yAngle, int zAngle)
@@ -96,7 +86,7 @@ void GlWidget::paintGL()
 
 	QMatrix4x4 m;
 	m.perspective(60.0f, ((float)this->width() / this->height()), 0.1f, 10.0f);
-	m.translate(0.0f, 0.0f, -1.0f);
+	m.translate(0.0f, -0.75f, -2.0f);
 	m.rotate(xRot / 16.0f, 1.0f, 0.0f, 0.0f);
 	m.rotate(yRot / 16.0f, 0.0f, 1.0f, 0.0f);
 	m.rotate(zRot / 16.0f, 0.0f, 0.0f, 1.0f);
@@ -107,7 +97,7 @@ void GlWidget::paintGL()
 	program->setAttributeBuffer(PROGRAM_VERTEX_ATTRIBUTE, GL_FLOAT, 0, 3, 5 * sizeof(GLfloat));
 	program->setAttributeBuffer(PROGRAM_TEXCOORD_ATTRIBUTE, GL_FLOAT, 3 * sizeof(GLfloat), 2, 5 * sizeof(GLfloat));
 
-	for (int i = 0; i < 6; ++i) {
+	for (int i = 0; i < 1; ++i) {
 		m_texChecker01->bind();
 		glDrawArrays(GL_TRIANGLE_FAN, i * 4, 4);
 	}
@@ -144,23 +134,23 @@ void GlWidget::mouseReleaseEvent(QMouseEvent* /* event */)
 void GlWidget::makeObject()
 {
 	static const int coords[6][4][3] = {
-		{ { +1, -1, -1 }, { -1, -1, -1 }, { -1, +1, -1 }, { +1, +1, -1 } },
-		{ { +1, +1, -1 }, { -1, +1, -1 }, { -1, +1, +1 }, { +1, +1, +1 } },
-		{ { +1, -1, +1 }, { +1, -1, -1 }, { +1, +1, -1 }, { +1, +1, +1 } },
+		{ { +1, 0, -1 }, { -1, 0, -1 }, { -1, 0, +1 }, { +1, 0, +1 } },
 		{ { -1, -1, -1 }, { -1, -1, +1 }, { -1, +1, +1 }, { -1, +1, -1 } },
-		{ { +1, -1, +1 }, { -1, -1, +1 }, { -1, -1, -1 }, { +1, -1, -1 } },
+		{ { +1, 0, +1 }, { -1, 0, +1 }, { -1, 0, -1 }, { +1, 0, -1 } },
+		{ { +1, -1, -1 }, { -1, -1, -1 }, { -1, +1, -1 }, { +1, +1, -1 } },
+		{ { +1, -1, +1 }, { +1, -1, -1 }, { +1, +1, -1 }, { +1, +1, +1 } },
 		{ { -1, -1, +1 }, { +1, -1, +1 }, { +1, +1, +1 }, { -1, +1, +1 } }
 	};
 
-	m_texChecker01 = new QOpenGLTexture(QImage(QString(":/ressources/images/tex_checker_01.png")));
+	m_texChecker01 = new QOpenGLTexture(QImage(QString(":/ressources/images/tex_grid_10x10.png")));
 
 	QVector<GLfloat> vertData;
-	for (int i = 0; i < 6; ++i) {
+	for (int i = 0; i < 1; ++i) {
 		for (int j = 0; j < 4; ++j) {
 			// vertex position
-			vertData.append(0.2 * coords[i][j][0]);
-			vertData.append(0.2 * coords[i][j][1]);
-			vertData.append(0.2 * coords[i][j][2]);
+			vertData.append(coords[i][j][0]);
+			vertData.append(coords[i][j][1]);
+			vertData.append(coords[i][j][2]);
 			// texture coordinate
 			vertData.append(j == 0 || j == 3);
 			vertData.append(j == 0 || j == 1);

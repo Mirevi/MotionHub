@@ -9,6 +9,7 @@
 #include <QtGui/qopenglshaderprogram.h>
 #include <QtGui/QOpenGLTexture>
 #include <Qt3DInput/QMouseEvent>
+#include <iostream>
 
 QT_FORWARD_DECLARE_CLASS(QOpenGLShaderProgram);
 QT_FORWARD_DECLARE_CLASS(QOpenGLTexture)
@@ -21,8 +22,6 @@ public:
 	explicit GlWidget(QWidget* parent = 0);
 	~GlWidget();
 
-	QSize minimumSizeHint() const override;
-	QSize sizeHint() const override;
 	void rotateBy(int xAngle, int yAngle, int zAngle);
 	void setClearColor(const QColor& color);
 
