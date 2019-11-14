@@ -8,15 +8,13 @@ GlWidget::GlWidget(QWidget* parent)
 	zRot(0),
 	program(0)
 {
-	memset(textures, 0, sizeof(textures));
 }
 
 GlWidget::~GlWidget()
 {
 	makeCurrent();
 	vbo.destroy();
-	for (int i = 0; i < 6; ++i)
-		delete textures[i];
+	delete m_texChecker01;
 	delete program;
 	doneCurrent();
 }
@@ -97,8 +95,8 @@ void GlWidget::paintGL()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	QMatrix4x4 m;
-	m.ortho(-0.5f, +0.5f, +0.5f, -0.5f, 4.0f, 15.0f);
-	m.translate(0.0f, 0.0f, -10.0f);
+	m.perspective(60.0f, ((float)this->width() / this->height()), 0.1f, 10.0f);
+	m.translate(0.0f, 0.0f, -1.0f);
 	m.rotate(xRot / 16.0f, 1.0f, 0.0f, 0.0f);
 	m.rotate(yRot / 16.0f, 0.0f, 1.0f, 0.0f);
 	m.rotate(zRot / 16.0f, 0.0f, 0.0f, 1.0f);
@@ -110,14 +108,13 @@ void GlWidget::paintGL()
 	program->setAttributeBuffer(PROGRAM_TEXCOORD_ATTRIBUTE, GL_FLOAT, 3 * sizeof(GLfloat), 2, 5 * sizeof(GLfloat));
 
 	for (int i = 0; i < 6; ++i) {
-		textures[i]->bind();
+		m_texChecker01->bind();
 		glDrawArrays(GL_TRIANGLE_FAN, i * 4, 4);
 	}
 }
 void GlWidget::resizeGL(int width, int height)
 {
-	int side = qMin(width, height);
-	glViewport((width - side) / 2, (height - side) / 2, side, side);
+	glViewport(0, 0, width, height);
 }
 
 void GlWidget::mousePressEvent(QMouseEvent* event)
@@ -155,8 +152,7 @@ void GlWidget::makeObject()
 		{ { -1, -1, +1 }, { +1, -1, +1 }, { +1, +1, +1 }, { -1, +1, +1 } }
 	};
 
-	for (int j = 0; j < 6; ++j)
-		textures[j] = new QOpenGLTexture(QImage(QString(":/images/side%1.png").arg(j + 1)).mirrored());
+	m_texChecker01 = new QOpenGLTexture(QImage(QString(":/ressources/images/tex_checker_01.png")));
 
 	QVector<GLfloat> vertData;
 	for (int i = 0; i < 6; ++i) {

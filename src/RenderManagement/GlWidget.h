@@ -45,7 +45,7 @@ private:
 	int xRot;
 	int yRot;
 	int zRot;
-	QOpenGLTexture* textures[6];
+	QOpenGLTexture* m_texChecker01;
 	QOpenGLShaderProgram* program;
 	QOpenGLBuffer vbo;
 };
