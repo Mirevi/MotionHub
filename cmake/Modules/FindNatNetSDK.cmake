@@ -139,7 +139,7 @@ endif()
 FIND_PATH(NATNET_SDK_INCLUDE_DIR NAMES NatNetClient.h HINTS ${CURRENT_DEPS_PATH}/include)
 
 # Look for the library path
-FIND_PATH(NATNET_SDK_LIBRARIES_DIR NAMES NatNetLib.lib HINTS ${CURRENT_DEPS_PATH}/lib
+FIND_PATH(NATNET_SDK_LIBRARIES_DIR NAMES NatNetLibStatic.lib HINTS ${CURRENT_DEPS_PATH}/lib
 																${CURRENT_DEPS_PATH}/Release
 																${CURRENT_DEPS_PATH}/build/Release)
 

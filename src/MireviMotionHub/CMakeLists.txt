@@ -19,8 +19,8 @@ link_directories(${CMAKE_BINARY_DIR}/lib "${CMAKE_BINARY_DIR}/lib" ${OSCp_LIBRAR
 include_directories(${CMAKE_BINARY_DIR}/src ${Qt5ForMireviMotionHub_INCLUDE_DIR})
 link_directories(${CMAKE_BINARY_DIR}/lib "${CMAKE_BINARY_DIR}/lib" ${Qt5ForMireviMotionHub_LIBRARIES_DIR})
 #NatNetSDK
-include_directories(${CMAKE_BINARY_DIR}/src ${NatNetSDK_INCLUDE_DIR})
-link_directories(${CMAKE_BINARY_DIR}/lib "${CMAKE_BINARY_DIR}/lib" ${NatNetSDK_LIBRARIES_DIR})
+include_directories(${CMAKE_BINARY_DIR}/src ${NATNET_SDK_INCLUDE_DIR})
+link_directories(${CMAKE_BINARY_DIR}/lib "${CMAKE_BINARY_DIR}/lib" ${NATNET_SDK_LIBRARIES_DIR})
 
 
 #include internal source files
