@@ -10,6 +10,7 @@
 #include <atomic>
 
 #include "AKTracker.h"
+#include "OTTracker.h"
 
 /*!
  * \class TrackerManager
@@ -35,8 +36,9 @@ public:
 	 */
 	enum TrackerType 
 	{
-		azureKinect	// Azure Kinect Tracker
-	};;
+		azureKinect,	// Azure Kinect Tracker
+		optiTrack
+	};
 
 	/*!
 	 * creates a new tracker and adds it to the pool

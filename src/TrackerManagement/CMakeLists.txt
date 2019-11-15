@@ -51,6 +51,7 @@ target_link_libraries(TrackerManagement
 	debug Ws2_32 optimized Ws2_32
 	debug winmm optimized winmm
     debug NatNetLibStatic optimized NatNetLibStatic
+    debug legacy_stdio_definitions optimized legacy_stdio_definitions
 	
 	debug MotionHubUtil${CMAKE_DEBUG_POSTFIX} optimized MotionHubUtil
 )

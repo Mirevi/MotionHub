@@ -9,7 +9,9 @@ link_directories(${CMAKE_BINARY_DIR}/lib "${CMAKE_BINARY_DIR}/lib" ${K4ABT_LIBRA
 #Cudnn
 include_directories(${CMAKE_BINARY_DIR}/src ${Cudnn_INCLUDE_DIR})
 link_directories(${CMAKE_BINARY_DIR}/lib "${CMAKE_BINARY_DIR}/lib" ${Cudnn_LIBRARIES_DIR})
-
+#NatNetSDK
+include_directories(${CMAKE_BINARY_DIR}/src ${NATNET_SDK_INCLUDE_DIR})
+link_directories(${CMAKE_BINARY_DIR}/lib "${CMAKE_BINARY_DIR}/lib" ${NATNET_SDK_LIBRARIES_DIR})
 
 # Find includes in corresponding build directories
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -37,6 +39,7 @@ target_link_libraries(RenderManagement
 	debug k4a optimized k4a
 	debug k4abt optimized k4abt
 	debug cudnn optimized cudnn
+	debug NatNetLibStatic optimized NatNetLibStatic
 	#debug Qt5Core${CMAKE_DEBUG_POSTFIX} optimized Qt5Core
 	#debug Qt5Widgets${CMAKE_DEBUG_POSTFIX} optimized Qt5Widgets
 )
