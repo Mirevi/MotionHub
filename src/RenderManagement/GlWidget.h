@@ -45,6 +45,7 @@ private:
 	void loadShaderProgram();
 	void loadVbo();
 	void createGrid();
+	void createCube();
 
 	QColor clearColor;
 
@@ -52,6 +53,7 @@ private:
 	Vector3 m_cameraRotation;
 
 	QOpenGLBuffer m_vboGrid;
+	QOpenGLBuffer m_vboCube;
 
 	QOpenGLTexture* tex_grid01;
 	QOpenGLTexture* tex_checker01;
