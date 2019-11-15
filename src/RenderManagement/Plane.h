@@ -6,7 +6,7 @@ class Plane : public Mesh
 {
 
 	public:
-		Plane();
+		Plane(QOpenGLTexture* texture);
 		~Plane();
 
 };

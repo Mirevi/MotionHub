@@ -1,7 +1,9 @@
 #include "Plane.h"
 
-Plane::Plane()
+Plane::Plane(QOpenGLTexture* texture)
 {
+
+	m_texture = texture;
 
 	// plane verts
 	static const int verts[1][4][3] = {

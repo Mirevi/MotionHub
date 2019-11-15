@@ -1,7 +1,9 @@
 #include "Cube.h"
 
-Cube::Cube()
+Cube::Cube(QOpenGLTexture* texture)
 {
+
+	m_texture = texture;
 
 	// cube verts
 	static const int verts[6][4][3] = {

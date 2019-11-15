@@ -6,7 +6,7 @@ class Cube : public Mesh
 {
 
 public:
-	Cube();
+	Cube(QOpenGLTexture* texture);
 	~Cube();
 
 };

@@ -43,10 +43,10 @@ protected:
 
 private:
 	void load();
-	void loadTextures();
-	void loadShaderProgram();
+	void createShaderProgram();
+	void createMeshes();
 
-	int bindVbo(Mesh mesh);
+	void renderMesh(Mesh* mesh);
 
 	QColor clearColor;
 
@@ -54,16 +54,15 @@ private:
 	Vector3 m_cameraRotation;
 
 	QOpenGLBuffer m_vbo;
+	QOpenGLTexture* m_texture;
 
-	QOpenGLTexture* tex_grid01;
-	QOpenGLTexture* tex_checker01;
-	QOpenGLShaderProgram* m_program01;
+	QOpenGLShaderProgram* m_shaderProgram;
 
 	QPoint lastPos;
 	void rotateBy(int xAngle, int yAngle, int zAngle);
 
-	Plane m_meshGrid;
-	Cube m_meshCube;
+	Plane* m_meshGrid;
+	Cube* m_meshCube;
 
 };
 
