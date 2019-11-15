@@ -12,6 +12,8 @@
 #include <iostream>
 #include "MotionHubUtil/Vector3.h"
 #include "Mesh.h"
+#include "Plane.h"
+#include "Cube.h"
 
 QT_FORWARD_DECLARE_CLASS(QOpenGLShaderProgram);
 QT_FORWARD_DECLARE_CLASS(QOpenGLTexture)
@@ -43,17 +45,15 @@ private:
 	void load();
 	void loadTextures();
 	void loadShaderProgram();
-	void loadVbo();
-	void createGrid();
-	void createCube();
+
+	int bindVbo(Mesh mesh);
 
 	QColor clearColor;
 
 	QMatrix4x4 m_cameraMatrix;
 	Vector3 m_cameraRotation;
 
-	QOpenGLBuffer m_vboGrid;
-	QOpenGLBuffer m_vboCube;
+	QOpenGLBuffer m_vbo;
 
 	QOpenGLTexture* tex_grid01;
 	QOpenGLTexture* tex_checker01;
@@ -62,7 +62,8 @@ private:
 	QPoint lastPos;
 	void rotateBy(int xAngle, int yAngle, int zAngle);
 
-	Mesh m_meshGrid;
+	Plane m_meshGrid;
+	Cube m_meshCube;
 
 };
 

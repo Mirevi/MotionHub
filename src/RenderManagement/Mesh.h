@@ -9,9 +9,9 @@ class Mesh
 	public:
 		Mesh();
 		~Mesh();
-		QOpenGLBuffer m_vbo;
+		QVector<GLfloat> getVertData();
 
-	private:
+	protected:
 		QVector<GLfloat> m_vertexData;
 
 };

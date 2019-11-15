@@ -18,7 +18,7 @@ GlWidget::~GlWidget()
 	makeCurrent(); // called automatically by paintGL()
 
 	// destroy grid vbo
-	m_vboGrid.destroy();
+	m_vbo.destroy();
 
 	// delete grid texture and shader program
 	delete tex_grid01;
@@ -62,7 +62,6 @@ void GlWidget::initializeGL()
 void GlWidget::load()
 {
 
-	loadVbo();
 	loadShaderProgram();
 	loadTextures();
 
@@ -120,17 +119,6 @@ void GlWidget::loadShaderProgram()
 
 }
 
-void GlWidget::loadVbo()
-{
-
-	// create grid vbo
-	createGrid();
-
-	// create cube vbo
-	createCube();
-
-}
-
 // render loop
 void GlWidget::paintGL()
 {
@@ -145,7 +133,7 @@ void GlWidget::paintGL()
 	// reset camera matrix
 	m_cameraMatrix.setToIdentity();
 	// set camera to perspective with current aspect ratio
-	m_cameraMatrix.perspective(60.0f, ((float)this->width() / this->height()), 0.1f, 10.0f);
+	m_cameraMatrix.perspective(60.0f, ((float)this->width() / this->height()), 0.05f, 10.0f);
 	// translate and rotate camera
 	m_cameraMatrix.translate(0.0f, -0.5f, -2.0f);
 	// rotate camera based on mouse movement
@@ -159,15 +147,14 @@ void GlWidget::paintGL()
 	m_program01->enableAttributeArray(0);
 	m_program01->enableAttributeArray(1);
 
-	// bind grid vbo
-	if (m_vboGrid.bind())
+	if (bindVbo((Mesh)m_meshGrid))
 	{
 
 		// set vertex and texture coordinate buffers
 		// attributes: vertex attribute location, vertex data type, vertex start offset, vertex tuple size, data stride length
 		m_program01->setAttributeBuffer(0, GL_FLOAT, 0, 3, 5 * sizeof(GLfloat)); // vertex coordinates buffer
 		m_program01->setAttributeBuffer(1, GL_FLOAT, 3 * sizeof(GLfloat), 2, 5 * sizeof(GLfloat)); // texture coordinates buffer
-																								   
+
 		// bind grid texture
 		tex_grid01->bind();
 		// draw grid
@@ -176,7 +163,7 @@ void GlWidget::paintGL()
 	}
 
 	// bind cube vbo
-	if (m_vboCube.bind())
+	if (bindVbo((Mesh)m_meshCube))
 	{
 
 		// set vertex and texture coordinate buffers
@@ -240,77 +227,23 @@ void GlWidget::mouseReleaseEvent(QMouseEvent* /* event */)
 	emit clicked();
 }
 
-void GlWidget::createGrid()
+int GlWidget::bindVbo(Mesh mesh)
 {
 
-	// plane verts
-	static const int verts[1][4][3] = 
-	{
-		{ { +1, 0, -1 }, { -1, 0, -1 }, { -1, 0, +1 }, { +1, 0, +1 } }
-	};
-
-	// vert data
-	QVector<GLfloat> vertData;
-
-	// assign verts to vert data
-	for (int j = 0; j < 4; ++j) 
-	{
-		// vertex position
-		vertData.append(verts[0][j][0]);
-		vertData.append(verts[0][j][1]);
-		vertData.append(verts[0][j][2]);
-		// texture coordinate
-		vertData.append(j == 0 || j == 3);
-		vertData.append(j == 0 || j == 1);
-	}
+	QVector<GLfloat> vertData = mesh.getVertData();
 
 	// create vbo
-	m_vboGrid.create();
+	m_vbo.create();
 	// bind vbo in order to be used by opengl render contex
-	m_vboGrid.bind();
+	m_vbo.bind();
 	// set usage pattern to static draw because verts do not change
-	m_vboGrid.setUsagePattern(QOpenGLBuffer::StaticDraw);
+	m_vbo.setUsagePattern(QOpenGLBuffer::StaticDraw);
 	// allocate vbo based on vertex data size
-	m_vboGrid.allocate(vertData.constData(), vertData.count() * sizeof(GLfloat));
+	m_vbo.allocate(vertData.constData(), vertData.count() * sizeof(GLfloat));
 
-}
-
-void GlWidget::createCube()
-{
-
-	// cube verts
-	static const int verts[6][4][3] = {
-		{ { +1, -1, -1 }, { -1, -1, -1 }, { -1, +1, -1 }, { +1, +1, -1 } },
-		{ { +1, +1, -1 }, { -1, +1, -1 }, { -1, +1, +1 }, { +1, +1, +1 } },
-		{ { +1, -1, +1 }, { +1, -1, -1 }, { +1, +1, -1 }, { +1, +1, +1 } },
-		{ { -1, -1, -1 }, { -1, -1, +1 }, { -1, +1, +1 }, { -1, +1, -1 } },
-		{ { +1, -1, +1 }, { -1, -1, +1 }, { -1, -1, -1 }, { +1, -1, -1 } },
-		{ { -1, -1, +1 }, { +1, -1, +1 }, { +1, +1, +1 }, { -1, +1, +1 } }
-	};
-
-	// vert data
-	QVector<GLfloat> vertData;
-
-	// assign verts to vert data
-	for (int i = 0; i < 6; ++i) {
-		for (int j = 0; j < 4; ++j) {
-			// vertex position
-			vertData.append(0.1f * verts[i][j][0]);
-			vertData.append(0.1f * verts[i][j][1]);
-			vertData.append(0.1f * verts[i][j][2]);
-			// texture coordinate
-			vertData.append(j == 0 || j == 3);
-			vertData.append(j == 0 || j == 1);
-		}
-	}
-
-	// create vbo
-	m_vboCube.create();
-	// bind vbo in order to be used by opengl render contex
-	m_vboCube.bind();
-	// set usage pattern to static draw because verts do not change
-	m_vboCube.setUsagePattern(QOpenGLBuffer::StaticDraw);
-	// allocate vbo based on vertex data size
-	m_vboCube.allocate(vertData.constData(), vertData.count() * sizeof(GLfloat));
+	if (m_vbo.bind())
+		return 1;
+	else
+		return 0;
 
 }
