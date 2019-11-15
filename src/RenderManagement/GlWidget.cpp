@@ -130,8 +130,6 @@ void GlWidget::paintGL()
 	// clear color and depth buffers
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	m_cameraRotation = m_cameraRotation * MOUSE_SPEED;
-
 	// reset camera matrix
 	m_cameraMatrix.setToIdentity();
 	// set camera to perspective with current aspect ratio
@@ -139,9 +137,9 @@ void GlWidget::paintGL()
 	// translate and rotate camera
 	m_cameraMatrix.translate(0.0f, -0.5f, -2.0f);
 	// rotate camera based on mouse movement
-	m_cameraMatrix.rotate(m_cameraRotation.m_xyz.x, 1.0f, 0.0f, 0.0f);
-	m_cameraMatrix.rotate(m_cameraRotation.m_xyz.y, 0.0f, 1.0f, 0.0f);
-	m_cameraMatrix.rotate(m_cameraRotation.m_xyz.z, 0.0f, 0.0f, 1.0f);
+	m_cameraMatrix.rotate(m_cameraRotation.m_xyz.x * MOUSE_SPEED, 1.0f, 0.0f, 0.0f);
+	m_cameraMatrix.rotate(m_cameraRotation.m_xyz.y * MOUSE_SPEED, 0.0f, 1.0f, 0.0f);
+	m_cameraMatrix.rotate(m_cameraRotation.m_xyz.z * MOUSE_SPEED, 0.0f, 0.0f, 1.0f);
 
 	// assign camera matrix to shader programm
 	m_shaderProgram->setUniformValue("matrix", m_cameraMatrix);
