@@ -7,9 +7,7 @@ GlWidget::GlWidget(QWidget* parent)	: QOpenGLWidget(parent)
 	clearColor = Qt::black;
 
 	// set camera start rotation
-	xRot = 0;
-	yRot = 0;
-	zRot = 0;
+	m_cameraRotation = Vector3::zero();
 
 }
 
@@ -24,6 +22,7 @@ GlWidget::~GlWidget()
 
 	// delete grid texture and shader program
 	delete tex_grid01;
+	delete tex_checker01;
 	delete m_program01;
 
 	// diable current opengl contex
@@ -34,9 +33,9 @@ GlWidget::~GlWidget()
 void GlWidget::rotateBy(int xAngle, int yAngle, int zAngle)
 {
 
-	xRot += xAngle;
-	yRot += yAngle;
-	zRot += zAngle;
+	m_cameraRotation.m_xyz.x += xAngle;
+	m_cameraRotation.m_xyz.y += yAngle;
+	m_cameraRotation.m_xyz.z += zAngle;
 
 	update();
 
@@ -48,12 +47,38 @@ void GlWidget::initializeGL()
 	// initialize opengl
 	initializeOpenGLFunctions();
 
-	// create grid vbo
-	createGrid();
-
 	// enable depth test and backface culling
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
+
+	// load vbo's, shader programs and textures
+	load();
+
+	// bind shader program to current opengl context
+	m_program01->bind();
+
+}
+
+void GlWidget::load()
+{
+
+	loadVbo();
+	loadShaderProgram();
+	loadTextures();
+
+}
+
+void GlWidget::loadTextures()
+{
+
+	// load textures
+	tex_grid01 = new QOpenGLTexture(QImage(QString(":/ressources/images/tex_grid_10x10.png")));
+	tex_checker01 = new QOpenGLTexture(QImage(QString(":/ressources/images/tex_checker_01.png")));
+
+}
+
+void GlWidget::loadShaderProgram()
+{
 
 	// create and compile vertex shader
 	QOpenGLShader * vshader = new QOpenGLShader(QOpenGLShader::Vertex, this);
@@ -92,11 +117,14 @@ void GlWidget::initializeGL()
 	m_program01->setUniformValue("texture", 0);
 	// link shaders to shader program
 	m_program01->link();
-	// bind shader program to current opengl context
-	m_program01->bind();
 
-	// load grid texture
-	tex_grid01 = new QOpenGLTexture(QImage(QString(":/ressources/images/tex_grid_10x10.png")));
+}
+
+void GlWidget::loadVbo()
+{
+
+	// create grid vbo
+	createGrid();
 
 }
 
@@ -116,9 +144,9 @@ void GlWidget::paintGL()
 	// translate and rotate camera
 	m_cameraMatrix.translate(0.0f, -0.75f, -2.0f);
 	// rotate camera based on mouse movement
-	m_cameraMatrix.rotate(xRot * MOUSE_SPEED, 1.0f, 0.0f, 0.0f);
-	m_cameraMatrix.rotate(yRot * MOUSE_SPEED, 0.0f, 1.0f, 0.0f);
-	m_cameraMatrix.rotate(zRot * MOUSE_SPEED, 0.0f, 0.0f, 1.0f);
+	m_cameraMatrix.rotate(m_cameraRotation.m_xyz.x * MOUSE_SPEED, 1.0f, 0.0f, 0.0f);
+	m_cameraMatrix.rotate(m_cameraRotation.m_xyz.y * MOUSE_SPEED, 0.0f, 1.0f, 0.0f);
+	m_cameraMatrix.rotate(m_cameraRotation.m_xyz.z * MOUSE_SPEED, 0.0f, 0.0f, 1.0f);
 
 	// assign camera matrix to shader programm
 	m_program01->setUniformValue("matrix", m_cameraMatrix);
@@ -126,12 +154,16 @@ void GlWidget::paintGL()
 	m_program01->enableAttributeArray(0);
 	m_program01->enableAttributeArray(1);
 	// set vertex and texture coordinate buffers
-	// attributes: vertex start index, vertex data type, vertex start offset, vertex tuple size, data stride length
+	// attributes: vertex attribute location, vertex data type, vertex start offset, vertex tuple size, data stride length
 	m_program01->setAttributeBuffer(0, GL_FLOAT, 0, 3, 5 * sizeof(GLfloat)); // vertex coordinates buffer
 	m_program01->setAttributeBuffer(1, GL_FLOAT, 3 * sizeof(GLfloat), 2, 5 * sizeof(GLfloat)); // texture coordinates buffer
 
 	// bind grid texture
-	tex_grid01->bind();
+	//tex_grid01->bind();
+
+	// bind checker texture
+	tex_checker01->bind();
+
 	// draw quad
 	glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
 

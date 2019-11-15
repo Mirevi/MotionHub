@@ -10,6 +10,8 @@
 #include <QtGui/QOpenGLTexture>
 #include <Qt3DInput/QMouseEvent>
 #include <iostream>
+#include "MotionHubUtil/Vector3.h"
+#include "Mesh.h"
 
 QT_FORWARD_DECLARE_CLASS(QOpenGLShaderProgram);
 QT_FORWARD_DECLARE_CLASS(QOpenGLTexture)
@@ -24,31 +26,42 @@ public:
 	explicit GlWidget(QWidget* parent = 0);
 	~GlWidget();
 
-	void rotateBy(int xAngle, int yAngle, int zAngle);
-
 signals:
 	void clicked();
 
 protected:
 	void initializeGL() override;
 	void paintGL() override;
+
 	void resizeGL(int width, int height) override;
+
 	void mousePressEvent(QMouseEvent* event) override;
 	void mouseMoveEvent(QMouseEvent* event) override;
 	void mouseReleaseEvent(QMouseEvent* event) override;
 
 private:
+	void load();
+	void loadTextures();
+	void loadShaderProgram();
+	void loadVbo();
 	void createGrid();
 
 	QColor clearColor;
-	QPoint lastPos;
-	int xRot;
-	int yRot;
-	int zRot;
-	QOpenGLTexture* tex_grid01;
-	QOpenGLShaderProgram* m_program01;
-	QOpenGLBuffer m_vboGrid;
+
 	QMatrix4x4 m_cameraMatrix;
+	Vector3 m_cameraRotation;
+
+	QOpenGLBuffer m_vboGrid;
+
+	QOpenGLTexture* tex_grid01;
+	QOpenGLTexture* tex_checker01;
+	QOpenGLShaderProgram* m_program01;
+
+	QPoint lastPos;
+	void rotateBy(int xAngle, int yAngle, int zAngle);
+
+	Mesh m_meshGrid;
+
 };
 
 #endif
