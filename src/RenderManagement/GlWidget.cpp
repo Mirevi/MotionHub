@@ -1,50 +1,61 @@
 #include "GlWidget.h"
 
-GlWidget::GlWidget(QWidget* parent)
-	: QOpenGLWidget(parent),
-	clearColor(Qt::black),
-	xRot(0),
-	yRot(900),
-	zRot(0),
-	program(0)
+GlWidget::GlWidget(QWidget* parent)	: QOpenGLWidget(parent)
 {
+
+	// set background color to black
+	clearColor = Qt::black;
+
+	// set camera start rotation
+	xRot = 0;
+	yRot = 0;
+	zRot = 0;
+
 }
 
 GlWidget::~GlWidget()
 {
-	makeCurrent();
-	vbo.destroy();
-	delete m_texChecker01;
-	delete program;
+
+	// set current opengl context active
+	makeCurrent(); // called automatically by paintGL()
+
+	// destroy grid vbo
+	m_vboGrid.destroy();
+
+	// delete grid texture and shader program
+	delete tex_grid01;
+	delete m_program01;
+
+	// diable current opengl contex
 	doneCurrent();
+
 }
 
 void GlWidget::rotateBy(int xAngle, int yAngle, int zAngle)
 {
+
 	xRot += xAngle;
 	yRot += yAngle;
 	zRot += zAngle;
-	update();
-}
 
-void GlWidget::setClearColor(const QColor& color)
-{
-	clearColor = color;
 	update();
+
 }
 
 void GlWidget::initializeGL()
 {
+
+	// initialize opengl
 	initializeOpenGLFunctions();
 
-	makeObject();
+	// create grid vbo
+	createGrid();
 
+	// enable depth test and backface culling
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 
-#define PROGRAM_VERTEX_ATTRIBUTE 0
-#define PROGRAM_TEXCOORD_ATTRIBUTE 1
-
+	// create and compile vertex shader
 	QOpenGLShader * vshader = new QOpenGLShader(QOpenGLShader::Vertex, this);
 	const char* vsrc =
 		"attribute highp vec4 vertex;\n"
@@ -58,6 +69,7 @@ void GlWidget::initializeGL()
 		"}\n";
 	vshader->compileSourceCode(vsrc);
 
+	// create and compile fragment shader
 	QOpenGLShader* fshader = new QOpenGLShader(QOpenGLShader::Fragment, this);
 	const char* fsrc =
 		"uniform sampler2D texture;\n"
@@ -68,43 +80,68 @@ void GlWidget::initializeGL()
 		"}\n";
 	fshader->compileSourceCode(fsrc);
 
-	program = new QOpenGLShaderProgram;
-	program->addShader(vshader);
-	program->addShader(fshader);
-	program->bindAttributeLocation("vertex", PROGRAM_VERTEX_ATTRIBUTE);
-	program->bindAttributeLocation("texCoord", PROGRAM_TEXCOORD_ATTRIBUTE);
-	program->link();
+	// create new shader program
+	m_program01 = new QOpenGLShaderProgram;
+	// add vertex and frament shader
+	m_program01->addShader(vshader);
+	m_program01->addShader(fshader);
+	// bind vertex shader attribute to location / id
+	m_program01->bindAttributeLocation("vertex", 0);
+	m_program01->bindAttributeLocation("texCoord", 1);
+	// set fragment shader value to location / id
+	m_program01->setUniformValue("texture", 0);
+	// link shaders to shader program
+	m_program01->link();
+	// bind shader program to current opengl context
+	m_program01->bind();
 
-	program->bind();
-	program->setUniformValue("texture", 0);
+	// load grid texture
+	tex_grid01 = new QOpenGLTexture(QImage(QString(":/ressources/images/tex_grid_10x10.png")));
+
 }
 
+// render loop
 void GlWidget::paintGL()
 {
+
+	// set background color
 	glClearColor(clearColor.redF(), clearColor.greenF(), clearColor.blueF(), clearColor.alphaF());
+	// clear color and depth buffers
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	QMatrix4x4 m;
-	m.perspective(60.0f, ((float)this->width() / this->height()), 0.1f, 10.0f);
-	m.translate(0.0f, -0.75f, -2.0f);
-	m.rotate(xRot / 16.0f, 1.0f, 0.0f, 0.0f);
-	m.rotate(yRot / 16.0f, 0.0f, 1.0f, 0.0f);
-	m.rotate(zRot / 16.0f, 0.0f, 0.0f, 1.0f);
+	// reset camera matrix
+	m_cameraMatrix.setToIdentity();
+	// set camera to perspective with current aspect ratio
+	m_cameraMatrix.perspective(60.0f, ((float)this->width() / this->height()), 0.1f, 10.0f);
+	// translate and rotate camera
+	m_cameraMatrix.translate(0.0f, -0.75f, -2.0f);
+	// rotate camera based on mouse movement
+	m_cameraMatrix.rotate(xRot * MOUSE_SPEED, 1.0f, 0.0f, 0.0f);
+	m_cameraMatrix.rotate(yRot * MOUSE_SPEED, 0.0f, 1.0f, 0.0f);
+	m_cameraMatrix.rotate(zRot * MOUSE_SPEED, 0.0f, 0.0f, 1.0f);
 
-	program->setUniformValue("matrix", m);
-	program->enableAttributeArray(PROGRAM_VERTEX_ATTRIBUTE);
-	program->enableAttributeArray(PROGRAM_TEXCOORD_ATTRIBUTE);
-	program->setAttributeBuffer(PROGRAM_VERTEX_ATTRIBUTE, GL_FLOAT, 0, 3, 5 * sizeof(GLfloat));
-	program->setAttributeBuffer(PROGRAM_TEXCOORD_ATTRIBUTE, GL_FLOAT, 3 * sizeof(GLfloat), 2, 5 * sizeof(GLfloat));
+	// assign camera matrix to shader programm
+	m_program01->setUniformValue("matrix", m_cameraMatrix);
+	// enable shader program attributes set by bindAttributeLocation()
+	m_program01->enableAttributeArray(0);
+	m_program01->enableAttributeArray(1);
+	// set vertex and texture coordinate buffers
+	// attributes: vertex start index, vertex data type, vertex start offset, vertex tuple size, data stride length
+	m_program01->setAttributeBuffer(0, GL_FLOAT, 0, 3, 5 * sizeof(GLfloat)); // vertex coordinates buffer
+	m_program01->setAttributeBuffer(1, GL_FLOAT, 3 * sizeof(GLfloat), 2, 5 * sizeof(GLfloat)); // texture coordinates buffer
 
-	for (int i = 0; i < 1; ++i) {
-		m_texChecker01->bind();
-		glDrawArrays(GL_TRIANGLE_FAN, i * 4, 4);
-	}
+	// bind grid texture
+	tex_grid01->bind();
+	// draw quad
+	glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+
 }
 void GlWidget::resizeGL(int width, int height)
 {
+
+	// set viewport size based on opengl widget size
 	glViewport(0, 0, width, height);
+
 }
 
 void GlWidget::mousePressEvent(QMouseEvent* event)
@@ -114,16 +151,17 @@ void GlWidget::mousePressEvent(QMouseEvent* event)
 
 void GlWidget::mouseMoveEvent(QMouseEvent* event)
 {
+
 	int dx = event->x() - lastPos.x();
 	int dy = event->y() - lastPos.y();
 
-	if (event->buttons() & Qt::LeftButton) {
+	if (event->buttons() & Qt::LeftButton) 
+	{
 		rotateBy(8 * dy, 8 * dx, 0);
 	}
-	else if (event->buttons() & Qt::RightButton) {
-		rotateBy(8 * dy, 0, 8 * dx);
-	}
+
 	lastPos = event->pos();
+
 }
 
 void GlWidget::mouseReleaseEvent(QMouseEvent* /* event */)
@@ -131,33 +169,35 @@ void GlWidget::mouseReleaseEvent(QMouseEvent* /* event */)
 	emit clicked();
 }
 
-void GlWidget::makeObject()
+void GlWidget::createGrid()
 {
-	static const int coords[6][4][3] = {
-		{ { +1, 0, -1 }, { -1, 0, -1 }, { -1, 0, +1 }, { +1, 0, +1 } },
-		{ { -1, -1, -1 }, { -1, -1, +1 }, { -1, +1, +1 }, { -1, +1, -1 } },
-		{ { +1, 0, +1 }, { -1, 0, +1 }, { -1, 0, -1 }, { +1, 0, -1 } },
-		{ { +1, -1, -1 }, { -1, -1, -1 }, { -1, +1, -1 }, { +1, +1, -1 } },
-		{ { +1, -1, +1 }, { +1, -1, -1 }, { +1, +1, -1 }, { +1, +1, +1 } },
-		{ { -1, -1, +1 }, { +1, -1, +1 }, { +1, +1, +1 }, { -1, +1, +1 } }
+
+	// plane verts
+	static const int verts[1][4][3] = 
+	{
+		{ { +1, 0, -1 }, { -1, 0, -1 }, { -1, 0, +1 }, { +1, 0, +1 } }
 	};
 
-	m_texChecker01 = new QOpenGLTexture(QImage(QString(":/ressources/images/tex_grid_10x10.png")));
-
+	// vert data
 	QVector<GLfloat> vertData;
-	for (int i = 0; i < 1; ++i) {
-		for (int j = 0; j < 4; ++j) {
-			// vertex position
-			vertData.append(coords[i][j][0]);
-			vertData.append(coords[i][j][1]);
-			vertData.append(coords[i][j][2]);
-			// texture coordinate
-			vertData.append(j == 0 || j == 3);
-			vertData.append(j == 0 || j == 1);
-		}
+
+	// assign verts to vert data
+	for (int j = 0; j < 4; ++j) 
+	{
+		// vertex position
+		vertData.append(verts[0][j][0]);
+		vertData.append(verts[0][j][1]);
+		vertData.append(verts[0][j][2]);
+		// texture coordinate
+		vertData.append(j == 0 || j == 3);
+		vertData.append(j == 0 || j == 1);
 	}
 
-	vbo.create();
-	vbo.bind();
-	vbo.allocate(vertData.constData(), vertData.count() * sizeof(GLfloat));
+	// create vbo
+	m_vboGrid.create();
+	// bind vbo in order to be used by opengl render contex
+	m_vboGrid.bind();
+	// allocate vbo based on vertex data size
+	m_vboGrid.allocate(vertData.constData(), vertData.count() * sizeof(GLfloat));
+
 }

@@ -14,6 +14,8 @@
 QT_FORWARD_DECLARE_CLASS(QOpenGLShaderProgram);
 QT_FORWARD_DECLARE_CLASS(QOpenGLTexture)
 
+#define MOUSE_SPEED 0.1f
+
 class GlWidget : public QOpenGLWidget, protected QOpenGLFunctions
 {
 	Q_OBJECT
@@ -23,7 +25,6 @@ public:
 	~GlWidget();
 
 	void rotateBy(int xAngle, int yAngle, int zAngle);
-	void setClearColor(const QColor& color);
 
 signals:
 	void clicked();
@@ -37,16 +38,17 @@ protected:
 	void mouseReleaseEvent(QMouseEvent* event) override;
 
 private:
-	void makeObject();
+	void createGrid();
 
 	QColor clearColor;
 	QPoint lastPos;
 	int xRot;
 	int yRot;
 	int zRot;
-	QOpenGLTexture* m_texChecker01;
-	QOpenGLShaderProgram* program;
-	QOpenGLBuffer vbo;
+	QOpenGLTexture* tex_grid01;
+	QOpenGLShaderProgram* m_program01;
+	QOpenGLBuffer m_vboGrid;
+	QMatrix4x4 m_cameraMatrix;
 };
 
 #endif
