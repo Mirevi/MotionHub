@@ -27,6 +27,9 @@ Cube::Cube(QOpenGLTexture* texture)
 			m_vertexData.append(j == 0 || j == 1);
 		}
 	}
+
+	init();
+
 }
 
 Cube::~Cube()

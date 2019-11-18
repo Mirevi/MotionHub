@@ -1,7 +1,10 @@
 #pragma once
 
+#include <iostream>
+
 #include <QtWidgets/QOpenGLWidget>
 #include <QtGui/QOpenGLTexture>
+#include <QtGui/QOpenGLBuffer>
 
 #include "Entity.h"
 
@@ -12,11 +15,14 @@ class Mesh : public Entity
 		Mesh();
 		Mesh(QOpenGLTexture* texture);
 		~Mesh();
-		QVector<GLfloat> getVertData();
-		QOpenGLTexture* getTexture();
+
+		void bind();
 
 	protected:
 		QVector<GLfloat> m_vertexData;
 		QOpenGLTexture* m_texture;
+		QOpenGLBuffer m_vbo;
+
+		void init();
 
 };

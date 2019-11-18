@@ -141,12 +141,6 @@ void GlWidget::paintGL()
 	m_viewMatrix.rotate(m_cameraRotation.m_xyz.y * MOUSE_SPEED, 0.0f, 1.0f, 0.0f);
 	m_viewMatrix.rotate(m_cameraRotation.m_xyz.z * MOUSE_SPEED, 0.0f, 0.0f, 1.0f);
 
-	// assign camera matrix to shader programm
-	m_shaderProgram->setUniformValue("matrix", m_viewMatrix);
-	// enable shader program attributes set by bindAttributeLocation()
-	m_shaderProgram->enableAttributeArray(0);
-	m_shaderProgram->enableAttributeArray(1);
-
 	renderMesh(m_meshGrid);
 
 	// bind cube vbo
@@ -182,24 +176,17 @@ void GlWidget::paintGL()
 void GlWidget::renderMesh(Mesh* mesh)
 {
 
-	QVector<GLfloat> vertData = mesh->getVertData();
+	mesh->bind();
 
-	// create vbo
-	m_vbo.create();
-	// bind vbo in order to be used by opengl render contex
-	m_vbo.bind();
-	// set usage pattern to static draw because verts do not change
-	m_vbo.setUsagePattern(QOpenGLBuffer::StaticDraw);
-	// allocate vbo based on vertex data size
-	m_vbo.allocate(vertData.constData(), vertData.count() * sizeof(GLfloat));
-
+	// assign matrix to shader programm
+	m_shaderProgram->setUniformValue("matrix", m_viewMatrix * mesh->getModelMatrix());
+	// enable shader program attributes set by bindAttributeLocation()
+	m_shaderProgram->enableAttributeArray(0);
+	m_shaderProgram->enableAttributeArray(1);
 	// set vertex and texture coordinate buffers
 	// attributes: vertex attribute location, vertex data type, vertex start offset, vertex tuple size, data stride length
 	m_shaderProgram->setAttributeBuffer(0, GL_FLOAT, 0, 3, 5 * sizeof(GLfloat)); // vertex coordinates buffer
 	m_shaderProgram->setAttributeBuffer(1, GL_FLOAT, 3 * sizeof(GLfloat), 2, 5 * sizeof(GLfloat)); // texture coordinates buffer
-
-	// bind mesh texture
-	mesh->getTexture()->bind();
 
 	// draw
 	glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
