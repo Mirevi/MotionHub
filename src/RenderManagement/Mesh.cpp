@@ -10,7 +10,8 @@ Mesh::Mesh()
 Mesh::~Mesh()
 {
 
-
+	m_vbo.destroy();
+	delete m_texture;
 
 }
 
@@ -58,5 +59,19 @@ int Mesh::getFaceCount()
 {
 
 	return m_faceCount;
+
+}
+
+bool Mesh::isActive()
+{
+
+	return m_isActive;
+
+}
+
+void Mesh::setActive(bool active)
+{
+
+	m_isActive = active;
 
 }

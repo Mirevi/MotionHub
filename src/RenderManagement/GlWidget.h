@@ -3,18 +3,22 @@
 #ifndef GLWIDGET_H
 #define GLWIDGET_H
 
+#include <iostream>
+#include <list>
+
 #include <QtWidgets/QOpenGLWidget>
 #include <QtGui/QOpenGLFunctions>
 #include <QtGui/QOpenGLBuffer>
 #include <QtGui/qopenglshaderprogram.h>
 #include <QtGui/QOpenGLTexture>
 #include <Qt3DInput/QMouseEvent>
-#include <iostream>
+
 #include "MotionHubUtil/Vector3.h"
-#include "Camera.h"
+
 #include "Mesh.h"
 #include "Primitive.h"
-#include <list>
+
+#include "Camera.h"
 
 QT_FORWARD_DECLARE_CLASS(QOpenGLShaderProgram);
 QT_FORWARD_DECLARE_CLASS(QOpenGLTexture)
@@ -41,6 +45,8 @@ protected:
 	void mouseReleaseEvent(QMouseEvent* event) override;
 
 private:
+	QMatrix4x4 m_worldMatrix;
+
 	void init();
 
 	QOpenGLShaderProgram* m_shaderProgram;

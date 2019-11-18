@@ -16,5 +16,4 @@ class Primitive : public Mesh
 		Primitive(Type type, QOpenGLTexture* texture, Vector3 position = Vector3::zero());
 		~Primitive();
 
-
 };

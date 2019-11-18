@@ -14,6 +14,9 @@ GlWidget::~GlWidget()
 	// set current opengl context active
 	makeCurrent(); // called automatically by paintGL()
 
+	for (auto itMesh = m_meshPool.begin(); itMesh != m_meshPool.end(); itMesh++)
+		delete *itMesh;
+
 	delete m_shaderProgram;
 
 	// diable current opengl contex
@@ -120,8 +123,12 @@ void GlWidget::paintGL()
 
 	// mesh render loop
 	for (auto itMesh = m_meshPool.begin(); itMesh != m_meshPool.end(); itMesh++)
-		renderMesh(*itMesh);
+	{
 
+		if((*itMesh)->isActive())
+			renderMesh(*itMesh);
+
+	}
 }
 
 void GlWidget::renderMesh(Mesh* mesh)
@@ -131,7 +138,7 @@ void GlWidget::renderMesh(Mesh* mesh)
 	mesh->bind();
 
 	// assign matrix to shader programm
-	m_shaderProgram->setUniformValue("matrix", (*(m_camera.getMatrix()) * *(mesh->getMatrix())));
+	m_shaderProgram->setUniformValue("matrix", (m_worldMatrix * *(m_camera.getMatrix()) * *(mesh->getMatrix())));
 	// enable shader program attributes set by bindAttributeLocation()
 	m_shaderProgram->enableAttributeArray(0);
 	m_shaderProgram->enableAttributeArray(1);

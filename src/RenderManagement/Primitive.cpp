@@ -73,6 +73,7 @@ Primitive::Primitive(Type type, QOpenGLTexture* texture, Vector3 position)
 Primitive::~Primitive()
 {
 
-
+	m_vbo.destroy();
+	delete m_texture;
 
 }

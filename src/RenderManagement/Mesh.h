@@ -19,6 +19,9 @@ class Mesh : public Entity
 		void release();
 		int getFaceCount();
 
+		bool isActive();
+		void setActive(bool active);
+
 	protected:
 		QVector<GLfloat> m_vertexData;
 		int m_faceCount;
@@ -27,5 +30,7 @@ class Mesh : public Entity
 		QOpenGLTexture* m_texture;
 
 		void init();
+
+		bool m_isActive = true;
 
 };
