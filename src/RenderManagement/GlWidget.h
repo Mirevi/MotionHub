@@ -50,7 +50,7 @@ private:
 
 	QColor clearColor;
 
-	QMatrix4x4 m_cameraMatrix;
+	QMatrix4x4 m_viewMatrix;
 	Vector3 m_cameraRotation;
 
 	QOpenGLBuffer m_vbo;

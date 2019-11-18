@@ -2,9 +2,10 @@
 
 #include <QtWidgets/QOpenGLWidget>
 #include <QtGui/QOpenGLTexture>
-#include <QtGui/QOpenGLBuffer>
 
-class Mesh
+#include "Entity.h"
+
+class Mesh : public Entity
 {
 
 	public:

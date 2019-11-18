@@ -131,18 +131,18 @@ void GlWidget::paintGL()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// reset camera matrix
-	m_cameraMatrix.setToIdentity();
+	m_viewMatrix.setToIdentity();
 	// set camera to perspective with current aspect ratio
-	m_cameraMatrix.perspective(60.0f, ((float)this->width() / this->height()), 0.05f, 10.0f);
+	m_viewMatrix.perspective(60.0f, ((float)this->width() / this->height()), 0.05f, 10.0f);
 	// translate and rotate camera
-	m_cameraMatrix.translate(0.0f, -0.5f, -2.0f);
+	m_viewMatrix.translate(0.0f, -0.5f, -2.0f);
 	// rotate camera based on mouse movement
-	m_cameraMatrix.rotate(m_cameraRotation.m_xyz.x * MOUSE_SPEED, 1.0f, 0.0f, 0.0f);
-	m_cameraMatrix.rotate(m_cameraRotation.m_xyz.y * MOUSE_SPEED, 0.0f, 1.0f, 0.0f);
-	m_cameraMatrix.rotate(m_cameraRotation.m_xyz.z * MOUSE_SPEED, 0.0f, 0.0f, 1.0f);
+	m_viewMatrix.rotate(m_cameraRotation.m_xyz.x * MOUSE_SPEED, 1.0f, 0.0f, 0.0f);
+	m_viewMatrix.rotate(m_cameraRotation.m_xyz.y * MOUSE_SPEED, 0.0f, 1.0f, 0.0f);
+	m_viewMatrix.rotate(m_cameraRotation.m_xyz.z * MOUSE_SPEED, 0.0f, 0.0f, 1.0f);
 
 	// assign camera matrix to shader programm
-	m_shaderProgram->setUniformValue("matrix", m_cameraMatrix);
+	m_shaderProgram->setUniformValue("matrix", m_viewMatrix);
 	// enable shader program attributes set by bindAttributeLocation()
 	m_shaderProgram->enableAttributeArray(0);
 	m_shaderProgram->enableAttributeArray(1);
