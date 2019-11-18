@@ -13,15 +13,18 @@ class Mesh : public Entity
 
 	public:
 		Mesh();
-		Mesh(QOpenGLTexture* texture);
 		~Mesh();
 
 		void bind();
+		void release();
+		int getFaceCount();
 
 	protected:
 		QVector<GLfloat> m_vertexData;
-		QOpenGLTexture* m_texture;
+		int m_faceCount;
+
 		QOpenGLBuffer m_vbo;
+		QOpenGLTexture* m_texture;
 
 		void init();
 

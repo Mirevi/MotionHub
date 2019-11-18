@@ -3,16 +3,7 @@
 Mesh::Mesh()
 {
 
-	init();
 
-}
-
-Mesh::Mesh(QOpenGLTexture* texture)
-{
-
-	m_texture = texture;
-
-	init();
 
 }
 
@@ -26,6 +17,9 @@ Mesh::~Mesh()
 void Mesh::init()
 {
 
+	// calc vertex count
+	m_faceCount = (m_vertexData.count() / 5) / 4;
+
 	// create vbo
 	m_vbo.create();
 	// bind vbo in order to be used by opengl render contex
@@ -38,7 +32,8 @@ void Mesh::init()
 	m_vbo.release();
 
 	//std::cout << "Mesh::init(): Initialized mesh." << std::endl;
-		
+	//std::cout << "Mesh::init():	Mesh vertex count = " << m_vertexCount << "." << std::endl;	
+
 }
 
 void Mesh::bind()
@@ -47,6 +42,21 @@ void Mesh::bind()
 	m_vbo.bind();
 	m_texture->bind();
 
-	//std::cout << "Mesh::init(): Binded mesh vbo and texture." << std::endl;
+	//std::cout << "Mesh::bind(): Binded mesh vbo and texture." << std::endl;
+
+}
+
+void Mesh::release()
+{
+
+	m_vbo.release();
+	m_texture->release();
+
+}
+
+int Mesh::getFaceCount()
+{
+
+	return m_faceCount;
 
 }

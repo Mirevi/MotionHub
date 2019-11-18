@@ -14,6 +14,7 @@
 #include "Mesh.h"
 #include "Plane.h"
 #include "Cube.h"
+#include <list>
 
 QT_FORWARD_DECLARE_CLASS(QOpenGLShaderProgram);
 QT_FORWARD_DECLARE_CLASS(QOpenGLTexture)
@@ -42,7 +43,7 @@ protected:
 	void mouseReleaseEvent(QMouseEvent* event) override;
 
 private:
-	void load();
+	void init();
 	void createShaderProgram();
 	void createMeshes();
 
@@ -53,16 +54,12 @@ private:
 	QMatrix4x4 m_viewMatrix;
 	Vector3 m_cameraRotation;
 
-	QOpenGLBuffer m_vbo;
-	QOpenGLTexture* m_texture;
-
 	QOpenGLShaderProgram* m_shaderProgram;
 
 	QPoint lastPos;
 	void rotateBy(int xAngle, int yAngle, int zAngle);
 
-	Plane* m_meshGrid;
-	Cube* m_meshCube;
+	std::list<Mesh*> m_meshPool;
 
 };
 

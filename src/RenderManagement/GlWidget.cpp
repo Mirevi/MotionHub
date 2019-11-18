@@ -9,8 +9,6 @@ GlWidget::GlWidget(QWidget* parent)	: QOpenGLWidget(parent)
 	// set camera start rotation
 	m_cameraRotation = Vector3::zero();
 
-
-
 }
 
 GlWidget::~GlWidget()
@@ -19,11 +17,6 @@ GlWidget::~GlWidget()
 	// set current opengl context active
 	makeCurrent(); // called automatically by paintGL()
 
-	// destroy grid vbo
-	m_vbo.destroy();
-
-	// delete grid texture and shader program
-	delete m_texture;
 	delete m_shaderProgram;
 
 	// diable current opengl contex
@@ -53,14 +46,14 @@ void GlWidget::initializeGL()
 	glEnable(GL_CULL_FACE);
 
 	// load meshes and shader program
-	load();
+	init();
 
 	// bind shader program to current opengl context
 	m_shaderProgram->bind();
 
 }
 
-void GlWidget::load()
+void GlWidget::init()
 {
 
 	createMeshes();
@@ -72,9 +65,9 @@ void GlWidget::createMeshes()
 {
 
 	// create grid
-	m_meshGrid = new Plane(new QOpenGLTexture(QImage(QString(":/ressources/images/tex_grid_10x10.png"))));
+	m_meshPool.push_back(new Plane(new QOpenGLTexture(QImage(QString(":/ressources/images/tex_grid_10x10.png")))));
 	// create cube
-	m_meshCube = new Cube(new QOpenGLTexture(QImage(QString(":/ressources/images/tex_checker_01.png"))));
+	m_meshPool.push_back(new Cube(new QOpenGLTexture(QImage(QString(":/ressources/images/tex_checker_01.png")))));
 
 }
 
@@ -141,36 +134,10 @@ void GlWidget::paintGL()
 	m_viewMatrix.rotate(m_cameraRotation.m_xyz.y * MOUSE_SPEED, 0.0f, 1.0f, 0.0f);
 	m_viewMatrix.rotate(m_cameraRotation.m_xyz.z * MOUSE_SPEED, 0.0f, 0.0f, 1.0f);
 
-	renderMesh(m_meshGrid);
+	// mesh render loop
+	for (auto itMesh = m_meshPool.begin(); itMesh != m_meshPool.end(); itMesh++)
+		renderMesh(*itMesh);
 
-	// bind cube vbo
-	//if (renderMesh(m_meshCube))
-	//{
-
-	//	// set vertex and texture coordinate buffers
-	//	// attributes: vertex attribute location, vertex data type, vertex start offset, vertex tuple size, data stride length
-	//	m_program01->setAttributeBuffer(0, GL_FLOAT, 0, 3, 5 * sizeof(GLfloat)); // vertex coordinates buffer
-	//	m_program01->setAttributeBuffer(1, GL_FLOAT, 3 * sizeof(GLfloat), 2, 5 * sizeof(GLfloat)); // texture coordinates buffer
-
-	//	// translate and rotate camera
-	//	m_cameraMatrix.translate(0.0f, -0.4f, 0.0f);
-
-	//	// draw 10 cubes
-	//	for (int i = 0; i < 10; i++)
-	//	{
-
-	//		// translate camera
-	//		m_cameraMatrix.translate(0.0f, 0.5f, 0.0f);
-	//		// refresh shader programm with camera matrix after translation
-	//		m_program01->setUniformValue("matrix", m_cameraMatrix);
-
-	//		// draw cube
-	//		for (int i = 0; i < 6; ++i)
-	//		{
-	//			glDrawArrays(GL_TRIANGLE_FAN, i * 4, 4);
-	//		}
-	//	}
-	//}
 }
 
 void GlWidget::renderMesh(Mesh* mesh)
@@ -189,7 +156,10 @@ void GlWidget::renderMesh(Mesh* mesh)
 	m_shaderProgram->setAttributeBuffer(1, GL_FLOAT, 3 * sizeof(GLfloat), 2, 5 * sizeof(GLfloat)); // texture coordinates buffer
 
 	// draw
-	glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+	for(int faceIndex = 0; faceIndex < mesh->getFaceCount(); faceIndex++)
+		glDrawArrays(GL_TRIANGLE_FAN, faceIndex * 4, 4);
+
+	mesh->release();
 
 }
 
