@@ -56,3 +56,24 @@ QMatrix4x4* Entity::getMatrix()
 	return &m_matrix;
 
 }
+
+Vector3 Entity::getScale()
+{
+
+	return Vector3(m_matrix.column(0)[0], m_matrix.column(1)[1], m_matrix.column(1)[1]);
+
+}
+
+void Entity::scale(Vector3 scale)
+{
+
+	m_matrix.scale(scale.m_xyz.x, scale.m_xyz.y, scale.m_xyz.z);
+
+}
+
+void Entity::scale(float uniformScale)
+{
+
+	m_matrix.scale(uniformScale);
+
+}

@@ -1,6 +1,6 @@
 #include "Primitive.h"
 
-Primitive::Primitive(Type type, QOpenGLTexture* texture, Vector3 position)
+Primitive::Primitive(Type type, QOpenGLTexture* texture, Vector3 position, Vector3 scalar)
 {
 
 	switch (type)
@@ -45,9 +45,9 @@ Primitive::Primitive(Type type, QOpenGLTexture* texture, Vector3 position)
 			for (int i = 0; i < 6; ++i) {
 				for (int j = 0; j < 4; ++j) {
 					// vertex position
-					m_vertexData.append(0.1f * vertsCube[i][j][0]);
-					m_vertexData.append(0.1f * vertsCube[i][j][1]);
-					m_vertexData.append(0.1f * vertsCube[i][j][2]);
+					m_vertexData.append(vertsCube[i][j][0]);
+					m_vertexData.append(vertsCube[i][j][1]);
+					m_vertexData.append(vertsCube[i][j][2]);
 					// texture coordinate
 					m_vertexData.append(j == 0 || j == 3);
 					m_vertexData.append(j == 0 || j == 1);
@@ -66,7 +66,8 @@ Primitive::Primitive(Type type, QOpenGLTexture* texture, Vector3 position)
 
 	init();
 
-	translate(position);
+	scale(scalar);
+	translate(Vector3(position.m_xyz.x * ((float)1 / scalar.m_xyz.x), position.m_xyz.y * ((float)1 / scalar.m_xyz.y), position.m_xyz.z * ((float)1 / scalar.m_xyz.z)));
 
 }
 
