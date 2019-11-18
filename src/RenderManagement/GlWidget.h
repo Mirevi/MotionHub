@@ -13,8 +13,7 @@
 #include "MotionHubUtil/Vector3.h"
 #include "Camera.h"
 #include "Mesh.h"
-#include "Plane.h"
-#include "Cube.h"
+#include "Primitive.h"
 #include <list>
 
 QT_FORWARD_DECLARE_CLASS(QOpenGLShaderProgram);
@@ -43,22 +42,18 @@ protected:
 
 private:
 	void init();
-	void createShaderProgram();
-	void createMeshes();
-
-	void renderMesh(Mesh* mesh);
-
-	QColor clearColor;
-
-	Camera m_camera;
 
 	QOpenGLShaderProgram* m_shaderProgram;
-
-	QPoint lastPos;
-	void calcCameraRotation(Vector3 rotation);
-	Vector3 m_cameraRotation;
+	void createShaderProgram();
 
 	std::list<Mesh*> m_meshPool;
+	void createMeshes();
+	void renderMesh(Mesh* mesh);
+
+	Camera m_camera;
+	QPoint lastPos;
+
+	QColor clearColor;
 
 };
 

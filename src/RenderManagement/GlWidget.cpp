@@ -6,8 +6,6 @@ GlWidget::GlWidget(QWidget* parent)	: QOpenGLWidget(parent)
 	// set background color to black
 	clearColor = Qt::black;
 
-	m_cameraRotation = Vector3::zero();
-
 }
 
 GlWidget::~GlWidget()
@@ -53,9 +51,9 @@ void GlWidget::createMeshes()
 {
 
 	// create grid
-	m_meshPool.push_back(new Plane(new QOpenGLTexture(QImage(QString(":/ressources/images/tex_grid_10x10.png")))));
+	m_meshPool.push_back(new Primitive(Primitive::Plane, new QOpenGLTexture(QImage(QString(":/ressources/images/tex_grid_10x10.png")))));
 	// create cube
-	m_meshPool.push_back(new Cube(new QOpenGLTexture(QImage(QString(":/ressources/images/tex_checker_01.png"))), Vector3(0.0f, 0.1f, 0.0f)));
+	m_meshPool.push_back(new Primitive(Primitive::Cube, new QOpenGLTexture(QImage(QString(":/ressources/images/tex_checker_01.png"))), Vector3(0.0f, 0.1f, 0.0f)));
 
 }
 
