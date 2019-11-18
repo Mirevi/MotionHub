@@ -56,7 +56,7 @@ void OSCSender::sendSkeleton(Skeleton* skeleton, const char* uri)
 				<< ((currJointPosition.m_xyz.y * (-1)) + 950) / 1000
 				<< currJointPosition.m_xyz.z / 1000*/
 
-				<< currJointPosition.m_xyz.x
+				<< currJointPosition.m_xyz.x * (-1)
 				<< currJointPosition.m_xyz.y
 				<< currJointPosition.m_xyz.z
 
