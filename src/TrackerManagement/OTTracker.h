@@ -88,6 +88,10 @@ private:
 	std::string g_kuerzel;
 
 
+
+	sFrameOfMocapData* m_data;
+
+
 	DataHandlerManager* m_dataHandlerManager;
 
 
@@ -112,6 +116,10 @@ private:
 	 */
 	void track() override;
 
+
+	void extractSkeleton();
+	Skeleton* parseSkeleton(sSkeletonData skeleton, int id);
+	void cleanSkeletonPool();
 
 };
 

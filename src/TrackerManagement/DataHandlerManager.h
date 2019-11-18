@@ -18,25 +18,19 @@ class DataHandlerManager
 
 public:
 
-	DataHandlerManager(std::map<int, Skeleton*>* skeletonPool, Tracker::Properties* properties, OTTracker* tracker);
+	DataHandlerManager(Tracker::Properties* properties);
 
 	void static DataHandler(sFrameOfMocapData* data, void* pUserData);
 
+	sFrameOfMocapData* getData();
+	
 
-	static sFrameOfMocapData* m_data;
 private:
 
-	void static cleanSkeletonPool();
-	void static extractSkeleton();
-	static Skeleton* parseSkeleton(sSkeletonData skeleton, int id);
 
-	OTTracker* m_tracker;
-
-
-	static std::map<int, Skeleton*>* m_refSkeletonPool;
 	static Tracker::Properties* m_properties;
 
 
-	
+	static sFrameOfMocapData* m_data;
 
 };

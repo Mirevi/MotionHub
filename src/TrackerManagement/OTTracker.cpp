@@ -44,7 +44,8 @@ int OTTracker::createClient(int iConnectionType)
 	m_client->SetVerbosityLevel(Verbosity_Warning);
 	m_client->SetMessageCallback(MessageHandler);
 
-	m_dataHandlerManager = new DataHandlerManager(&m_skeletonPool, m_properties, this);
+	m_dataHandlerManager = new DataHandlerManager(m_properties);
+
 	m_client->SetDataCallback(m_dataHandlerManager->DataHandler, m_client);	// this function will receive data from the server
 	// [optional] use old multicast group
 	//theClient->SetMulticastAddress("224.0.0.1");
@@ -108,6 +109,9 @@ void OTTracker::start()
 
 	createClient(iConnectionType);
 
+	m_data = m_dataHandlerManager->getData();
+
+
 
 	m_trackingThread = new std::thread(&OTTracker::update, this);
 	m_trackingThread->detach();
@@ -142,11 +146,25 @@ void OTTracker::update()
 
 void OTTracker::track()
 {
+	
+	if (m_isDataAvailable)
+	{
+		return;
 
-	Console::log(std::to_string(m_dataHandlerManager->m_data->nSkeletons));
+	}
 
+	if (m_data == nullptr)
+	{
+		Console::logError("OTTracker::track(): m_data was nullptr!");
 
-	std::this_thread::sleep_for(std::chrono::milliseconds(100));
+		std::this_thread::sleep_for(std::chrono::milliseconds(10));
+
+		return;
+	}
+
+	extractSkeleton();
+
+	m_isDataAvailable = true;
 
 }
 
@@ -213,4 +231,250 @@ RigidBodyCollection::RigidBodyCollection() : mNumRigidBodies(0)
 void MessageHandler(int msgType, char* msg)
 {
 	printf("\n%s\n", msg);
+}
+
+
+
+
+
+void OTTracker::extractSkeleton()
+{
+
+	m_properties->countDetectedSkeleton = m_data->nSkeletons;
+
+	//loop through all skeletons
+	for (int i = 0; i < m_data->nSkeletons; i++)
+	{
+		sSkeletonData skData = m_data->Skeletons[i];
+		//Console::log("Skeleton ID= " + std::to_string(skData.skeletonID) + ", Bone count= " + std::to_string(skData.nRigidBodies));
+
+
+
+
+		bool createNewSkeleton = true;
+
+		for (auto itPoolSkeletons = m_skeletonPool.begin(); itPoolSkeletons != m_skeletonPool.end(); itPoolSkeletons++)
+		{
+			if (skData.skeletonID == itPoolSkeletons->first)
+			{
+
+				// update all joints of existing skeleon with new data
+				(m_skeletonPool)[skData.skeletonID]->m_joints = parseSkeleton(skData, skData.skeletonID)->m_joints;
+
+
+				createNewSkeleton = false;
+
+				break;
+
+			}
+		}
+
+
+		// create new skeleton
+		if (createNewSkeleton)
+		{
+
+			// create new skeleton and add it to the skeleton pool
+			m_skeletonPool.insert(std::pair<int, Skeleton*>(skData.skeletonID, parseSkeleton(skData, skData.skeletonID)));
+
+
+
+			//skeleton was added/removed, so UI updates
+
+			//m_tracker->setSkeletonPoolChanged(true);
+
+
+
+			Console::log("DataHandlerManager::extractSkeleton(): Created new skeleton with id = " + std::to_string(skData.skeletonID) + ".");
+
+		}
+	}
+}
+
+
+Skeleton* OTTracker::parseSkeleton(sSkeletonData skeleton, int id)
+{
+
+
+	// skeleton data container
+	Skeleton* currSkeleton = new Skeleton(id);
+
+	//loop through all joints
+	for (int j = 0; j < skeleton.nRigidBodies; j++)
+	{
+		sRigidBodyData rbData = skeleton.RigidBodyData[j];
+		//printf("Bone %d\t%3.2f\t%3.2f\t%3.2f\t%3.2f\t%3.2f\t%3.2f\t%3.2f\n",
+		//	rbData.ID, rbData.x, rbData.y, rbData.z, rbData.qx, rbData.qy, rbData.qz, rbData.qw);
+
+		//Console::log("OTTracker::parseSkeleton(): jointID: " + std::to_string(rbData.ID));
+		//Console::log("OTTracker::parseSkeleton(): joint position: " + std::to_string(rbData.x) + ", " + std::to_string(rbData.y) + ", " + std::to_string(rbData.z));
+		//Console::log("OTTracker::parseSkeleton(): joint rotation: " + std::to_string(rbData.qx) + ", " + std::to_string(rbData.qx) + ", " + std::to_string(rbData.qz) + ", " + std::to_string(rbData.qw));
+
+
+		//insert data now in skeleton pool
+
+
+				// convert from k4a Vectors and quaternions into custom vectors
+		Vector3 pos = Vector3(rbData.x, rbData.y, rbData.z);
+		Vector4 rot = Vector4(rbData.qx, rbData.qy, rbData.qz, rbData.qw);
+
+
+		Joint::JointConfidence confidence = Joint::JointConfidence::HIGH;
+
+		switch (j)
+		{
+
+		case 0:
+			currSkeleton->m_joints.insert({ Joint::HIPS, Joint(pos, rot, confidence) });
+
+			Console::log("OTTracker::parseSkeleton(): joint position: " + std::to_string(rbData.x) + ", " + std::to_string(rbData.y) + ", " + std::to_string(rbData.z));
+
+			break;
+
+		case 1:
+			currSkeleton->m_joints.insert({ Joint::SPINE, Joint(pos, rot, confidence) });
+			break;
+
+		case 2:
+			currSkeleton->m_joints.insert({ Joint::CHEST, Joint(pos, rot, confidence) });
+			break;
+
+		case 3:
+			currSkeleton->m_joints.insert({ Joint::NECK, Joint(pos, rot, confidence) });
+			break;
+
+		case 4:
+			currSkeleton->m_joints.insert({ Joint::HEAD, Joint(pos, rot, confidence) });
+			break;
+
+		case 5:
+			currSkeleton->m_joints.insert({ Joint::SHOULDER_R, Joint(pos, rot, confidence) });
+			break;
+
+		case 6:
+			currSkeleton->m_joints.insert({ Joint::FOREARM_R, Joint(pos, rot, confidence) });
+			break;
+
+		case 7:
+			currSkeleton->m_joints.insert({ Joint::HAND_R, Joint(pos, rot, confidence) });
+			break;
+
+		case 11:
+			currSkeleton->m_joints.insert({ Joint::FOREARM_L, Joint(pos, rot, confidence) });
+			break;
+
+		case 12:
+			currSkeleton->m_joints.insert({ Joint::HAND_L, Joint(pos, rot, confidence) });
+			break;
+
+		case 13:
+			currSkeleton->m_joints.insert({ Joint::UPLEG_R, Joint(pos, rot, confidence) });
+			break;
+
+		case 14:
+			currSkeleton->m_joints.insert({ Joint::LEG_R, Joint(pos, rot, confidence) });
+			break;
+
+		case 18:
+			currSkeleton->m_joints.insert({ Joint::FOOT_L, Joint(pos, rot, confidence) });
+			break;
+
+		case 19:
+			currSkeleton->m_joints.insert({ Joint::TOE_R, Joint(pos, rot, confidence) });
+			break;
+
+		case 20:
+			currSkeleton->m_joints.insert({ Joint::TOE_L, Joint(pos, rot, confidence) });
+			break;
+
+		case 21:
+			currSkeleton->m_joints.insert({ Joint::TOE_L, Joint(pos, rot, confidence) });
+			break;
+
+		case 22:
+			currSkeleton->m_joints.insert({ Joint::UPLEG_R, Joint(pos, rot, confidence) });
+			break;
+
+		case 23:
+			currSkeleton->m_joints.insert({ Joint::LEG_R, Joint(pos, rot, confidence) });
+			break;
+
+		case 24:
+			currSkeleton->m_joints.insert({ Joint::FOOT_R, Joint(pos, rot, confidence) });
+			break;
+
+		case 25:
+			currSkeleton->m_joints.insert({ Joint::TOE_R, Joint(pos, rot, confidence) });
+			break;
+
+		case 26:
+			currSkeleton->m_joints.insert({ Joint::HEAD, Joint(pos, rot, confidence) });
+			break;
+
+		default:
+			break;
+		}
+
+
+	}
+
+
+
+	// set body heigt based on head position
+	currSkeleton->setHeight(currSkeleton->m_joints[Joint::HEAD].getJointPosition().m_xyz.y);
+
+
+
+	return currSkeleton;
+
+}
+
+
+void OTTracker::cleanSkeletonPool()
+{
+
+	//all skeletons with ids in this list will be erased at the end of this method
+	std::list<int> idSkeletonsToErase;
+
+	// loop through all skeletons in pool
+	for (auto itPoolSkeletons = m_skeletonPool.begin(); itPoolSkeletons != m_skeletonPool.end(); itPoolSkeletons++)
+	{
+
+		// get current skeleton id
+		int idCurrPoolSkeleton = itPoolSkeletons->first;
+		bool isOTSkeletonInPool = false;
+
+		//loop thorugh all OT skeletons in frame
+		for (int itOTSkeletons = 0; itOTSkeletons < m_data->nSkeletons; itOTSkeletons++)
+		{
+
+			// if OT skeleton is in pool set isOTSkeletonInPool to true
+			if (idCurrPoolSkeleton == itOTSkeletons)
+			{
+				isOTSkeletonInPool = true;
+			}
+		}
+
+		if (!isOTSkeletonInPool)
+		{
+			idSkeletonsToErase.push_back(idCurrPoolSkeleton);
+		}
+	}
+
+
+
+	for (int itIndexIdSkeletonsToErase = idSkeletonsToErase.front(); itIndexIdSkeletonsToErase != idSkeletonsToErase.back(); itIndexIdSkeletonsToErase++)
+	{
+
+		// erase skeleton with id
+		m_skeletonPool.erase(itIndexIdSkeletonsToErase);
+
+		//skeleton was added/removed, so UI updates
+		//m_tracker->setSkeletonPoolChanged(true);
+
+
+		Console::log("OTTracker::cleanSkeletonList(): Removed skeleton with id = " + std::to_string(itIndexIdSkeletonsToErase) + " from pool!");
+
+		Console::log("OTTracker::cleanSkeletonList(): Skeleton pool count = " + std::to_string(m_skeletonPool.size()) + ".");
+	}
 }
