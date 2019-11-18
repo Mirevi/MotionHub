@@ -13,13 +13,17 @@ public:
 	QMatrix4x4* getMatrix();
 
 	void translate(Vector3 position);
+	void setPosition(Vector3 position);
 	Vector3 getPosition();
 
 	void rotate(Vector3 rotation);
+	void setRotation(Vector3 rotation);
 	Vector3 getRotation();
 
-	void scale(Vector3 scale);
-	void scale(float uniformScale);
+	void scale(Vector3 scalar);
+	void scale(float uniformScalar);
+	void setScale(Vector3 scalar);
+	void setScale(float uniformScalar);
 	Vector3 getScale();
 
 protected:

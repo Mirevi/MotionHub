@@ -77,3 +77,33 @@ void Entity::scale(float uniformScale)
 	m_matrix.scale(uniformScale);
 
 }
+
+void Entity::setPosition(Vector3 position)
+{
+
+	m_matrix.setColumn(3, QVector4D(position.m_xyz.x, position.m_xyz.y, position.m_xyz.z, m_matrix.column(3)[3]));
+
+}
+
+void Entity::setRotation(Vector3 rotation)
+{
+
+
+}
+
+void Entity::setScale(Vector3 scalar)
+{
+
+	m_matrix.setColumn(0, QVector4D(scalar.m_xyz.x, m_matrix.column(0)[1], m_matrix.column(0)[2], m_matrix.column(0)[3]));
+	m_matrix.setColumn(1, QVector4D(m_matrix.column(1)[0], scalar.m_xyz.y, m_matrix.column(1)[2], m_matrix.column(1)[3]));
+	m_matrix.setColumn(2, QVector4D(m_matrix.column(2)[0], m_matrix.column(2)[1], scalar.m_xyz.z, m_matrix.column(2)[3]));
+
+}
+void Entity::setScale(float uniformScalar)
+{
+
+	m_matrix.setColumn(0, QVector4D(uniformScalar, m_matrix.column(0)[1], m_matrix.column(0)[2], m_matrix.column(0)[3]));
+	m_matrix.setColumn(1, QVector4D(m_matrix.column(1)[0], uniformScalar, m_matrix.column(1)[2], m_matrix.column(1)[3]));
+	m_matrix.setColumn(2, QVector4D(m_matrix.column(2)[0], m_matrix.column(2)[1], uniformScalar, m_matrix.column(2)[3]));
+
+}
