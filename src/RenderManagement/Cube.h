@@ -6,7 +6,7 @@ class Cube : public Mesh
 {
 
 public:
-	Cube(QOpenGLTexture* texture);
+	Cube(QOpenGLTexture* texture, Vector3 position = Vector3::zero());
 	~Cube();
 
 };

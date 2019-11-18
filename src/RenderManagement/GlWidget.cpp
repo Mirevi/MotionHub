@@ -6,7 +6,6 @@ GlWidget::GlWidget(QWidget* parent)	: QOpenGLWidget(parent)
 	// set background color to black
 	clearColor = Qt::black;
 
-	// set camera start rotation
 	m_cameraRotation = Vector3::zero();
 
 }
@@ -21,17 +20,6 @@ GlWidget::~GlWidget()
 
 	// diable current opengl contex
 	doneCurrent();
-
-}
-
-void GlWidget::rotateBy(int xAngle, int yAngle, int zAngle)
-{
-
-	m_cameraRotation.m_xyz.x += xAngle;
-	m_cameraRotation.m_xyz.y += yAngle;
-	m_cameraRotation.m_xyz.z += zAngle;
-
-	update();
 
 }
 
@@ -67,7 +55,7 @@ void GlWidget::createMeshes()
 	// create grid
 	m_meshPool.push_back(new Plane(new QOpenGLTexture(QImage(QString(":/ressources/images/tex_grid_10x10.png")))));
 	// create cube
-	m_meshPool.push_back(new Cube(new QOpenGLTexture(QImage(QString(":/ressources/images/tex_checker_01.png")))));
+	m_meshPool.push_back(new Cube(new QOpenGLTexture(QImage(QString(":/ressources/images/tex_checker_01.png"))), Vector3(0.0f, 0.1f, 0.0f)));
 
 }
 
@@ -124,15 +112,13 @@ void GlWidget::paintGL()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// reset camera matrix
-	m_viewMatrix.setToIdentity();
+	m_camera.getMatrix()->setToIdentity();
 	// set camera to perspective with current aspect ratio
-	m_viewMatrix.perspective(60.0f, ((float)this->width() / this->height()), 0.05f, 10.0f);
+	m_camera.getMatrix()->perspective(60.0f, ((float)this->width() / this->height()), 0.05f, 10.0f);
 	// translate and rotate camera
-	m_viewMatrix.translate(0.0f, -0.5f, -2.0f);
+	m_camera.translate(Vector3(0.0f, -0.5f, -2.0f));
 	// rotate camera based on mouse movement
-	m_viewMatrix.rotate(m_cameraRotation.m_xyz.x * MOUSE_SPEED, 1.0f, 0.0f, 0.0f);
-	m_viewMatrix.rotate(m_cameraRotation.m_xyz.y * MOUSE_SPEED, 0.0f, 1.0f, 0.0f);
-	m_viewMatrix.rotate(m_cameraRotation.m_xyz.z * MOUSE_SPEED, 0.0f, 0.0f, 1.0f);
+	m_camera.rotate();
 
 	// mesh render loop
 	for (auto itMesh = m_meshPool.begin(); itMesh != m_meshPool.end(); itMesh++)
@@ -143,10 +129,11 @@ void GlWidget::paintGL()
 void GlWidget::renderMesh(Mesh* mesh)
 {
 
+	// bind mesh vbo and texture
 	mesh->bind();
 
 	// assign matrix to shader programm
-	m_shaderProgram->setUniformValue("matrix", m_viewMatrix * mesh->getModelMatrix());
+	m_shaderProgram->setUniformValue("matrix", (*(m_camera.getMatrix()) * *(mesh->getMatrix())));
 	// enable shader program attributes set by bindAttributeLocation()
 	m_shaderProgram->enableAttributeArray(0);
 	m_shaderProgram->enableAttributeArray(1);
@@ -159,6 +146,7 @@ void GlWidget::renderMesh(Mesh* mesh)
 	for(int faceIndex = 0; faceIndex < mesh->getFaceCount(); faceIndex++)
 		glDrawArrays(GL_TRIANGLE_FAN, faceIndex * 4, 4);
 
+	// release mesh vbo and texture
 	mesh->release();
 
 }
@@ -185,11 +173,11 @@ void GlWidget::mouseMoveEvent(QMouseEvent* event)
 	int dy = event->y() - lastPos.y();
 
 	if (event->buttons() & Qt::LeftButton)
-	{
-		rotateBy(8 * dy, 8 * dx, 0);
-	}
-
+		m_camera.addRotation(Vector3(dy, dx, 0));
+		
 	lastPos = event->pos();
+
+	update();
 
 }
 

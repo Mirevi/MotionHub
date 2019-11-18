@@ -1,6 +1,6 @@
 #include "Cube.h"
 
-Cube::Cube(QOpenGLTexture* texture)
+Cube::Cube(QOpenGLTexture* texture, Vector3 position)
 {
 
 	m_texture = texture;
@@ -29,6 +29,8 @@ Cube::Cube(QOpenGLTexture* texture)
 	}
 
 	init();
+
+	translate(position);
 
 }
 

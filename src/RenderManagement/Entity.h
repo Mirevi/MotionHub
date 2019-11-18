@@ -16,9 +16,9 @@ public:
 	void rotate(Vector3 rotation);
 	Vector3 getRotation();
 
-	QMatrix4x4 getModelMatrix();
+	QMatrix4x4* getMatrix();
 
 protected:
-	QMatrix4x4 m_modelMatrix;
+	QMatrix4x4 m_matrix;
 
 };

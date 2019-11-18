@@ -11,6 +11,7 @@
 #include <Qt3DInput/QMouseEvent>
 #include <iostream>
 #include "MotionHubUtil/Vector3.h"
+#include "Camera.h"
 #include "Mesh.h"
 #include "Plane.h"
 #include "Cube.h"
@@ -18,8 +19,6 @@
 
 QT_FORWARD_DECLARE_CLASS(QOpenGLShaderProgram);
 QT_FORWARD_DECLARE_CLASS(QOpenGLTexture)
-
-#define MOUSE_SPEED 0.1f
 
 class GlWidget : public QOpenGLWidget, protected QOpenGLFunctions
 {
@@ -51,13 +50,13 @@ private:
 
 	QColor clearColor;
 
-	QMatrix4x4 m_viewMatrix;
-	Vector3 m_cameraRotation;
+	Camera m_camera;
 
 	QOpenGLShaderProgram* m_shaderProgram;
 
 	QPoint lastPos;
-	void rotateBy(int xAngle, int yAngle, int zAngle);
+	void calcCameraRotation(Vector3 rotation);
+	Vector3 m_cameraRotation;
 
 	std::list<Mesh*> m_meshPool;
 
