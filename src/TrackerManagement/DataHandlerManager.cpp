@@ -7,13 +7,15 @@ Tracker::Properties* DataHandlerManager::m_properties;
 sFrameOfMocapData* DataHandlerManager::m_data;
 
 
-DataHandlerManager::DataHandlerManager(std::map<int, Skeleton*>* skeletonPool, Tracker::Properties* properties)
+DataHandlerManager::DataHandlerManager(std::map<int, Skeleton*>* skeletonPool, Tracker::Properties* properties, OTTracker* tracker)
 {
 
 
 
 	m_refSkeletonPool = skeletonPool;
 	m_properties = properties;
+
+	m_tracker = tracker;
 
 }
 
@@ -58,17 +60,13 @@ void DataHandlerManager::DataHandler(sFrameOfMocapData* data, void* pUserData)
 void DataHandlerManager::extractSkeleton()
 {
 
-
-
 	m_properties->countDetectedSkeleton = m_data->nSkeletons;
-
-	
 
 	//loop through all skeletons
 	for (int i = 0; i < m_data->nSkeletons; i++)
 	{
 		sSkeletonData skData = m_data->Skeletons[i];
-		//printf("Skeleton [ID=%d  Bone count=%d]\n", skData.skeletonID, skData.nRigidBodies);
+		//Console::log("Skeleton ID= " + std::to_string(skData.skeletonID) + ", Bone count= " + std::to_string(skData.nRigidBodies));
 
 
 
@@ -102,28 +100,15 @@ void DataHandlerManager::extractSkeleton()
 
 
 			//skeleton was added/removed, so UI updates
-			//m_hasSkeletonPoolChanged = true;					HWM!!!!!!!!
 
+			//m_tracker->setSkeletonPoolChanged(true);
 
 
 
 			Console::log("DataHandlerManager::extractSkeleton(): Created new skeleton with id = " + std::to_string(skData.skeletonID) + ".");
 
 		}
-
-
-
-
-
-
-
-
-
-
-
-
-	}
-
+	} 
 }
 
 
@@ -260,61 +245,51 @@ Skeleton* DataHandlerManager::parseSkeleton(sSkeletonData skeleton, int id)
 }
 
 
-void AKTracker::cleanSkeletonPool(k4abt_frame_t* bodyFrame)
+void DataHandlerManager::cleanSkeletonPool()
 {
 
 	//all skeletons with ids in this list will be erased at the end of this method
 	std::list<int> idSkeletonsToErase;
 
 	// loop through all skeletons in pool
-	for (auto itPoolSkeletons = m_skeletonPool.begin(); itPoolSkeletons != m_skeletonPool.end(); itPoolSkeletons++)
+	for (auto itPoolSkeletons = m_refSkeletonPool->begin(); itPoolSkeletons != m_refSkeletonPool->end(); itPoolSkeletons++)
 	{
 
 		// get current skeleton id
 		int idCurrPoolSkeleton = itPoolSkeletons->first;
-		bool isK4aSkeletonInPool = false;
+		bool isOTSkeletonInPool = false;
 
-		//loop thorugh all k4a skeletons in frame
-		for (int indexK4aSkeleton = 0; indexK4aSkeleton < m_properties->countDetectedSkeleton; indexK4aSkeleton++)
+		//loop thorugh all OT skeletons in frame
+		for (int itOTSkeletons = 0; itOTSkeletons < m_data->nSkeletons; itOTSkeletons++)
 		{
-			// current k4a skeleton id
-			int idCurrK4aSkeleton = k4abt_frame_get_body_id(*bodyFrame, indexK4aSkeleton);
 
-			// if k4a skeleton is in pool set isK4aSkeletonInPool to true
-			if (idCurrPoolSkeleton == idCurrK4aSkeleton)
+			// if OT skeleton is in pool set isOTSkeletonInPool to true
+			if (idCurrPoolSkeleton == itOTSkeletons)
 			{
-				isK4aSkeletonInPool = true;
+				isOTSkeletonInPool = true;
 			}
 		}
 
-		if (!isK4aSkeletonInPool)
+		if (!isOTSkeletonInPool)
 		{
 			idSkeletonsToErase.push_back(idCurrPoolSkeleton);
 		}
 	}
 
-	for (auto itIndexIdSkeletonsToErase = idSkeletonsToErase.begin(); itIndexIdSkeletonsToErase != idSkeletonsToErase.end(); itIndexIdSkeletonsToErase++)
+
+
+	for (int itIndexIdSkeletonsToErase = idSkeletonsToErase.front(); itIndexIdSkeletonsToErase != idSkeletonsToErase.back(); itIndexIdSkeletonsToErase++)
 	{
 
 		// erase skeleton with id
-		m_skeletonPool.erase(*itIndexIdSkeletonsToErase);
+		m_refSkeletonPool->erase(itIndexIdSkeletonsToErase);
 
 		//skeleton was added/removed, so UI updates
-		m_hasSkeletonPoolChanged = true;
+		//m_tracker->setSkeletonPoolChanged(true);
 
-		Console::log("[cam id = " + std::to_string(m_idCam) + "] AkTracker::cleanSkeletonList(): Removed skeleton with id = " + std::to_string(*itIndexIdSkeletonsToErase) + " from pool!");
 
-		if (m_skeletonPool.size() == 0)
-		{
+		Console::log("OTTracker::cleanSkeletonList(): Removed skeleton with id = " + std::to_string(itIndexIdSkeletonsToErase) + " from pool!");
 
-			Console::log("[cam id = " + std::to_string(m_idCam) + "] AkTracker::cleanSkeletonList(): No skeletons detected.");
-
-		}
-		else
-		{
-
-			Console::log("[cam id = " + std::to_string(m_idCam) + "] AkTracker::cleanSkeletonList(): Skeleton pool count = " + std::to_string(m_skeletonPool.size()) + ".");
-
-		}
+		Console::log("OTTracker::cleanSkeletonList(): Skeleton pool count = " + std::to_string(m_refSkeletonPool->size()) + ".");
 	}
-}	   //HWM!!!!!
+}

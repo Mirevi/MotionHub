@@ -44,7 +44,7 @@ int OTTracker::createClient(int iConnectionType)
 	m_client->SetVerbosityLevel(Verbosity_Warning);
 	m_client->SetMessageCallback(MessageHandler);
 
-	m_dataHandlerManager = new DataHandlerManager(&m_skeletonPool, m_properties);
+	m_dataHandlerManager = new DataHandlerManager(&m_skeletonPool, m_properties, this);
 	m_client->SetDataCallback(m_dataHandlerManager->DataHandler, m_client);	// this function will receive data from the server
 	// [optional] use old multicast group
 	//theClient->SetMulticastAddress("224.0.0.1");
@@ -108,16 +108,45 @@ void OTTracker::start()
 
 	createClient(iConnectionType);
 
+
+	m_trackingThread = new std::thread(&OTTracker::update, this);
+	m_trackingThread->detach();
+
 }
 
 void OTTracker::update()
 {
+	
+	Console::log("OTTracker::track(): Started tracking thread.");
+
+	// track while tracking is true
+	while (m_properties->isTracking)
+	{
+
+		// if no new data is procressed
+		if (!m_isDataAvailable)
+		{
+
+			track(); // get new data
+
+		}
+	}
+
+	//clean skeleton pool after tracking
+	clean();
+
+	Console::log("OTTracker::track(): Stopped tracking thread.");
+	
 
 }
 
 void OTTracker::track()
 {
 
+	Console::log(std::to_string(m_dataHandlerManager->m_data->nSkeletons));
+
+
+	std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
 }
 
@@ -158,14 +187,6 @@ OTTracker::~OTTracker()
 	//delete m_client;
 	//delete m_dataHandlerManager;
 }
-
-
-
-
-
-
-
-
 
 
 

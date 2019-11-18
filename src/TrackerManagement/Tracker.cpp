@@ -91,6 +91,13 @@ bool Tracker::hasSkeletonPoolChanged()
 	}
 }
 
+void Tracker::setSkeletonPoolChanged(bool state)
+{
+
+	m_hasSkeletonPoolChanged = state;
+
+}
+
 std::map<int, Skeleton*>* Tracker::getSkeletonPool()
 {
 

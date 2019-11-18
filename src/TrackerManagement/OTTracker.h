@@ -43,6 +43,7 @@ class DataHandlerManager;
 class OTTracker : public Tracker
 {
 public:
+	OTTracker();
 	OTTracker(int id);
 	~OTTracker();
 

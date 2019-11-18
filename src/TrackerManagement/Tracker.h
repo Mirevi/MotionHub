@@ -91,6 +91,8 @@ public:
 	 */
 	virtual bool hasSkeletonPoolChanged();
 
+	virtual void setSkeletonPoolChanged(bool state);
+
 	/*!
 	 * getter for the trackers properties struct 
 	 * \return the trackers Property struct
