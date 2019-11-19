@@ -14,6 +14,7 @@
 #include <Qt3DInput/QMouseEvent>
 
 #include "MotionHubUtil/Vector3.h"
+#include "TrackerManagement/TrackerManager.h"
 
 #include "Mesh.h"
 #include "Primitive.h"
@@ -28,7 +29,7 @@ class GlWidget : public QOpenGLWidget, protected QOpenGLFunctions
 	Q_OBJECT
 
 public:
-	explicit GlWidget(QWidget* parent = 0);
+	explicit GlWidget(TrackerManager* trackerManager, QWidget* parent = 0);
 	~GlWidget();
 
 signals:
@@ -60,6 +61,8 @@ private:
 	QPoint lastPos;
 
 	QColor clearColor;
+
+	TrackerManager* m_refTrackerManager;
 
 };
 

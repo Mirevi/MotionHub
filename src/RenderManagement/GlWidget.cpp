@@ -1,10 +1,12 @@
 #include "GlWidget.h"
 
-GlWidget::GlWidget(QWidget* parent)	: QOpenGLWidget(parent)
+GlWidget::GlWidget(TrackerManager* trackerManager, QWidget* parent)	: QOpenGLWidget(parent)
 {
 
 	// set background color to black
 	clearColor = Qt::black;
+
+	m_refTrackerManager = trackerManager;
 
 }
 
@@ -133,6 +135,20 @@ void GlWidget::paintGL()
 			renderMesh(*itMesh);
 
 	}
+
+	//for (auto itTracker = m_refTrackerManager->getPoolTracker()->begin(); itTracker != m_refTrackerManager->getPoolTracker()->end(); itTracker++)
+	//{		
+	//	for (auto itSkeleton = itTracker->second->getSkeletonPool()->begin(); itSkeleton != itTracker->second->getSkeletonPool()->end(); itSkeleton++)
+	//	{			
+	//		for (auto itJoint = itSkeleton->second->m_joints.begin(); itJoint != itSkeleton->second->m_joints.end(); itJoint++)
+	//		{
+
+	//			itJoint->second.getJointPosition();
+	//			itJoint->second.getJointRotation();
+
+	//		}
+	//	}
+	//}
 }
 
 void GlWidget::renderMesh(Mesh* mesh)
