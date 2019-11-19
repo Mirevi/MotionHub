@@ -10,6 +10,7 @@ Mesh::Mesh()
 Mesh::~Mesh()
 {
 
+	// destroy vbo and delete texture
 	m_vbo.destroy();
 	delete m_texture;
 
@@ -40,6 +41,7 @@ void Mesh::init()
 void Mesh::bind()
 {
 
+	// bind vbo and texture to current opengl context
 	m_vbo.bind();
 	m_texture->bind();
 
@@ -50,6 +52,7 @@ void Mesh::bind()
 void Mesh::release()
 {
 
+	// release vbo and texture
 	m_vbo.release();
 	m_texture->release();
 

@@ -3,6 +3,7 @@
 Primitive::Primitive(Type type, QOpenGLTexture* texture, Vector3 position, Vector3 scalar)
 {
 
+	// create verts based on primitive type
 	switch (type)
 	{
 
@@ -62,11 +63,15 @@ Primitive::Primitive(Type type, QOpenGLTexture* texture, Vector3 position, Vecto
 
 	}
 
+	// assign texture
 	m_texture = texture;
 
+	// init vbo
 	init();
 
+	// scale object
 	scale(scalar);
+	// translate object to start position
 	translate(Vector3(position.m_xyz.x * ((float)1 / scalar.m_xyz.x), position.m_xyz.y * ((float)1 / scalar.m_xyz.y), position.m_xyz.z * ((float)1 / scalar.m_xyz.z)));
 
 }
@@ -74,6 +79,7 @@ Primitive::Primitive(Type type, QOpenGLTexture* texture, Vector3 position, Vecto
 Primitive::~Primitive()
 {
 
+	// destroy vbo and delete texture
 	m_vbo.destroy();
 	delete m_texture;
 

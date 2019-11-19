@@ -5,6 +5,7 @@
 Entity::Entity()
 {
 
+	// init entity and set model matrix to identity matrix
 	m_matrix.setToIdentity();
 
 }

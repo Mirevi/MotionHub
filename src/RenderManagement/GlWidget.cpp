@@ -14,9 +14,11 @@ GlWidget::~GlWidget()
 	// set current opengl context active
 	makeCurrent(); // called automatically by paintGL()
 
+	// delete all meshes
 	for (auto itMesh = m_meshPool.begin(); itMesh != m_meshPool.end(); itMesh++)
 		delete *itMesh;
 
+	// delete shader program
 	delete m_shaderProgram;
 
 	// diable current opengl contex
@@ -33,6 +35,7 @@ void GlWidget::initializeGL()
 	// enable depth test and backface culling
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
+	glEnable(GL_MULTISAMPLE);
 
 	// load meshes and shader program
 	init();
@@ -125,6 +128,7 @@ void GlWidget::paintGL()
 	for (auto itMesh = m_meshPool.begin(); itMesh != m_meshPool.end(); itMesh++)
 	{
 
+		// render mesh if active
 		if((*itMesh)->isActive())
 			renderMesh(*itMesh);
 
@@ -147,7 +151,7 @@ void GlWidget::renderMesh(Mesh* mesh)
 	m_shaderProgram->setAttributeBuffer(0, GL_FLOAT, 0, 3, 5 * sizeof(GLfloat)); // vertex coordinates buffer
 	m_shaderProgram->setAttributeBuffer(1, GL_FLOAT, 3 * sizeof(GLfloat), 2, 5 * sizeof(GLfloat)); // texture coordinates buffer
 
-	// draw
+	// draw all faces with GL_TRIANGLE_FAN
 	for(int faceIndex = 0; faceIndex < mesh->getFaceCount(); faceIndex++)
 		glDrawArrays(GL_TRIANGLE_FAN, faceIndex * 4, 4);
 
@@ -174,14 +178,17 @@ void GlWidget::mousePressEvent(QMouseEvent* event)
 void GlWidget::mouseMoveEvent(QMouseEvent* event)
 {
 
+	// get x and y differance based on last mouse position
 	int dx = event->x() - lastPos.x();
 	int dy = event->y() - lastPos.y();
 
+	// add difference to camera rotation if left mouse button is pressed
 	if (event->buttons() & Qt::LeftButton)
 		m_camera.addRotation(Vector3(dy, dx, 0));
 		
 	lastPos = event->pos();
 
+	// update opengl
 	update();
 
 }
