@@ -211,6 +211,10 @@ OTTracker::~OTTracker()
 
 void OTTracker::extractSkeleton()
 {
+	if (!m_dataHandlerManager->isDataAvailable())
+	{
+		return;
+	}
 
 	m_properties->countDetectedSkeleton = m_data->nSkeletons;
 
@@ -513,8 +517,3 @@ void MessageHandler(int msgType, char* msg)
 {
 	printf("\n%s\n", msg);
 }
-
-
-
-
-

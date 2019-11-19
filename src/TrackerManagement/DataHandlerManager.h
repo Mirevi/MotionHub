@@ -8,6 +8,7 @@
 
 #include <iostream>
 #include <list>
+#include <atomic>
 
 /*!
  * \class DataHandlerManager
@@ -45,6 +46,8 @@ public:
 	 */
 	sFrameOfMocapData* getData();
 	
+	bool isDataAvailable();
+
 
 private:
 
@@ -59,5 +62,7 @@ private:
 	 * 
 	 */
 	static sFrameOfMocapData* m_data;
+	static std::atomic<bool> m_isDataAvailable;
+
 
 };

@@ -37,7 +37,7 @@ target_link_libraries(MireviMotionHub
     debug k4a optimized k4a
 	debug k4abt optimized k4abt
 	debug cudnn optimized cudnn
-	debug oscpack optimized oscpack
+	debug oscpack${CMAKE_DEBUG_POSTFIX} optimized oscpack
 	debug Ws2_32 optimized Ws2_32
 	debug winmm optimized winmm		
 	debug Qt5Core${CMAKE_DEBUG_POSTFIX} optimized Qt5Core

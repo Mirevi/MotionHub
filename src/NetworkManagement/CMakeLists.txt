@@ -13,7 +13,7 @@ file(GLOB_RECURSE NetworkManagement_SRC "${CMAKE_CURRENT_SRC_DIR}" *.cpp)
 add_library(NetworkManagement SHARED ${NetworkManagement_HEADER} ${NetworkManagement_SRC})
 
 target_link_libraries(NetworkManagement
-	debug oscpack optimized oscpack
+	debug oscpack${CMAKE_DEBUG_POSTFIX} optimized oscpack
 	debug Ws2_32 optimized Ws2_32
 	debug winmm optimized winmm
 	

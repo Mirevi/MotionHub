@@ -5,11 +5,13 @@ Tracker::Properties* DataHandlerManager::m_properties;
 
 sFrameOfMocapData* DataHandlerManager::m_data;
 
+std::atomic<bool> DataHandlerManager::m_isDataAvailable;
 
 DataHandlerManager::DataHandlerManager(Tracker::Properties* properties)
 {
 
 	m_properties = properties;
+	m_isDataAvailable = false;
 
 }
 
@@ -17,7 +19,7 @@ DataHandlerManager::DataHandlerManager(Tracker::Properties* properties)
 void DataHandlerManager::DataHandler(sFrameOfMocapData* data, void* pUserData)
 {
 	
-	if (!m_properties->isTracking)
+	if (!m_properties->isTracking || m_isDataAvailable.load())
 	{
 
 		return;
@@ -59,9 +61,24 @@ void DataHandlerManager::DataHandler(sFrameOfMocapData* data, void* pUserData)
 	pClient->TimecodeStringify(m_data->Timecode, m_data->TimecodeSubframe, szTimecode, 128);
 
 
-
+	m_isDataAvailable.store(true);
 	//is available = true;!
 
+}
+
+
+bool DataHandlerManager::isDataAvailable()
+{
+	if (m_isDataAvailable.load())
+	{
+
+		m_isDataAvailable.store(false);
+
+		return true;
+
+	}
+
+	return false;
 }
 
 
