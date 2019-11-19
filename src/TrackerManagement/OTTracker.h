@@ -5,7 +5,7 @@
 #define min(a,b)            (((a) < (b)) ? (a) : (b))
 #include "NatNetTypes.h"
 #include "NatNetClient.h"
-#include "RigidBodyCollection.h"
+//#include "RigidBodyCollection.h"
 //Play Sound
 #define NOMINMAX
 //#include <windows.h>
@@ -59,33 +59,33 @@ public:
 
 private:
 
-	double g_timestampStart,
-		g_timestampTarget1,
-		g_timestampTarget2,
-		g_timestampTarget3,
-		g_timestampTarget4,
-		g_timestampTarget5,
-		g_timestampPressButtonOnce;
-	double g_pressButtonOnceDelay = 300;
-	std::vector<std::string> g_resultsIDs;
-	std::vector<double> g_resultsTimes;
-	std::map<std::string, double> g_resultsMapForOrder;
-	int g_lastRoIID;
-	bool g_isCalibrationFinished = true;
-	bool g_isFirstLoop = true;
-	bool g_startTracking = false;
-	bool g_onceInTarget1 = false;
-	bool g_passedTarget1 = false;
-	bool g_onceInTarget2 = false;
-	bool g_passedTarget2 = false;
-	bool g_onceInTarget3 = false;
-	bool g_passedTarget3 = false;
-	bool g_onceInTarget4 = false;
-	bool g_passedTarget4 = false;
-	bool g_onceInTarget5 = false;
-	bool g_passedTarget5 = false;
-	bool writeFileOnce = false;
-	std::string g_kuerzel;
+	//double g_timestampStart,
+	//	g_timestampTarget1,
+	//	g_timestampTarget2,
+	//	g_timestampTarget3,
+	//	g_timestampTarget4,
+	//	g_timestampTarget5,
+	//	g_timestampPressButtonOnce;
+	//double g_pressButtonOnceDelay = 300;
+	//std::vector<std::string> g_resultsIDs;
+	//std::vector<double> g_resultsTimes;
+	//std::map<std::string, double> g_resultsMapForOrder;
+	//int g_lastRoIID;
+	//bool g_isCalibrationFinished = true;
+	//bool g_isFirstLoop = true;
+	//bool g_startTracking = false;
+	//bool g_onceInTarget1 = false;
+	//bool g_passedTarget1 = false;
+	//bool g_onceInTarget2 = false;
+	//bool g_passedTarget2 = false;
+	//bool g_onceInTarget3 = false;
+	//bool g_passedTarget3 = false;
+	//bool g_onceInTarget4 = false;
+	//bool g_passedTarget4 = false;
+	//bool g_onceInTarget5 = false;
+	//bool g_passedTarget5 = false;
+	//bool writeFileOnce = false;
+	//std::string g_kuerzel;
 
 
 
@@ -104,6 +104,9 @@ private:
 
 	int createClient(int iConnectionType);
 	//void DataHandler(sFrameOfMocapData* data, void* pUserData);
+
+
+
 
 	void init() override {};
 	/*!

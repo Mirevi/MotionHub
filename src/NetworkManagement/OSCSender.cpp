@@ -52,10 +52,14 @@ void OSCSender::sendSkeleton(Skeleton* skeleton, const char* uri)
 
 			*m_packetStream
 				// add position data to stream
+
+
+				//Azure Kinect
 				/*<< (currJointPosition.m_xyz.x * (-1)) / 1000
 				<< ((currJointPosition.m_xyz.y * (-1)) + 950) / 1000
 				<< currJointPosition.m_xyz.z / 1000*/
 
+				//OptiTrack
 				<< currJointPosition.m_xyz.x * (-1)
 				<< currJointPosition.m_xyz.y
 				<< currJointPosition.m_xyz.z

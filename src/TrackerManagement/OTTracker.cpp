@@ -1,15 +1,19 @@
 #include "OTTracker.h"
 
 
-std::atomic<int> g_rigidBodyDroneX;
-std::atomic<int> g_rigidBodyDroneY;
-std::atomic<int> g_rigidBodyDroneZ;
-RigidBodyCollection g_rigidBodies;
+//std::atomic<int> g_rigidBodyDroneX;
+//std::atomic<int> g_rigidBodyDroneY;
+//std::atomic<int> g_rigidBodyDroneZ;
+//RigidBodyCollection g_rigidBodies;
 
 
 
 #include "DataHandlerManager.h"
 
+OTTracker::OTTracker()
+{
+
+}
 
 OTTracker::OTTracker(int id)
 {
@@ -87,14 +91,12 @@ int OTTracker::createClient(int iConnectionType)
 			printf("Unable to connect to server. Host not present. Exiting.");
 			return 1;
 		}
-		printf("[SampleClient] Server application info:\n");
-		printf("Application: %s (ver. %d.%d.%d.%d)\n", ServerDescription.szHostApp, ServerDescription.HostAppVersion[0],
-			ServerDescription.HostAppVersion[1], ServerDescription.HostAppVersion[2], ServerDescription.HostAppVersion[3]);
-		printf("NatNet Version: %d.%d.%d.%d\n", ServerDescription.NatNetVersion[0], ServerDescription.NatNetVersion[1],
-			ServerDescription.NatNetVersion[2], ServerDescription.NatNetVersion[3]);
-		printf("Client IP:%s\n", szMyIPAddress);
-		printf("Server IP:%s\n", szServerIPAddress);
-		printf("Server Name:%s\n\n", ServerDescription.szHostComputerName);
+		//Console::log("[SampleClient] Server application info:");
+		//Console::log("Application: " + std::string(ServerDescription.szHostApp) + " (ver. " + std::string(reinterpret_cast<char*>(ServerDescription.HostAppVersion[1])) + "." + std::string(reinterpret_cast<char*>(ServerDescription.HostAppVersion[2])) + "." + std::string(reinterpret_cast<char*>(ServerDescription.HostAppVersion[3])) + ")");
+		//Console::log("NatNet Version: " + std::string(reinterpret_cast<char*>(ServerDescription.NatNetVersion[1])) + "." + std::string(reinterpret_cast<char*>(ServerDescription.NatNetVersion[2])) + "." + std::string(reinterpret_cast<char*>(ServerDescription.NatNetVersion[3])));
+		//Console::log("Client IP: " + szMyIPAddress);
+		//Console::log("Server IP: " + std::string(reinterpret_cast<char*>(szServerIPAddress)));
+		//Console::log("Server Name: " + std::string(reinterpret_cast<char*>(ServerDescription.szHostComputerName)));
 	}
 
 	return ErrorCode_OK;
@@ -207,36 +209,6 @@ OTTracker::~OTTracker()
 }
 
 
-
-
-void RigidBodyCollection::AppendRigidBodyData(sRigidBodyData const * const rigidBodyData, size_t numRigidBodies)
-{
-	for (size_t i = 0; i < numRigidBodies; ++i)
-	{
-		const sRigidBodyData& rb = rigidBodyData[i];
-		mXYZCoord[i + mNumRigidBodies] = std::make_tuple(rb.x, rb.y, rb.z);
-		mXYZWQuats[i + mNumRigidBodies] = std::make_tuple(rb.qx, rb.qy, rb.qz, rb.qw);
-		mIds[i + mNumRigidBodies] = rb.ID;
-	}
-	mNumRigidBodies += numRigidBodies;
-}
-
-
-RigidBodyCollection::RigidBodyCollection() : mNumRigidBodies(0)
-{
-	;
-}
-
-// MessageHandler receives NatNet error/debug messages
-void MessageHandler(int msgType, char* msg)
-{
-	printf("\n%s\n", msg);
-}
-
-
-
-
-
 void OTTracker::extractSkeleton()
 {
 
@@ -258,9 +230,12 @@ void OTTracker::extractSkeleton()
 			if (skData.skeletonID == itPoolSkeletons->first)
 			{
 
-				// update all joints of existing skeleon with new data
-				(m_skeletonPool)[skData.skeletonID]->m_joints = parseSkeleton(skData, skData.skeletonID)->m_joints;
+				Skeleton* currSkeleton = parseSkeleton(skData, skData.skeletonID);
 
+				// update all joints of existing skeleon with new data
+				(m_skeletonPool)[skData.skeletonID]->m_joints = currSkeleton->m_joints;
+
+				delete currSkeleton;
 
 				createNewSkeleton = false;
 
@@ -280,8 +255,7 @@ void OTTracker::extractSkeleton()
 
 
 			//skeleton was added/removed, so UI updates
-
-			//m_tracker->setSkeletonPoolChanged(true);
+			m_hasSkeletonPoolChanged = true;
 
 
 
@@ -319,6 +293,13 @@ Skeleton* OTTracker::parseSkeleton(sSkeletonData skeleton, int id)
 		Vector4 rot = Vector4(rbData.qx, rbData.qy, rbData.qz, rbData.qw);
 
 
+		//if (pos.m_xyz.x < -10)
+		//{
+
+		//	Console::log("OTTracker::parseSkeleton(): joint: " + std::to_string(j) + ", position: " + std::to_string(rbData.x) + ", " + std::to_string(rbData.y) + ", " + std::to_string(rbData.z));
+
+		//}
+
 		Joint::JointConfidence confidence = Joint::JointConfidence::HIGH;
 
 		switch (j)
@@ -327,7 +308,7 @@ Skeleton* OTTracker::parseSkeleton(sSkeletonData skeleton, int id)
 		case 0:
 			currSkeleton->m_joints.insert({ Joint::HIPS, Joint(pos, rot, confidence) });
 
-			Console::log("OTTracker::parseSkeleton(): joint position: " + std::to_string(rbData.x) + ", " + std::to_string(rbData.y) + ", " + std::to_string(rbData.z));
+			//Console::log("OTTracker::parseSkeleton(): joint position: " + std::to_string(rbData.x) + ", " + std::to_string(rbData.y) + ", " + std::to_string(rbData.z));
 
 			break;
 
@@ -494,7 +475,7 @@ void OTTracker::cleanSkeletonPool()
 		m_skeletonPool.erase(itIndexIdSkeletonsToErase);
 
 		//skeleton was added/removed, so UI updates
-		//m_tracker->setSkeletonPoolChanged(true);
+		m_hasSkeletonPoolChanged = true;
 
 
 		Console::log("OTTracker::cleanSkeletonList(): Removed skeleton with id = " + std::to_string(itIndexIdSkeletonsToErase) + " from pool!");
@@ -502,3 +483,38 @@ void OTTracker::cleanSkeletonPool()
 		Console::log("OTTracker::cleanSkeletonList(): Skeleton pool count = " + std::to_string(m_skeletonPool.size()) + ".");
 	}
 }
+
+
+
+
+
+
+
+//void RigidBodyCollection::AppendRigidBodyData(sRigidBodyData const * const rigidBodyData, size_t numRigidBodies)
+//{
+//	for (size_t i = 0; i < numRigidBodies; ++i)
+//	{
+//		const sRigidBodyData& rb = rigidBodyData[i];
+//		mXYZCoord[i + mNumRigidBodies] = std::make_tuple(rb.x, rb.y, rb.z);
+//		mXYZWQuats[i + mNumRigidBodies] = std::make_tuple(rb.qx, rb.qy, rb.qz, rb.qw);
+//		mIds[i + mNumRigidBodies] = rb.ID;
+//	}
+//	mNumRigidBodies += numRigidBodies;
+//}
+//
+//
+//RigidBodyCollection::RigidBodyCollection() : mNumRigidBodies(0)
+//{
+//	;
+//}
+//
+// MessageHandler receives NatNet error/debug messages
+void MessageHandler(int msgType, char* msg)
+{
+	printf("\n%s\n", msg);
+}
+
+
+
+
+
