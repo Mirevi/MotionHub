@@ -21,7 +21,7 @@ GlWidget::~GlWidget()
 		delete *itMesh;
 
 	// delete shader program
-	delete m_shaderProgram;
+	delete m_shaderProgram_texture;
 
 	// diable current opengl contex
 	doneCurrent();
@@ -42,16 +42,13 @@ void GlWidget::initializeGL()
 	// load meshes and shader program
 	init();
 
-	// bind shader program to current opengl context
-	m_shaderProgram->bind();
-
 }
 
 void GlWidget::init()
 {
 
-	createMeshes();
 	createShaderProgram();
+	createMeshes();
 
 }
 
@@ -59,18 +56,29 @@ void GlWidget::createMeshes()
 {
 
 	// create grid
-	m_meshPool.push_back(new Primitive(Primitive::Plane, new QOpenGLTexture(QImage(QString(":/ressources/images/tex_grid_10x10.png"))), Vector3::zero(), Vector3(2.0f, 2.0f, 2.0f)));
+	m_meshPool.push_back(new Primitive(Primitive::Plane, m_shaderProgram_texture, new QOpenGLTexture(QImage(QString(":/ressources/images/tex_grid_10x10.png"))), Vector3::zero(), Vector3(2.0f, 2.0f, 2.0f)));
 	// create cube
-	m_meshPool.push_back(new Primitive(Primitive::Cube, new QOpenGLTexture(QImage(QString(":/ressources/images/tex_checker_01.png"))), Vector3(0.0f, 0.1f, 0.0f), Vector3(0.1f, 0.1f, 0.1f)));
+	m_meshPool.push_back(new Primitive(Primitive::Cube, m_shaderProgram_confidence, new QOpenGLTexture(QImage(QString(":/ressources/images/tex_checker_01.png"))), Vector3(0.0f, 0.1f, 0.0f), Vector3(0.1f, 0.1f, 0.1f)));
 
 }
 
 void GlWidget::createShaderProgram()
 {
 
-	// create and compile vertex shader
+	// create vertex shader
 	QOpenGLShader * vshader = new QOpenGLShader(QOpenGLShader::Vertex, this);
-	const char* vsrc =
+	const char* vsrc;
+
+	// create fragment shader
+	QOpenGLShader* fshader = new QOpenGLShader(QOpenGLShader::Fragment, this);
+	const char* fsrc;
+
+
+
+	// ### TEXTURE SHADER PROGRAM ###
+
+	// define vertex shader
+	vsrc =
 		"attribute highp vec4 vertex;\n"
 		"attribute mediump vec4 texCoord;\n"
 		"varying mediump vec4 texc;\n"
@@ -80,31 +88,74 @@ void GlWidget::createShaderProgram()
 		"    gl_Position = matrix * vertex;\n"
 		"    texc = texCoord;\n"
 		"}\n";
-	vshader->compileSourceCode(vsrc);
 
-	// create and compile fragment shader
-	QOpenGLShader* fshader = new QOpenGLShader(QOpenGLShader::Fragment, this);
-	const char* fsrc =
+	// define fragment shader
+	fsrc =
 		"uniform sampler2D texture;\n"
 		"varying mediump vec4 texc;\n"
+		"uniform mediump vec4 color;\n"
 		"void main(void)\n"
 		"{\n"
-		"    gl_FragColor = texture2D(texture, texc.st);\n"
+		"    gl_FragColor = texture2D(texture, texc.st) * color;\n"
 		"}\n";
+
+	// compile vertex shader
+	vshader->compileSourceCode(vsrc);
+	// compile fragment shader
 	fshader->compileSourceCode(fsrc);
 
-	// create new shader program
-	m_shaderProgram = new QOpenGLShaderProgram;
+	// create texture shader program
+	m_shaderProgram_texture = new QOpenGLShaderProgram;
 	// add vertex and frament shader
-	m_shaderProgram->addShader(vshader);
-	m_shaderProgram->addShader(fshader);
+	m_shaderProgram_texture->addShader(vshader);
+	m_shaderProgram_texture->addShader(fshader);
 	// bind vertex shader attribute to location / id
-	m_shaderProgram->bindAttributeLocation("vertex", 0);
-	m_shaderProgram->bindAttributeLocation("texCoord", 1);
-	// set fragment shader value to location / id
-	m_shaderProgram->setUniformValue("texture", 0);
+	m_shaderProgram_texture->bindAttributeLocation("vertex", 0);
+	m_shaderProgram_texture->bindAttributeLocation("texCoord", 1);
 	// link shaders to shader program
-	m_shaderProgram->link();
+	m_shaderProgram_texture->link();
+
+
+
+	// ### CONFIDENCE SHADER PROGRAM ###
+
+	// define vertex shader
+	vsrc =
+		"attribute highp vec4 vertex;\n"
+		"attribute mediump vec4 texCoord;\n"
+		"varying mediump vec4 texc;\n"
+		"uniform mediump mat4 matrix;\n"
+		"void main(void)\n"
+		"{\n"
+		"    gl_Position = matrix * vertex;\n"
+		"    texc = texCoord;\n"
+		"}\n";
+
+	// define fragment shader
+	fsrc =
+		"uniform sampler2D texture;\n"
+		"varying mediump vec4 texc;\n"
+		"uniform mediump vec4 color;\n"
+		"void main(void)\n"
+		"{\n"
+		"    gl_FragColor = color;\n"
+		"}\n";
+
+	// compile vertex shader
+	vshader->compileSourceCode(vsrc);
+	// compile fragment shader
+	fshader->compileSourceCode(fsrc);
+
+	// create confidence shader program
+	m_shaderProgram_confidence = new QOpenGLShaderProgram;
+	// add vertex and frament shader
+	m_shaderProgram_confidence->addShader(vshader);
+	m_shaderProgram_confidence->addShader(fshader);
+	// bind vertex shader attribute to location / id
+	m_shaderProgram_confidence->bindAttributeLocation("vertex", 0);
+	m_shaderProgram_confidence->bindAttributeLocation("texCoord", 1);
+	// link shaders to shader program
+	m_shaderProgram_confidence->link();
 
 }
 
@@ -132,9 +183,11 @@ void GlWidget::paintGL()
 
 		// render mesh if active
 		if((*itMesh)->isActive())
-			renderMesh(*itMesh);
+			renderMesh(*itMesh, Vector3::one());
 
 	}
+
+	// skeleton render loop
 
 	//for (auto itTracker = m_refTrackerManager->getPoolTracker()->begin(); itTracker != m_refTrackerManager->getPoolTracker()->end(); itTracker++)
 	//{		
@@ -151,21 +204,11 @@ void GlWidget::paintGL()
 	//}
 }
 
-void GlWidget::renderMesh(Mesh* mesh)
+void GlWidget::renderMesh(Mesh* mesh, Vector3 color)
 {
 
-	// bind mesh vbo and texture
-	mesh->bind();
-
-	// assign matrix to shader programm
-	m_shaderProgram->setUniformValue("matrix", (m_worldMatrix * *(m_camera.getMatrix()) * *(mesh->getMatrix())));
-	// enable shader program attributes set by bindAttributeLocation()
-	m_shaderProgram->enableAttributeArray(0);
-	m_shaderProgram->enableAttributeArray(1);
-	// set vertex and texture coordinate buffers
-	// attributes: vertex attribute location, vertex data type, vertex start offset, vertex tuple size, data stride length
-	m_shaderProgram->setAttributeBuffer(0, GL_FLOAT, 0, 3, 5 * sizeof(GLfloat)); // vertex coordinates buffer
-	m_shaderProgram->setAttributeBuffer(1, GL_FLOAT, 3 * sizeof(GLfloat), 2, 5 * sizeof(GLfloat)); // texture coordinates buffer
+	// bind mesh vbo, texture and shader program
+	mesh->bind(m_worldMatrix * *(m_camera.getMatrix()), color);
 
 	// draw all faces with GL_TRIANGLE_FAN
 	for(int faceIndex = 0; faceIndex < mesh->getFaceCount(); faceIndex++)

@@ -5,6 +5,7 @@
 #include <QtWidgets/QOpenGLWidget>
 #include <QtGui/QOpenGLTexture>
 #include <QtGui/QOpenGLBuffer>
+#include <QtGui/qopenglshaderprogram.h>
 
 #include "Entity.h"
 
@@ -15,7 +16,7 @@ class Mesh : public Entity
 		Mesh();
 		~Mesh();
 
-		void bind();
+		void bind(QMatrix4x4 matrix, Vector3 color);
 		void release();
 		int getFaceCount();
 
@@ -28,6 +29,7 @@ class Mesh : public Entity
 
 		QOpenGLBuffer m_vbo;
 		QOpenGLTexture* m_texture;
+		QOpenGLShaderProgram* m_shaderProgram;
 
 		void init();
 

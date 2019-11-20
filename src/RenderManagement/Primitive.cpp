@@ -1,6 +1,6 @@
 #include "Primitive.h"
 
-Primitive::Primitive(Type type, QOpenGLTexture* texture, Vector3 position, Vector3 scalar)
+Primitive::Primitive(Type type, QOpenGLShaderProgram* shaderProgram, QOpenGLTexture* texture, Vector3 position, Vector3 scalar)
 {
 
 	// create verts based on primitive type
@@ -65,6 +65,9 @@ Primitive::Primitive(Type type, QOpenGLTexture* texture, Vector3 position, Vecto
 
 	// assign texture
 	m_texture = texture;
+
+	// assign shader program
+	m_shaderProgram = shaderProgram;
 
 	// init vbo
 	init();
