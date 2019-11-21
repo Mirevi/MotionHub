@@ -111,7 +111,7 @@ void OTTracker::start()
 
 	createClient(iConnectionType);
 
-	m_data = m_dataHandlerManager->getData();
+	m_refData = m_dataHandlerManager->getData();
 
 
 
@@ -155,7 +155,7 @@ void OTTracker::track()
 
 	}
 
-	if (m_data == nullptr)
+	if (m_refData == nullptr)
 	{
 		Console::logError("OTTracker::track(): m_data was nullptr!");
 
@@ -216,12 +216,12 @@ void OTTracker::extractSkeleton()
 		return;
 	}
 
-	m_properties->countDetectedSkeleton = m_data->nSkeletons;
+	m_properties->countDetectedSkeleton = m_refData->nSkeletons;
 
 	//loop through all skeletons
-	for (int i = 0; i < m_data->nSkeletons; i++)
+	for (int i = 0; i < m_refData->nSkeletons; i++)
 	{
-		sSkeletonData skData = m_data->Skeletons[i];
+		sSkeletonData skData = m_refData->Skeletons[i];
 		//Console::log("Skeleton ID= " + std::to_string(skData.skeletonID) + ", Bone count= " + std::to_string(skData.nRigidBodies));
 
 
@@ -293,7 +293,7 @@ Skeleton* OTTracker::parseSkeleton(sSkeletonData skeleton, int id)
 
 
 				// convert from k4a Vectors and quaternions into custom vectors
-		Vector3 pos = Vector3(rbData.x, rbData.y, rbData.z);
+		Vector3 pos = Vector3(-rbData.x, rbData.y, rbData.z);
 		Vector4 rot = Vector4(rbData.qx, rbData.qy, rbData.qz, rbData.qw);
 
 
@@ -454,7 +454,7 @@ void OTTracker::cleanSkeletonPool()
 		bool isOTSkeletonInPool = false;
 
 		//loop thorugh all OT skeletons in frame
-		for (int itOTSkeletons = 0; itOTSkeletons < m_data->nSkeletons; itOTSkeletons++)
+		for (int itOTSkeletons = 0; itOTSkeletons < m_refData->nSkeletons; itOTSkeletons++)
 		{
 
 			// if OT skeleton is in pool set isOTSkeletonInPool to true

@@ -144,7 +144,4 @@ protected:
 	 */
 	virtual void track() = 0;
 
-
-
-
 };
