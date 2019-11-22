@@ -623,35 +623,14 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
          </layout>
         </item>
         <item>
-         <widget class="QOpenGLWidget" name="render_ogl">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-            <horstretch>1</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
+         <layout class="QVBoxLayout" name="layout_center">
+          <property name="spacing">
+           <number>6</number>
           </property>
-          <property name="minimumSize">
-           <size>
-            <width>256</width>
-            <height>114</height>
-           </size>
+          <property name="leftMargin">
+           <number>0</number>
           </property>
-          <property name="maximumSize">
-           <size>
-            <width>15360</width>
-            <height>8640</height>
-           </size>
-          </property>
-          <property name="sizeIncrement">
-           <size>
-            <width>0</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="layoutDirection">
-           <enum>Qt::LeftToRight</enum>
-          </property>
-         </widget>
+         </layout>
         </item>
         <item>
          <layout class="QVBoxLayout" name="layout_right">
@@ -1181,7 +1160,7 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
      <x>0</x>
      <y>0</y>
      <width>1280</width>
-     <height>21</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_file">
