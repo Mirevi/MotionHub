@@ -50,6 +50,19 @@ void TrackerManager::createTracker(TrackerType type)
 
 			break;
 
+		case optiTrack:
+
+			m_trackerPool.insert({ { "optiTrack", id }, new OTTracker(id) });
+
+			m_isTrackerPoolLocked.store(false);
+
+			m_hasTrackerPoolChanged = true;
+
+			Console::log("TrackerManager::createTracker(): Created OptiTrack tracker.");
+
+
+			break;
+
 		default:
 			Console::log("TrackerManager::createTracker(): Can not create tracker. Unknown tracker type!");
 

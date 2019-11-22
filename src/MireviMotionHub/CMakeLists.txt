@@ -1,8 +1,5 @@
 # CmakeLists for MireviMotionHub
 
-#osg
-include_directories(${CMAKE_BINARY_DIR}/src ${OSG_INCLUDE_DIR})
-link_directories(${CMAKE_BINARY_DIR}/lib "${CMAKE_BINARY_DIR}/lib" ${OSG_LIBRARIES_DIR})
 #k4a
 include_directories(${CMAKE_BINARY_DIR}/src ${K4A_INCLUDE_DIR})
 link_directories(${CMAKE_BINARY_DIR}/lib "${CMAKE_BINARY_DIR}/lib" ${K4A_LIBRARIES_DIR})
@@ -18,6 +15,10 @@ link_directories(${CMAKE_BINARY_DIR}/lib "${CMAKE_BINARY_DIR}/lib" ${OSCp_LIBRAR
 #Qt
 include_directories(${CMAKE_BINARY_DIR}/src ${Qt5ForMireviMotionHub_INCLUDE_DIR})
 link_directories(${CMAKE_BINARY_DIR}/lib "${CMAKE_BINARY_DIR}/lib" ${Qt5ForMireviMotionHub_LIBRARIES_DIR})
+#NatNetSDK
+include_directories(${CMAKE_BINARY_DIR}/src ${NATNET_SDK_INCLUDE_DIR})
+link_directories(${CMAKE_BINARY_DIR}/lib "${CMAKE_BINARY_DIR}/lib" ${NATNET_SDK_LIBRARIES_DIR})
+
 
 #include internal source files
 include_directories(${CMAKE_BINARY_DIR}/src/MotionHubUtil)
@@ -33,20 +34,15 @@ file(GLOB_RECURSE MotionHub_SRC "${CMAKE_CURRENT_SRC_DIR}" *.cpp)
 add_executable(MireviMotionHub ${MotionHub_HEADER} ${MotionHub_SRC})
 
 target_link_libraries(MireviMotionHub
-    debug osg${CMAKE_DEBUG_POSTFIX} optimized osg
-    debug osgDB${CMAKE_DEBUG_POSTFIX} optimized osgDB
-    debug osgGA${CMAKE_DEBUG_POSTFIX} optimized osgGA
-    debug osgUtil${CMAKE_DEBUG_POSTFIX} optimized osgUtil
-    debug osgViewer${CMAKE_DEBUG_POSTFIX} optimized osgViewer
-    debug OpenThreads${CMAKE_DEBUG_POSTFIX} optimized OpenThreads
     debug k4a optimized k4a
 	debug k4abt optimized k4abt
 	debug cudnn optimized cudnn
-	debug oscpack optimized oscpack
+	debug oscpack${CMAKE_DEBUG_POSTFIX} optimized oscpack
 	debug Ws2_32 optimized Ws2_32
 	debug winmm optimized winmm		
 	debug Qt5Core${CMAKE_DEBUG_POSTFIX} optimized Qt5Core
 	debug Qt5Widgets${CMAKE_DEBUG_POSTFIX} optimized Qt5Widgets
+    debug NatNetLibStatic optimized NatNetLibStatic
 	
 	debug MotionHubUtil${CMAKE_DEBUG_POSTFIX} optimized MotionHubUtil
 	debug NetworkManagement${CMAKE_DEBUG_POSTFIX} optimized NetworkManagement
