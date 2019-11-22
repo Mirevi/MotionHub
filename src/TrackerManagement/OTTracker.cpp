@@ -37,12 +37,11 @@ int OTTracker::createClient(int iConnectionType)
 	m_dataHandlerManager = new DataHandlerManager(m_properties);
 	//set callback with dummy object
 	m_client->SetDataCallback(m_dataHandlerManager->DataHandler, m_client);	// this function will receive data from the server
-	// [optional] use old multicast group
-	//theClient->SetMulticastAddress("224.0.0.1");
+
+
+
+
 	// print version info
-
-
-
 	unsigned char ver[4];
 	m_client->NatNetVersion(ver);
 	printf("NatNet Sample Client (NatNet ver. %d.%d.%d.%d)\n", ver[0], ver[1], ver[2], ver[3]);
@@ -77,6 +76,8 @@ int OTTracker::createClient(int iConnectionType)
 			printf("Unable to connect to server. Host not present. Exiting.");
 			return 1;
 		}
+
+		//TODO: bring Console outputs to work!
 		//Console::log("[SampleClient] Server application info:");
 		//Console::log("Application: " + std::string(ServerDescription.szHostApp) + " (ver. " + std::string(reinterpret_cast<char*>(ServerDescription.HostAppVersion[1])) + "." + std::string(reinterpret_cast<char*>(ServerDescription.HostAppVersion[2])) + "." + std::string(reinterpret_cast<char*>(ServerDescription.HostAppVersion[3])) + ")");
 		//Console::log("NatNet Version: " + std::string(reinterpret_cast<char*>(ServerDescription.NatNetVersion[1])) + "." + std::string(reinterpret_cast<char*>(ServerDescription.NatNetVersion[2])) + "." + std::string(reinterpret_cast<char*>(ServerDescription.NatNetVersion[3])));
@@ -279,11 +280,11 @@ Skeleton* OTTracker::parseSkeleton(sSkeletonData skeleton, int id)
 		Vector3 pos = Vector3(-rbData.x, rbData.y, rbData.z);
 		Vector4 rot = Vector4(rbData.qx, rbData.qy, rbData.qz, rbData.qw);
 
-
-
-
+		//confidence values are not transmitted, default confidence is High
 		Joint::JointConfidence confidence = Joint::JointConfidence::HIGH;
 
+
+		//map the OptiTRack poses to the MMH skeleton joints
 		switch (j)
 		{
 
@@ -293,59 +294,59 @@ Skeleton* OTTracker::parseSkeleton(sSkeletonData skeleton, int id)
 			break;
 
 		case 1:
-			currSkeleton->m_joints.insert({ Joint::SPINE, Joint(pos, rot, confidence) }); //done
+			currSkeleton->m_joints.insert({ Joint::SPINE, Joint(pos, rot, confidence) });
 			break;
 
 		case 2:
-			currSkeleton->m_joints.insert({ Joint::CHEST, Joint(pos, rot, confidence) }); //done
+			currSkeleton->m_joints.insert({ Joint::CHEST, Joint(pos, rot, confidence) });
 			break;
 
 		case 3:
-			currSkeleton->m_joints.insert({ Joint::NECK, Joint(pos, rot, confidence) }); //done
+			currSkeleton->m_joints.insert({ Joint::NECK, Joint(pos, rot, confidence) });
 			break;
 
 		case 4:
-			currSkeleton->m_joints.insert({ Joint::HEAD, Joint(pos, rot, confidence) }); //done
+			currSkeleton->m_joints.insert({ Joint::HEAD, Joint(pos, rot, confidence) });
 			break;
 
 		case 5:
-			currSkeleton->m_joints.insert({ Joint::SHOULDER_L, Joint(pos, rot, confidence) }); //done
+			currSkeleton->m_joints.insert({ Joint::SHOULDER_L, Joint(pos, rot, confidence) });
 			break;
 
 		case 6:
-			currSkeleton->m_joints.insert({ Joint::ARM_L, Joint(pos, rot, confidence) }); //done
+			currSkeleton->m_joints.insert({ Joint::ARM_L, Joint(pos, rot, confidence) });
 			break;
 
 		case 7:
-			currSkeleton->m_joints.insert({ Joint::FOREARM_L, Joint(pos, rot, confidence) }); //done
+			currSkeleton->m_joints.insert({ Joint::FOREARM_L, Joint(pos, rot, confidence) });
 			break;
 
 		case 8:
-			currSkeleton->m_joints.insert({ Joint::HAND_L, Joint(pos, rot, confidence) }); //done
+			currSkeleton->m_joints.insert({ Joint::HAND_L, Joint(pos, rot, confidence) });
 			break;
 
 		case 9:
-			currSkeleton->m_joints.insert({ Joint::SHOULDER_R, Joint(pos, rot, confidence) }); //done
+			currSkeleton->m_joints.insert({ Joint::SHOULDER_R, Joint(pos, rot, confidence) });
 			break;
 
 		case 10:
-			currSkeleton->m_joints.insert({ Joint::ARM_R, Joint(pos, rot, confidence) }); //done
+			currSkeleton->m_joints.insert({ Joint::ARM_R, Joint(pos, rot, confidence) });
 			break;
 
 		case 11:
-			currSkeleton->m_joints.insert({ Joint::FOREARM_R, Joint(pos, rot, confidence) }); //done
+			currSkeleton->m_joints.insert({ Joint::FOREARM_R, Joint(pos, rot, confidence) });
 			break;
 
 		case 12:
-			currSkeleton->m_joints.insert({ Joint::HAND_R, Joint(pos, rot, confidence) }); //done
+			currSkeleton->m_joints.insert({ Joint::HAND_R, Joint(pos, rot, confidence) });
 			break;
 
 		case 13:
-			currSkeleton->m_joints.insert({ Joint::UPLEG_L, Joint(pos, rot, confidence) }); //done
+			currSkeleton->m_joints.insert({ Joint::UPLEG_L, Joint(pos, rot, confidence) });
 			break;
 
 		case 14:
-			currSkeleton->m_joints.insert({ Joint::LEG_L, Joint(pos, rot, confidence) }); //done
+			currSkeleton->m_joints.insert({ Joint::LEG_L, Joint(pos, rot, confidence) });
 			break;
 
 		case 15:
@@ -383,7 +384,7 @@ Skeleton* OTTracker::parseSkeleton(sSkeletonData skeleton, int id)
 	currSkeleton->setHeight(currSkeleton->m_joints[Joint::HEAD].getJointPosition().m_xyz.y);
 
 
-
+	//return skeleto with correct joint poses
 	return currSkeleton;
 
 }
@@ -414,6 +415,7 @@ void OTTracker::cleanSkeletonPool()
 			}
 		}
 
+		//if current skeleton isn't in current data frame, delete it from the pool later
 		if (!isOTSkeletonInPool)
 		{
 			idSkeletonsToErase.push_back(idCurrPoolSkeleton);
@@ -421,11 +423,11 @@ void OTTracker::cleanSkeletonPool()
 	}
 
 
-
+	//loop through the removing list
 	for (int itIndexIdSkeletonsToErase = idSkeletonsToErase.front(); itIndexIdSkeletonsToErase != idSkeletonsToErase.back(); itIndexIdSkeletonsToErase++)
 	{
 
-		// erase skeleton with id
+		//erase skeleton with id
 		m_skeletonPool.erase(itIndexIdSkeletonsToErase);
 
 		//skeleton was added/removed, so UI updates
@@ -440,28 +442,6 @@ void OTTracker::cleanSkeletonPool()
 
 
 
-
-
-
-
-//void RigidBodyCollection::AppendRigidBodyData(sRigidBodyData const * const rigidBodyData, size_t numRigidBodies)
-//{
-//	for (size_t i = 0; i < numRigidBodies; ++i)
-//	{
-//		const sRigidBodyData& rb = rigidBodyData[i];
-//		mXYZCoord[i + mNumRigidBodies] = std::make_tuple(rb.x, rb.y, rb.z);
-//		mXYZWQuats[i + mNumRigidBodies] = std::make_tuple(rb.qx, rb.qy, rb.qz, rb.qw);
-//		mIds[i + mNumRigidBodies] = rb.ID;
-//	}
-//	mNumRigidBodies += numRigidBodies;
-//}
-//
-//
-//RigidBodyCollection::RigidBodyCollection() : mNumRigidBodies(0)
-//{
-//	;
-//}
-//
 // MessageHandler receives NatNet error/debug messages
 void MessageHandler(int msgType, char* msg)
 {

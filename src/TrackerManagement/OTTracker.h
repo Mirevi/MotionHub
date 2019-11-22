@@ -82,12 +82,12 @@ private:
 	 * this clients IP address
 	 * 
 	 */
-	char szMyIPAddress[128] = "172.16.1.187";
+	char szMyIPAddress[128] = "127.0.0.1";
 	/*!
 	 * the NatNet servers IP address
 	 * 
 	 */
-	char szServerIPAddress[128] = "172.16.1.25";
+	char szServerIPAddress[128] = "127.0.0.1";
 	double holdInRoITime = 500;
 	/*!
 	 * the NatNet client
