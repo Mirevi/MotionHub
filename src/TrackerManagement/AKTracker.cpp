@@ -132,6 +132,8 @@ void AKTracker::track()
 			// remember to release the body frame once you finish using it
 			k4abt_frame_release(body_frame); 
 
+			m_trackingCycles++;
+
 			// set data available to true
 			m_isDataAvailable = true;
 
@@ -263,8 +265,9 @@ Skeleton* AKTracker::parseSkeleton(k4abt_skeleton_t* skeleton, int id)
 		k4a_float3_t skeleton_position = skeleton->joints[jointIndex].position;
 		k4a_quaternion_t skeleton_rotation = skeleton->joints[jointIndex].orientation;
 
-		// convert from k4a Vectors and quaternions into custom vectors
-		Vector3 pos = Vector3(skeleton_position.xyz.x, skeleton_position.xyz.y, skeleton_position.xyz.z);
+
+		// convert from k4a Vectors and quaternions into custom vectors with coordinate transformation
+		Vector3 pos = Vector3(-skeleton_position.xyz.x / 1000, (-skeleton_position.xyz.y + 950) / 1000, skeleton_position.xyz.z / 1000);
 		Vector4 rot = Vector4(skeleton_rotation.wxyz.x, skeleton_rotation.wxyz.y, skeleton_rotation.wxyz.z, skeleton_rotation.wxyz.w);
 
 		// get joint confidence level from azure kinect body tracker API

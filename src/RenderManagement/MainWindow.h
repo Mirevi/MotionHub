@@ -10,6 +10,7 @@
 #include "QtWidgets/qtreewidget.h"
 #include "QtWidgets/qtablewidget.h"
 
+
 #define GET_VARIABLE_NAME(Variable) (#Variable)
 
 

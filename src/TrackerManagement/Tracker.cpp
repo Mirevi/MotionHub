@@ -62,6 +62,9 @@ void Tracker::destroy()
 bool Tracker::isDataAvailable()
 {
 
+	//if (m_isDataAvailable)
+	//	Console::log("Tracker::isDataAvailable(): [" + m_properties->name + "] Tracking cycles = " + std::to_string(m_trackingCycles) + ".");
+
 	return m_isDataAvailable;
 
 }
@@ -89,6 +92,13 @@ bool Tracker::hasSkeletonPoolChanged()
 		return false;
 
 	}
+}
+
+void Tracker::setSkeletonPoolChanged(bool state)
+{
+
+	m_hasSkeletonPoolChanged = state;
+
 }
 
 std::map<int, Skeleton*>* Tracker::getSkeletonPool()

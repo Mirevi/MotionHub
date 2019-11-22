@@ -311,6 +311,8 @@ void MainWindow::slotRemoveTracker()
 		// clear the inspector
 		clearInspector();
 
+		ui->listWidget_tracker->clearSelection();
+
 	}
 	else
 	{
@@ -331,7 +333,7 @@ void MainWindow::slotSelectTracker(QModelIndex index)
 
 	int previousSelectedTrackerInList = m_selectedTrackerInList;
 	// get index of selected tracker
-	m_selectedTrackerInList = index.data().toInt();
+	m_selectedTrackerInList = ui->listWidget_tracker->currentRow();
 
 	Console::log("MainWindow::slotSelectTracker(): Selected tracker with id = " + std::to_string(m_selectedTrackerInList));
 
@@ -341,7 +343,6 @@ void MainWindow::slotSelectTracker(QModelIndex index)
 	// if other tracker than before was selected - draw the ui with new content
 	else
 		drawInspector();
-
 }
 
 void MainWindow::slotInspectorItemChanged(QTableWidgetItem* item)
