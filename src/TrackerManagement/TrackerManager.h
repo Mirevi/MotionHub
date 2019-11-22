@@ -45,7 +45,7 @@ public:
 	 * 
 	 * \param type type of the tracker (Azure Kinect, XSense, ...)
 	 */
-	void createTracker(TrackerType type);
+	int createTracker(TrackerType type);
 	/*!
 	 * removes a tracker from the pool
 	 * 

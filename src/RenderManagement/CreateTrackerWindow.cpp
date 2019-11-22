@@ -30,39 +30,38 @@ void CreateTrackerWindow::slotCreateTracker()
 	QApplication::setOverrideCursor(Qt::WaitCursor);
 	QApplication::processEvents();
 
+	int id = -1;
+
 	switch (m_selectedTrackerIdInDropdown)
 	{
 
 		case 0:
-			try
-			{
-				m_refTrackerManager->createTracker(TrackerManager::azureKinect); // create new azure kinect tracker and add tracker to the tracking manager tracker pool
-			}
-			catch (const std::exception&)
-			{
-				Console::logError("CreateTrackerWindow::slotCreateTracker(): Can not create tracker. Azure Kinect cannot initialize!");
+		{
 
-				QApplication::restoreOverrideCursor();
-				QApplication::processEvents();
+			id = m_refTrackerManager->createTracker(TrackerManager::azureKinect); // create new azure kinect tracker and add tracker to the tracking manager tracker pool
+			
+			m_refListWidgetTracker->addItem(m_refTrackerManager->getPoolTracker()->at({"azureKinect", id})->getProperties()->name.c_str());
 
-				// close dialog
-				close();
-
-			}
 			break;
+
+		}
 
 		case 2:
-			m_refTrackerManager->createTracker(TrackerManager::optiTrack); // create new azure kinect tracker and add tracker to the tracking manager tracker pool
+		{
 
+			id = m_refTrackerManager->createTracker(TrackerManager::optiTrack); // create new azure kinect tracker and add tracker to the tracking manager tracker pool
+			
+			m_refListWidgetTracker->addItem(m_refTrackerManager->getPoolTracker()->at({ "optiTrack", id })->getProperties()->name.c_str());
+			
 			break;
+
+		}
 
 		default:
 			Console::logError("CreateTrackerWindow::slotCreateTracker(): Can not create tracker. Tracker type unkown!");
 			break;
 
 	}
-
-	m_refListWidgetTracker->addItem(m_refTrackerManager->getPoolTracker()->rbegin()->second->getProperties()->name.c_str());
 
 	//set the curser to default
 	QApplication::restoreOverrideCursor();

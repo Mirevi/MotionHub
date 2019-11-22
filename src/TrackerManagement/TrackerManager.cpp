@@ -8,7 +8,7 @@ TrackerManager::TrackerManager()
 }
 
 // create new tracker based on the tracker type
-void TrackerManager::createTracker(TrackerType type)
+int TrackerManager::createTracker(TrackerType type)
 {
 
 	Console::log("TrackerManager::createTracker(): Creating tracker ...");
@@ -48,9 +48,11 @@ void TrackerManager::createTracker(TrackerType type)
 
 			Console::log("TrackerManager::createTracker(): Created Azure Kinect tracker with cam id = " + std::to_string(nextCamIdAk) + ".");
 
-			break;
+			return id;
 
 		case optiTrack:
+
+			m_isTrackerPoolLocked.store(true);
 
 			m_trackerPool.insert({ { "optiTrack", id }, new OTTracker(id) });
 
@@ -60,13 +62,12 @@ void TrackerManager::createTracker(TrackerType type)
 
 			Console::log("TrackerManager::createTracker(): Created OptiTrack tracker.");
 
-
-			break;
+			return id;
 
 		default:
 			Console::log("TrackerManager::createTracker(): Can not create tracker. Unknown tracker type!");
 
-			break;
+			return -1;
 
 	}
 }
