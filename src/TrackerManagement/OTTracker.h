@@ -55,7 +55,8 @@ public:
 	 */
 	void start() override;
 	/*!
-	 *  sets m_tracking to false
+	 *  sets m_tracking to false, so track() runs for the last time and exits
+	 * after that, the tracking thread is stopped
 	 */
 	void stop() override;
 	/*!
@@ -81,12 +82,12 @@ private:
 	 * this clients IP address
 	 * 
 	 */
-	char szMyIPAddress[128] = "127.0.0.1";
+	char szMyIPAddress[128] = "172.16.1.187";
 	/*!
 	 * the NatNet servers IP address
 	 * 
 	 */
-	char szServerIPAddress[128] = "127.0.0.1";
+	char szServerIPAddress[128] = "172.16.1.25";
 	double holdInRoITime = 500;
 	/*!
 	 * the NatNet client
@@ -97,11 +98,12 @@ private:
 	int iConnectionType = ConnectionType_Multicast;
 
 	int createClient(int iConnectionType);
-	//void DataHandler(sFrameOfMocapData* data, void* pUserData);
 
 
-
-
+	/*!
+	 * empty override method for Tracker::init()
+	 * this tracker does initialization in  createClient()
+	 */
 	void init() override {};
 	/*!
 	 * updade method used for tracker thread
@@ -113,9 +115,25 @@ private:
 	 */
 	void track() override;
 
-
+	/*!
+	 * gets skeleton data from frame and inserts that data into the skeleton pool
+	 * 
+	 */
 	void extractSkeleton();
+
+	/*!
+	 * converts OptiTrack skeleton to default skeleton type
+	 * 
+	 * \param skeleton input OptiTrack skeleto
+	 * \param id the skeletons ID
+	 * \return converted default skeleton
+	 */
 	Skeleton* parseSkeleton(sSkeletonData skeleton, int id);
+
+	/*!
+	 * removes skeletons from pool which are not captured in current frames anymore
+	 * 
+	 */
 	void cleanSkeletonPool();
 
 };

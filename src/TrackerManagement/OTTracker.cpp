@@ -1,14 +1,6 @@
 #include "OTTracker.h"
-
-
-//std::atomic<int> g_rigidBodyDroneX;
-//std::atomic<int> g_rigidBodyDroneY;
-//std::atomic<int> g_rigidBodyDroneZ;
-//RigidBodyCollection g_rigidBodies;
-
-
-
 #include "DataHandlerManager.h"
+
 
 OTTracker::OTTracker()
 {
@@ -25,31 +17,25 @@ OTTracker::OTTracker(int id)
 	m_properties->id = id;
 	m_properties->name = "tracker_optiTrack_" + std::to_string(id);
 
+	//default is enabled
 	m_properties->isEnabled = true;
 }
 
 
-
-
-
 int OTTracker::createClient(int iConnectionType)
 {
-	//OBSCURE: Why 
-	// release previous server
-	//if (theClient)
-	//{
-	//	theClient->Uninitialize();
-	//	delete theClient;
-	//}
+
 	// create NatNet client
 	m_client = new NatNetClient(iConnectionType);
+	
 	// set the callback handlers
 
 	m_client->SetVerbosityLevel(Verbosity_Warning);
 	m_client->SetMessageCallback(MessageHandler);
 
+	//create dummy object for MessageHandler
 	m_dataHandlerManager = new DataHandlerManager(m_properties);
-
+	//set callback with dummy object
 	m_client->SetDataCallback(m_dataHandlerManager->DataHandler, m_client);	// this function will receive data from the server
 	// [optional] use old multicast group
 	//theClient->SetMulticastAddress("224.0.0.1");
@@ -109,12 +95,14 @@ void OTTracker::start()
 	// set tracking to true
 	m_properties->isTracking = true;
 
+	//init NatNet client
 	createClient(iConnectionType);
 
+	//get reference to the frame data
 	m_refData = m_dataHandlerManager->getData();
 
 
-
+	//start update() in new thread
 	m_trackingThread = new std::thread(&OTTracker::update, this);
 	m_trackingThread->detach();
 
@@ -133,7 +121,8 @@ void OTTracker::update()
 		if (!m_isDataAvailable)
 		{
 
-			track(); // get new data
+			// get new data
+			track();
 
 		}
 	}
@@ -143,29 +132,33 @@ void OTTracker::update()
 
 	Console::log("OTTracker::track(): Stopped tracking thread.");
 	
-
 }
 
 void OTTracker::track()
 {
-	
+
+	//when new data wasn't fetched yet, dont update
 	if (m_isDataAvailable)
 	{
+		
 		return;
 
 	}
 
+	//when frame data wasn't initialized, try again later
 	if (m_refData == nullptr)
 	{
-		Console::logError("OTTracker::track(): m_data was nullptr!");
 
 		std::this_thread::sleep_for(std::chrono::milliseconds(10));
 
 		return;
+
 	}
 
+	//get skeleton data from frame data
 	extractSkeleton();
 
+	//new data is ready
 	m_isDataAvailable = true;
 
 }
@@ -176,14 +169,9 @@ void OTTracker::stop()
 	//is not tracking, so the update loop exits 
 	m_properties->isTracking = false;
 
-	Console::log("Deleting Object...");
-
-	//theClient->Uninitialize();
-
-	//theClient->~NatNetClient();
-
 	delete m_dataHandlerManager;
 	delete m_client;
+
 	Console::log("Deleted Object");
 
 }
@@ -191,8 +179,6 @@ void OTTracker::stop()
 // shutdown and destroy azure kinect tracker
 void OTTracker::destroy()
 {
-
-
 
 	Console::log("OTTracker::destroy(): Destroyed tracker.");
 
@@ -203,48 +189,53 @@ void OTTracker::destroy()
 
 OTTracker::~OTTracker()
 {
-	//m_client->Uninitialize();
-	//delete m_client;
-	//delete m_dataHandlerManager;
+
+
+
 }
 
 
 void OTTracker::extractSkeleton()
 {
+
+	//when new data isn't available, don't go on
 	if (!m_dataHandlerManager->isDataAvailable())
 	{
 		return;
 	}
 
+	//get current skeleton number
 	m_properties->countDetectedSkeleton = m_refData->nSkeletons;
 
-	//loop through all skeletons
+	//loop through all OptiTrack skeletons
 	for (int i = 0; i < m_refData->nSkeletons; i++)
 	{
+		//get current skeleton data
 		sSkeletonData skData = m_refData->Skeletons[i];
-		//Console::log("Skeleton ID= " + std::to_string(skData.skeletonID) + ", Bone count= " + std::to_string(skData.nRigidBodies));
 
-
-
-
+		//true as long new skeleton will be added to the pool
 		bool createNewSkeleton = true;
 
+		//loop through all MMH skeletons
 		for (auto itPoolSkeletons = m_skeletonPool.begin(); itPoolSkeletons != m_skeletonPool.end(); itPoolSkeletons++)
 		{
+			//when skeletons have the same ID, the skeleton is alredy in pool and no new skeleton has to be created
 			if (skData.skeletonID == itPoolSkeletons->first)
 			{
 
+				//convert OptiTrack skeleton into MMH skeleton
 				Skeleton* currSkeleton = parseSkeleton(skData, skData.skeletonID);
 
 				// update all joints of existing skeleon with new data
 				(m_skeletonPool)[skData.skeletonID]->m_joints = currSkeleton->m_joints;
 
+				//delete temp skeleton object (FIXED MEMORY LEAK)
 				delete currSkeleton;
 
+				//no new skeleton has to be created
 				createNewSkeleton = false;
 
 				break;
-
 			}
 		}
 
@@ -280,29 +271,16 @@ Skeleton* OTTracker::parseSkeleton(sSkeletonData skeleton, int id)
 	//loop through all joints
 	for (int j = 0; j < skeleton.nRigidBodies; j++)
 	{
+		//temporary OptiTrack joint data object
 		sRigidBodyData rbData = skeleton.RigidBodyData[j];
-		//printf("Bone %d\t%3.2f\t%3.2f\t%3.2f\t%3.2f\t%3.2f\t%3.2f\t%3.2f\n",
-		//	rbData.ID, rbData.x, rbData.y, rbData.z, rbData.qx, rbData.qy, rbData.qz, rbData.qw);
-
-		//Console::log("OTTracker::parseSkeleton(): jointID: " + std::to_string(rbData.ID));
-		//Console::log("OTTracker::parseSkeleton(): joint position: " + std::to_string(rbData.x) + ", " + std::to_string(rbData.y) + ", " + std::to_string(rbData.z));
-		//Console::log("OTTracker::parseSkeleton(): joint rotation: " + std::to_string(rbData.qx) + ", " + std::to_string(rbData.qx) + ", " + std::to_string(rbData.qz) + ", " + std::to_string(rbData.qw));
 
 
-		//insert data now in skeleton pool
-
-
-				// convert from k4a Vectors and quaternions into custom vectors
+		// convert from k4a Vectors and quaternions into custom vectors
 		Vector3 pos = Vector3(-rbData.x, rbData.y, rbData.z);
 		Vector4 rot = Vector4(rbData.qx, rbData.qy, rbData.qz, rbData.qw);
 
 
-		//if (pos.m_xyz.x < -10)
-		//{
 
-		//	Console::log("OTTracker::parseSkeleton(): joint: " + std::to_string(j) + ", position: " + std::to_string(rbData.x) + ", " + std::to_string(rbData.y) + ", " + std::to_string(rbData.z));
-
-		//}
 
 		Joint::JointConfidence confidence = Joint::JointConfidence::HIGH;
 
@@ -311,8 +289,6 @@ Skeleton* OTTracker::parseSkeleton(sSkeletonData skeleton, int id)
 
 		case 0:
 			currSkeleton->m_joints.insert({ Joint::HIPS, Joint(pos, rot, confidence) });
-
-			//Console::log("OTTracker::parseSkeleton(): joint position: " + std::to_string(rbData.x) + ", " + std::to_string(rbData.y) + ", " + std::to_string(rbData.z));
 
 			break;
 
@@ -396,35 +372,9 @@ Skeleton* OTTracker::parseSkeleton(sSkeletonData skeleton, int id)
 			currSkeleton->m_joints.insert({ Joint::TOE_R, Joint(pos, rot, confidence) });
 			break;
 
-		//case 21:
-		//	currSkeleton->m_joints.insert({ Joint::TOE_R, Joint(pos, rot, confidence) });
-		//	break;
-
-		//case 22:
-		//	currSkeleton->m_joints.insert({ Joint::UPLEG_L, Joint(pos, rot, confidence) });
-		//	break;
-
-		//case 23:
-		//	currSkeleton->m_joints.insert({ Joint::LEG_L, Joint(pos, rot, confidence) });
-		//	break;
-
-		//case 24:
-		//	currSkeleton->m_joints.insert({ Joint::FOOT_L, Joint(pos, rot, confidence) });
-		//	break;
-
-		//case 25:
-		//	currSkeleton->m_joints.insert({ Joint::TOE_L, Joint(pos, rot, confidence) });
-		//	break;
-
-		//case 26:
-		//	currSkeleton->m_joints.insert({ Joint::HEAD, Joint(pos, rot, confidence) });
-		//	break;
-
 		default:
 			break;
 		}
-
-
 	}
 
 
@@ -515,5 +465,5 @@ void OTTracker::cleanSkeletonPool()
 // MessageHandler receives NatNet error/debug messages
 void MessageHandler(int msgType, char* msg)
 {
-	printf("\n%s\n", msg);
+	Console::log("MessageHandler(): " + std::string(msg));
 }
