@@ -22,6 +22,7 @@ void DataHandlerManager::DataHandler(sFrameOfMocapData* data, void* pUserData)
 	{
 
 		return;
+
 	}
 
 	//check if data wasn't already assigned
@@ -33,15 +34,15 @@ void DataHandlerManager::DataHandler(sFrameOfMocapData* data, void* pUserData)
 	}
 
 	//assign new client data
-	NatNetClient* pClient = (NatNetClient*)pUserData;
+	//NatNetClient* pClient = (NatNetClient*)pUserData;
 	   
 
 	// timecode - for systems with an eSync and SMPTE timecode generator - decode to values
-	int hour, minute, second, frame, subframe;
-	bool bValid = pClient->DecodeTimecode(m_data->Timecode, m_data->TimecodeSubframe, &hour, &minute, &second, &frame, &subframe);
+	//int hour, minute, second, frame, subframe;
+	//bool bValid = pClient->DecodeTimecode(m_data->Timecode, m_data->TimecodeSubframe, &hour, &minute, &second, &frame, &subframe);
 	// decode to friendly string
-	char szTimecode[128] = "";
-	pClient->TimecodeStringify(m_data->Timecode, m_data->TimecodeSubframe, szTimecode, 128);
+	//char szTimecode[128] = "";
+	//pClient->TimecodeStringify(m_data->Timecode, m_data->TimecodeSubframe, szTimecode, 128);
 
 	//new data is now available
 	m_isDataAvailable.store(true);

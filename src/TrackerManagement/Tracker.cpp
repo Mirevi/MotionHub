@@ -62,6 +62,9 @@ void Tracker::destroy()
 bool Tracker::isDataAvailable()
 {
 
+	//if (m_isDataAvailable)
+	//	Console::log("Tracker::isDataAvailable(): [" + m_properties->name + "] Tracking cycles = " + std::to_string(m_trackingCycles) + ".");
+
 	return m_isDataAvailable;
 
 }

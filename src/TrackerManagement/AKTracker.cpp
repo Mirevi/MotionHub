@@ -132,6 +132,8 @@ void AKTracker::track()
 			// remember to release the body frame once you finish using it
 			k4abt_frame_release(body_frame); 
 
+			m_trackingCycles++;
+
 			// set data available to true
 			m_isDataAvailable = true;
 

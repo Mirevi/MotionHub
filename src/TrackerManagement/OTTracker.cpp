@@ -44,7 +44,9 @@ int OTTracker::createClient(int iConnectionType)
 	// print version info
 	unsigned char ver[4];
 	m_client->NatNetVersion(ver);
-	printf("NatNet Sample Client (NatNet ver. %d.%d.%d.%d)\n", ver[0], ver[1], ver[2], ver[3]);
+
+	Console::log("OTTracker::createClient(): Created NatNet Client (NatNet ver. " + std::to_string(ver[0]) + "." + std::to_string(ver[1]) + "." + std::to_string(ver[2]) + "." + std::to_string(ver[3]) + ")");
+
 	// Init Client and connect to NatNet server
 	// to use NatNet default port assignments
 	int retCode = m_client->Initialize(szMyIPAddress, szServerIPAddress);
@@ -52,8 +54,10 @@ int OTTracker::createClient(int iConnectionType)
 	//int retCode = theClient->Initialize(szMyIPAddress, szServerIPAddress, MyServersCommandPort, MyServersDataPort);
 	if (retCode != ErrorCode_OK)
 	{
-		printf("Unable to connect to server.  Error code: %d. Exiting", retCode);
+				
+		Console::log("OTTracker::createClient(): Unable to connect to server. Error code: " + std::to_string(retCode) + ". Exiting");
 		return ErrorCode_Internal;
+
 	}
 	else
 	{
@@ -65,7 +69,7 @@ int OTTracker::createClient(int iConnectionType)
 		if (ret == ErrorCode_OK)
 		{
 			analogSamplesPerMocapFrame = *((int*)pResult);
-			printf("Analog Samples Per Mocap Frame : %d", analogSamplesPerMocapFrame);
+			Console::log("OTTracker::createClient(): Analog Samples Per Mocap Frame : " + std::to_string(analogSamplesPerMocapFrame) + ".");
 		}
 		// print server info
 		sServerDescription ServerDescription;
@@ -73,13 +77,17 @@ int OTTracker::createClient(int iConnectionType)
 		m_client->GetServerDescription(&ServerDescription);
 		if (!ServerDescription.HostPresent)
 		{
-			printf("Unable to connect to server. Host not present. Exiting.");
+			Console::log("OTTracker::createClient(): Unable to connect to server. Host not present. Exiting.");
 			return 1;
 		}
 
-		//TODO: bring Console outputs to work!
-		//Console::log("[SampleClient] Server application info:");
-		//Console::log("Application: " + std::string(ServerDescription.szHostApp) + " (ver. " + std::string(reinterpret_cast<char*>(ServerDescription.HostAppVersion[1])) + "." + std::string(reinterpret_cast<char*>(ServerDescription.HostAppVersion[2])) + "." + std::string(reinterpret_cast<char*>(ServerDescription.HostAppVersion[3])) + ")");
+		//std::string sd_hostApp(ServerDescription.szHostApp);
+		//std::string sd_hostAppVersion1(ServerDescription.HostAppVersion[1]);
+		//std::string sd_hostAppVersion2(ServerDescription.HostAppVersion[2]);
+		//std::string sd_hostAppVersion3(ServerDescription.HostAppVersion[3]);
+
+		//Console::log("OTTracker::createClient(): Server application info:");
+		//Console::log("OTTracker::createClient(): Application: " + sd_hostApp + " (ver. " + sd_hostAppVersion1 + "." + sd_hostAppVersion2 + "." + sd_hostAppVersion3 + ")");
 		//Console::log("NatNet Version: " + std::string(reinterpret_cast<char*>(ServerDescription.NatNetVersion[1])) + "." + std::string(reinterpret_cast<char*>(ServerDescription.NatNetVersion[2])) + "." + std::string(reinterpret_cast<char*>(ServerDescription.NatNetVersion[3])));
 		//Console::log("Client IP: " + szMyIPAddress);
 		//Console::log("Server IP: " + std::string(reinterpret_cast<char*>(szServerIPAddress)));
@@ -158,6 +166,8 @@ void OTTracker::track()
 
 	//get skeleton data from frame data
 	extractSkeleton();
+
+	m_trackingCycles++;
 
 	//new data is ready
 	m_isDataAvailable = true;
@@ -445,5 +455,5 @@ void OTTracker::cleanSkeletonPool()
 // MessageHandler receives NatNet error/debug messages
 void MessageHandler(int msgType, char* msg)
 {
-	Console::log("MessageHandler(): " + std::string(msg));
+	Console::log("OTTracker::MessageHandler(): " + std::string(msg));
 }

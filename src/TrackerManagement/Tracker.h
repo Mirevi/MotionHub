@@ -144,4 +144,6 @@ protected:
 	 */
 	virtual void track() = 0;
 
+	int m_trackingCycles = 0;
+
 };
