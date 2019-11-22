@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="/">
+    <file>ressources/images/tex_uvChecker_01.png</file>
     <file>ressources/images/tex_grid_10x10.png</file>
     <file>ressources/images/tex_checker_01.png</file>
     <file>ressources/icons/icons8-play-32_converted.png</file>

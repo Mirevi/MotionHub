@@ -61,9 +61,11 @@ private:
 	Camera m_camera;
 	QPoint lastPos;
 
-	QColor clearColor;
+	QColor m_clearColor;
 
 	TrackerManager* m_refTrackerManager;
+
+	Vector3 m_colorRed, m_colorYellow, m_colorGreen;
 
 };
 

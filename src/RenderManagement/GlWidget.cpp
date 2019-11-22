@@ -4,7 +4,11 @@ GlWidget::GlWidget(TrackerManager* trackerManager, QWidget* parent)	: QOpenGLWid
 {
 
 	// set background color to black
-	clearColor = Qt::black;
+	m_clearColor = Qt::black;
+
+	m_colorRed = Vector3(0.75f, 0.0f, 0.0f);
+	m_colorYellow = Vector3(0.75f, 0.75f, 0.0f);
+	m_colorGreen = Vector3(0.0f, 0.75f, 0.0f);
 
 	m_refTrackerManager = trackerManager;
 
@@ -58,7 +62,7 @@ void GlWidget::createMeshes()
 	// create grid
 	m_meshPool.push_back(new Primitive(Primitive::Plane, m_shaderProgram_texture, new QOpenGLTexture(QImage(QString(":/ressources/images/tex_grid_10x10.png"))), Vector3::zero(), Vector3(2.0f, 2.0f, 2.0f)));
 	// create cube
-	m_meshPool.push_back(new Primitive(Primitive::Cube, m_shaderProgram_confidence, new QOpenGLTexture(QImage(QString(":/ressources/images/tex_checker_01.png"))), Vector3(0.0f, 0.1f, 0.0f), Vector3(0.1f, 0.1f, 0.1f)));
+	m_meshPool.push_back(new Primitive(Primitive::Cube, m_shaderProgram_confidence, new QOpenGLTexture(QImage(QString(":/ressources/images/tex_uvChecker_01.png"))), Vector3(0.0f, 0.1f, 0.0f), Vector3(0.1f, 0.1f, 0.1f)));
 
 }
 
@@ -138,7 +142,7 @@ void GlWidget::createShaderProgram()
 		"uniform mediump vec4 color;\n"
 		"void main(void)\n"
 		"{\n"
-		"    gl_FragColor = color;\n"
+		"    gl_FragColor = texture2D(texture, texc.st) * color;\n"
 		"}\n";
 
 	// compile vertex shader
@@ -164,7 +168,7 @@ void GlWidget::paintGL()
 {
 
 	// set background color
-	glClearColor(clearColor.redF(), clearColor.greenF(), clearColor.blueF(), clearColor.alphaF());
+	glClearColor(m_clearColor.redF(), m_clearColor.greenF(), m_clearColor.blueF(), m_clearColor.alphaF());
 	// clear color and depth buffers
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
