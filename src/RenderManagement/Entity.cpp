@@ -86,7 +86,7 @@ void Entity::setPosition(Vector3 position)
 
 }
 
-void Entity::setRotation(Vector3 rotation)
+void Entity::setRotation(Vector4 quaternion)
 {
 
 

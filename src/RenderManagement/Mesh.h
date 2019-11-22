@@ -16,12 +16,14 @@ class Mesh : public Entity
 		Mesh();
 		~Mesh();
 
-		void bind(QMatrix4x4 matrix, Vector3 color);
+		void bind(QMatrix4x4 matrix);
 		void release();
 		int getFaceCount();
 
 		bool isActive();
 		void setActive(bool active);
+
+		void setDiffuseColor(Vector3 color);
 
 	protected:
 		QVector<GLfloat> m_vertexData;
@@ -34,5 +36,7 @@ class Mesh : public Entity
 		void init();
 
 		bool m_isActive = true;
+
+		Vector3 m_diffuseColor = Vector3::one();
 
 };

@@ -11,7 +11,7 @@ Primitive::Primitive(Type type, QOpenGLShaderProgram* shaderProgram, QOpenGLText
 		{
 			// plane verts
 			int vertsPlane[1][4][3] = {
-				{ { +1, 0, -1 }, { -1, 0, -1 }, { -1, 0, +1 }, { +1, 0, +1 } }
+				{ { +1, 0, +1 }, { -1, 0, +1 }, { -1, 0, -1 } , { +1, 0, -1 }}
 			};
 
 			// assign verts to vert data

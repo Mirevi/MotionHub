@@ -1,6 +1,7 @@
 #pragma once
 
 #include "MotionHubUtil/Vector3.h"
+#include "MotionHubUtil/Vector4.h"
 #include <QtGui/qmatrix4x4.h>
 
 class Entity
@@ -17,7 +18,7 @@ public:
 	Vector3 getPosition();
 
 	void rotate(Vector3 rotation);
-	void setRotation(Vector3 rotation);
+	void setRotation(Vector4 quaternion);
 	Vector3 getRotation();
 
 	void scale(Vector3 scalar);

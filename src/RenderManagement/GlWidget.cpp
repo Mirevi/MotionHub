@@ -12,6 +12,8 @@ GlWidget::GlWidget(TrackerManager* trackerManager, QWidget* parent)	: QOpenGLWid
 
 	m_refTrackerManager = trackerManager;
 
+	m_worldMatrix.scale(-1.0f, 1.0f, 1.0f);
+
 }
 
 GlWidget::~GlWidget()
@@ -21,8 +23,8 @@ GlWidget::~GlWidget()
 	makeCurrent(); // called automatically by paintGL()
 
 	// delete all meshes
-	for (auto itMesh = m_meshPool.begin(); itMesh != m_meshPool.end(); itMesh++)
-		delete *itMesh;
+	delete m_meshGrid;
+	delete m_meshSkeletonJoint;
 
 	// delete shader program
 	delete m_shaderProgram_texture;
@@ -60,9 +62,9 @@ void GlWidget::createMeshes()
 {
 
 	// create grid
-	m_meshPool.push_back(new Primitive(Primitive::Plane, m_shaderProgram_texture, new QOpenGLTexture(QImage(QString(":/ressources/images/tex_grid_10x10.png"))), Vector3::zero(), Vector3(2.0f, 2.0f, 2.0f)));
-	// create cube
-	m_meshPool.push_back(new Primitive(Primitive::Cube, m_shaderProgram_confidence, new QOpenGLTexture(QImage(QString(":/ressources/images/tex_uvChecker_01.png"))), Vector3(0.0f, 0.1f, 0.0f), Vector3(0.1f, 0.1f, 0.1f)));
+	m_meshGrid = new Primitive(Primitive::Plane, m_shaderProgram_texture, new QOpenGLTexture(QImage(QString(":/ressources/images/tex_grid_10x10.png"))), Vector3::zero(), Vector3(5.0f, 5.0f, 5.0f));
+	// create cube for joint visualisation
+	m_meshSkeletonJoint = new Primitive(Primitive::Cube, m_shaderProgram_confidence, new QOpenGLTexture(QImage(QString(":/ressources/images/tex_uvChecker_01.png"))), Vector3(0.0f, 0.0f, 0.0f), Vector3(0.05f, 0.05f, 0.05f));
 
 }
 
@@ -175,48 +177,73 @@ void GlWidget::paintGL()
 	// reset camera matrix
 	m_camera.getMatrix()->setToIdentity();
 	// set camera to perspective with current aspect ratio
-	m_camera.getMatrix()->perspective(60.0f, ((float)this->width() / this->height()), 0.05f, 10.0f);
+	m_camera.getMatrix()->perspective(60.0f, ((float)this->width() / this->height()), 0.01f, 25.0f);
 	// translate and rotate camera
-	m_camera.translate(Vector3(0.0f, -0.5f, -2.0f));
+	m_camera.translate(Vector3(0.0f, -2.0f, -5.0f));
 	// rotate camera based on mouse movement
 	m_camera.rotate();
 
-	// mesh render loop
-	for (auto itMesh = m_meshPool.begin(); itMesh != m_meshPool.end(); itMesh++)
-	{
-
-		// render mesh if active
-		if((*itMesh)->isActive())
-			renderMesh(*itMesh, Vector3::one());
-
-	}
+	renderMesh(m_meshGrid);
 
 	// skeleton render loop
 
-	//for (auto itTracker = m_refTrackerManager->getPoolTracker()->begin(); itTracker != m_refTrackerManager->getPoolTracker()->end(); itTracker++)
-	//{		
-	//	for (auto itSkeleton = itTracker->second->getSkeletonPool()->begin(); itSkeleton != itTracker->second->getSkeletonPool()->end(); itSkeleton++)
-	//	{			
-	//		for (auto itJoint = itSkeleton->second->m_joints.begin(); itJoint != itSkeleton->second->m_joints.end(); itJoint++)
-	//		{
+	for (auto itTracker = m_refTrackerManager->getPoolTracker()->begin(); itTracker != m_refTrackerManager->getPoolTracker()->end(); itTracker++)
+	{		
 
-	//			itJoint->second.getJointPosition();
-	//			itJoint->second.getJointRotation();
+		if (itTracker->second->getProperties()->isTracking && itTracker->second->isDataAvailable())
+		{
 
-	//		}
-	//	}
-	//}
+			for (auto itSkeleton = itTracker->second->getSkeletonPool()->begin(); itSkeleton != itTracker->second->getSkeletonPool()->end(); itSkeleton++)
+			{
+				for (auto itJoint = itSkeleton->second->m_joints.begin(); itJoint != itSkeleton->second->m_joints.end(); itJoint++)
+				{
+
+					m_meshSkeletonJoint->setPosition(itJoint->second.getJointPosition());
+					m_meshSkeletonJoint->setRotation(itJoint->second.getJointRotation());
+
+					switch (itJoint->second.getJointConfidence())
+					{
+
+					case Joint::HIGH:
+						m_meshSkeletonJoint->setDiffuseColor(m_colorGreen);
+						break;
+
+					case Joint::MEDIUM:
+						m_meshSkeletonJoint->setDiffuseColor(m_colorYellow);
+						break;
+
+					case Joint::LOW:
+						m_meshSkeletonJoint->setDiffuseColor(m_colorRed);
+						break;
+
+					case Joint::NONE:
+						m_meshSkeletonJoint->setDiffuseColor(Vector3::one());
+						break;
+
+					default:
+						break;
+
+					}
+
+					renderMesh(m_meshSkeletonJoint);
+
+				}
+			}
+		}
+	}
 }
 
-void GlWidget::renderMesh(Mesh* mesh, Vector3 color)
+void GlWidget::renderMesh(Mesh* mesh)
 {
 
 	// bind mesh vbo, texture and shader program
-	mesh->bind(m_worldMatrix * *(m_camera.getMatrix()), color);
+	mesh->bind(m_worldMatrix * *(m_camera.getMatrix()));
 
 	// draw all faces with GL_TRIANGLE_FAN
 	for(int faceIndex = 0; faceIndex < mesh->getFaceCount(); faceIndex++)
 		glDrawArrays(GL_TRIANGLE_FAN, faceIndex * 4, 4);
+
+	update();
 
 	// release mesh vbo and texture
 	mesh->release();

@@ -54,9 +54,11 @@ private:
 	QOpenGLShaderProgram* m_shaderProgram_confidence;
 	void createShaderProgram();
 
-	std::list<Mesh*> m_meshPool;
 	void createMeshes();
-	void renderMesh(Mesh* mesh, Vector3 color);
+	void renderMesh(Mesh* mesh);
+
+	Primitive* m_meshSkeletonJoint;
+	Primitive* m_meshGrid;
 
 	Camera m_camera;
 	QPoint lastPos;

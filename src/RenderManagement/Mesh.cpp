@@ -38,7 +38,7 @@ void Mesh::init()
 
 }
 
-void Mesh::bind(QMatrix4x4 matrix, Vector3 color)
+void Mesh::bind(QMatrix4x4 matrix)
 {
 
 	// bind vbo and texture to current opengl context
@@ -48,7 +48,7 @@ void Mesh::bind(QMatrix4x4 matrix, Vector3 color)
 
 	// assign matrix to shader programm
 	m_shaderProgram->setUniformValue("matrix", matrix * m_matrix);
-	m_shaderProgram->setUniformValue("color", color.m_xyz.x, color.m_xyz.y, color.m_xyz.z, 1.0f);
+	m_shaderProgram->setUniformValue("color", m_diffuseColor.m_xyz.x, m_diffuseColor.m_xyz.y, m_diffuseColor.m_xyz.z, 1.0f);
 	// enable shader program attributes set by bindAttributeLocation()
 	m_shaderProgram->enableAttributeArray(0);
 	m_shaderProgram->enableAttributeArray(1);
@@ -89,5 +89,12 @@ void Mesh::setActive(bool active)
 {
 
 	m_isActive = active;
+
+}
+
+void Mesh::setDiffuseColor(Vector3 color)
+{
+
+	m_diffuseColor = color;
 
 }
