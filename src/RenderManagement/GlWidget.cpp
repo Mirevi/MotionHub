@@ -274,7 +274,7 @@ void GlWidget::mouseMoveEvent(QMouseEvent* event)
 
 	// add difference to camera rotation if left mouse button is pressed
 	if (event->buttons() & Qt::LeftButton)
-		m_camera.addRotation(Vector3(dy, dx, 0));
+		m_camera.addRotation(Vector3(dy, -1 * dx, 0));
 		
 	lastPos = event->pos();
 
