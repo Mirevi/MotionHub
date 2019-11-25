@@ -90,6 +90,8 @@ void MainWindow::updateHirachy()
 
 	}
 
+	ui->treeWidget_hirachy->update();
+
 }
 
 void MainWindow::updateInspector()
