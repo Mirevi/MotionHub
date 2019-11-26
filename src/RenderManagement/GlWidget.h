@@ -57,7 +57,8 @@ private:
 	void createMeshes();
 	void renderMesh(Mesh* mesh);
 
-	Primitive* m_meshSkeletonJoint;
+	Primitive* m_meshSkeletonJoint01;
+	Primitive* m_meshSkeletonJoint02;
 	Primitive* m_meshGrid;
 
 	Camera m_camera;

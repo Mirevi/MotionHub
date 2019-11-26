@@ -54,7 +54,7 @@ void MainWindow::updateHirachy()
 	ui->treeWidget_hirachy->clear();
 	// clear item pool
 	m_hirachyItemPool.clear();
-	 
+
 	// loop throgh all tracker
 	for (auto itTrackerPool = m_refTrackerPool->begin(); itTrackerPool != m_refTrackerPool->end(); itTrackerPool++)
 	{
@@ -88,10 +88,10 @@ void MainWindow::updateHirachy()
 		//expand all items in hirachy
 		m_hirachyItemPool.rbegin()->first->setExpanded(true);
 
+
+		ui->treeWidget_hirachy->update();
+
 	}
-
-	ui->treeWidget_hirachy->update();
-
 }
 
 void MainWindow::updateInspector()
@@ -208,6 +208,31 @@ void MainWindow::drawInspector()
 	addRowToInspector("countDetectedSkeleton", std::to_string(trackerProperties->countDetectedSkeleton));
 	ui->tableWidget_inspector->item(4, 0)->setFlags(Qt::NoItemFlags);
 	ui->tableWidget_inspector->item(4, 1)->setFlags(Qt::NoItemFlags);
+
+
+
+
+
+	//add position offset to inspector
+	addRowToInspector("position Offset", trackerProperties->positionOffset.toString());
+	ui->tableWidget_inspector->item(5, 0)->setFlags(Qt::NoItemFlags);
+
+
+	//add rotation offset to inspector
+	addRowToInspector("rotation Offset", trackerProperties->rotationOffset.toString());
+	ui->tableWidget_inspector->item(6, 0)->setFlags(Qt::NoItemFlags);
+
+
+
+	//add scale offset to inspector
+	addRowToInspector("scale Offset", trackerProperties->scaleOffset.toString());
+	ui->tableWidget_inspector->item(7, 0)->setFlags(Qt::NoItemFlags);
+
+
+
+
+
+
 
 	// inspector has items
 	m_isInspectorInit = true;

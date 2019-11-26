@@ -38,5 +38,7 @@ public:
 	static Vector3 one();
 
 	std::string toString();
+	//std::string toString(int decimal);
+
 
 };

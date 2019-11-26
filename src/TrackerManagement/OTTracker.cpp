@@ -2,6 +2,8 @@
 #include "DataHandlerManager.h"
 
 
+
+
 OTTracker::OTTracker()
 {
 
@@ -19,6 +21,11 @@ OTTracker::OTTracker(int id)
 
 	//default is enabled
 	m_properties->isEnabled = true;
+
+
+	m_properties->positionOffset = Vector3(0, 0, 0);
+	m_properties->rotationOffset = Vector3(0, 0, 0);
+	m_properties->scaleOffset = Vector3(-1, 1, 1);
 }
 
 
@@ -180,8 +187,10 @@ void OTTracker::stop()
 	//is not tracking, so the update loop exits 
 	m_properties->isTracking = false;
 
-	delete m_dataHandlerManager;
+	m_client->Uninitialize();
+
 	delete m_client;
+	delete m_dataHandlerManager;
 
 	Console::log("Deleted Object");
 

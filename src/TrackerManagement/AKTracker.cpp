@@ -15,6 +15,11 @@ AKTracker::AKTracker(int id, int idCam)
 
 	m_properties->isEnabled = true;
 
+	m_properties->positionOffset = Vector3(0, 950, 0);
+	m_properties->rotationOffset = Vector3(0, 0, 0);
+	m_properties->scaleOffset = Vector3(-1000, -1000, 1000);
+
+
 	// initialize azure kinect camera and body tracker
 	init();
 

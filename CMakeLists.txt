@@ -44,6 +44,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 #FIND_PACKAGE( OSCPack REQUIRED )
 #FIND_PACKAGE( Cudnn REQUIRED )
 
+
 #QT5ForMireviMotionHub -> downloads dependency from web
 set(EXPECTED_SHA256 60ba1f48a17c9156fbe70d25c1bc65df9cf4a1d93d172d115ac85253e23d9c2d )
 set(CURRENT_DEPS_PATH ${CMAKE_BINARY_DIR}/../deps/qt-5920/)
@@ -59,6 +60,8 @@ set( URL https://claymore.mirevi.com/netnatsdk-2100.zip )
 getsTheDepsNameFromURL("${URL}")
 set(CHECK_IF_DEPS_EXIST "${CURRENT_DEPS_PATH}/include/NatNetClient.h")
 FIND_PACKAGE( NatNetSDK REQUIRED )
+
+FIND_PACKAGE( Eigen REQUIRED )
 
 # AzureKinectBodyTrackingSDK
 set( EXPECTED_SHA256 2e43d8ac508b56e3ddc816302ddf90f4f051b76cdea95d7b643f755f354db4d3 ) 

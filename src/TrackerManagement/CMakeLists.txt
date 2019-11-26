@@ -22,6 +22,8 @@
 include_directories(${CMAKE_BINARY_DIR}/src/MotionHubUtil)
 link_directories(${CMAKE_BINARY_DIR}/lib)
 
+#eigen
+include_directories(${CMAKE_BINARY_DIR}/src ${Eigen_INCLUDE_DIR})
 
 include_directories(${CMAKE_BINARY_DIR}/src 
 ${K4A_INCLUDE_DIR}

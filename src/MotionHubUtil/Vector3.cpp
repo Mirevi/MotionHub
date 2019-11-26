@@ -87,3 +87,10 @@ std::string Vector3::toString()
 	return "(" + std::to_string(m_xyz.x) + ", " + std::to_string(m_xyz.y) + ", " + std::to_string(m_xyz.z) + ")";
 
 }
+
+//std::string Vector3::toString(int decimal)
+//{
+//
+//	return "(" + std::to_string(m_xyz.x) + ", " + std::to_string(m_xyz.y) + ", " + std::to_string(m_xyz.z) + ")";
+//
+//}

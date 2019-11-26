@@ -44,6 +44,10 @@ public:
 		 */
 		int countDetectedSkeleton = 0;
 
+		Vector3 positionOffset = Vector3(0, 0, 0);
+		Vector3 rotationOffset = Vector3(0, 0, 0);
+		Vector3 scaleOffset = Vector3(1, 1, 1);
+
 	};
 
 	/*!
