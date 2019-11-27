@@ -1,12 +1,12 @@
 #include "Joint.h"
 
-#include <Core>
+
 
 
 Joint::Joint()
 {
 
-	Eigen::Matrix4f test;
+
 
 }
 

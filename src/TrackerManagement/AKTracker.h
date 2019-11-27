@@ -8,6 +8,8 @@
 #include "k4abt.h"
 
 #include "MotionHubUtil/Console.h"
+#include "MotionHubUtil/math.h"
+
 
 #include "Tracker.h"
 #include <list>

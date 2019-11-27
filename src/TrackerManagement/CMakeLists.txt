@@ -22,15 +22,17 @@
 include_directories(${CMAKE_BINARY_DIR}/src/MotionHubUtil)
 link_directories(${CMAKE_BINARY_DIR}/lib)
 
-#eigen
-include_directories(${CMAKE_BINARY_DIR}/src ${Eigen_INCLUDE_DIR})
+
 
 include_directories(${CMAKE_BINARY_DIR}/src 
 ${K4A_INCLUDE_DIR}
 ${K4ABT_INCLUDE_DIR}
 ${Cudnn_INCLUDE_DIR}
 ${NATNET_SDK_INCLUDE_DIR}
+${EIGEN_INCLUDE_DIR}
 )
+
+
 
 
 link_directories(${CMAKE_BINARY_DIR}/lib

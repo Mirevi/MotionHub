@@ -3,6 +3,10 @@
 #include <iostream>
 #include <thread>
 
+#include <Core>
+#include <Geometry>
+#include <Dense>
+
 #include "MotionHubUtil/Skeleton.h"
 #include "MotionHubUtil/Console.h"
 
@@ -149,5 +153,7 @@ protected:
 	virtual void track() = 0;
 
 	int m_trackingCycles = 0;
+
+	Eigen::Matrix4f* m_offsetMatrix;
 
 };

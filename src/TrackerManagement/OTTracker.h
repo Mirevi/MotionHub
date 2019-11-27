@@ -1,6 +1,7 @@
 #pragma once
 #include "Tracker.h"
 #include "MotionHubUtil/Console.h"
+#include "MotionHubUtil/math.h"
 
 #include "NatNetTypes.h"
 #include "NatNetClient.h"
@@ -9,7 +10,10 @@
 #include <iostream>
 #include <map>
 #include <chrono>
-#include <algorithm> 
+#include <algorithm>
+
+
+//using namespace Eigen;
 
 
 /*!

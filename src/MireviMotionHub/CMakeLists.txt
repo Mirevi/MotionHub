@@ -20,7 +20,7 @@ include_directories(${CMAKE_BINARY_DIR}/src ${NATNET_SDK_INCLUDE_DIR})
 link_directories(${CMAKE_BINARY_DIR}/lib "${CMAKE_BINARY_DIR}/lib" ${NATNET_SDK_LIBRARIES_DIR})
 
 #eigen
-include_directories(${CMAKE_BINARY_DIR}/src ${Eigen_INCLUDE_DIR})
+include_directories(${CMAKE_BINARY_DIR}/src ${EIGEN_INCLUDE_DIR})
 
 #include internal source files
 include_directories(${CMAKE_BINARY_DIR}/src/MotionHubUtil)

@@ -20,6 +20,10 @@ AKTracker::AKTracker(int id, int idCam)
 	m_properties->scaleOffset = Vector3(-1000, -1000, 1000);
 
 
+
+	//create new Matrix and set it to be identity
+	m_offsetMatrix = transformMatrix(m_properties->positionOffset, m_properties->rotationOffset, m_properties->scaleOffset);
+
 	// initialize azure kinect camera and body tracker
 	init();
 

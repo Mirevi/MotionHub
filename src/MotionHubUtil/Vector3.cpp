@@ -25,6 +25,7 @@ Vector3::Vector3(Position xyz)
 
 }
 
+
 Vector3 Vector3::zero()
 {
 

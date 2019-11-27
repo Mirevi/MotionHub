@@ -3,6 +3,8 @@
 #include "ConfigDllExportMotionHubUtil.h"
 
 #include <string>
+#include <Core>
+
 
 /*!
  * \class Vector3

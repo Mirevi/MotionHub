@@ -22,10 +22,20 @@ OTTracker::OTTracker(int id)
 	//default is enabled
 	m_properties->isEnabled = true;
 
-
+	//set the offset values
 	m_properties->positionOffset = Vector3(0, 0, 0);
 	m_properties->rotationOffset = Vector3(0, 0, 0);
-	m_properties->scaleOffset = Vector3(-1, 1, 1);
+	m_properties->scaleOffset	 = Vector3(-1, 1, 1);
+
+
+
+	//create new Matrix and set it to be identity
+	m_offsetMatrix = transformMatrix(m_properties->positionOffset, m_properties->rotationOffset, m_properties->scaleOffset);
+
+
+	//using cout to test because there is not .toString()
+	std::cout << *m_offsetMatrix << std::endl;
+
 }
 
 
@@ -298,6 +308,12 @@ Skeleton* OTTracker::parseSkeleton(sSkeletonData skeleton, int id)
 		// convert from k4a Vectors and quaternions into custom vectors
 		Vector3 pos = Vector3(-rbData.x, rbData.y, rbData.z);
 		Vector4 rot = Vector4(rbData.qx, rbData.qy, rbData.qz, rbData.qw);
+
+
+
+
+
+
 
 		//confidence values are not transmitted, default confidence is High
 		Joint::JointConfidence confidence = Joint::JointConfidence::HIGH;
