@@ -5,6 +5,7 @@
 
 #include <iostream>
 #include <list>
+#include <vector>
 
 #include <QtWidgets/QOpenGLWidget>
 #include <QtGui/QOpenGLFunctions>
@@ -18,6 +19,8 @@
 
 #include "Mesh.h"
 #include "Primitive.h"
+#include "Cube.h"
+#include "SkeletonMesh.h"
 
 #include "Camera.h"
 
@@ -56,8 +59,9 @@ private:
 
 	void createMeshes();
 	void renderMesh(Mesh* mesh);
+	void renderSkeletonMesh(SkeletonMesh* skeletonMesh);
 
-	Primitive* m_meshSkeletonJoint;
+	Cube* m_meshJoint;
 	Primitive* m_meshGrid;
 
 	Camera m_camera;
@@ -68,6 +72,8 @@ private:
 	TrackerManager* m_refTrackerManager;
 
 	Vector3 m_colorRed, m_colorYellow, m_colorGreen;
+
+	std::map<std::pair<std::string, int>, std::vector<SkeletonMesh>> m_skeletonMeshPool;
 
 };
 

@@ -12,7 +12,7 @@ Mesh::~Mesh()
 
 	// destroy vbo and delete texture
 	m_vbo.destroy();
-	delete m_texture;
+	//delete m_texture;
 
 }
 

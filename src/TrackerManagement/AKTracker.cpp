@@ -42,6 +42,7 @@ void AKTracker::init()
 	m_tracker = NULL;
 	// setup tracker config
 	m_configTracker = K4ABT_TRACKER_CONFIG_DEFAULT;
+	//m_configTracker.cpu_only_mode = true;
 	// create tracker
 	VERIFY_K4A_FUNCTION(k4abt_tracker_create(&m_calibrationCam, m_configTracker, &m_tracker), "[cam id = " + std::to_string(m_idCam) + "] + Body tracker initialization failed!");
 
