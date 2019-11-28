@@ -1,6 +1,6 @@
 #include "Primitive.h"
 
-Primitive::Primitive(Type type, QOpenGLShaderProgram* shaderProgram, QOpenGLTexture* texture, Vector3 position, Vector3 scalar)
+Primitive::Primitive(Type type, QOpenGLShaderProgram* shaderProgram, QOpenGLTexture* texture, Vector3f position, Vector3f scalar)
 {
 
 	// create verts based on primitive type
@@ -75,7 +75,7 @@ Primitive::Primitive(Type type, QOpenGLShaderProgram* shaderProgram, QOpenGLText
 	// scale object
 	scale(scalar);
 	// translate object to start position
-	translate(Vector3(position.m_xyz.x * ((float)1 / scalar.m_xyz.x), position.m_xyz.y * ((float)1 / scalar.m_xyz.y), position.m_xyz.z * ((float)1 / scalar.m_xyz.z)));
+	translate(Vector3f(position.x() * ((float)1 / scalar.x()), position.y() * ((float)1 / scalar.y()), position.z() * ((float)1 / scalar.z())));
 
 }
 

@@ -6,7 +6,7 @@ class Bone : public Mesh
 {
 
 public:
-	Bone(QOpenGLShaderProgram* shaderProgram, QOpenGLTexture* texture, Vector3 position = Vector3::zero(), Vector3 scalar = Vector3::one());
+	Bone(QOpenGLShaderProgram* shaderProgram, QOpenGLTexture* texture, Vector3f position = Vector3f(0, 0, 0), Vector3f scalar = Vector3f(1, 1, 1));
 	~Bone();
 
 };

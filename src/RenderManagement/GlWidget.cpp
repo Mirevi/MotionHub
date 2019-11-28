@@ -6,9 +6,9 @@ GlWidget::GlWidget(TrackerManager* trackerManager, QWidget* parent)	: QOpenGLWid
 	// set background color to black
 	m_clearColor = Qt::black;
 
-	m_colorRed = Vector3(0.75f, 0.0f, 0.0f);
-	m_colorYellow = Vector3(0.75f, 0.75f, 0.0f);
-	m_colorGreen = Vector3(0.0f, 0.75f, 0.0f);
+	m_colorRed = Vector3f(0.75f, 0.0f, 0.0f);
+	m_colorYellow = Vector3f(0.75f, 0.75f, 0.0f);
+	m_colorGreen = Vector3f(0.0f, 0.75f, 0.0f);
 
 	m_refTrackerManager = trackerManager;
 
@@ -63,10 +63,10 @@ void GlWidget::createMeshes()
 {
 
 	// create grid
-	m_meshGrid = new Primitive(Primitive::Plane, m_shaderProgram_texture, new QOpenGLTexture(QImage(QString(":/ressources/images/tex_grid_10x10.png"))), Vector3::zero(), Vector3(5.0f, 5.0f, 5.0f));
+	m_meshGrid = new Primitive(Primitive::Plane, m_shaderProgram_texture, new QOpenGLTexture(QImage(QString(":/ressources/images/tex_grid_10x10.png"))), Vector3f(0, 0, 0), Vector3f(5.0f, 5.0f, 5.0f));
 	// create cube for joint visualisation
-	m_meshSkeletonJoint01 = new Primitive(Primitive::Cube, m_shaderProgram_confidence, new QOpenGLTexture(QImage(QString(":/ressources/images/tex_uvChecker_01.png"))), Vector3(0.0f, 0.0f, 0.0f), Vector3(0.05f, 0.05f, 0.05f));
-	m_meshSkeletonJoint02 = new Primitive(Primitive::Cube, m_shaderProgram_confidence, new QOpenGLTexture(QImage(QString(":/ressources/images/tex_uvChecker_01.png"))), Vector3(0.0f, 0.0f, 0.0f), Vector3(0.05f, 0.05f, 0.05f));
+	m_meshSkeletonJoint01 = new Primitive(Primitive::Cube, m_shaderProgram_confidence, new QOpenGLTexture(QImage(QString(":/ressources/images/tex_uvChecker_01.png"))), Vector3f(0.0f, 0.0f, 0.0f), Vector3f(0.05f, 0.05f, 0.05f));
+	m_meshSkeletonJoint02 = new Primitive(Primitive::Cube, m_shaderProgram_confidence, new QOpenGLTexture(QImage(QString(":/ressources/images/tex_uvChecker_01.png"))), Vector3f(0.0f, 0.0f, 0.0f), Vector3f(0.05f, 0.05f, 0.05f));
 
 }
 
@@ -181,7 +181,7 @@ void GlWidget::paintGL()
 	// set camera to perspective with current aspect ratio
 	m_camera.getMatrix()->perspective(60.0f, ((float)this-> width() / this->height()), 0.01f, 25.0f);
 	// translate and rotate camera
-	m_camera.translate(Vector3(0.0f, -2.0f, -5.0f));
+	m_camera.translate(Vector3f(0.0f, -2.0f, -5.0f));
 	// rotate camera based on mouse movement
 	m_camera.rotate();
 
@@ -225,7 +225,7 @@ void GlWidget::paintGL()
 								break;
 
 							case Joint::NONE:
-								m_meshSkeletonJoint01->setDiffuseColor(Vector3::one());
+								m_meshSkeletonJoint01->setDiffuseColor(Vector3f(1, 1, 1));
 								break;
 
 							default:
@@ -292,7 +292,7 @@ void GlWidget::mouseMoveEvent(QMouseEvent* event)
 
 	// add difference to camera rotation if left mouse button is pressed
 	if (event->buttons() & Qt::LeftButton)
-		m_camera.addRotation(Vector3(dy, -1 * dx, 0));
+		m_camera.addRotation(Vector3f(dy, -1 * dx, 0));
 		
 	lastPos = event->pos();
 

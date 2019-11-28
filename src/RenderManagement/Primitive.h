@@ -12,7 +12,7 @@ class Primitive : public Mesh
 			Cube
 		};
 
-		Primitive(Type type, QOpenGLShaderProgram* shaderProgram, QOpenGLTexture* texture, Vector3 position = Vector3::zero(), Vector3 scale = Vector3::one());
+		Primitive(Type type, QOpenGLShaderProgram* shaderProgram, QOpenGLTexture* texture, Vector3f position = Vector3f(0, 0, 0), Vector3f scale = Vector3f(1, 1, 1));
 		~Primitive();
 
 };

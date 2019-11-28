@@ -68,7 +68,7 @@ private:
 
 	TrackerManager* m_refTrackerManager;
 
-	Vector3 m_colorRed, m_colorYellow, m_colorGreen;
+	Vector3f m_colorRed, m_colorYellow, m_colorGreen;
 
 };
 

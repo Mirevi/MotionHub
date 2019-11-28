@@ -1,6 +1,6 @@
 #include "Bone.h"
 
-Bone::Bone(QOpenGLShaderProgram* shaderProgram, QOpenGLTexture* texture, Vector3 position, Vector3 scalar)
+Bone::Bone(QOpenGLShaderProgram* shaderProgram, QOpenGLTexture* texture, Vector3f position, Vector3f scalar)
 {
 
 	// cube verts
@@ -38,7 +38,7 @@ Bone::Bone(QOpenGLShaderProgram* shaderProgram, QOpenGLTexture* texture, Vector3
 	// scale object
 	scale(scalar);
 	// translate object to start position
-	translate(Vector3(position.m_xyz.x * ((float)1 / scalar.m_xyz.x), position.m_xyz.y * ((float)1 / scalar.m_xyz.y), position.m_xyz.z * ((float)1 / scalar.m_xyz.z)));
+	translate(Vector3f(position.x() * ((float)1 / scalar.x()), position.y() * ((float)1 / scalar.y()), position.z() * ((float)1 / scalar.z())));
 
 }
 

@@ -3,12 +3,14 @@
 #include <iostream>
 #include <thread>
 
-#include <Core>
-#include <Geometry>
-#include <Dense>
+//#include <Core>
+//#include <Geometry>
+//#include <Dense>
 
 #include "MotionHubUtil/Skeleton.h"
 #include "MotionHubUtil/Console.h"
+#include "MotionHubUtil/MMHmath.h"
+
 
 /*!
  * \class Tracker
@@ -48,9 +50,9 @@ public:
 		 */
 		int countDetectedSkeleton = 0;
 
-		Vector3 positionOffset = Vector3(0, 0, 0);
-		Vector3 rotationOffset = Vector3(0, 0, 0);
-		Vector3 scaleOffset = Vector3(1, 1, 1);
+		Vector4f positionOffset = Vector4f(0, 0, 0);
+		Vector4f rotationOffset = Vector4f(0, 0, 0);
+		Vector4f scaleOffset = Vector4f(1, 1, 1);
 
 	};
 

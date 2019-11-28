@@ -214,18 +214,18 @@ void MainWindow::drawInspector()
 
 
 	//add position offset to inspector
-	addRowToInspector("position Offset", trackerProperties->positionOffset.toString());
+	addRowToInspector("position Offset", toString(trackerProperties->positionOffset));
 	ui->tableWidget_inspector->item(5, 0)->setFlags(Qt::NoItemFlags);
 
 
 	//add rotation offset to inspector
-	addRowToInspector("rotation Offset", trackerProperties->rotationOffset.toString());
+	addRowToInspector("rotation Offset", toString(trackerProperties->rotationOffset));
 	ui->tableWidget_inspector->item(6, 0)->setFlags(Qt::NoItemFlags);
 
 
 
 	//add scale offset to inspector
-	addRowToInspector("scale Offset", trackerProperties->scaleOffset.toString());
+	addRowToInspector("scale Offset", toString(trackerProperties->scaleOffset));
 	ui->tableWidget_inspector->item(7, 0)->setFlags(Qt::NoItemFlags);
 
 

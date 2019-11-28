@@ -15,14 +15,18 @@ AKTracker::AKTracker(int id, int idCam)
 
 	m_properties->isEnabled = true;
 
-	m_properties->positionOffset = Vector3(0, 950, 0);
-	m_properties->rotationOffset = Vector3(0, 0, 0);
-	m_properties->scaleOffset = Vector3(-1000, -1000, 1000);
+	m_properties->positionOffset = Vector3f(0.0f, 950.0f, 0.0f);
+	m_properties->rotationOffset = Vector3f(0.0f, 0.0f, 0.0f);
+	m_properties->scaleOffset = Vector3f(-0.001f, -0.001f, 0.001f);
 
 
 
 	//create new Matrix and set it to be identity
 	m_offsetMatrix = transformMatrix(m_properties->positionOffset, m_properties->rotationOffset, m_properties->scaleOffset);
+
+
+	//using cout to test because there is not .toString()
+	std::cout << *m_offsetMatrix << std::endl;
 
 	// initialize azure kinect camera and body tracker
 	init();
@@ -276,8 +280,8 @@ Skeleton* AKTracker::parseSkeleton(k4abt_skeleton_t* skeleton, int id)
 
 
 		// convert from k4a Vectors and quaternions into custom vectors with coordinate transformation
-		Vector3 pos = Vector3(-skeleton_position.xyz.x / 1000, (-skeleton_position.xyz.y + 950) / 1000, skeleton_position.xyz.z / 1000);
-		Vector4 rot = Vector4(skeleton_rotation.wxyz.x, skeleton_rotation.wxyz.y, skeleton_rotation.wxyz.z, skeleton_rotation.wxyz.w);
+		Vector4f pos = Vector4f(skeleton_position.xyz.x, skeleton_position.xyz.y, skeleton_position.xyz.z, 1);
+		Quaternionf rot = Quaternionf(skeleton_rotation.wxyz.w, skeleton_rotation.wxyz.x, skeleton_rotation.wxyz.y, skeleton_rotation.wxyz.z);
 
 		// get joint confidence level from azure kinect body tracker API
 		Joint::JointConfidence confidence = (Joint::JointConfidence)skeleton->joints[jointIndex].confidence_level;
@@ -376,7 +380,7 @@ Skeleton* AKTracker::parseSkeleton(k4abt_skeleton_t* skeleton, int id)
 	}
 
 	// set body heigt based on head position
-	currSkeleton->setHeight(currSkeleton->m_joints[Joint::HEAD].getJointPosition().m_xyz.y);
+	currSkeleton->setHeight(currSkeleton->m_joints[Joint::HEAD].getJointPosition().y());
 
 	// Console::log("Parsed skeleton with id = " + std::to_string(currSkeleton->getSid()) + " joint count = " + std::to_string(currSkeleton->m_joints.size()) + ".");
 

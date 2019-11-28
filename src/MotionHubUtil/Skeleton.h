@@ -6,6 +6,7 @@
 #include <map>
 
 
+
 /*!
  * \class Skeleton
  *
@@ -34,7 +35,7 @@ public:
 	 * \param position
 	 * \param rotation
 	 */
-	void parseJoint(Joint::JointNames name, Vector3 position, Vector4 rotation, Joint::JointConfidence confidence);
+	void parseJoint(Joint::JointNames name, Vector4f position, Quaternionf rotation, Joint::JointConfidence confidence);
 	int getSid();
 
 	std::map<Joint::JointNames, Joint> m_joints;

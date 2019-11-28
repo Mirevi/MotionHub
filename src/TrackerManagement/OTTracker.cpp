@@ -23,9 +23,9 @@ OTTracker::OTTracker(int id)
 	m_properties->isEnabled = true;
 
 	//set the offset values
-	m_properties->positionOffset = Vector3(0, 0, 0);
-	m_properties->rotationOffset = Vector3(0, 0, 0);
-	m_properties->scaleOffset	 = Vector3(-1, 1, 1);
+	m_properties->positionOffset = Vector3f(0.0f, 0.0f, 0.0f);
+	m_properties->rotationOffset = Vector3f(0.0f, 90.0f, 0.0f);
+	m_properties->scaleOffset	 = Vector3f(-1.0f, 1.0f, 1.0f);
 
 
 
@@ -306,9 +306,8 @@ Skeleton* OTTracker::parseSkeleton(sSkeletonData skeleton, int id)
 
 
 		// convert from k4a Vectors and quaternions into custom vectors
-		Vector3 pos = Vector3(-rbData.x, rbData.y, rbData.z);
-		Vector4 rot = Vector4(rbData.qx, rbData.qy, rbData.qz, rbData.qw);
-
+		Vector4f pos = *m_offsetMatrix * Vector4f(-rbData.x, rbData.y, rbData.z, 1);
+		Quaternionf rot = Quaternionf(rbData.qw, rbData.qx, rbData.qy, rbData.qz);
 
 
 
@@ -416,7 +415,7 @@ Skeleton* OTTracker::parseSkeleton(sSkeletonData skeleton, int id)
 
 
 	// set body heigt based on head position
-	currSkeleton->setHeight(currSkeleton->m_joints[Joint::HEAD].getJointPosition().m_xyz.y);
+	currSkeleton->setHeight(currSkeleton->m_joints[Joint::HEAD].getJointPosition().y());
 
 
 	//return skeleto with correct joint poses
