@@ -22,6 +22,7 @@ OTTracker::OTTracker(int id)
 	//default is enabled
 	m_properties->isEnabled = true;
 
+
 	//set the offset values
 	m_properties->positionOffset = Vector3f(0.0f, 0.0f, 0.0f);
 	m_properties->rotationOffset = Vector3f(0.0f, 90.0f, 0.0f);
