@@ -2,6 +2,7 @@
 
 #include "Entity.h"
 #include "Cube.h"
+#include "MotionHubUtil/Console.h"
 
 class SkeletonMesh : public Entity
 {

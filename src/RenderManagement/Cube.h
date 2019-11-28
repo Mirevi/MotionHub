@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Mesh.h"
+#include "MotionHubUtil/Console.h"
 
 class Cube : public Mesh
 {
