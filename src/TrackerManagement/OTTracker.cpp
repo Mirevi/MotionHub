@@ -30,7 +30,7 @@ OTTracker::OTTracker(int id)
 
 
 	//create new Matrix and set it to be identity
-	m_offsetMatrix = transformMatrix(m_properties->positionOffset, m_properties->rotationOffset, m_properties->scaleOffset);
+	m_offsetMatrix = &transformMatrix(m_properties->positionOffset, m_properties->rotationOffset, m_properties->scaleOffset);
 
 
 	//using cout to test because there is not .toString()
@@ -306,7 +306,7 @@ Skeleton* OTTracker::parseSkeleton(sSkeletonData skeleton, int id)
 
 
 		// convert from k4a Vectors and quaternions into custom vectors
-		Vector4f pos = *m_offsetMatrix * Vector4f(-rbData.x, rbData.y, rbData.z, 1);
+		Vector4f pos = /**m_offsetMatrix **/ Vector4f(-rbData.x, rbData.y, rbData.z, 1);
 		Quaternionf rot = Quaternionf(rbData.qw, rbData.qx, rbData.qy, rbData.qz);
 
 

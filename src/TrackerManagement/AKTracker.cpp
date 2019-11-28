@@ -22,7 +22,7 @@ AKTracker::AKTracker(int id, int idCam)
 
 
 	//create new Matrix and set it to be identity
-	m_offsetMatrix = transformMatrix(m_properties->positionOffset, m_properties->rotationOffset, m_properties->scaleOffset);
+	m_offsetMatrix = &transformMatrix(m_properties->positionOffset, m_properties->rotationOffset, m_properties->scaleOffset);
 
 
 	//using cout to test because there is not .toString()

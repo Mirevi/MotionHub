@@ -20,29 +20,29 @@ using namespace Eigen;
  * \param scale scale vector
  * \return transform matrix
  */
-static Eigen::Matrix4f* transformMatrix(Vector3f position, Vector3f rotation, Vector3f scale)
+static Matrix4f transformMatrix(Vector3f position, Vector3f rotation, Vector3f scale)
 {
 
 	//create matrix pointer
-	Eigen::Matrix4f* mTransform = new Eigen::Matrix4f();
+	Matrix4f mTransform;
 
-	//create rotation quaternion with rotation values
-	Quaternionf qRotation;
-	qRotation = AngleAxisf(rotation.x() / 180 * M_PI, Vector3f::UnitX()) *
-				AngleAxisf(rotation.y() / 180 * M_PI, Vector3f::UnitY()) *
-				AngleAxisf(rotation.z() / 180 * M_PI, Vector3f::UnitZ());
+	////create rotation quaternion with rotation values
+	//Quaternionf qRotation;
+	//qRotation = AngleAxisf(rotation.x() / 180 * M_PI, Vector3f::UnitX()) *
+	//			AngleAxisf(rotation.y() / 180 * M_PI, Vector3f::UnitY()) *
+	//			AngleAxisf(rotation.z() / 180 * M_PI, Vector3f::UnitZ());
 
 
 	//convert quaternion to 3x3 matrix and scale with scaling values
-	Matrix3f mRotation = qRotation.matrix() * Scaling(scale.x(), scale.y(), scale.z());
+	//Matrix3f mRotation = qRotation.toRotationMatrix() * Scaling(scale.x(), scale.y(), scale.z());
 	
 
 	// Set to Identity to make bottom row of Matrix 0,0,0,1
-	mTransform->setIdentity();
+	mTransform.setIdentity();
 
-	//insert rot/scale matrix and translation vector into final matrix
-	mTransform->block<3, 3>(0, 0) = mRotation;
-	mTransform->block<3, 1>(0, 3) = position;
+	////insert rot/scale matrix and translation vector into final matrix
+	//mTransform.block<3, 3>(0, 0) = mRotation;
+	//mTransform.block<3, 1>(0, 3) = position;
 
 
 	return mTransform;

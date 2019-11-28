@@ -19,7 +19,7 @@
  *
  * \author Kester Evers and Eric Jansen
  */
-class Tracker
+class  Tracker
 {
 
 public:
@@ -50,9 +50,9 @@ public:
 		 */
 		int countDetectedSkeleton = 0;
 
-		Vector4f positionOffset = Vector4f(0, 0, 0);
-		Vector4f rotationOffset = Vector4f(0, 0, 0);
-		Vector4f scaleOffset = Vector4f(1, 1, 1);
+		Vector4f positionOffset;
+		Vector4f rotationOffset;
+		Vector4f scaleOffset;
 
 	};
 
@@ -156,6 +156,6 @@ protected:
 
 	int m_trackingCycles = 0;
 
-	Eigen::Matrix4f* m_offsetMatrix;
+	Matrix4f* m_offsetMatrix;
 
 };
