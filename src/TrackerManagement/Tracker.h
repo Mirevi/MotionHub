@@ -50,9 +50,9 @@ public:
 		 */
 		int countDetectedSkeleton = 0;
 
-		Vector4f positionOffset;
-		Vector4f rotationOffset;
-		Vector4f scaleOffset;
+		Vector3f positionOffset;
+		Vector3f rotationOffset;
+		Vector3f scaleOffset;
 
 	};
 
