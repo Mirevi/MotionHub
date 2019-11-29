@@ -3,7 +3,7 @@
 #include "ConfigDllExportMotionHubUtil.h"
 
 #include <string>
-#include <Core>
+#include "MMHmath.h"
 
 
 /*!
@@ -40,7 +40,7 @@ public:
 	static Vector3 one();
 
 	std::string toString();
-	//std::string toString(int decimal);
 
+	Vector3f toEigen();
 
 };

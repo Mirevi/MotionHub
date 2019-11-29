@@ -89,9 +89,9 @@ std::string Vector3::toString()
 
 }
 
-//std::string Vector3::toString(int decimal)
-//{
-//
-//	return "(" + std::to_string(m_xyz.x) + ", " + std::to_string(m_xyz.y) + ", " + std::to_string(m_xyz.z) + ")";
-//
-//}
+Vector3f Vector3::toEigen()
+{
+
+	return Vector3f(m_xyz.x, m_xyz.y, m_xyz.z);
+
+}
