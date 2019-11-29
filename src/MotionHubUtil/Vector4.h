@@ -3,6 +3,8 @@
 #include "ConfigDllExportMotionHubUtil.h"
 
 #include <string>
+#include "MMHmath.h"
+
 
 /*!
  * \class Vector4
@@ -24,6 +26,8 @@ public:
 	Vector4();
 	Vector4(float x, float y, float z, float w);
 	Vector4(Position xyzw);
+	Vector4(Vector4f vector);
+	Vector4(Quaternionf quaternion);
 
 	Position m_xyzw;
 

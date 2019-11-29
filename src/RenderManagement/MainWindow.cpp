@@ -54,7 +54,7 @@ void MainWindow::updateHirachy()
 	ui->treeWidget_hirachy->clear();
 	// clear item pool
 	m_hirachyItemPool.clear();
-
+	 
 	// loop throgh all tracker
 	for (auto itTrackerPool = m_refTrackerPool->begin(); itTrackerPool != m_refTrackerPool->end(); itTrackerPool++)
 	{
@@ -88,10 +88,10 @@ void MainWindow::updateHirachy()
 		//expand all items in hirachy
 		m_hirachyItemPool.rbegin()->first->setExpanded(true);
 
-
-		ui->treeWidget_hirachy->update();
-
 	}
+
+	ui->treeWidget_hirachy->update();
+
 }
 
 void MainWindow::updateInspector()
@@ -212,24 +212,38 @@ void MainWindow::drawInspector()
 
 
 
-
-	//add position offset to inspector
-	addRowToInspector("position Offset", toString(trackerProperties->positionOffset));
+	//add position offset rows to inspector
+	addRowToInspector("position offset x", std::to_string(trackerProperties->positionOffset.x()));
 	ui->tableWidget_inspector->item(5, 0)->setFlags(Qt::NoItemFlags);
-
-
-	//add rotation offset to inspector
-	addRowToInspector("rotation Offset", toString(trackerProperties->rotationOffset));
+	ui->tableWidget_inspector->item(5, 1)->setFlags(Qt::NoItemFlags);
+	addRowToInspector("position offset y", std::to_string(trackerProperties->positionOffset.y()));
 	ui->tableWidget_inspector->item(6, 0)->setFlags(Qt::NoItemFlags);
-
-
-
-	//add scale offset to inspector
-	addRowToInspector("scale Offset", toString(trackerProperties->scaleOffset));
+	ui->tableWidget_inspector->item(6, 1)->setFlags(Qt::NoItemFlags);
+	addRowToInspector("position offset z", std::to_string(trackerProperties->positionOffset.z()));
 	ui->tableWidget_inspector->item(7, 0)->setFlags(Qt::NoItemFlags);
+	ui->tableWidget_inspector->item(7, 1)->setFlags(Qt::NoItemFlags);
 
+	//add rotation offset rows to inspector
+	addRowToInspector("rotation offset x", std::to_string(trackerProperties->rotationOffset.x()));
+	ui->tableWidget_inspector->item(8, 0)->setFlags(Qt::NoItemFlags);
+	ui->tableWidget_inspector->item(8, 1)->setFlags(Qt::NoItemFlags);
+	addRowToInspector("rotation offset y", std::to_string(trackerProperties->rotationOffset.y()));
+	ui->tableWidget_inspector->item(9, 0)->setFlags(Qt::NoItemFlags);
+	ui->tableWidget_inspector->item(9, 1)->setFlags(Qt::NoItemFlags);
+	addRowToInspector("rotation offset z", std::to_string(trackerProperties->rotationOffset.z()));
+	ui->tableWidget_inspector->item(10, 0)->setFlags(Qt::NoItemFlags);
+	ui->tableWidget_inspector->item(10, 1)->setFlags(Qt::NoItemFlags);
 
-
+	//add scale offset rows to inspector
+	addRowToInspector("scale offset x", std::to_string(trackerProperties->scaleOffset.x()));
+	ui->tableWidget_inspector->item(11, 0)->setFlags(Qt::NoItemFlags);
+	ui->tableWidget_inspector->item(11, 1)->setFlags(Qt::NoItemFlags);
+	addRowToInspector("scale offset y", std::to_string(trackerProperties->scaleOffset.y()));
+	ui->tableWidget_inspector->item(12, 0)->setFlags(Qt::NoItemFlags);
+	ui->tableWidget_inspector->item(12, 1)->setFlags(Qt::NoItemFlags);
+	addRowToInspector("scale offset z", std::to_string(trackerProperties->scaleOffset.z()));
+	ui->tableWidget_inspector->item(13, 0)->setFlags(Qt::NoItemFlags);
+	ui->tableWidget_inspector->item(13, 1)->setFlags(Qt::NoItemFlags);
 
 
 

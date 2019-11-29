@@ -4,7 +4,7 @@
 #define GLWIDGET_H
 
 #include <iostream>
-#include <list>
+#include <vector>
 
 #include <QtWidgets/QOpenGLWidget>
 #include <QtGui/QOpenGLFunctions>
@@ -17,12 +17,16 @@
 #include "TrackerManagement/TrackerManager.h"
 
 #include "Mesh.h"
-#include "Primitive.h"
+#include "Plane.h"
+#include "Cube.h"
+#include "SkeletonMesh.h"
 
 #include "Camera.h"
 
 QT_FORWARD_DECLARE_CLASS(QOpenGLShaderProgram);
 QT_FORWARD_DECLARE_CLASS(QOpenGLTexture)
+
+using Framerate = std::chrono::duration<std::chrono::steady_clock::rep, std::ratio<1, 60>>;
 
 class GlWidget : public QOpenGLWidget, protected QOpenGLFunctions
 {
@@ -56,10 +60,9 @@ private:
 
 	void createMeshes();
 	void renderMesh(Mesh* mesh);
+	void renderSkeletonMesh(SkeletonMesh* skeletonMesh);
 
-	Primitive* m_meshSkeletonJoint01;
-	Primitive* m_meshSkeletonJoint02;
-	Primitive* m_meshGrid;
+	Plane* m_meshGrid;
 
 	Camera m_camera;
 	QPoint lastPos;
@@ -68,7 +71,9 @@ private:
 
 	TrackerManager* m_refTrackerManager;
 
-	Vector3f m_colorRed, m_colorYellow, m_colorGreen;
+	Vector3 m_colorRed, m_colorYellow, m_colorGreen;
+
+	std::map<std::pair<std::string, int>, std::vector<SkeletonMesh>> m_trackerRefPool;
 
 };
 

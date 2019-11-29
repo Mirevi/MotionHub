@@ -1,4 +1,5 @@
 #include "AKTracker.h"
+#include "MotionHubUtil/Vector3.h"
 
 // default constructor
 AKTracker::AKTracker(int id, int idCam)
@@ -15,18 +16,18 @@ AKTracker::AKTracker(int id, int idCam)
 
 	m_properties->isEnabled = true;
 
-	m_properties->positionOffset = Vector3f(0.0f, 950.0f, 0.0f);
+	m_properties->positionOffset = Vector3f(0.0f, 0.95f, 2.2f);
 	m_properties->rotationOffset = Vector3f(0.0f, 0.0f, 0.0f);
-	m_properties->scaleOffset = Vector3f(-0.001f, -0.001f, 0.001f);
+	m_properties->scaleOffset = Vector3f(-0.001f, -0.001f, -0.001f);
 
 
 
 	//create new Matrix and set it to be identity
-	m_offsetMatrix = &transformMatrix(m_properties->positionOffset, m_properties->rotationOffset, m_properties->scaleOffset);
+	m_offsetMatrix = transformMatrix(m_properties->positionOffset, m_properties->rotationOffset, m_properties->scaleOffset);
 
 
 	//using cout to test because there is not .toString()
-	std::cout << *m_offsetMatrix << std::endl;
+	std::cout << m_offsetMatrix << std::endl;
 
 	// initialize azure kinect camera and body tracker
 	init();
@@ -280,7 +281,7 @@ Skeleton* AKTracker::parseSkeleton(k4abt_skeleton_t* skeleton, int id)
 
 
 		// convert from k4a Vectors and quaternions into custom vectors with coordinate transformation
-		Vector4f pos = Vector4f(skeleton_position.xyz.x, skeleton_position.xyz.y, skeleton_position.xyz.z, 1);
+		Vector4f pos = m_offsetMatrix * Vector4f(skeleton_position.xyz.x, skeleton_position.xyz.y, skeleton_position.xyz.z, 1);
 		Quaternionf rot = Quaternionf(skeleton_rotation.wxyz.w, skeleton_rotation.wxyz.x, skeleton_rotation.wxyz.y, skeleton_rotation.wxyz.z);
 
 		// get joint confidence level from azure kinect body tracker API
@@ -292,6 +293,9 @@ Skeleton* AKTracker::parseSkeleton(k4abt_skeleton_t* skeleton, int id)
 
 			case 0:
 				currSkeleton->m_joints.insert({ Joint::HIPS, Joint(pos, rot, confidence) });
+
+				Console::log(Vector3(pos).toString());
+
 				break;
 
 			case 1:

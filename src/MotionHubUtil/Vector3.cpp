@@ -25,6 +25,24 @@ Vector3::Vector3(Position xyz)
 
 }
 
+Vector3::Vector3(Vector3f vector)
+{
+
+	m_xyz.x = vector.x();
+	m_xyz.y = vector.y();
+	m_xyz.z = vector.z();
+
+}
+
+Vector3::Vector3(Vector4f vector)
+{
+
+	m_xyz.x = vector.x();
+	m_xyz.y = vector.y();
+	m_xyz.z = vector.z();
+
+}
+
 
 Vector3 Vector3::zero()
 {

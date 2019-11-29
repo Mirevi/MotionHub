@@ -25,17 +25,17 @@ OTTracker::OTTracker(int id)
 
 	//set the offset values
 	m_properties->positionOffset = Vector3f(0.0f, 0.0f, 0.0f);
-	m_properties->rotationOffset = Vector3f(0.0f, 90.0f, 0.0f);
+	m_properties->rotationOffset = Vector3f(0.0f, 0.0f, 0.0f);
 	m_properties->scaleOffset	 = Vector3f(-1.0f, 1.0f, 1.0f);
 
-
+	m_offsetMatrix.setIdentity();
 
 	//create new Matrix and set it to be identity
-	m_offsetMatrix = &transformMatrix(m_properties->positionOffset, m_properties->rotationOffset, m_properties->scaleOffset);
+	m_offsetMatrix = transformMatrix(m_properties->positionOffset, m_properties->rotationOffset, m_properties->scaleOffset);
 
 
 	//using cout to test because there is not .toString()
-	std::cout << *m_offsetMatrix << std::endl;
+	std::cout << m_offsetMatrix << std::endl;
 
 }
 
@@ -305,13 +305,9 @@ Skeleton* OTTracker::parseSkeleton(sSkeletonData skeleton, int id)
 		//temporary OptiTrack joint data object
 		sRigidBodyData rbData = skeleton.RigidBodyData[j];
 
-
 		// convert from k4a Vectors and quaternions into custom vectors
-		Vector4f pos = /**m_offsetMatrix **/ Vector4f(-rbData.x, rbData.y, rbData.z, 1);
+		Vector4f pos = m_offsetMatrix * Vector4f(rbData.x, rbData.y, rbData.z, 1);
 		Quaternionf rot = Quaternionf(rbData.qw, rbData.qx, rbData.qy, rbData.qz);
-
-
-
 
 
 

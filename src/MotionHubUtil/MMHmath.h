@@ -1,12 +1,13 @@
 #pragma once
 
 #include "ConfigDllExportMotionHubUtil.h"
-
+#include <iostream>
 
 #include <Dense>
 //#include <src/plugins/BlockMethods.h>
 
 #define M_PI 3.141592653589793238462643383279502884L // pi
+#define Quaternion Quaternionf
 
 using namespace Eigen;
 
@@ -26,23 +27,22 @@ static Matrix4f transformMatrix(Vector3f position, Vector3f rotation, Vector3f s
 	//create matrix pointer
 	Matrix4f mTransform;
 
-	////create rotation quaternion with rotation values
-	//Quaternionf qRotation;
-	//qRotation = AngleAxisf(rotation.x() / 180 * M_PI, Vector3f::UnitX()) *
-	//			AngleAxisf(rotation.y() / 180 * M_PI, Vector3f::UnitY()) *
-	//			AngleAxisf(rotation.z() / 180 * M_PI, Vector3f::UnitZ());
 
-
-	//convert quaternion to 3x3 matrix and scale with scaling values
-	//Matrix3f mRotation = qRotation.toRotationMatrix() * Scaling(scale.x(), scale.y(), scale.z());
+	//create 3x3 matrix from euler angles
+	Matrix3f mRotation;
+	mRotation = AngleAxisf(rotation.x() / 180.0f * M_PI, Vector3f::UnitX())
+			  * AngleAxisf(rotation.y() / 180.0f * M_PI, Vector3f::UnitY())
+			  * AngleAxisf(rotation.z() / 180.0f * M_PI, Vector3f::UnitZ());
 	
+	//scale rotation matrix with scaling values
+	mRotation *= Scaling(scale.x(), scale.y(), scale.z());
 
-	// Set to Identity to make bottom row of Matrix 0,0,0,1
+	//Set to Identity to make bottom row of Matrix 0,0,0,1
 	mTransform.setIdentity();
 
-	////insert rot/scale matrix and translation vector into final matrix
-	//mTransform.block<3, 3>(0, 0) = mRotation;
-	//mTransform.block<3, 1>(0, 3) = position;
+	//insert rot/scale matrix and translation vector into final matrix
+	mTransform.block<3, 3>(0, 0) = mRotation;
+	mTransform.block<3, 1>(0, 3) = position;
 
 
 	return mTransform;

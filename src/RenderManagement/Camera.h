@@ -9,10 +9,10 @@ class Camera : public Entity
 		Camera();
 		~Camera();
 
-		void addRotation(Vector3f rotation);
+		void addRotation(Vector3 rotation);
 		void rotate();
 
 	private:
-		Vector3f m_rotation;
+		Vector3 m_rotation;
 
 };

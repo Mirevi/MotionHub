@@ -23,7 +23,7 @@ class Mesh : public Entity
 		bool isActive();
 		void setActive(bool active);
 
-		void setDiffuseColor(Vector3f color);
+		void setDiffuseColor(Vector3 color);
 
 	protected:
 		QVector<GLfloat> m_vertexData;
@@ -37,6 +37,6 @@ class Mesh : public Entity
 
 		bool m_isActive = true;
 
-		Vector3f m_diffuseColor = Vector3f(1, 1, 1);
+		Vector3 m_diffuseColor = Vector3::one();
 
 };

@@ -27,6 +27,27 @@ Vector4::Vector4(Position xyzw)
 
 }
 
+Vector4::Vector4(Vector4f vector)
+{
+
+	m_xyzw.x = vector.x();
+	m_xyzw.y = vector.y();
+	m_xyzw.z = vector.z();
+	m_xyzw.w = vector.w();
+
+}
+
+Vector4::Vector4(Quaternionf quaternion)
+{
+
+	m_xyzw.x = quaternion.x();
+	m_xyzw.y = quaternion.y();
+	m_xyzw.z = quaternion.z();
+	m_xyzw.w = quaternion.w();
+
+}
+
+
 Vector4 Vector4::operator + (Vector4 const vector4)
 {
 

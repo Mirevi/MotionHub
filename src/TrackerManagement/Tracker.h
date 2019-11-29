@@ -156,6 +156,6 @@ protected:
 
 	int m_trackingCycles = 0;
 
-	Matrix4f* m_offsetMatrix;
+	Matrix4f m_offsetMatrix;
 
 };
