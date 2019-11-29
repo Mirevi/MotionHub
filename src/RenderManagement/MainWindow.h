@@ -9,7 +9,11 @@
 #include "QtCore/qstring.h"
 #include "QtWidgets/qtreewidget.h"
 #include "QtWidgets/qtablewidget.h"
+#include "QtWidgets/qlineedit.h"
+//#include <QString>
 #include "GlWidget.h"
+
+#include <math.h>
 
 
 #define GET_VARIABLE_NAME(Variable) (#Variable)
@@ -149,5 +153,10 @@ private:
 	 *  switches icon of the start/stop button to the opposite icon
 	 */
 	void toggleTrackingButtons();
+
+
+
+	QString toQString(float _float);
+
 
 };

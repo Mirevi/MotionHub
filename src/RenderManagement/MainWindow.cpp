@@ -212,38 +212,40 @@ void MainWindow::drawInspector()
 
 
 
+
+
 	//add position offset rows to inspector
-	addRowToInspector("position offset x", std::to_string(trackerProperties->positionOffset.x()));
+	addRowToInspector("position offset x", "");
 	ui->tableWidget_inspector->item(5, 0)->setFlags(Qt::NoItemFlags);
-	ui->tableWidget_inspector->item(5, 1)->setFlags(Qt::NoItemFlags);
-	addRowToInspector("position offset y", std::to_string(trackerProperties->positionOffset.y()));
+	ui->tableWidget_inspector->setCellWidget(5, 1, new QLineEdit(toQString(trackerProperties->positionOffset.x()), this));
+	addRowToInspector("position offset y", "");
 	ui->tableWidget_inspector->item(6, 0)->setFlags(Qt::NoItemFlags);
-	ui->tableWidget_inspector->item(6, 1)->setFlags(Qt::NoItemFlags);
-	addRowToInspector("position offset z", std::to_string(trackerProperties->positionOffset.z()));
+	ui->tableWidget_inspector->setCellWidget(6, 1, new QLineEdit(toQString(trackerProperties->positionOffset.y()), this));
+	addRowToInspector("position offset z", "");
 	ui->tableWidget_inspector->item(7, 0)->setFlags(Qt::NoItemFlags);
-	ui->tableWidget_inspector->item(7, 1)->setFlags(Qt::NoItemFlags);
+	ui->tableWidget_inspector->setCellWidget(7, 1, new QLineEdit(toQString(trackerProperties->positionOffset.z()), this));
 
 	//add rotation offset rows to inspector
-	addRowToInspector("rotation offset x", std::to_string(trackerProperties->rotationOffset.x()));
+	addRowToInspector("rotation offset x", "");
 	ui->tableWidget_inspector->item(8, 0)->setFlags(Qt::NoItemFlags);
-	ui->tableWidget_inspector->item(8, 1)->setFlags(Qt::NoItemFlags);
-	addRowToInspector("rotation offset y", std::to_string(trackerProperties->rotationOffset.y()));
+	ui->tableWidget_inspector->setCellWidget(8, 1, new QLineEdit(toQString(trackerProperties->rotationOffset.x()), this));
+	addRowToInspector("rotation offset y", "");
 	ui->tableWidget_inspector->item(9, 0)->setFlags(Qt::NoItemFlags);
-	ui->tableWidget_inspector->item(9, 1)->setFlags(Qt::NoItemFlags);
-	addRowToInspector("rotation offset z", std::to_string(trackerProperties->rotationOffset.z()));
+	ui->tableWidget_inspector->setCellWidget(9, 1, new QLineEdit(toQString(trackerProperties->rotationOffset.y()), this));
+	addRowToInspector("rotation offset z", "");
 	ui->tableWidget_inspector->item(10, 0)->setFlags(Qt::NoItemFlags);
-	ui->tableWidget_inspector->item(10, 1)->setFlags(Qt::NoItemFlags);
+	ui->tableWidget_inspector->setCellWidget(10, 1, new QLineEdit(toQString(trackerProperties->rotationOffset.z()), this));
 
 	//add scale offset rows to inspector
-	addRowToInspector("scale offset x", std::to_string(trackerProperties->scaleOffset.x()));
+	addRowToInspector("scale offset x", "");
 	ui->tableWidget_inspector->item(11, 0)->setFlags(Qt::NoItemFlags);
-	ui->tableWidget_inspector->item(11, 1)->setFlags(Qt::NoItemFlags);
-	addRowToInspector("scale offset y", std::to_string(trackerProperties->scaleOffset.y()));
+	ui->tableWidget_inspector->setCellWidget(11, 1, new QLineEdit(toQString(trackerProperties->scaleOffset.x()), this));
+	addRowToInspector("scale offset y", "");
 	ui->tableWidget_inspector->item(12, 0)->setFlags(Qt::NoItemFlags);
-	ui->tableWidget_inspector->item(12, 1)->setFlags(Qt::NoItemFlags);
-	addRowToInspector("scale offset z", std::to_string(trackerProperties->scaleOffset.z()));
+	ui->tableWidget_inspector->setCellWidget(12, 1, new QLineEdit(toQString(trackerProperties->scaleOffset.y()), this));
+	addRowToInspector("scale offset z", "");
 	ui->tableWidget_inspector->item(13, 0)->setFlags(Qt::NoItemFlags);
-	ui->tableWidget_inspector->item(13, 1)->setFlags(Qt::NoItemFlags);
+	ui->tableWidget_inspector->setCellWidget(13, 1, new QLineEdit(toQString(trackerProperties->scaleOffset.z()), this));
 
 
 
@@ -466,3 +468,20 @@ void MainWindow::toggleTrackingButtons()
 }
 
 #pragma endregion Utils
+
+
+
+
+QString MainWindow::toQString(float _float)
+{
+
+	//rounds to two decimals
+	float temp = roundf(_float * 100) / 100;
+
+	QString qstr = QString::fromUtf8(std::to_string(temp).c_str());
+
+	//Console::log(qstr);
+
+	return qstr;
+
+}
