@@ -2,6 +2,8 @@
 #include "DataHandlerManager.h"
 
 
+
+
 OTTracker::OTTracker()
 {
 
@@ -19,6 +21,14 @@ OTTracker::OTTracker(int id)
 
 	//default is enabled
 	m_properties->isEnabled = true;
+
+
+	//set the offset values
+	setPositionOffset(Vector3f(0.0f, 0.0f, 0.0f));
+	setRotationOffset(Vector3f(0.0f, 0.0f, 0.0f));
+	setScaleOffset(Vector3f(-1.0f, 1.0f, 1.0f));
+
+
 }
 
 
@@ -180,8 +190,10 @@ void OTTracker::stop()
 	//is not tracking, so the update loop exits 
 	m_properties->isTracking = false;
 
-	delete m_dataHandlerManager;
+	m_client->Uninitialize();
+
 	delete m_client;
+	delete m_dataHandlerManager;
 
 	Console::log("Deleted Object");
 
@@ -285,10 +297,11 @@ Skeleton* OTTracker::parseSkeleton(sSkeletonData skeleton, int id)
 		//temporary OptiTrack joint data object
 		sRigidBodyData rbData = skeleton.RigidBodyData[j];
 
-
 		// convert from k4a Vectors and quaternions into custom vectors
-		Vector3 pos = Vector3(-rbData.x, rbData.y, rbData.z);
-		Vector4 rot = Vector4(rbData.qx, rbData.qy, rbData.qz, rbData.qw);
+		Vector4f pos = m_offsetMatrix * Vector4f(rbData.x, rbData.y, rbData.z, 1);
+		Quaternionf rot = Quaternionf(rbData.qw, rbData.qx, rbData.qy, rbData.qz);
+
+
 
 		//confidence values are not transmitted, default confidence is High
 		Joint::JointConfidence confidence = Joint::JointConfidence::HIGH;
@@ -300,6 +313,8 @@ Skeleton* OTTracker::parseSkeleton(sSkeletonData skeleton, int id)
 
 		case 0:
 			currSkeleton->m_joints.insert({ Joint::HIPS, Joint(pos, rot, confidence) });
+
+			//Console::log(toString(pos));
 
 			break;
 
@@ -391,7 +406,7 @@ Skeleton* OTTracker::parseSkeleton(sSkeletonData skeleton, int id)
 
 
 	// set body heigt based on head position
-	currSkeleton->setHeight(currSkeleton->m_joints[Joint::HEAD].getJointPosition().m_xyz.y);
+	currSkeleton->setHeight(currSkeleton->m_joints[Joint::HEAD].getJointPosition().y());
 
 
 	//return skeleto with correct joint poses
@@ -455,5 +470,5 @@ void OTTracker::cleanSkeletonPool()
 // MessageHandler receives NatNet error/debug messages
 void MessageHandler(int msgType, char* msg)
 {
-	Console::log("OTTracker::MessageHandler(): " + std::string(msg));
+	//Console::log("OTTracker::MessageHandler(): " + std::string(msg));
 }

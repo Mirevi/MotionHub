@@ -1,6 +1,8 @@
 #include "MainWindow.h"
 #include "ui_mainwindow.h"
 
+
+
 // default constructor
 MainWindow::MainWindow(TrackerManager* trackerManager, QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
@@ -209,6 +211,87 @@ void MainWindow::drawInspector()
 	ui->tableWidget_inspector->item(4, 0)->setFlags(Qt::NoItemFlags);
 	ui->tableWidget_inspector->item(4, 1)->setFlags(Qt::NoItemFlags);
 
+	m_inputFieldPool.clear();
+
+	//add input lines for the offset matrix to the Inspector
+
+	//create new QLineEdit Object and assingn text to it
+	m_inputFieldPool.insert({ "posX", new QLineEdit(toQString(trackerProperties->positionOffset.x()), this) });
+	m_inputFieldPool.at("posX")->setValidator(new QDoubleValidator(-1000.0f, 1000.0f, 4, this));
+	//connect its textEdited() signal with the correct slot
+	connect(m_inputFieldPool.at("posX"), SIGNAL(textEdited(const QString &)), this, SLOT(slotInspectorInputPosX(QString)));
+	//add new row to the table widget
+	addRowToInspector("position offset x", "");
+	//add QLineEdit object to cell
+	ui->tableWidget_inspector->setCellWidget(5, 1, m_inputFieldPool.at("posX"));
+
+	//repeat for y and z
+	m_inputFieldPool.insert({ "posY", new QLineEdit(toQString(trackerProperties->positionOffset.y()), this) });
+	m_inputFieldPool.at("posY")->setValidator(new QDoubleValidator(-1000.0f, 1000.0f, 4, this));
+	connect(m_inputFieldPool.at("posY"), SIGNAL(textEdited(const QString &)), this, SLOT(slotInspectorInputPosY(QString)));
+	addRowToInspector("position offset y", "");
+	ui->tableWidget_inspector->setCellWidget(6, 1, m_inputFieldPool.at("posY"));
+
+	m_inputFieldPool.insert({ "posZ", new QLineEdit(toQString(trackerProperties->positionOffset.z()), this) });
+	m_inputFieldPool.at("posZ")->setValidator(new QDoubleValidator(-1000.0f, 1000.0f, 4, this));
+	connect(m_inputFieldPool.at("posZ"), SIGNAL(textEdited(const QString &)), this, SLOT(slotInspectorInputPosZ(QString)));
+	addRowToInspector("position offset z", "");
+	ui->tableWidget_inspector->setCellWidget(7, 1, m_inputFieldPool.at("posZ"));
+
+
+	//repeat for rotation
+	m_inputFieldPool.insert({ "rotX", new QLineEdit(toQString(trackerProperties->rotationOffset.x()), this) });
+	m_inputFieldPool.at("rotX")->setValidator(new QDoubleValidator(-1000.0f, 1000.0f, 4, this));
+	connect(m_inputFieldPool.at("rotX"), SIGNAL(textEdited(const QString &)), this, SLOT(slotInspectorInputRotX(QString)));
+	addRowToInspector("rotation offset x", "");
+	ui->tableWidget_inspector->setCellWidget(8, 1, m_inputFieldPool.at("rotX"));
+
+	m_inputFieldPool.insert({ "rotY", new QLineEdit(toQString(trackerProperties->rotationOffset.y()), this) });
+	m_inputFieldPool.at("rotY")->setValidator(new QDoubleValidator(-1000.0f, 1000.0f, 4, this));
+	connect(m_inputFieldPool.at("rotY"), SIGNAL(textEdited(const QString &)), this, SLOT(slotInspectorInputRotY(QString)));
+	addRowToInspector("rotation offset y", "");
+	ui->tableWidget_inspector->setCellWidget(9, 1, m_inputFieldPool.at("rotY"));
+
+	m_inputFieldPool.insert({ "rotZ", new QLineEdit(toQString(trackerProperties->rotationOffset.z()), this) });
+	m_inputFieldPool.at("rotZ")->setValidator(new QDoubleValidator(-1000.0f, 1000.0f, 4, this));
+	connect(m_inputFieldPool.at("rotZ"), SIGNAL(textEdited(const QString &)), this, SLOT(slotInspectorInputRotZ(QString)));
+	addRowToInspector("rotation offset z", "");
+	ui->tableWidget_inspector->setCellWidget(10, 1, m_inputFieldPool.at("rotZ"));
+
+
+	//repeat for scale
+	m_inputFieldPool.insert({ "scaleX", new QLineEdit(toQString(trackerProperties->scaleOffset.x()), this) });
+	m_inputFieldPool.at("scaleX")->setValidator(new QDoubleValidator(-1000.0f, 1000.0f, 4, this));
+	connect(m_inputFieldPool.at("scaleX"), SIGNAL(textEdited(const QString &)), this, SLOT(slotInspectorInputScaleX(QString)));
+	addRowToInspector("scale offset x", "");
+	ui->tableWidget_inspector->setCellWidget(11, 1, m_inputFieldPool.at("scaleX"));
+
+	m_inputFieldPool.insert({ "scaleY", new QLineEdit(toQString(trackerProperties->scaleOffset.y()), this) });
+	m_inputFieldPool.at("scaleY")->setValidator(new QDoubleValidator(-1000.0f, 1000.0f, 4, this));
+	connect(m_inputFieldPool.at("scaleY"), SIGNAL(textEdited(const QString &)), this, SLOT(slotInspectorInputScaleY(QString)));
+	addRowToInspector("scale offset y", "");
+	ui->tableWidget_inspector->setCellWidget(12, 1, m_inputFieldPool.at("scaleY"));
+
+	m_inputFieldPool.insert({ "scaleZ", new QLineEdit(toQString(trackerProperties->scaleOffset.z()), this) });
+	m_inputFieldPool.at("scaleZ")->setValidator(new QDoubleValidator(-1000.0f, 1000.0f, 4, this));
+	connect(m_inputFieldPool.at("scaleZ"), SIGNAL(textEdited(const QString &)), this, SLOT(slotInspectorInputScaleZ(QString)));
+	addRowToInspector("scale offset z", "");
+	ui->tableWidget_inspector->setCellWidget(13, 1, m_inputFieldPool.at("scaleZ"));
+
+
+	//disable item selection on all table cells
+	for (int i = 5; i < 14; i++)
+	{
+
+		ui->tableWidget_inspector->item(i, 0)->setFlags(Qt::NoItemFlags);
+
+	}
+
+
+
+
+
+
 	// inspector has items
 	m_isInspectorInit = true;
 
@@ -356,28 +439,52 @@ void MainWindow::slotSelectTracker(QModelIndex index)
 
 void MainWindow::slotInspectorItemChanged(QTableWidgetItem* item)
 {
-	
-	// check if changed item is isEnabled checkbox of tracker
-	if (m_isInspectorInit && item->row() == 3)
+	if (m_isInspectorInit)
 	{
 
-		// set the curser to wait circle
-		QApplication::setOverrideCursor(Qt::WaitCursor);
-		QApplication::processEvents();
+		switch (item->row())
+		{
+			case 3:
+			{
 
-		// enabled or disable tracker based on check state
-		if (item->checkState() == Qt::Checked)
-			m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->enable();
-		else if (item->checkState() == Qt::Unchecked)
-			m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->disable();
+				// set the curser to wait circle
+				QApplication::setOverrideCursor(Qt::WaitCursor);
+				QApplication::processEvents();
 
-		// update ui
-		update();
+				// enabled or disable tracker based on check state
+				if (item->checkState() == Qt::Checked)
+				{
 
-		// reset cursor to default arrow
-		QApplication::restoreOverrideCursor();
-		QApplication::processEvents();
+					m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->enable();
 
+				}
+				else if (item->checkState() == Qt::Unchecked)
+				{
+
+					m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->disable();
+
+				}
+				// update ui
+				update();
+
+				// reset cursor to default arrow
+				QApplication::restoreOverrideCursor();
+				QApplication::processEvents();
+
+				break;
+			}
+
+			case 5:
+			{
+
+
+				break;
+			}
+
+			default:
+				break;
+
+		}
 	}
 }
 
@@ -390,6 +497,267 @@ void MainWindow::on_actionExit_triggered()
 }
 
 #pragma endregion Slots
+
+#pragma region
+
+void MainWindow::slotInspectorInputPosX(QString text)
+{
+
+	std::string txt = text.toLocal8Bit().constData();
+
+	float posX;
+
+	try
+	{
+
+		posX = std::stof(txt);
+
+	}
+	catch (const std::exception&)
+	{
+
+		Console::logError("MainWindow::slotInspectorInputPosZ(): Error parsing position offset x value to float!");
+
+		m_inputFieldPool.at("posX")->setText("0");
+		posX = 0.0f;
+
+	}
+
+	Vector3f pos = m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->getProperties()->positionOffset;
+
+	m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->setPositionOffset(Vector3f(posX, pos.y(), pos.z()));
+
+}
+
+void MainWindow::slotInspectorInputPosY(QString text)
+{
+
+	std::string txt = text.toLocal8Bit().constData();
+
+	float posY;
+
+	try
+	{
+
+		posY = std::stof(txt);
+
+	}
+	catch (const std::exception&)
+	{
+
+		Console::logError("MainWindow::slotInspectorInputPosZ(): Error parsing position offset y value to float!");
+
+		m_inputFieldPool.at("posY")->setText("0");
+		posY = 0.0f;
+
+	}
+
+	Vector3f pos = m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->getProperties()->positionOffset;
+
+	m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->setPositionOffset(Vector3f(pos.x(), posY, pos.z()));
+
+}
+
+void MainWindow::slotInspectorInputPosZ(QString text)
+{
+
+	std::string txt = text.toLocal8Bit().constData();
+
+	float posZ;
+
+	try
+	{
+		posZ = std::stof(txt);
+	}
+	catch (const std::exception&)
+	{
+
+		Console::logError("MainWindow::slotInspectorInputPosZ(): Error parsing position offset z value to float!");
+
+		m_inputFieldPool.at("posZ")->setText("0");
+		posZ = 0.0f;
+
+	}
+
+	Vector3f pos = m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->getProperties()->positionOffset;
+
+	m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->setPositionOffset(Vector3f(pos.x(), pos.y(), posZ));
+
+}
+
+
+void MainWindow::slotInspectorInputRotX(QString text)
+{
+
+	std::string txt = text.toLocal8Bit().constData();
+
+	float rotX;
+
+	try
+	{
+		rotX = std::stof(txt);
+	}
+	catch (const std::exception&)
+	{
+
+		Console::logError("MainWindow::slotInspectorInputPosZ(): Error parsing position offset z value to float!");
+
+		m_inputFieldPool.at("rotX")->setText("0");
+		rotX = 0.0f;
+
+	}
+
+	Vector3f rot = m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->getProperties()->rotationOffset;
+
+	m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->setRotationOffset(Vector3f(rotX, rot.y(), rot.z()));
+
+}
+
+void MainWindow::slotInspectorInputRotY(QString text)
+{
+
+	std::string txt = text.toLocal8Bit().constData();
+
+	float rotY;
+
+	try
+	{
+
+		rotY = std::stof(txt);
+
+	}
+	catch (const std::exception&)
+	{
+
+		Console::logError("MainWindow::slotInspectorInputPosZ(): Error parsing position offset z value to float!");
+
+		m_inputFieldPool.at("rotY")->setText("0");
+		rotY = 0.0f;
+
+	}
+
+	Vector3f rot = m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->getProperties()->rotationOffset;
+
+	m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->setRotationOffset(Vector3f(rot.x(), rotY, rot.z()));
+
+}
+
+void MainWindow::slotInspectorInputRotZ(QString text)
+{
+
+	std::string txt = text.toLocal8Bit().constData();
+
+	float rotZ;
+
+	try
+	{
+
+		rotZ = std::stof(txt);
+
+	}
+	catch (const std::exception&)
+	{
+
+		Console::logError("MainWindow::slotInspectorInputPosZ(): Error parsing position offset z value to float!");
+
+		m_inputFieldPool.at("rotZ")->setText("0");
+		rotZ = 0.0f;
+
+	}
+
+	Vector3f rot = m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->getProperties()->rotationOffset;
+
+	m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->setRotationOffset(Vector3f(rot.x(), rot.y(), rotZ));
+
+}
+
+
+void MainWindow::slotInspectorInputScaleX(QString text)
+{
+
+	std::string txt = text.toLocal8Bit().constData();
+
+	float scaleX;
+
+	try
+	{
+
+		scaleX = std::stof(txt);
+
+	}
+	catch (const std::exception&)
+	{
+
+		Console::logError("MainWindow::slotInspectorInputPosZ(): Error parsing position offset z value to float!");
+
+		m_inputFieldPool.at("scaleX")->setText("0");
+		scaleX = 0.0f;
+
+	}
+
+	Vector3f scale = m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->getProperties()->scaleOffset;
+
+	m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->setScaleOffset(Vector3f(scaleX, scale.y(), scale.z()));
+
+}
+
+void MainWindow::slotInspectorInputScaleY(QString text)
+{
+
+	std::string txt = text.toLocal8Bit().constData();
+
+	float scaleY;
+
+	try
+	{
+
+		scaleY = std::stof(txt);
+
+	}
+	catch (const std::exception&)
+	{
+
+		Console::logError("MainWindow::slotInspectorInputPosZ(): Error parsing position offset z value to float!");
+
+		m_inputFieldPool.at("scaleY")->setText("0");
+		scaleY = 0.0f;
+
+	}
+
+	Vector3f scale = m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->getProperties()->scaleOffset;
+
+	m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->setScaleOffset(Vector3f(scale.x(), scaleY, scale.z()));
+
+}
+
+void MainWindow::slotInspectorInputScaleZ(QString text)
+{
+
+	std::string txt = text.toLocal8Bit().constData();
+
+	float scaleZ;
+
+	try
+	{
+		scaleZ = std::stof(txt);
+	}
+	catch (const std::exception&)
+	{
+
+		Console::logError("MainWindow::slotInspectorInputPosZ(): Error parsing position offset z value to float!");
+
+		m_inputFieldPool.at("scaleZ")->setText("0");
+		scaleZ = 0.0f;
+
+	}
+
+	Vector3f scale = m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->getProperties()->scaleOffset;
+
+	m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->setScaleOffset(Vector3f(scale.x(), scale.y(), scaleZ));
+
+}
+
+#pragma endregion InspectorInputSlots
 
 #pragma region
 
@@ -427,3 +795,18 @@ void MainWindow::toggleTrackingButtons()
 }
 
 #pragma endregion Utils
+
+
+
+
+QString MainWindow::toQString(float value)
+{
+
+
+
+	QString qstr = QString::fromUtf8(std::to_string(value).c_str());
+
+
+	return qstr;
+
+}

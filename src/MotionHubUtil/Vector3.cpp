@@ -25,6 +25,25 @@ Vector3::Vector3(Position xyz)
 
 }
 
+Vector3::Vector3(Vector3f vector)
+{
+
+	m_xyz.x = vector.x();
+	m_xyz.y = vector.y();
+	m_xyz.z = vector.z();
+
+}
+
+Vector3::Vector3(Vector4f vector)
+{
+
+	m_xyz.x = vector.x();
+	m_xyz.y = vector.y();
+	m_xyz.z = vector.z();
+
+}
+
+
 Vector3 Vector3::zero()
 {
 
@@ -85,5 +104,12 @@ std::string Vector3::toString()
 {
 
 	return "(" + std::to_string(m_xyz.x) + ", " + std::to_string(m_xyz.y) + ", " + std::to_string(m_xyz.z) + ")";
+
+}
+
+Vector3f Vector3::toEigen()
+{
+
+	return Vector3f(m_xyz.x, m_xyz.y, m_xyz.z);
 
 }

@@ -4,6 +4,9 @@
 include_directories(${CMAKE_BINARY_DIR}/src/MotionHubUtil)
 link_directories(${CMAKE_BINARY_DIR}/lib)
 
+#eigen
+include_directories(${CMAKE_BINARY_DIR}/src ${EIGEN_INCLUDE_DIR})
+
 file(GLOB_RECURSE GestureManagement_HEADER "${CMAKE_CURRENT_SRC_DIR}" *.h)
 file(GLOB_RECURSE GestureManagement_SRC "${CMAKE_CURRENT_SRC_DIR}" *.cpp)
 add_library(GestureManagement SHARED ${GestureManagement_HEADER} ${GestureManagement_SRC})

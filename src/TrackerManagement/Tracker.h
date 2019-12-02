@@ -3,8 +3,14 @@
 #include <iostream>
 #include <thread>
 
+//#include <Core>
+//#include <Geometry>
+//#include <Dense>
+
 #include "MotionHubUtil/Skeleton.h"
 #include "MotionHubUtil/Console.h"
+#include "MotionHubUtil/MMHmath.h"
+
 
 /*!
  * \class Tracker
@@ -13,7 +19,7 @@
  *
  * \author Kester Evers and Eric Jansen
  */
-class Tracker
+class  Tracker
 {
 
 public:
@@ -43,6 +49,10 @@ public:
 		 * the number of skeletons detected by this tracker
 		 */
 		int countDetectedSkeleton = 0;
+
+		Vector3f positionOffset;
+		Vector3f rotationOffset;
+		Vector3f scaleOffset;
 
 	};
 
@@ -104,6 +114,12 @@ public:
 	 */
 	virtual std::map<int, Skeleton*>* getSkeletonPool();
 
+	virtual void updateMatrix();
+	virtual void setPositionOffset(Vector3f position);
+	virtual void setRotationOffset(Vector3f rotation);
+	virtual void setScaleOffset(Vector3f scale);
+
+
 
 
 protected:
@@ -145,5 +161,7 @@ protected:
 	virtual void track() = 0;
 
 	int m_trackingCycles = 0;
+
+	Matrix4f m_offsetMatrix;
 
 };

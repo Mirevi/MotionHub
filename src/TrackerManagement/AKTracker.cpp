@@ -1,4 +1,5 @@
 #include "AKTracker.h"
+#include "MotionHubUtil/Vector3.h"
 
 // default constructor
 AKTracker::AKTracker(int id, int idCam)
@@ -14,6 +15,16 @@ AKTracker::AKTracker(int id, int idCam)
 	m_idCam = idCam;
 
 	m_properties->isEnabled = true;
+
+	setPositionOffset(Vector3f(0.0f, 0.95f, 2.2f));
+	setRotationOffset(Vector3f(0.0f, 0.0f, 0.0f));
+	setScaleOffset(Vector3f(-0.0010f, -0.0010f, -0.0010f));
+
+
+
+
+	//using cout to test because there is not .toString()
+	std::cout << m_offsetMatrix << std::endl;
 
 	// initialize azure kinect camera and body tracker
 	init();
@@ -268,8 +279,8 @@ Skeleton* AKTracker::parseSkeleton(k4abt_skeleton_t* skeleton, int id)
 
 
 		// convert from k4a Vectors and quaternions into custom vectors with coordinate transformation
-		Vector3 pos = Vector3(-skeleton_position.xyz.x / 1000, (-skeleton_position.xyz.y + 950) / 1000, skeleton_position.xyz.z / 1000);
-		Vector4 rot = Vector4(skeleton_rotation.wxyz.x, skeleton_rotation.wxyz.y, skeleton_rotation.wxyz.z, skeleton_rotation.wxyz.w);
+		Vector4f pos = m_offsetMatrix * Vector4f(skeleton_position.xyz.x, skeleton_position.xyz.y, skeleton_position.xyz.z, 1);
+		Quaternionf rot = Quaternionf(skeleton_rotation.wxyz.w, skeleton_rotation.wxyz.x, skeleton_rotation.wxyz.y, skeleton_rotation.wxyz.z);
 
 		// get joint confidence level from azure kinect body tracker API
 		Joint::JointConfidence confidence = (Joint::JointConfidence)skeleton->joints[jointIndex].confidence_level;
@@ -280,6 +291,9 @@ Skeleton* AKTracker::parseSkeleton(k4abt_skeleton_t* skeleton, int id)
 
 			case 0:
 				currSkeleton->m_joints.insert({ Joint::HIPS, Joint(pos, rot, confidence) });
+
+				//Console::log(Vector3(pos).toString());
+
 				break;
 
 			case 1:
@@ -368,7 +382,7 @@ Skeleton* AKTracker::parseSkeleton(k4abt_skeleton_t* skeleton, int id)
 	}
 
 	// set body heigt based on head position
-	currSkeleton->setHeight(currSkeleton->m_joints[Joint::HEAD].getJointPosition().m_xyz.y);
+	currSkeleton->setHeight(currSkeleton->m_joints[Joint::HEAD].getJointPosition().y());
 
 	// Console::log("Parsed skeleton with id = " + std::to_string(currSkeleton->getSid()) + " joint count = " + std::to_string(currSkeleton->m_joints.size()) + ".");
 

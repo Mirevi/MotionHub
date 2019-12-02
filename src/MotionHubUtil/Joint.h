@@ -3,8 +3,12 @@
 #include "ConfigDllExportMotionHubUtil.h"
 
 #include <iostream>
-#include "Vector3.h"
-#include "Vector4.h"
+//#include "Vector3.h"
+//#include "Vector4.h"
+
+#include <MotionHubUtil/MMHmath.h>
+
+//using namespace Eigen;
 
 /*!
  * \class Joint
@@ -54,16 +58,16 @@ public:
 	};
 
 	Joint();
-	Joint(Vector3 position, Vector4 rotation, JointConfidence confidence);
+	Joint(Vector4f position, Quaternionf rotation, Joint::JointConfidence confidence);
 
-	Vector3 getJointPosition();
-	Vector4 getJointRotation();
+	Vector4f getJointPosition();
+	Quaternionf getJointRotation();
 	JointConfidence getJointConfidence();
 
 private:
 
-	Vector3 m_position;
-	Vector4 m_rotation;
+	Vector4f m_position;
+	Quaternionf m_rotation;
 	JointConfidence m_confidence = NONE;
 
 };

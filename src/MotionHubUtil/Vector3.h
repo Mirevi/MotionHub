@@ -3,6 +3,8 @@
 #include "ConfigDllExportMotionHubUtil.h"
 
 #include <string>
+#include "MMHmath.h"
+
 
 /*!
  * \class Vector3
@@ -24,6 +26,8 @@ public:
 	Vector3();
 	Vector3(float x, float y, float z);
 	Vector3(Position xyz);
+	Vector3(Vector3f vector);
+	Vector3(Vector4f vector);
 
 	Position m_xyz;
 
@@ -38,5 +42,7 @@ public:
 	static Vector3 one();
 
 	std::string toString();
+
+	Vector3f toEigen();
 
 };

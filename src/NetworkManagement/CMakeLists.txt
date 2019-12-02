@@ -8,6 +8,9 @@ link_directories(${CMAKE_BINARY_DIR}/lib "${CMAKE_BINARY_DIR}/lib" ${OSCp_LIBRAR
 include_directories(${CMAKE_BINARY_DIR}/src/MotionHubUtil)
 link_directories(${CMAKE_BINARY_DIR}/lib)
 
+#eigen
+include_directories(${CMAKE_BINARY_DIR}/src ${EIGEN_INCLUDE_DIR})
+
 file(GLOB_RECURSE NetworkManagement_HEADER "${CMAKE_CURRENT_SRC_DIR}" *.h)
 file(GLOB_RECURSE NetworkManagement_SRC "${CMAKE_CURRENT_SRC_DIR}" *.cpp)
 add_library(NetworkManagement SHARED ${NetworkManagement_HEADER} ${NetworkManagement_SRC})

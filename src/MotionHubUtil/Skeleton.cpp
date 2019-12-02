@@ -17,7 +17,7 @@ Skeleton::Skeleton(int sid)
 
 }
 
-void Skeleton::parseJoint(Joint::JointNames name, Vector3 position, Vector4 rotation, Joint::JointConfidence confidence)
+void Skeleton::parseJoint(Joint::JointNames name, Vector4f position, Quaternionf rotation, Joint::JointConfidence confidence)
 {
 
 	Joint curr_joint = Joint(position, rotation, confidence);

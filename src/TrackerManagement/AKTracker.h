@@ -7,8 +7,6 @@
 #include "k4a/k4a.h"
 #include "k4abt.h"
 
-#include "MotionHubUtil/Console.h"
-
 #include "Tracker.h"
 #include <list>
 

@@ -29,7 +29,7 @@ void GestureManager::updateAllSkeletonPostures(std::map<int, Skeleton*>* poolSke
 			// get skeleton base height
 			heightSkeleton = itPoolSkeletons->second->getHeight();
 			// get current height of the head
-			currHeightHead = (itPoolSkeletons->second->m_joints[Joint::HEAD].getJointPosition().m_xyz.y * (-1) + 950) / 1000;
+			currHeightHead = (itPoolSkeletons->second->m_joints[Joint::HEAD].getJointPosition().y() * (-1) + 950) / 1000;
 
 			//Console::log("GestureManager::updateAllSkeletonPostures(): Skeleton with id = " + std::to_string(itPoolSkeletons->second->getSid()) + " height head = " + std::to_string(heightHead) + ".");
 

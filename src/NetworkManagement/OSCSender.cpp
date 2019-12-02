@@ -33,8 +33,8 @@ void OSCSender::sendSkeleton(Skeleton* skeleton, const char* uri)
 		*m_packetStream << osc::BeginBundleImmediate << osc::BeginMessage(uri) << skeleton->getSid();
 
 		// create new var's for joint position, rotation and confidence
-		Vector3 currJointPosition = Vector3::zero();
-		Vector4 currJointRotation = Vector4::zero();
+		Vector4f currJointPosition;
+		Quaternionf currJointRotation;
 		Joint::JointConfidence currJointConfidence = Joint::JointConfidence::NONE;
 
 		//loop through all Joints to write pose data into the stream
@@ -52,16 +52,16 @@ void OSCSender::sendSkeleton(Skeleton* skeleton, const char* uri)
 			 
 			
 				// add position data to stream
-				<< currJointPosition.m_xyz.x
-				<< currJointPosition.m_xyz.y
-				<< currJointPosition.m_xyz.z
+				<< currJointPosition.x()
+				<< currJointPosition.y()
+				<< currJointPosition.z()
 
 
 				// add rotation data to stream
-				<< currJointRotation.m_xyzw.x
-				<< currJointRotation.m_xyzw.y
-				<< currJointRotation.m_xyzw.z
-				<< currJointRotation.m_xyzw.w
+				<< currJointRotation.x()
+				<< currJointRotation.y()
+				<< currJointRotation.z()
+				<< currJointRotation.w()
 
 				// add joint confidence level to stream
 				<< (int)currJointConfidence;
