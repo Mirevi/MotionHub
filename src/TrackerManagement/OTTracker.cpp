@@ -24,18 +24,10 @@ OTTracker::OTTracker(int id)
 
 
 	//set the offset values
-	m_properties->positionOffset = Vector3f(0.0f, 0.0f, 0.0f);
-	m_properties->rotationOffset = Vector3f(0.0f, 0.0f, 0.0f);
-	m_properties->scaleOffset	 = Vector3f(-1.0f, 1.0f, 1.0f);
+	setPositionOffset(Vector3f(0.0f, 0.0f, 0.0f));
+	setRotationOffset(Vector3f(0.0f, 0.0f, 0.0f));
+	setScaleOffset(Vector3f(-1.0f, 1.0f, 1.0f));
 
-	m_offsetMatrix.setIdentity();
-
-	//create new Matrix and set it to be identity
-	m_offsetMatrix = transformMatrix(m_properties->positionOffset, m_properties->rotationOffset, m_properties->scaleOffset);
-
-
-	//using cout to test because there is not .toString()
-	std::cout << m_offsetMatrix << std::endl;
 
 }
 
@@ -322,6 +314,8 @@ Skeleton* OTTracker::parseSkeleton(sSkeletonData skeleton, int id)
 		case 0:
 			currSkeleton->m_joints.insert({ Joint::HIPS, Joint(pos, rot, confidence) });
 
+			//Console::log(toString(pos));
+
 			break;
 
 		case 1:
@@ -476,5 +470,5 @@ void OTTracker::cleanSkeletonPool()
 // MessageHandler receives NatNet error/debug messages
 void MessageHandler(int msgType, char* msg)
 {
-	Console::log("OTTracker::MessageHandler(): " + std::string(msg));
+	//Console::log("OTTracker::MessageHandler(): " + std::string(msg));
 }

@@ -144,3 +144,38 @@ void Tracker::clean()
 	m_skeletonPool.clear();
 
 }
+
+void Tracker::updateMatrix()
+{
+
+	//create new Matrix and set it to be identity
+	m_offsetMatrix = transformMatrix(m_properties->positionOffset, m_properties->rotationOffset, m_properties->scaleOffset);
+
+}
+
+void Tracker::setPositionOffset(Vector3f position)
+{
+
+	m_properties->positionOffset = position;
+
+	updateMatrix();
+
+}
+
+void Tracker::setRotationOffset(Vector3f rotation)
+{
+
+	m_properties->rotationOffset = rotation;
+
+	updateMatrix();
+
+}
+
+void Tracker::setScaleOffset(Vector3f scale)
+{
+
+	m_properties->scaleOffset = scale;
+
+	updateMatrix();
+
+}

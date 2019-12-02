@@ -114,6 +114,12 @@ public:
 	 */
 	virtual std::map<int, Skeleton*>* getSkeletonPool();
 
+	virtual void updateMatrix();
+	virtual void setPositionOffset(Vector3f position);
+	virtual void setRotationOffset(Vector3f rotation);
+	virtual void setScaleOffset(Vector3f scale);
+
+
 
 
 protected:

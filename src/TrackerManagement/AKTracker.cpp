@@ -16,14 +16,11 @@ AKTracker::AKTracker(int id, int idCam)
 
 	m_properties->isEnabled = true;
 
-	m_properties->positionOffset = Vector3f(0.0f, 0.95f, 2.2f);
-	m_properties->rotationOffset = Vector3f(0.0f, 0.0f, 0.0f);
-	m_properties->scaleOffset = Vector3f(-0.001f, -0.001f, -0.001f);
+	setPositionOffset(Vector3f(0.0f, 0.95f, 2.2f));
+	setRotationOffset(Vector3f(0.0f, 0.0f, 0.0f));
+	setScaleOffset(Vector3f(-0.0010f, -0.0010f, -0.0010f));
 
 
-
-	//create new Matrix and set it to be identity
-	m_offsetMatrix = transformMatrix(m_properties->positionOffset, m_properties->rotationOffset, m_properties->scaleOffset);
 
 
 	//using cout to test because there is not .toString()
@@ -294,7 +291,7 @@ Skeleton* AKTracker::parseSkeleton(k4abt_skeleton_t* skeleton, int id)
 			case 0:
 				currSkeleton->m_joints.insert({ Joint::HIPS, Joint(pos, rot, confidence) });
 
-				Console::log(Vector3(pos).toString());
+				//Console::log(Vector3(pos).toString());
 
 				break;
 
