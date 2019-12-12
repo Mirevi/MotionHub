@@ -157,9 +157,9 @@ void Console::printHeader()
 	SetConsoleTextAttribute(handle_console, 14);
 
 	std::cout << R"(
-		:::   :::    :::::::: ::::::::::: ::::::::::: ::::::::  ::::    ::: :::    ::: :::    ::: :::::::::
-	  :+:+: :+:+:  :+:    :+:    :+:         :+:    :+:    :+: :+:+:   :+: :+:    :+: :+:    :+: :+:    :+:
-	+:+ +:+:+ +:+ +:+    +:+    +:+         +:+    +:+    +:+ :+:+:+  +:+ +:+    +:+ +:+    +:+ +:+    +:+
+        :::   :::    :::::::: ::::::::::: ::::::::::: ::::::::  ::::    ::: :::    ::: :::    ::: :::::::::
+      :+:+: :+:+:  :+:    :+:    :+:         :+:    :+:    :+: :+:+:   :+: :+:    :+: :+:    :+: :+:    :+:
+    +:+ +:+:+ +:+ +:+    +:+    +:+         +:+    +:+    +:+ :+:+:+  +:+ +:+    +:+ +:+    +:+ +:+    +:+
    +#+  +:+  +#+ +#+    +:+    +#+         +#+    +#+    +:+ +#+ +:+ +#+ +#++:++#++ +#+    +:+ +#++:++#+
   +#+       +#+ +#+    +#+    +#+         +#+    +#+    +#+ +#+  +#+#+# +#+    +#+ +#+    +#+ +#+    +#+
  #+#       #+# #+#    #+#    #+#         #+#    #+#    #+# #+#   #+#+# #+#    #+# #+#    #+# #+#    #+#
@@ -170,7 +170,7 @@ void Console::printHeader()
 
 	std::cout << "Mirevi MotionHub" << std::endl;;
 	std::cout << "Combines different body tracking solutions and sends position and rotation data of skeleton joints via ip.\n" << std::endl;;
-	std::cout << "MotionHub is created at MIREVI within the scope of the project HIVE.\nCurrently MotionHub is developed by Kester Evers, Eric Jansen and supervised by Philipp Ladwig.\n" << std::endl;;
+	std::cout << "MotionHub is created at MIREVI within the scope of the project HIVE.\nCurrently MotionHub is developed by Kester Evers, Eric Jansen, Manuel Zohlen and supervised by Philipp Ladwig.\n" << std::endl;;
 
 }
 
@@ -180,6 +180,6 @@ void Console::writeToLogfile(std::string message)
 	std::ofstream stream;
 
 	stream.open(LOGFILE, std::ofstream::app);
-	stream << message << std::endl;
 
+	stream << message << std::endl;
 }

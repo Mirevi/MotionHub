@@ -113,4 +113,6 @@ private:
 	 */
 	void cleanSkeletonPool(k4abt_frame_t* bodyFrame);
 
+	Quaternionf convertKinectRotation(Quaternionf value);
+
 };

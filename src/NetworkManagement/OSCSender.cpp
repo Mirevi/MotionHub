@@ -46,10 +46,17 @@ void OSCSender::sendSkeleton(Skeleton* skeleton, const char* uri)
 			currJointRotation = skeleton->m_joints[(Joint::JointNames)jointsIndex].getJointRotation();
 			currJointConfidence = skeleton->m_joints[(Joint::JointNames)jointsIndex].getJointConfidence();
 
+			//if (jointsIndex == 0)
+			//{
+			//	Console::log("pelvis send: " + toString(currJointRotation));
+			//}
+			//else if (jointsIndex == 1)
+			//{
+			//	Console::log("spine send : "  + toString(currJointRotation));
+			//}
 
 			// ADD DATA TO OSC PACKET STREAM:
-			*m_packetStream
-			 
+			*m_packetStream			 
 			
 				// add position data to stream
 				<< currJointPosition.x()

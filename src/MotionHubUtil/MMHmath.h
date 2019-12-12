@@ -13,6 +13,9 @@ using namespace Eigen;
 
 
 
+static Matrix3f eulerToMatrix(Vector3f euler);
+static Quaternionf eulerToQuaternion(Vector3f euler);
+
 /*!
  * converts transform vectors into transform matrix
  * 
@@ -30,9 +33,7 @@ static Matrix4f transformMatrix(Vector3f position, Vector3f rotation, Vector3f s
 
 	//create 3x3 matrix from euler angles
 	Matrix3f mRotation;
-	mRotation = AngleAxisf(rotation.x() / 180.0f * M_PI, Vector3f::UnitX())
-			  * AngleAxisf(rotation.y() / 180.0f * M_PI, Vector3f::UnitY())
-			  * AngleAxisf(rotation.z() / 180.0f * M_PI, Vector3f::UnitZ());
+	mRotation = eulerToMatrix(rotation);
 	
 	//scale rotation matrix with scaling values
 	mRotation *= Scaling(scale.x(), scale.y(), scale.z());
@@ -48,6 +49,50 @@ static Matrix4f transformMatrix(Vector3f position, Vector3f rotation, Vector3f s
 	return mTransform;
 }
 
+static Vector3f quaternionToEuler(Quaternionf quaternion)
+{
+	
+	Vector3f euler = quaternion.toRotationMatrix().eulerAngles(1, 2, 0);
+
+	euler.x() *= 180;
+	euler.x() /= M_PI;
+	euler.y() *= 180;
+	euler.y() /= M_PI;
+	euler.z() *= 180;
+	euler.z() /= M_PI;
+
+	return euler;
+
+}
+
+static Matrix3f eulerToMatrix(Vector3f euler)
+{
+
+	Matrix3f mRotation;
+
+	mRotation = AngleAxisf(euler.x() / 180.0f * M_PI, Vector3f::UnitX())
+			  * AngleAxisf(euler.y() / 180.0f * M_PI, Vector3f::UnitY())
+			  * AngleAxisf(euler.z() / 180.0f * M_PI, Vector3f::UnitZ());
+			   
+	return mRotation;
+
+}
+
+static Quaternionf eulerToQuaternion(Vector3f euler)
+{
+
+	Quaternionf qRotation;
+
+	qRotation = AngleAxisf(euler.x() * M_PI / 180, Vector3f::UnitX())
+			  * AngleAxisf(euler.y() * M_PI / 180, Vector3f::UnitY())
+			  * AngleAxisf(euler.z() * M_PI / 180, Vector3f::UnitZ());
+	
+	qRotation = Quaternionf(qRotation.w(), qRotation.x(), qRotation.y(), -qRotation.z());
+
+	return qRotation;
+
+}
+
 static std::string toString(Eigen::Vector4f vector)
 {
 
@@ -59,7 +104,18 @@ static std::string toString(Eigen::Vector4f vector)
 
 }
 
-static std::string toString(Eigen::Quaternionf quaternion)
+static std::string toString(Eigen::Vector3f vector)
+{
+
+	std::string string;
+
+	string = std::to_string(vector.x()) + ", " + std::to_string(vector.y()) + ", " + std::to_string(vector.z());
+
+	return string;
+
+}
+
+static std::string toString(Quaternionf quaternion)
 {
 
 	std::string string;
