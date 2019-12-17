@@ -5,7 +5,7 @@ Plane::Plane(QOpenGLShaderProgram* shaderProgram, QOpenGLTexture* texture, Vecto
 
 	// plane verts
 	int vertsPlane[1][4][3] = {
-		{ { +1, 0, +1 }, { -1, 0, +1 }, { -1, 0, -1 } , { +1, 0, -1 }}
+		{{ +1, 0, +1 }, { +1, 0, -1 }, { -1, 0, -1 }, { -1, 0, +1 }}
 	};
 
 	// assign verts to vert data

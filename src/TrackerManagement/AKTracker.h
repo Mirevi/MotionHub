@@ -115,4 +115,6 @@ private:
 
 	Quaternionf convertKinectRotation(Quaternionf value);
 
+	Quaternionf azureKinectEulerToQuaternion(Vector3f euler);
+
 };

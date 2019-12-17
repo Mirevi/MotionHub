@@ -12,6 +12,8 @@ OTTracker::OTTracker()
 OTTracker::OTTracker(int id)
 {
 
+
+
 	//create new Properties object
 	m_properties = new Properties();
 
@@ -26,7 +28,12 @@ OTTracker::OTTracker(int id)
 	//set the offset values
 	setPositionOffset(Vector3f(0.0f, 0.0f, 0.0f));
 	setRotationOffset(Vector3f(0.0f, 0.0f, 0.0f));
-	setScaleOffset(Vector3f(-1.0f, 1.0f, 1.0f));
+	setScaleOffset(Vector3f(1.0f, 1.0f, 1.0f));
+
+	//BACKUP
+	//setPositionOffset(Vector3f(0.0f, 0.0f, 0.0f));
+	//setRotationOffset(Vector3f(0.0f, 0.0f, 0.0f));
+	//setScaleOffset(Vector3f(-1.0f, 1.0f, 1.0f));
 
 
 }
@@ -298,14 +305,11 @@ Skeleton* OTTracker::parseSkeleton(sSkeletonData skeleton, int id)
 		sRigidBodyData rbData = skeleton.RigidBodyData[j];
 
 		// convert from k4a Vectors and quaternions into custom vectors
-		Vector4f pos = m_offsetMatrix * Vector4f(rbData.x, rbData.y, rbData.z, 1);
+		Vector4f pos = m_offsetMatrix * Vector4f(rbData.x, rbData.y, rbData.z, 1.0f);
 		Quaternionf rot = Quaternionf(rbData.qw, rbData.qx, rbData.qy, rbData.qz);
-
-
 
 		//confidence values are not transmitted, default confidence is High
 		Joint::JointConfidence confidence = Joint::JointConfidence::HIGH;
-
 
 		//map the OptiTRack poses to the MMH skeleton joints
 		switch (j)
@@ -313,9 +317,6 @@ Skeleton* OTTracker::parseSkeleton(sSkeletonData skeleton, int id)
 
 		case 0:
 			currSkeleton->m_joints.insert({ Joint::HIPS, Joint(pos, rot, confidence) });
-
-			//Console::log(toString(pos));
-
 			break;
 
 		case 1:
@@ -339,14 +340,17 @@ Skeleton* OTTracker::parseSkeleton(sSkeletonData skeleton, int id)
 			break;
 
 		case 6:
+			rot = Quaternionf(rot.w(), -1.0f * rot.x(), rot.y(), -1.0f * rot.z());
 			currSkeleton->m_joints.insert({ Joint::ARM_L, Joint(pos, rot, confidence) });
 			break;
 
 		case 7:
+			rot = Quaternionf(rot.w(), -1.0f * rot.x(), rot.y(), -1.0f * rot.z());
 			currSkeleton->m_joints.insert({ Joint::FOREARM_L, Joint(pos, rot, confidence) });
 			break;
 
 		case 8:
+			rot = Quaternionf(rot.w(), -1.0f * rot.x(), rot.y(), -1.0f * rot.z());
 			currSkeleton->m_joints.insert({ Joint::HAND_L, Joint(pos, rot, confidence) });
 			break;
 
@@ -355,14 +359,17 @@ Skeleton* OTTracker::parseSkeleton(sSkeletonData skeleton, int id)
 			break;
 
 		case 10:
+			rot = Quaternionf(rot.w(), -1.0f * rot.x(), rot.y(), -1.0f * rot.z());
 			currSkeleton->m_joints.insert({ Joint::ARM_R, Joint(pos, rot, confidence) });
 			break;
 
 		case 11:
+			rot = Quaternionf(rot.w(), -1.0f * rot.x(), rot.y(), -1.0f * rot.z());
 			currSkeleton->m_joints.insert({ Joint::FOREARM_R, Joint(pos, rot, confidence) });
 			break;
 
 		case 12:
+			rot = Quaternionf(rot.w(), -1.0f * rot.x(), rot.y(), -1.0f * rot.z());
 			currSkeleton->m_joints.insert({ Joint::HAND_R, Joint(pos, rot, confidence) });
 			break;
 
@@ -413,8 +420,6 @@ Skeleton* OTTracker::parseSkeleton(sSkeletonData skeleton, int id)
 	return currSkeleton;
 
 }
-
-
 void OTTracker::cleanSkeletonPool()
 {
 
@@ -465,10 +470,15 @@ void OTTracker::cleanSkeletonPool()
 	}
 }
 
-
-
 // MessageHandler receives NatNet error/debug messages
 void MessageHandler(int msgType, char* msg)
 {
 	//Console::log("OTTracker::MessageHandler(): " + std::string(msg));
+}
+
+Quaternionf OTTracker::convertOptiTrackRotation(Quaternionf value)
+{
+
+	return eulerToQuaternion(Vector3f(0.0f, 180.0f, 0.0f)) * value;
+
 }

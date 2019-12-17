@@ -18,7 +18,7 @@ AKTracker::AKTracker(int id, int idCam)
 
 	setPositionOffset(Vector3f(0.0f, 0.95f, 2.2f));
 	setRotationOffset(Vector3f(0.0f, 0.0f, 0.0f));
-	setScaleOffset(Vector3f(-0.0010f, -0.0010f, -0.0010f));
+	setScaleOffset(Vector3f(0.0010f, -0.0010f, -0.0010f));
 
 
 
@@ -276,7 +276,7 @@ Skeleton* AKTracker::parseSkeleton(k4abt_skeleton_t* skeleton, int id)
 		
 		// convert from k4a Vectors and quaternions into Eigen vector and quaternion with coordinate transformation
 		Vector4f pos	= m_offsetMatrix * Vector4f(skeleton_position.xyz.x, skeleton_position.xyz.y, skeleton_position.xyz.z, 1);
-		Quaternionf rot = convertKinectRotation(Quaternionf(skeleton_rotation.wxyz.w, skeleton_rotation.wxyz.x, skeleton_rotation.wxyz.y, skeleton_rotation.wxyz.z));
+		Quaternionf rot = Quaternionf(skeleton_rotation.wxyz.w, skeleton_rotation.wxyz.x, skeleton_rotation.wxyz.y, skeleton_rotation.wxyz.z);
 
 		// get joint confidence level from azure kinect body tracker API
 		Joint::JointConfidence confidence = (Joint::JointConfidence)skeleton->joints[jointIndex].confidence_level;
@@ -286,107 +286,107 @@ Skeleton* AKTracker::parseSkeleton(k4abt_skeleton_t* skeleton, int id)
 		{
 
 			case 0:
-				 rot *= eulerToQuaternion(Vector3f(90, -90, 0));
+				 rot *= azureKinectEulerToQuaternion(Vector3f(90, -90, 0));
 				currSkeleton->m_joints.insert({ Joint::HIPS, Joint(pos, rot, confidence) });
 				break;
 
 			case 1:
-				 rot *= eulerToQuaternion(Vector3f(90, -90, 0));
+				 rot *= azureKinectEulerToQuaternion(Vector3f(90, -90, 0));
 				currSkeleton->m_joints.insert({ Joint::SPINE, Joint(pos, rot, confidence) });
 				break;
 
 			case 2:
-				 rot *= eulerToQuaternion(Vector3f(90, -90, 0));
+				 rot *= azureKinectEulerToQuaternion(Vector3f(90, -90, 0));
 				currSkeleton->m_joints.insert({ Joint::CHEST, Joint(pos, rot, confidence) });
 				break;
 				 
 			case 3:
-				 rot *= eulerToQuaternion(Vector3f(90, -90, 0));
+				 rot *= azureKinectEulerToQuaternion(Vector3f(90, -90, 0));
 				currSkeleton->m_joints.insert({ Joint::NECK, Joint(pos, rot, confidence) });
 				break;
 
 			case 4:
-				 rot *= eulerToQuaternion(Vector3f(90, 0, 0));
+				 rot *= azureKinectEulerToQuaternion(Vector3f(90, 0, 0));
 				currSkeleton->m_joints.insert({ Joint::SHOULDER_L, Joint(pos, rot, confidence) });
 				break;
 
 			case 5:
-				 rot *= eulerToQuaternion(Vector3f(90, 0, 0));
+				 rot *= azureKinectEulerToQuaternion(Vector3f(90, 0, 0));
 				currSkeleton->m_joints.insert({ Joint::ARM_L, Joint(pos, rot, confidence) });
 				break;
 
 			case 6:
-				 rot *= eulerToQuaternion(Vector3f(90, 0, 0));
+				 rot *= azureKinectEulerToQuaternion(Vector3f(90, 0, 0));
 				currSkeleton->m_joints.insert({ Joint::FOREARM_L, Joint(pos, rot, confidence) });
 				break;
 
 			case 7:
-				 rot *= eulerToQuaternion(Vector3f(0, 180, 180));
+				 rot *= azureKinectEulerToQuaternion(Vector3f(0, 180, 180));
 				currSkeleton->m_joints.insert({ Joint::HAND_L, Joint(pos, rot, confidence) });
 				break;
 
 			case 11:
-				 rot *= eulerToQuaternion(Vector3f(270, 0, 0));
+				 rot *= azureKinectEulerToQuaternion(Vector3f(270, 0, 0));
 				currSkeleton->m_joints.insert({ Joint::SHOULDER_R, Joint(pos, rot, confidence) });
 				break;
 
 			case 12:
-				 rot *= eulerToQuaternion(Vector3f(270, 0, 0));
+				 rot *= azureKinectEulerToQuaternion(Vector3f(270, 0, 0));
 				currSkeleton->m_joints.insert({ Joint::ARM_R, Joint(pos, rot, confidence) });
 				break;
 
 			case 13:
-				 rot *= eulerToQuaternion(Vector3f(270, 0, 0));
+				 rot *= azureKinectEulerToQuaternion(Vector3f(270, 0, 0));
 				currSkeleton->m_joints.insert({ Joint::FOREARM_R, Joint(pos, rot, confidence) });
 				break;
 
 			case 14:
-				 rot *= eulerToQuaternion(Vector3f(0, 0, 0));
+				 rot *= azureKinectEulerToQuaternion(Vector3f(0, 0, 0));
 				currSkeleton->m_joints.insert({ Joint::HAND_R, Joint(pos, rot, confidence) });
 				break;
 
 			case 18:
-				 rot *= eulerToQuaternion(Vector3f(90, -90, 0));
+				 rot *= azureKinectEulerToQuaternion(Vector3f(90, -90, 0));
 				currSkeleton->m_joints.insert({ Joint::UPLEG_L, Joint(pos, rot, confidence) });
 				break;
 
 			case 19:
-				 rot *= eulerToQuaternion(Vector3f(90, -90, 0));
+				 rot *= azureKinectEulerToQuaternion(Vector3f(90, -90, 0));
 				currSkeleton->m_joints.insert({ Joint::LEG_L, Joint(pos, rot, confidence) });
 				break;
 
 			case 20:
-				 rot *= eulerToQuaternion(Vector3f(90, -90, 0));
+				 rot *= azureKinectEulerToQuaternion(Vector3f(90, -90, 0));
 				currSkeleton->m_joints.insert({ Joint::FOOT_L, Joint(pos, rot, confidence) });
 				break;
 
 			case 21:
-				 rot *= eulerToQuaternion(Vector3f(0, -90, 0));
+				 rot *= azureKinectEulerToQuaternion(Vector3f(0, -90, 0));
 				currSkeleton->m_joints.insert({ Joint::TOE_L, Joint(pos, rot, confidence) });
 				break;
 
 			case 22:
-				 rot *= eulerToQuaternion(Vector3f(-90, -90, 0));
+				 rot *= azureKinectEulerToQuaternion(Vector3f(-90, -90, 0));
 				currSkeleton->m_joints.insert({ Joint::UPLEG_R, Joint(pos, rot, confidence) });
 				break;
 
 			case 23:
-				 rot *= eulerToQuaternion(Vector3f(-90, -90, 0));
+				 rot *= azureKinectEulerToQuaternion(Vector3f(-90, -90, 0));
 				currSkeleton->m_joints.insert({ Joint::LEG_R, Joint(pos, rot, confidence) });
 				break;
 
 			case 24:
-				 rot *= eulerToQuaternion(Vector3f(-90, -90, 0));
+				 rot *= azureKinectEulerToQuaternion(Vector3f(-90, -90, 0));
 				currSkeleton->m_joints.insert({ Joint::FOOT_R, Joint(pos, rot, confidence) });
 				break;
 
 			case 25:
-				 rot *= eulerToQuaternion(Vector3f(0, 90, 180));
+				 rot *= azureKinectEulerToQuaternion(Vector3f(0, 90, 180));
 				currSkeleton->m_joints.insert({ Joint::TOE_R, Joint(pos, rot, confidence) });
 				break;
 
 			case 26:
-				 rot *= eulerToQuaternion(Vector3f(90, -90, 0));
+				 rot *= azureKinectEulerToQuaternion(Vector3f(90, -90, 0));
 				currSkeleton->m_joints.insert({ Joint::HEAD, Joint(pos, rot, confidence) });
 				break;
 
@@ -468,5 +468,22 @@ Quaternionf AKTracker::convertKinectRotation(Quaternionf value)
 {
 
 	return eulerToQuaternion(Vector3f(0.0f, 180.0f, 0.0f)) * value;
+
+}
+
+Quaternionf AKTracker::azureKinectEulerToQuaternion(Vector3f euler)
+{
+
+	Quaternionf qRotation;
+
+	qRotation = AngleAxisf(euler.x() * M_PI / 180, Vector3f::UnitX())
+		* AngleAxisf(euler.y() * M_PI / 180, Vector3f::UnitY())
+		* AngleAxisf(euler.z() * M_PI / 180, Vector3f::UnitZ());
+
+	qRotation = Quaternionf(qRotation.w(), qRotation.x(), qRotation.y(), -qRotation.z());
+
+
+
+	return qRotation;
 
 }

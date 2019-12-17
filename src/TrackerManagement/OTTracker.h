@@ -138,5 +138,7 @@ private:
 	 */
 	void cleanSkeletonPool();
 
+	Quaternionf convertOptiTrackRotation(Quaternionf value);
+
 };
 

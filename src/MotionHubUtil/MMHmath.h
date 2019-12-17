@@ -81,13 +81,18 @@ static Matrix3f eulerToMatrix(Vector3f euler)
 static Quaternionf eulerToQuaternion(Vector3f euler)
 {
 
+	//Console::log("Quaternionf eulerToQuaternion():: input euler" + toString(euler));
+
 	Quaternionf qRotation;
 
 	qRotation = AngleAxisf(euler.x() * M_PI / 180, Vector3f::UnitX())
 			  * AngleAxisf(euler.y() * M_PI / 180, Vector3f::UnitY())
 			  * AngleAxisf(euler.z() * M_PI / 180, Vector3f::UnitZ());
 	
-	qRotation = Quaternionf(qRotation.w(), qRotation.x(), qRotation.y(), -qRotation.z());
+	qRotation = Quaternionf(qRotation.w(), qRotation.x(), qRotation.y(), qRotation.z());
+
+	//Console::log("Quaternionf eulerToQuaternion():: output quaternion" + toString(qRotation));
+
 
 	return qRotation;
 
