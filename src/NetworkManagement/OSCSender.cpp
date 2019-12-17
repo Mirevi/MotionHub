@@ -51,7 +51,7 @@ void OSCSender::sendSkeleton(Skeleton* skeleton, const char* uri)
 			*m_packetStream			 
 			
 				// add position data to stream
-				<< currJointPosition.x() * -1.0f
+				<< currJointPosition.x()
 				<< currJointPosition.y()
 				<< currJointPosition.z()
 
