@@ -16,8 +16,8 @@ AKTracker::AKTracker(int id, int idCam)
 
 	m_properties->isEnabled = true;
 
-	setPositionOffset(Vector3f(0.0f, 0.95f, 2.2f));
-	setRotationOffset(Vector3f(0.0f, 0.0f, 0.0f));
+	setPositionOffset(Vector3f(0.0f, 1.175f, 2.2f));
+	setRotationOffset(Vector3f(-5.0f, 0.0f, 0.0f));
 	setScaleOffset(Vector3f(0.0010f, -0.0010f, -0.0010f));
 
 

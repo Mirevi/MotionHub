@@ -17,6 +17,7 @@ DataHandlerManager::DataHandlerManager(Tracker::Properties* properties)
 // receives data from the server
 void DataHandlerManager::DataHandler(sFrameOfMocapData* data, void* pUserData)
 {
+
 	//check if Tracker is active or if it hasn't fetched data yet
 	if (!m_properties->isTracking || m_isDataAvailable.load())
 	{
@@ -26,23 +27,18 @@ void DataHandlerManager::DataHandler(sFrameOfMocapData* data, void* pUserData)
 	}
 
 	//check if data wasn't already assigned
-	if (m_data != data)
-	{
+	//if (m_data != data)
+	//{
 
 		m_data = data;
 
-	}
+	//}
 
-	//assign new client data
-	//NatNetClient* pClient = (NatNetClient*)pUserData;
-	   
 
-	// timecode - for systems with an eSync and SMPTE timecode generator - decode to values
-	//int hour, minute, second, frame, subframe;
-	//bool bValid = pClient->DecodeTimecode(m_data->Timecode, m_data->TimecodeSubframe, &hour, &minute, &second, &frame, &subframe);
-	// decode to friendly string
-	//char szTimecode[128] = "";
-	//pClient->TimecodeStringify(m_data->Timecode, m_data->TimecodeSubframe, szTimecode, 128);
+
+
+	//Console::log("DataHandlerManager::DataHandler(): data                : " + std::to_string(data->Skeletons[0].RigidBodyData[7].qx) + ", " + std::to_string(data->Skeletons[0].RigidBodyData[7].x));
+
 
 	//new data is now available
 	m_isDataAvailable.store(true);

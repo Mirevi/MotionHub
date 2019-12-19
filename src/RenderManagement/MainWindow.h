@@ -57,7 +57,7 @@ public:
 	 * updates Inspector and hirachy 
 	 */
 	void update();
-
+	void updateConsole();
 
 private slots:
 	/*!

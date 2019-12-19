@@ -40,6 +40,7 @@ void MotionHub::update()
 
 		// process ui input
 		m_uiManager->processInput();
+		m_uiManager->getMainWindow()->updateConsole();
 
 		// send skeleton pools to other managers
 		if (m_trackerManager->isTracking())

@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1280</width>
-    <height>720</height>
+    <width>1920</width>
+    <height>1080</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -976,6 +976,12 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
       </item>
       <item>
        <layout class="QHBoxLayout" name="layout_bottom">
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
         <item>
          <layout class="QVBoxLayout" name="layout_left_bottom">
           <item>
@@ -988,7 +994,7 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
             </property>
             <property name="maximumSize">
              <size>
-              <width>16777215</width>
+              <width>999999</width>
               <height>40</height>
              </size>
             </property>
@@ -1022,7 +1028,7 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
             </property>
             <property name="maximumSize">
              <size>
-              <width>1881</width>
+              <width>999999</width>
               <height>256</height>
              </size>
             </property>
@@ -1050,12 +1056,18 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
           <property name="leftMargin">
            <number>0</number>
           </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
           <item>
            <widget class="QFrame" name="frame_consoleInfo">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
               <horstretch>0</horstretch>
-              <verstretch>1</verstretch>
+              <verstretch>0</verstretch>
              </sizepolicy>
             </property>
             <property name="minimumSize">
@@ -1066,9 +1078,12 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
             </property>
             <property name="maximumSize">
              <size>
-              <width>256</width>
+              <width>512</width>
               <height>20</height>
              </size>
+            </property>
+            <property name="layoutDirection">
+             <enum>Qt::RightToLeft</enum>
             </property>
             <property name="frameShape">
              <enum>QFrame::StyledPanel</enum>
@@ -1084,6 +1099,12 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
                <width>241</width>
                <height>21</height>
               </rect>
+             </property>
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
              </property>
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
@@ -1125,12 +1146,15 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
             </property>
             <property name="maximumSize">
              <size>
-              <width>256</width>
+              <width>512</width>
               <height>256</height>
              </size>
             </property>
+            <property name="focusPolicy">
+             <enum>Qt::NoFocus</enum>
+            </property>
             <property name="layoutDirection">
-             <enum>Qt::LeftToRight</enum>
+             <enum>Qt::RightToLeft</enum>
             </property>
             <property name="frameShape">
              <enum>QFrame::NoFrame</enum>
@@ -1138,11 +1162,50 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
             <property name="frameShadow">
              <enum>QFrame::Plain</enum>
             </property>
+            <property name="lineWidth">
+             <number>1</number>
+            </property>
+            <property name="verticalScrollBarPolicy">
+             <enum>Qt::ScrollBarAlwaysOn</enum>
+            </property>
+            <property name="horizontalScrollBarPolicy">
+             <enum>Qt::ScrollBarAlwaysOn</enum>
+            </property>
+            <property name="sizeAdjustPolicy">
+             <enum>QAbstractScrollArea::AdjustToContents</enum>
+            </property>
+            <property name="autoScroll">
+             <bool>false</bool>
+            </property>
             <property name="editTriggers">
              <set>QAbstractItemView::NoEditTriggers</set>
             </property>
+            <property name="showDropIndicator" stdset="0">
+             <bool>false</bool>
+            </property>
+            <property name="alternatingRowColors">
+             <bool>false</bool>
+            </property>
+            <property name="selectionMode">
+             <enum>QAbstractItemView::NoSelection</enum>
+            </property>
+            <property name="selectionBehavior">
+             <enum>QAbstractItemView::SelectRows</enum>
+            </property>
+            <property name="textElideMode">
+             <enum>Qt::ElideNone</enum>
+            </property>
+            <property name="flow">
+             <enum>QListView::TopToBottom</enum>
+            </property>
             <property name="resizeMode">
              <enum>QListView::Fixed</enum>
+            </property>
+            <property name="spacing">
+             <number>0</number>
+            </property>
+            <property name="batchSize">
+             <number>512</number>
             </property>
            </widget>
           </item>
@@ -1159,8 +1222,8 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1280</width>
-     <height>26</height>
+     <width>1920</width>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_file">
@@ -1209,6 +1272,22 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
    </hints>
   </connection>
   <connection>
+   <sender>tableWidget_inspector</sender>
+   <signal>itemChanged(QTableWidgetItem*)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>slotInspectorItemChanged(QTableWidgetItem*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1156</x>
+     <y>350</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>778</x>
+     <y>-15</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
    <sender>btn_startTracker</sender>
    <signal>pressed()</signal>
    <receiver>MainWindow</receiver>
@@ -1220,22 +1299,6 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
     </hint>
     <hint type="destinationlabel">
      <x>1659</x>
-     <y>-11</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>btn_addTracker</sender>
-   <signal>pressed()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>slotAddTracker()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>1081</x>
-     <y>72</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>1800</x>
      <y>-11</y>
     </hint>
    </hints>
@@ -1273,18 +1336,18 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
    </hints>
   </connection>
   <connection>
-   <sender>tableWidget_inspector</sender>
-   <signal>itemChanged(QTableWidgetItem*)</signal>
+   <sender>btn_addTracker</sender>
+   <signal>pressed()</signal>
    <receiver>MainWindow</receiver>
-   <slot>slotInspectorItemChanged(QTableWidgetItem*)</slot>
+   <slot>slotAddTracker()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1156</x>
-     <y>350</y>
+     <x>1081</x>
+     <y>72</y>
     </hint>
     <hint type="destinationlabel">
-     <x>778</x>
-     <y>-15</y>
+     <x>1800</x>
+     <y>-11</y>
     </hint>
    </hints>
   </connection>

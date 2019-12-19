@@ -7,6 +7,7 @@
 #include <fstream>
 
 #include <string>
+#include <list>
 
 #include <ctime>
 #include <chrono>
@@ -30,6 +31,7 @@ class MotionHubUtil_DLL_import_export Console
 {
 
 public:
+
 	/*!
 	 * outputs info message to console
 	 * \param message output message
@@ -54,6 +56,7 @@ public:
 	 * \param message output message
 	 */
 	static void writeToLogfile(std::string message);
-	
+
+	static std::list<std::string> messagePool;
 	
 };

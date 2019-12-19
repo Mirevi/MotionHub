@@ -130,7 +130,7 @@ private:
 	 * \param id the skeletons ID
 	 * \return converted default skeleton
 	 */
-	Skeleton* parseSkeleton(sSkeletonData skeleton, int id);
+	Skeleton* parseSkeleton(sSkeletonData skeleton, int id, Skeleton* oldSkeletonData);
 
 	/*!
 	 * removes skeletons from pool which are not captured in current frames anymore

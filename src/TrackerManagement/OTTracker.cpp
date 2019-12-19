@@ -26,7 +26,7 @@ OTTracker::OTTracker(int id)
 
 
 	//set the offset values
-	setPositionOffset(Vector3f(0.0f, 0.0f, 0.0f));
+	setPositionOffset(Vector3f(0.0f, 0.1f, 0.0f));
 	setRotationOffset(Vector3f(0.0f, 0.0f, 0.0f));
 	setScaleOffset(Vector3f(1.0f, 1.0f, 1.0f));
 
@@ -52,9 +52,11 @@ int OTTracker::createClient(int iConnectionType)
 
 	//create dummy object for MessageHandler
 	m_dataHandlerManager = new DataHandlerManager(m_properties);
+
+
+
 	//set callback with dummy object
 	m_client->SetDataCallback(m_dataHandlerManager->DataHandler, m_client);	// this function will receive data from the server
-
 
 
 
@@ -124,9 +126,9 @@ void OTTracker::start()
 	//init NatNet client
 	createClient(iConnectionType);
 
+
 	//get reference to the frame data
 	m_refData = m_dataHandlerManager->getData();
-
 
 	//start update() in new thread
 	m_trackingThread = new std::thread(&OTTracker::update, this);
@@ -163,13 +165,13 @@ void OTTracker::update()
 void OTTracker::track()
 {
 
-	//when new data wasn't fetched yet, dont update
-	if (m_isDataAvailable)
-	{
-		
-		return;
+	////when new data wasn't fetched yet, dont update
+	//if (m_isDataAvailable)
+	//{
+	//	
+	//	return;
 
-	}
+	//}
 
 	//when frame data wasn't initialized, try again later
 	if (m_refData == nullptr)
@@ -231,8 +233,11 @@ void OTTracker::extractSkeleton()
 	//when new data isn't available, don't go on
 	if (!m_dataHandlerManager->isDataAvailable())
 	{
+
 		return;
+
 	}
+
 
 	//get current skeleton number
 	m_properties->countDetectedSkeleton = m_refData->nSkeletons;
@@ -253,11 +258,29 @@ void OTTracker::extractSkeleton()
 			if (skData.skeletonID == itPoolSkeletons->first)
 			{
 
-				//convert OptiTrack skeleton into MMH skeleton
-				Skeleton* currSkeleton = parseSkeleton(skData, skData.skeletonID);
 
-				// update all joints of existing skeleon with new data
-				(m_skeletonPool)[skData.skeletonID]->m_joints = currSkeleton->m_joints;
+				
+
+				//convert OptiTrack skeleton into MMH skeleton
+				Skeleton* currSkeleton = parseSkeleton(skData, skData.skeletonID, m_skeletonPool[skData.skeletonID]);
+
+				if (currSkeleton != nullptr)
+				{
+
+					// update all joints of existing skeleon with new data
+					m_skeletonPool[skData.skeletonID]->m_joints = currSkeleton->m_joints;
+
+
+
+				}
+				//else
+				//{
+
+				//	Console::log("OTTracker::extractSkeleton(): position: " + std::to_string(skData.RigidBodyData[0].x) + ", " + std::to_string(skData.RigidBodyData[0].y) + ", " + std::to_string(skData.RigidBodyData[0].z));
+
+				//}
+
+
 
 				//delete temp skeleton object (FIXED MEMORY LEAK)
 				delete currSkeleton;
@@ -275,7 +298,7 @@ void OTTracker::extractSkeleton()
 		{
 
 			// create new skeleton and add it to the skeleton pool
-			m_skeletonPool.insert(std::pair<int, Skeleton*>(skData.skeletonID, parseSkeleton(skData, skData.skeletonID)));
+			m_skeletonPool.insert(std::pair<int, Skeleton*>(skData.skeletonID, parseSkeleton(skData, skData.skeletonID, new Skeleton())));
 
 
 
@@ -291,12 +314,15 @@ void OTTracker::extractSkeleton()
 }
 
 
-Skeleton* OTTracker::parseSkeleton(sSkeletonData skeleton, int id)
+Skeleton* OTTracker::parseSkeleton(sSkeletonData skeleton, int id, Skeleton* oldSkeletonData)
 {
 
 
 	// skeleton data container
 	Skeleton* currSkeleton = new Skeleton(id);
+
+	//Console::log("OTTracker::parseSkeleton():        skeleton 1 forearm L: " + std::to_string(skeleton.RigidBodyData[7].qx) + ", " + std::to_string(skeleton.RigidBodyData[7].x));
+
 
 	//loop through all joints
 	for (int j = 0; j < skeleton.nRigidBodies; j++)
@@ -306,31 +332,35 @@ Skeleton* OTTracker::parseSkeleton(sSkeletonData skeleton, int id)
 
 		// convert from k4a Vectors and quaternions into custom vectors
 		Vector4f pos = m_offsetMatrix * Vector4f(rbData.x, rbData.y, rbData.z, 1.0f);
-		Quaternionf rot = Quaternionf(rbData.qw, rbData.qx, -rbData.qy, rbData.qz);
+		Quaternionf rot = Quaternionf(rbData.qw, rbData.qx, -rbData.qy, -rbData.qz);
 
 		//confidence values are not transmitted, default confidence is High
 		Joint::JointConfidence confidence = Joint::JointConfidence::HIGH;
 
-		//if ( pos.x() >  100 || pos.y() >  100 || pos.z() >  100 ||
-		//	 pos.x() < -100 || pos.y() < -100 || pos.z() < -100 )
-		//{
-
-		//	//Console::log("OTTracker::parseSkeleton(): position: " + toString(pos));
-
-		//	break;
-
-		//}
 
 
-		//if ( rot.x() < -1 || rot.y() < -1 || rot.z() < -1 || rot.w() < -1 || 
-		//	 rot.x() >  1 || rot.y() >  1 || rot.z() >  1 || rot.w() >  1 )
-		//{
 
-		//	//Console::log("OTTracker::parseSkeleton(): rotation: " + toString(rot));
 
-		//	break;
+		if ( pos.x() >  100 || pos.y() >  100 || pos.z() >  100 ||
+			 pos.x() < -100 || pos.y() < -100 || pos.z() < -100 )
+		{
 
-		//}
+			//Console::log("OTTracker::parseSkeleton(): position: " + toString(pos));
+
+			return nullptr;
+
+		}
+
+
+		if ( rot.x() < -1 || rot.y() < -1 || rot.z() < -1 || rot.w() < -1 || 
+			 rot.x() >  1 || rot.y() >  1 || rot.z() >  1 || rot.w() >  1 )
+		{
+
+		//Console::log("OTTracker::parseSkeleton(): rotation: " + toString(rot));
+
+			return nullptr;
+
+		}
 
 
 
@@ -369,17 +399,17 @@ Skeleton* OTTracker::parseSkeleton(sSkeletonData skeleton, int id)
 			break;
 
 		case 6:
-			rot = Quaternionf(rot.w(), rot.x(), rot.y(), -1.0f * rot.z());
+			//rot = Quaternionf(rot.w(), rot.x(), rot.y(), -1.0f * rot.z());
 			currSkeleton->m_joints.insert({ Joint::ARM_L, Joint(pos, rot, confidence) });
 			break;
 
 		case 7:
-			rot = Quaternionf(rot.w(), rot.x(), rot.y(), -1.0f *  rot.z());
+			//rot = Quaternionf(rot.w(), rot.x(), rot.y(), -1.0f *  rot.z());
 			currSkeleton->m_joints.insert({ Joint::FOREARM_L, Joint(pos, rot, confidence) });
 			break;
 
 		case 8:
-			rot = Quaternionf(rot.w(), rot.x(), rot.y(), -1.0f * rot.z());
+			//rot = Quaternionf(rot.w(), rot.x(), rot.y(), -1.0f * rot.z());
 			currSkeleton->m_joints.insert({ Joint::HAND_L, Joint(pos, rot, confidence) });
 			break;
 
@@ -388,62 +418,62 @@ Skeleton* OTTracker::parseSkeleton(sSkeletonData skeleton, int id)
 			break;
 
 		case 10:
-			rot = Quaternionf(rot.w(), rot.x(), rot.y(), -1.0f * rot.z());
+			//rot = Quaternionf(rot.w(), rot.x(), rot.y(), -1.0f * rot.z());
 			currSkeleton->m_joints.insert({ Joint::ARM_R, Joint(pos, rot, confidence) });
 			break;
 
 		case 11:
-			rot = Quaternionf(rot.w(), rot.x(), rot.y(), -1.0f * rot.z());
+			//rot = Quaternionf(rot.w(), rot.x(), rot.y(), -1.0f * rot.z());
 			currSkeleton->m_joints.insert({ Joint::FOREARM_R, Joint(pos, rot, confidence) });
 			break;
 
 		case 12:
-			rot = Quaternionf(rot.w(), rot.x(), rot.y(), -1.0f * rot.z());
+			//rot = Quaternionf(rot.w(), rot.x(), rot.y(), -1.0f * rot.z());
 			currSkeleton->m_joints.insert({ Joint::HAND_R, Joint(pos, rot, confidence) });
 			break;
 
 		case 13:
-			rot = Quaternionf(rot.w(), rot.x(), rot.y(), -1.0f * rot.z());
+			//rot = Quaternionf(rot.w(), rot.x(), rot.y(), -1.0f * rot.z());
 			currSkeleton->m_joints.insert({ Joint::UPLEG_L, Joint(pos, rot, confidence) });
 			break;
 
 		case 14:
-			rot = Quaternionf(rot.w(), rot.x(), rot.y(), -1.0f * rot.z());
+			//rot = Quaternionf(rot.w(), rot.x(), rot.y(), -1.0f * rot.z());
 
 			currSkeleton->m_joints.insert({ Joint::LEG_L, Joint(pos, rot, confidence) });
 			break;
 
 		case 15:
-			rot = Quaternionf(rot.w(), rot.x(), rot.y(), -1.0f * rot.z());
+			//rot = Quaternionf(rot.w(), rot.x(), rot.y(), -1.0f * rot.z());
 			currSkeleton->m_joints.insert({ Joint::FOOT_L, Joint(pos, rot, confidence) });
 			break;
 
 		case 16:
-			rot = Quaternionf(rot.w(), rot.x(), rot.y(), -1.0f * rot.z());
+			//rot = Quaternionf(rot.w(), rot.x(), rot.y(), -1.0f * rot.z());
 
 			currSkeleton->m_joints.insert({ Joint::UPLEG_R, Joint(pos, rot, confidence) });
 			break;
 
 		case 17:
-			rot = Quaternionf(rot.w(), rot.x(), rot.y(), -1.0f * rot.z());
+			//rot = Quaternionf(rot.w(), rot.x(), rot.y(), -1.0f * rot.z());
 
 			currSkeleton->m_joints.insert({ Joint::LEG_R, Joint(pos, rot, confidence) });
 			break;
 
 		case 18:
-			rot = Quaternionf(rot.w(), rot.x(), rot.y(), -1.0f * rot.z());
+			//rot = Quaternionf(rot.w(), rot.x(), rot.y(), -1.0f * rot.z());
 
 			currSkeleton->m_joints.insert({ Joint::FOOT_R, Joint(pos, rot, confidence) });
 			break;
 
 		case 19:
-			rot = Quaternionf(rot.w(), rot.x(), rot.y(), -1.0f * rot.z());
+			//rot = Quaternionf(rot.w(), rot.x(), rot.y(), -1.0f * rot.z());
 
 			currSkeleton->m_joints.insert({ Joint::TOE_L, Joint(pos, rot, confidence) });
 			break;
 
 		case 20:
-			rot = Quaternionf(rot.w(), rot.x(), rot.y(), -1.0f * rot.z());
+			//rot = Quaternionf(rot.w(), rot.x(), rot.y(), -1.0f * rot.z());
 
 			currSkeleton->m_joints.insert({ Joint::TOE_R, Joint(pos, rot, confidence) });
 			break;

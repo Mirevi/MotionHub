@@ -3,8 +3,10 @@
 //_CRT_SECURE_NO_WARNINGS
 #pragma warning(disable : 4996)
 
+std::list<std::string> Console::messagePool;
+
 //outputs a string in console as info text
-void Console::log(std::string message)
+void Console::log(std::string _message)
 {
 	//static member that works without a object
 	static std::atomic<bool> g_consoleIsLocked(false);
@@ -35,14 +37,16 @@ void Console::log(std::string message)
 
 	std::string str(time);
 
-	Console::writeToLogfile(str + " [INFO]: " + message);
+	Console::writeToLogfile(str + " [INFO]: " + _message);
+
+	messagePool.push_back(str + " [INFO]: " + _message);
 
 	SetConsoleTextAttribute(handle_console, 8);
 	std::cout << time;
 	SetConsoleTextAttribute(handle_console, 2);
 	std::cout << " [INFO]: ";
 	SetConsoleTextAttribute(handle_console, 15);
-	std::cout << message << std::endl;
+	std::cout << _message << std::endl;
 
 	SetConsoleTextAttribute(handle_console, 15);
 
@@ -51,7 +55,7 @@ void Console::log(std::string message)
 }
 
 //outputs a string in console as warning
-void Console::logWarning(std::string message)
+void Console::logWarning(std::string _message)
 {
 
 	//static member that works without a object
@@ -83,14 +87,16 @@ void Console::logWarning(std::string message)
 
 	std::string str(time);
 
-	Console::writeToLogfile(str + " [WARNING]: " + message);
+	Console::writeToLogfile(str + " [WARNING]: " + _message);
+
+	messagePool.push_back(str + " [WARNING]: " + _message);
 
 	SetConsoleTextAttribute(handle_console, 8);
 	std::cout << time;
 	SetConsoleTextAttribute(handle_console, 6);
 	std::cout << " [WARNING]: ";
 	SetConsoleTextAttribute(handle_console, 15);
-	std::cout << message << std::endl;
+	std::cout << _message << std::endl;
 
 	SetConsoleTextAttribute(handle_console, 15);
 
@@ -99,7 +105,7 @@ void Console::logWarning(std::string message)
 }
 
 //outputs a string in console as error
-void Console::logError(std::string message)
+void Console::logError(std::string _message)
 {
 
 	//static member that works without a object
@@ -131,14 +137,16 @@ void Console::logError(std::string message)
 
 	std::string str(time);
 
-	Console::writeToLogfile(str + " [ERROR]: " + message);
+	Console::writeToLogfile(str + " [ERROR]: " + _message);
+
+	messagePool.push_back(str + " [ERROR]: " + _message);
 
 	SetConsoleTextAttribute(handle_console, 8);
 	std::cout << time;
 	SetConsoleTextAttribute(handle_console, 4);
 	std::cout << " [ERROR]: ";
 	SetConsoleTextAttribute(handle_console, 15);
-	std::cout << message << std::endl;
+	std::cout << _message << std::endl;
 
 	SetConsoleTextAttribute(handle_console, 15);
 

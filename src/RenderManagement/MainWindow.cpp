@@ -150,6 +150,23 @@ void MainWindow::updateInspector()
 
 }
 
+void MainWindow::updateConsole()
+{
+
+	if (Console::messagePool.size() > 0)
+	{
+
+		QListWidgetItem* item = new QListWidgetItem(ui->listWidget_console);
+		item->setText(QString::fromStdString(Console::messagePool.front()));
+		item->setTextAlignment(Qt::AlignRight);
+
+		ui->listWidget_console->scrollToBottom();
+
+		Console::messagePool.pop_front();
+		
+	}
+}
+
 void MainWindow::drawInspector()
 {
 	//check if selected tracker exists
