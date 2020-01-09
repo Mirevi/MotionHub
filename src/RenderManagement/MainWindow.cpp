@@ -337,6 +337,7 @@ void MainWindow::addRowToInspector(std::string propertyName, std::string valueNa
 
 	// create new property item and set text
 	QTableWidgetItem* property = new QTableWidgetItem();
+	//Console::log("Nicht sicher");
 	property->setText(propertyName.c_str());
 
 	// insert property item in current row
@@ -534,7 +535,6 @@ void MainWindow::slotInspectorInputPosX(QString text)
 	{
 
 		Console::logError("MainWindow::slotInspectorInputPosZ(): Error parsing position offset x value to float!");
-
 		m_inputFieldPool.at("posX")->setText("0");
 		posX = 0.0f;
 
@@ -618,7 +618,6 @@ void MainWindow::slotInspectorInputRotX(QString text)
 	{
 
 		Console::logError("MainWindow::slotInspectorInputPosZ(): Error parsing position offset z value to float!");
-
 		m_inputFieldPool.at("rotX")->setText("0");
 		rotX = 0.0f;
 
@@ -647,7 +646,6 @@ void MainWindow::slotInspectorInputRotY(QString text)
 	{
 
 		Console::logError("MainWindow::slotInspectorInputPosZ(): Error parsing position offset z value to float!");
-
 		m_inputFieldPool.at("rotY")->setText("0");
 		rotY = 0.0f;
 
@@ -676,7 +674,6 @@ void MainWindow::slotInspectorInputRotZ(QString text)
 	{
 
 		Console::logError("MainWindow::slotInspectorInputPosZ(): Error parsing position offset z value to float!");
-
 		m_inputFieldPool.at("rotZ")->setText("0");
 		rotZ = 0.0f;
 
@@ -706,7 +703,6 @@ void MainWindow::slotInspectorInputScaleX(QString text)
 	{
 
 		Console::logError("MainWindow::slotInspectorInputPosZ(): Error parsing position offset z value to float!");
-
 		m_inputFieldPool.at("scaleX")->setText("0");
 		scaleX = 0.0f;
 
@@ -735,7 +731,6 @@ void MainWindow::slotInspectorInputScaleY(QString text)
 	{
 
 		Console::logError("MainWindow::slotInspectorInputPosZ(): Error parsing position offset z value to float!");
-
 		m_inputFieldPool.at("scaleY")->setText("0");
 		scaleY = 0.0f;
 
@@ -762,7 +757,6 @@ void MainWindow::slotInspectorInputScaleZ(QString text)
 	{
 
 		Console::logError("MainWindow::slotInspectorInputPosZ(): Error parsing position offset z value to float!");
-
 		m_inputFieldPool.at("scaleZ")->setText("0");
 		scaleZ = 0.0f;
 
