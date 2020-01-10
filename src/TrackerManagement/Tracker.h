@@ -111,6 +111,11 @@ public:
 	 */
 	virtual bool hasSkeletonPoolChanged();
 
+	/*!
+	 * setter for m_hasSkeletonPoolChanged
+	 * 
+	 * \param state
+	 */
 	virtual void setSkeletonPoolChanged(bool state);
 
 	/*!
