@@ -3,10 +3,6 @@
 #include <iostream>
 #include <thread>
 
-//#include <Core>
-//#include <Geometry>
-//#include <Dense>
-
 #include "MotionHubUtil/Skeleton.h"
 #include "MotionHubUtil/Console.h"
 #include "MotionHubUtil/MMHmath.h"
@@ -50,8 +46,22 @@ public:
 		 */
 		int countDetectedSkeleton = 0;
 
+		/*!
+		 * offset of the trackers position
+		 * 
+		 */
 		Vector3f positionOffset;
+
+		/*!
+		 * offset of the trackers rotation
+		 *
+		 */
 		Vector3f rotationOffset;
+
+		/*!
+		 * offset of the trackers scale
+		 *
+		 */
 		Vector3f scaleOffset;
 
 	};
@@ -114,9 +124,31 @@ public:
 	 */
 	virtual std::map<int, Skeleton*>* getSkeletonPool();
 
+	/*!
+	 * recalculates the update matrix
+	 * 
+	 */
 	virtual void updateMatrix();
+
+	/*!
+	 * sets the position offset in the properties
+	 * 
+	 * \param position position offset
+	 */
 	virtual void setPositionOffset(Vector3f position);
+
+	/*!
+	 * sets the rotation offset in the properties
+	 *
+	 * \param position rotation offset
+	 */
 	virtual void setRotationOffset(Vector3f rotation);
+
+	/*!
+	 * sets the scale offset in the properties
+	 *
+	 * \param position scale offset
+	 */
 	virtual void setScaleOffset(Vector3f scale);
 
 
@@ -150,18 +182,28 @@ protected:
 	 * base method for tracker initialisation 
 	 */
 	virtual void init() = 0;
+
 	/*!
 	 * updade method used for tracker thread 
 	 */
 	virtual void update() = 0;
+
 	/*!
 	 * main tracking method
 	 * captures one frame of body tracking data and saves all data in the skeleton pool
 	 */
 	virtual void track() = 0;
 
+	/*!
+	 * tracks the refresh cycles of a tracker
+	 * 
+	 */
 	int m_trackingCycles = 0;
 
+	/*!
+	 * matrix calculated with the offset Vectors
+	 * 
+	 */
 	Matrix4f m_offsetMatrix;
 
 };

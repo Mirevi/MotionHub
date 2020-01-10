@@ -35,6 +35,7 @@ class DataHandlerManager;
  */
 class OTTracker : public Tracker
 {
+
 public:
 	/*!
 	 * default constructor
@@ -55,9 +56,12 @@ public:
 	/*!
 	 * calls the start() method of the base class which sets m_tracking to true
 	 */
+	 
+	 
+
 	void start() override;
 	/*!
-	 *  sets m_tracking to false, so track() runs for the last time and exits
+	 * sets m_tracking to false, so track() runs for the last time and exits,
 	 * after that, the tracking thread is stopped
 	 */
 	void stop() override;
@@ -65,6 +69,7 @@ public:
 	 * resets the Trackers init data
 	 */
 	void destroy() override;
+
 
 private:
 
@@ -90,23 +95,35 @@ private:
 	 * 
 	 */
 	char szServerIPAddress[128] = "127.0.0.1";
-	double holdInRoITime = 500;
 	/*!
 	 * the NatNet client
 	 * 
 	 */
 	NatNetClient* m_client;
+
 	int analogSamplesPerMocapFrame = 0;
+	/*!
+	 * connection type
+	 * 
+	 */
 	int iConnectionType = ConnectionType_Multicast;
 
-	int createClient(int iConnectionType);
 
+
+
+	/*!
+	 * creates a NatNet Receiver client
+	 * 
+	 * \param iConnectionType connection type
+	 * \return Error Code
+	 */
+	int createClient(int iConnectionType);
 
 	/*!
 	 * empty override method for Tracker::init()
 	 * this tracker does initialization in  createClient()
 	 */
-	void init() override {};
+	void init() override;
 	/*!
 	 * updade method used for tracker thread
 	 */
@@ -138,6 +155,13 @@ private:
 	 */
 	void cleanSkeletonPool();
 
+
+	/*!
+	 * rotates the input quaternion at the y-axis with 180 degree
+	 * 
+	 * \param value input quaternion
+	 * \return rotated output quaternion
+	 */
 	Quaternionf convertOptiTrackRotation(Quaternionf value);
 
 };

@@ -7,7 +7,6 @@ TrackerManager::TrackerManager()
 
 }
 
-// create new tracker based on the tracker type
 int TrackerManager::createTracker(TrackerType type)
 {
 
@@ -15,6 +14,7 @@ int TrackerManager::createTracker(TrackerType type)
 
 	// get the next tracker id based on the tracker count
 	int id = m_trackerPool.size();
+
 	// var for azure kinect tracker id calculation
 	int nextCamIdAk = 0;
 
@@ -25,6 +25,7 @@ int TrackerManager::createTracker(TrackerType type)
 		// azure kinect
 		case azureKinect:
 
+			//lock the tracker pool
 			m_isTrackerPoolLocked.store(true);
 
 			// get next azure kinect camera id
@@ -34,16 +35,20 @@ int TrackerManager::createTracker(TrackerType type)
 				if (itPoolTracker->first.first == "azureKinect")
 				{
 
+					//if there is already an AKTracker, increase the current cam id
 					nextCamIdAk = itPoolTracker->first.second + 1;
 
 				}
+
 			}
 
 			// create new azure kinect tracker and insert the tracker in the tracker pool
 			m_trackerPool.insert({ { "azureKinect", id }, new AKTracker(id, nextCamIdAk) });
 
+			//unlock the tracker pool
 			m_isTrackerPoolLocked.store(false);
 
+			//a tracker has been added, so the tracker pool has changed
 			m_hasTrackerPoolChanged = true;
 
 			Console::log("TrackerManager::createTracker(): Created Azure Kinect tracker with cam id = " + std::to_string(nextCamIdAk) + ".");
@@ -52,12 +57,16 @@ int TrackerManager::createTracker(TrackerType type)
 
 		case optiTrack:
 
+			//lock the tracker pool
 			m_isTrackerPoolLocked.store(true);
 
+			// create new azure kinect tracker and insert the tracker in the tracker pool
 			m_trackerPool.insert({ { "optiTrack", id }, new OTTracker(id) });
 
+			//unlock the tracker pool
 			m_isTrackerPoolLocked.store(false);
 
+			//a tracker has been added, so the tracker pool has changed
 			m_hasTrackerPoolChanged = true;
 
 			Console::log("TrackerManager::createTracker(): Created OptiTrack tracker.");
@@ -70,14 +79,15 @@ int TrackerManager::createTracker(TrackerType type)
 			return -1;
 
 	}
+
 }
 
-// remove tracker with id from the tracker pool
 void TrackerManager::removeTracker(int idToRemove)
 {
 
-	Console::log("MotionHub::checkInput(): Removing tracker ...");
+	Console::log("TrackerManager::removeTracker(): Removing tracker ...");
 
+	//lock the tracker pool
 	m_isTrackerPoolLocked.store(true);
 
 	// get key of tracker with id
@@ -89,9 +99,11 @@ void TrackerManager::removeTracker(int idToRemove)
 
 			// destroy tracker with key
 			m_trackerPool.at(itPoolTracker->first)->destroy();
+
 			// remove tracker with key from tracker pool
 			m_trackerPool.erase(itPoolTracker->first);
 
+			//a tracker has been removed, so the tracker pool has changed
 			m_hasTrackerPoolChanged = true;
 
 			Console::log("TrackerManager::removeTracker(): Removed tracker with id = " + std::to_string(idToRemove) + ".");
@@ -101,13 +113,67 @@ void TrackerManager::removeTracker(int idToRemove)
 		}
 	}
 
+	//unlock the tracker pool
 	m_isTrackerPoolLocked.store(false);
+
+}
+
+void TrackerManager::startTracker()
+{
+
+	Console::log("TrackerManager::startTracker(): Starting all tracker ...");
+
+	//lock the tracker pool
+	m_isTrackerPoolLocked.store(true);
+
+	//loop through all tracker and start everyone of them
+	for (auto itTracker = m_trackerPool.begin(); itTracker != m_trackerPool.end(); itTracker++)
+	{
+
+		itTracker->second->start();
+	
+	}
+
+	//unlock the tracker pool
+	m_isTrackerPoolLocked.store(false);
+
+	//we are now in playMode
+	m_isTracking = true;
+
+	Console::log("TrackerManager::startTracker(): Started all tracker.");
+
+}
+
+void TrackerManager::stopTracker()
+{
+
+	Console::log("TrackerManager::stopTracker(): Stopping all tracker ...");
+
+	//the playMode has ended
+	m_isTracking = false;
+
+	//lock the tracker pool
+	m_isTrackerPoolLocked.store(true);
+
+	//loop through all tracker and disable everyone of them
+	for (auto itTracker = m_trackerPool.begin(); itTracker != m_trackerPool.end(); itTracker++)
+	{
+
+		itTracker->second->stop();
+
+	}
+
+	//unlock the tracker pool
+	m_isTrackerPoolLocked.store(false);
+
+	Console::log("TrackerManager::stopTracker(): Stopped all tracker.");
 
 }
 
 bool TrackerManager::hasTrackerPoolChanged()
 {
 
+	//m_hasTrackerPoolChanged is true, reset it to flase
 	if (m_hasTrackerPoolChanged)
 	{
 
@@ -123,54 +189,6 @@ bool TrackerManager::hasTrackerPoolChanged()
 	}
 }
 
-// start all tracker in the tracker pool
-void TrackerManager::startTracker()
-{
-
-	Console::log("TrackerManager::startTracker(): Starting all tracker ...");
-
-	m_isTrackerPoolLocked.store(true);
-
-	for (auto itTracker = m_trackerPool.begin(); itTracker != m_trackerPool.end(); itTracker++)
-	{
-		itTracker->second->start();
-	}
-
-	m_isTrackerPoolLocked.store(false);
-
-	m_isTracking = true;
-
-	Console::log("TrackerManager::startTracker(): Started all tracker.");
-}
-
-// stop all tracker in the tracker pool
-void TrackerManager::stopTracker()
-{
-
-	Console::log("TrackerManager::stopTracker(): Stopping all tracker ...");
-
-	m_isTracking = false;
-
-	m_isTrackerPoolLocked.store(true);
-
-	for (auto itTracker = m_trackerPool.begin(); itTracker != m_trackerPool.end(); itTracker++)
-	{
-		itTracker->second->stop();
-	}
-
-	m_isTrackerPoolLocked.store(false);
-
-	Console::log("TrackerManager::stopTracker(): Stopped all tracker.");
-}
-
-// return refference pointer to the tracker poll
-std::map<std::pair<std::string, int>, Tracker*>* TrackerManager::getPoolTracker()
-{
-
-	return &m_trackerPool;
-
-}
-
 bool TrackerManager::isTracking()
 {
 
@@ -180,17 +198,31 @@ bool TrackerManager::isTracking()
 
 bool TrackerManager::isTrackerPoolLocked()
 {
+
 	return m_isTrackerPoolLocked.load();
+
+}
+
+std::map<std::pair<std::string, int>, Tracker*>* TrackerManager::getPoolTracker()
+{
+
+	return &m_trackerPool;
+
 }
 
 Tracker* TrackerManager::getTrackerRef(int id)
 {
 
+	//loop through tracker pool and return the tracker with given id
 	for (auto itTracker = m_trackerPool.begin(); itTracker != m_trackerPool.end(); itTracker++)
 	{
 
 		if (itTracker->first.second == id)
+		{
+
 			return itTracker->second;
+
+		}
 
 	}
 
