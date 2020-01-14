@@ -99,16 +99,17 @@ void MainWindow::updateHirachy()
 void MainWindow::updateInspector()
 {
 	//check if selected tracker exists
-	if (m_refTrackerManager->getTrackerRef(m_selectedTrackerInList) == nullptr)
+	if (m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList) == nullptr)			//Inspector and tracker removing bug is here!!!!
 	{
-		//when this tracker doesn't exist, updating the inspector is not needed
+		//when this tracker doesn't exist, updating the inspector is not needed				
 		m_selectedTrackerInList = -1;
+
 		return;
 
 	}
 
 	//get properties of selected tracker
-	Tracker::Properties* trackerProperties = m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->getProperties();
+	Tracker::Properties* trackerProperties = m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->getProperties();
 
 	//set ID and name in inspector
 	ui->tableWidget_inspector->item(0, 1)->setText(std::to_string(trackerProperties->id).c_str());
@@ -170,8 +171,11 @@ void MainWindow::updateConsole()
 void MainWindow::drawInspector()
 {
 	//check if selected tracker exists
-	if (m_refTrackerManager->getTrackerRef(m_selectedTrackerInList) == nullptr)
+	if (m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList) == nullptr)
 	{
+
+		Console::log("MainWindow::drawInspector(): Tracker at " + std::to_string(m_selectedTrackerInList) + " is nullptr!");
+
 		//when this tracker doesn't exist, updating the inspector is not needed
 		m_selectedTrackerInList = -1;
 		return;
@@ -182,7 +186,7 @@ void MainWindow::drawInspector()
 	clearInspector();
 
 	//get properties of selected tracker
-	Tracker::Properties* trackerProperties = m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->getProperties();
+	Tracker::Properties* trackerProperties = m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->getProperties();
 
 	//add ID row to inspector
 	addRowToInspector("id", std::to_string(trackerProperties->id));
@@ -427,7 +431,7 @@ void MainWindow::slotRemoveTracker()
 	else
 	{
 
-		Console::logWarning("MainWindow::removeTracker(): No tracker in list selected!");
+		Console::logWarning("MainWindow::removeTracker(): No tracker in list selected! m_selectedTrackerInList = " + std::to_string(m_selectedTrackerInList));
 
 	}
 
@@ -440,8 +444,9 @@ void MainWindow::slotRemoveTracker()
 // SLOT: get selected tracker index from tracker list
 void MainWindow::slotSelectTracker(QModelIndex index)
 {
-
+	 
 	int previousSelectedTrackerInList = m_selectedTrackerInList;
+
 	// get index of selected tracker
 	m_selectedTrackerInList = ui->listWidget_tracker->currentRow();
 
@@ -449,10 +454,18 @@ void MainWindow::slotSelectTracker(QModelIndex index)
 
 	// update the inspector if current tracker was reselected
 	if (previousSelectedTrackerInList == m_selectedTrackerInList)
+	{
+
 		updateInspector();
-	// if other tracker than before was selected - draw the ui with new content
-	else
+
+	}
+	else // if other tracker than before was selected - draw the ui with new content
+	{
+
 		drawInspector();
+
+	}
+
 }
 
 void MainWindow::slotInspectorItemChanged(QTableWidgetItem* item)
@@ -473,13 +486,13 @@ void MainWindow::slotInspectorItemChanged(QTableWidgetItem* item)
 				if (item->checkState() == Qt::Checked)
 				{
 
-					m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->enable();
+					m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->enable();
 
 				}
 				else if (item->checkState() == Qt::Unchecked)
 				{
 
-					m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->disable();
+					m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->disable();
 
 				}
 				// update ui
@@ -540,9 +553,9 @@ void MainWindow::slotInspectorInputPosX(QString text)
 
 	}
 
-	Vector3f pos = m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->getProperties()->positionOffset;
+	Vector3f pos = m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->getProperties()->positionOffset;
 
-	m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->setPositionOffset(Vector3f(posX, pos.y(), pos.z()));
+	m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->setPositionOffset(Vector3f(posX, pos.y(), pos.z()));
 
 }
 
@@ -569,9 +582,9 @@ void MainWindow::slotInspectorInputPosY(QString text)
 
 	}
 
-	Vector3f pos = m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->getProperties()->positionOffset;
+	Vector3f pos = m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->getProperties()->positionOffset;
 
-	m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->setPositionOffset(Vector3f(pos.x(), posY, pos.z()));
+	m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->setPositionOffset(Vector3f(pos.x(), posY, pos.z()));
 
 }
 
@@ -596,9 +609,9 @@ void MainWindow::slotInspectorInputPosZ(QString text)
 
 	}
 
-	Vector3f pos = m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->getProperties()->positionOffset;
+	Vector3f pos = m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->getProperties()->positionOffset;
 
-	m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->setPositionOffset(Vector3f(pos.x(), pos.y(), posZ));
+	m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->setPositionOffset(Vector3f(pos.x(), pos.y(), posZ));
 
 }
 
@@ -623,9 +636,9 @@ void MainWindow::slotInspectorInputRotX(QString text)
 
 	}
 
-	Vector3f rot = m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->getProperties()->rotationOffset;
+	Vector3f rot = m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->getProperties()->rotationOffset;
 
-	m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->setRotationOffset(Vector3f(rotX, rot.y(), rot.z()));
+	m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->setRotationOffset(Vector3f(rotX, rot.y(), rot.z()));
 
 }
 
@@ -651,9 +664,9 @@ void MainWindow::slotInspectorInputRotY(QString text)
 
 	}
 
-	Vector3f rot = m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->getProperties()->rotationOffset;
+	Vector3f rot = m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->getProperties()->rotationOffset;
 
-	m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->setRotationOffset(Vector3f(rot.x(), rotY, rot.z()));
+	m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->setRotationOffset(Vector3f(rot.x(), rotY, rot.z()));
 
 }
 
@@ -679,9 +692,9 @@ void MainWindow::slotInspectorInputRotZ(QString text)
 
 	}
 
-	Vector3f rot = m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->getProperties()->rotationOffset;
+	Vector3f rot = m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->getProperties()->rotationOffset;
 
-	m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->setRotationOffset(Vector3f(rot.x(), rot.y(), rotZ));
+	m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->setRotationOffset(Vector3f(rot.x(), rot.y(), rotZ));
 
 }
 
@@ -708,9 +721,9 @@ void MainWindow::slotInspectorInputScaleX(QString text)
 
 	}
 
-	Vector3f scale = m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->getProperties()->scaleOffset;
+	Vector3f scale = m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->getProperties()->scaleOffset;
 
-	m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->setScaleOffset(Vector3f(scaleX, scale.y(), scale.z()));
+	m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->setScaleOffset(Vector3f(scaleX, scale.y(), scale.z()));
 
 }
 
@@ -736,9 +749,9 @@ void MainWindow::slotInspectorInputScaleY(QString text)
 
 	}
 
-	Vector3f scale = m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->getProperties()->scaleOffset;
+	Vector3f scale = m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->getProperties()->scaleOffset;
 
-	m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->setScaleOffset(Vector3f(scale.x(), scaleY, scale.z()));
+	m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->setScaleOffset(Vector3f(scale.x(), scaleY, scale.z()));
 
 }
 
@@ -762,9 +775,9 @@ void MainWindow::slotInspectorInputScaleZ(QString text)
 
 	}
 
-	Vector3f scale = m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->getProperties()->scaleOffset;
+	Vector3f scale = m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->getProperties()->scaleOffset;
 
-	m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->setScaleOffset(Vector3f(scale.x(), scale.y(), scaleZ));
+	m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->setScaleOffset(Vector3f(scale.x(), scale.y(), scaleZ));
 
 }
 

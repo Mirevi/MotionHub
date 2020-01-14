@@ -1,5 +1,4 @@
 #include "AKTracker.h"
-#include "MotionHubUtil/Vector3.h"
 
 // default constructor
 AKTracker::AKTracker(int id, int idCam)
@@ -14,16 +13,56 @@ AKTracker::AKTracker(int id, int idCam)
 	// assign cam id
 	m_idCam = idCam;
 
+	//tracker is enabled
 	m_properties->isEnabled = true;
 
+	//set default values for offsets
 	setPositionOffset(Vector3f(0.0f, 1.175f, 2.2f));
 	setRotationOffset(Vector3f(-5.0f, 0.0f, 0.0f));
 	setScaleOffset(Vector3f(0.0010f, -0.0010f, -0.0010f));
 
-
-
 	// initialize azure kinect camera and body tracker
 	init();
+
+}
+
+// start azure kinect tracker
+void AKTracker::start()
+{
+
+	// set tracking to true
+	m_properties->isTracking = true;
+
+	// start tracking thread and detach the thread from method scope runtime
+	m_trackingThread = new std::thread(&AKTracker::update, this);
+	m_trackingThread->detach();
+	
+}
+
+// stop tracking loop / thread
+void AKTracker::stop()
+{
+	//is not tracking, so the update loop exits 
+	m_properties->isTracking = false;
+
+}
+
+// shutdown and destroy azure kinect tracker
+void AKTracker::destroy()
+{
+
+	// shutdown and destroy tracker
+	k4abt_tracker_shutdown(m_tracker);
+	k4abt_tracker_destroy(m_tracker);
+
+	// stop and close camera
+	k4a_device_stop_cameras(m_cam);
+	k4a_device_close(m_cam);
+
+	Console::log("[cam id = " + std::to_string(m_idCam) + "] AKTracker::destroy(): Destroyed tracker with camera id = " + std::to_string(m_idCam) + ".");
+
+	// delete this object
+	delete this;
 
 }
 
@@ -56,19 +95,6 @@ void AKTracker::init()
 
 
 	Console::log("AKTracker::init(): init done");
-}
-
-// start azure kinect tracker
-void AKTracker::start()
-{
-
-	// set tracking to true
-	m_properties->isTracking = true;
-
-	// start tracking thread and detach the thread from method scope runtime
-	m_trackingThread = new std::thread(&AKTracker::update, this);
-	m_trackingThread->detach();
-	
 }
 
 // tracking loop
@@ -141,6 +167,7 @@ void AKTracker::track()
 			// remember to release the body frame once you finish using it
 			k4abt_frame_release(body_frame); 
 
+			//count tracking cycles
 			m_trackingCycles++;
 
 			// set data available to true
@@ -176,32 +203,6 @@ void AKTracker::track()
 	}
 }
 
-// stop tracking loop / thread
-void AKTracker::stop()
-{
-	//is not tracking, so the update loop exits 
-	m_properties->isTracking = false;
-
-}
-
-// shutdown and destroy azure kinect tracker
-void AKTracker::destroy()
-{
-
-	// shutdown and destroy tracker
-	k4abt_tracker_shutdown(m_tracker);
-	k4abt_tracker_destroy(m_tracker);
-	// stop and close camera
-	k4a_device_stop_cameras(m_cam);
-	k4a_device_close(m_cam);
-
-	Console::log("[cam id = " + std::to_string(m_idCam) + "] AKTracker::destroy(): Destroyed tracker with camera id = " + std::to_string(m_idCam) + ".");
-
-	// delete this object
-	delete this;
-
-}
-
 // extract skeletons from body frame and parse them into default skeleton pool
 void AKTracker::extractSkeleton(k4abt_frame_t* body_frame)
 {
@@ -231,10 +232,6 @@ void AKTracker::extractSkeleton(k4abt_frame_t* body_frame)
 
 				// update all joints of existing skeleon with new data
 				m_skeletonPool[id]->m_joints = parseSkeleton(&skeleton, id)->m_joints;
-
-				//Console::log("[cam id = " + std::to_string(m_idCam) + "] AkTracker::updateSkeleton(): Skeleton with id = " + std::to_string(id) + " pelvis position = " + poolSkeletons[id].m_joints[Joint::JOINT_PELVIS].getJointPosition().toString() + ".");
-
-				//Console::log("[cam id = " + std::to_string(m_idCam) + "] AkTracker::updateSkeleton(): Updated skeleton with id = " + std::to_string(id) + ".");
 
 				createNewSkeleton = false;
 
@@ -283,6 +280,7 @@ Skeleton* AKTracker::parseSkeleton(k4abt_skeleton_t* skeleton, int id)
 		Joint::JointConfidence confidence = (Joint::JointConfidence)skeleton->joints[jointIndex].confidence_level;
 
 		// map azure kinect skeleton joints to default skeleton joints and set confidence level
+		//rotations are converted from global to local
 		switch (jointIndex)
 		{
 
@@ -477,13 +475,13 @@ Quaternionf AKTracker::azureKinectEulerToQuaternion(Vector3f euler)
 
 	Quaternionf qRotation;
 
+	//calculate rotation quaternion
 	qRotation = AngleAxisf(euler.x() * M_PI / 180, Vector3f::UnitX())
-		* AngleAxisf(euler.y() * M_PI / 180, Vector3f::UnitY())
-		* AngleAxisf(euler.z() * M_PI / 180, Vector3f::UnitZ());
+			  * AngleAxisf(euler.y() * M_PI / 180, Vector3f::UnitY())
+			  * AngleAxisf(euler.z() * M_PI / 180, Vector3f::UnitZ());
 
+	//invert z-compunent (this works for our left handed coordinate system)
 	qRotation = Quaternionf(qRotation.w(), qRotation.x(), qRotation.y(), -qRotation.z());
-
-
 
 	return qRotation;
 

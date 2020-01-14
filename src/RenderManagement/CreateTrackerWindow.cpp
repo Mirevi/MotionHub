@@ -37,10 +37,10 @@ void CreateTrackerWindow::slotCreateTracker()
 
 		case 0:
 		{
-
-			id = m_refTrackerManager->createTracker(TrackerManager::azureKinect); // create new azure kinect tracker and add tracker to the tracking manager tracker pool
+			// create new azure kinect tracker and add tracker to the tracking manager tracker pool
+			id = m_refTrackerManager->createTracker(TrackerManager::azureKinect); 
 			
-			m_refListWidgetTracker->addItem(m_refTrackerManager->getPoolTracker()->at({"azureKinect", id})->getProperties()->name.c_str());
+
 
 			break;
 
@@ -48,11 +48,9 @@ void CreateTrackerWindow::slotCreateTracker()
 
 		case 2:
 		{
-
-			id = m_refTrackerManager->createTracker(TrackerManager::optiTrack); // create new azure kinect tracker and add tracker to the tracking manager tracker pool
-			
-			m_refListWidgetTracker->addItem(m_refTrackerManager->getPoolTracker()->at({ "optiTrack", id })->getProperties()->name.c_str());
-			
+			// create new azure kinect tracker and add tracker to the tracking manager tracker pool
+			id = m_refTrackerManager->createTracker(TrackerManager::optiTrack);
+						
 			break;
 
 		}
@@ -62,6 +60,22 @@ void CreateTrackerWindow::slotCreateTracker()
 			break;
 
 	}
+
+
+	std::vector<Tracker*>* trackerPoolRef = m_refTrackerManager->getPoolTracker();
+
+	for (auto itTracker = trackerPoolRef->begin(); itTracker < trackerPoolRef->end(); itTracker++)
+	{
+
+		if ((*itTracker)->getProperties()->id)
+		{
+
+			m_refListWidgetTracker->addItem((*itTracker)->getProperties()->name.c_str());
+
+		}
+
+	}
+
 
 	//set the curser to default
 	QApplication::restoreOverrideCursor();

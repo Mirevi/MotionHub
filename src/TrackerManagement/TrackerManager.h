@@ -3,6 +3,7 @@
 #include "ConfigDllExportTrackingManagement.h"
 
 #include <map>
+#include <vector>
 #include <atomic>
 
 #include "Tracker.h"
@@ -52,6 +53,8 @@ public:
 	 */
 	void removeTracker(int idToRemove);
 
+	void removeTrackerAt(int positionInList);
+
 	/*!
 	 * starts all tracker in the tracker pool
 	 * 
@@ -91,7 +94,7 @@ public:
 	 * 
 	 * \return pointer to map of tracker
 	 */
-	std::map<std::pair<std::string, int>, Tracker*>* getPoolTracker();
+	std::vector<Tracker*>* getPoolTracker();
 
 	/*!
 	 * getter for a specific tracker
@@ -99,14 +102,15 @@ public:
 	 * \param id the id of the tracker which should be returned
 	 * \return pointer to the tracker with given id
 	 */
-	Tracker* getTrackerRef(int id);
+	Tracker* getTrackerRefAt(int id);
 
 private:
 
 	/*!
 	 * pool of all created tracker 
 	 */
-	std::map<std::pair<std::string, int>, Tracker*> m_trackerPool;
+	//std::map<std::pair<std::string, int>, Tracker*> m_trackerPool;
+	std::vector<Tracker*> m_trackerPool;
 
 	/*!
 	 * true when tracker is tracking, when MMH is in playMode
@@ -125,5 +129,9 @@ private:
 	 * 
 	 */
 	std::atomic<bool> m_isTrackerPoolLocked;
+
+	int m_nextFreeTrackerID;
+
+	int m_nextFreeAKCamID;
 
 };

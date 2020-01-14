@@ -1,17 +1,16 @@
 #pragma once
 
 #include "ConfigDllExportRenderManagement.h"
-//#include "ConfigDllExportRenderManagement.h"
-#include <QtWidgets/QMainWindow>
-#include "MotionHubUtil/Console.h"
 #include "CreateTrackerWindow.h"
-#include "QtCore/qstringlistmodel.h"
-#include "QtCore/qstring.h"
+#include "GlWidget.h"
+#include "MotionHubUtil/Console.h"
+
+#include <QtWidgets/QMainWindow>
 #include "QtWidgets/qtreewidget.h"
 #include "QtWidgets/qtablewidget.h"
 #include "QtWidgets/qlineedit.h"
-//#include <QString>
-#include "GlWidget.h"
+#include "QtCore/qstringlistmodel.h"
+#include "QtCore/qstring.h"
 
 #include <math.h>
 
@@ -135,6 +134,8 @@ private:
 	 * id of the currently selected tracker 
 	 */
 	int m_selectedTrackerInList;
+
+	Tracker* m_selectedTracker;
 
 	/*!
 	 *  updates hirachy and items in it

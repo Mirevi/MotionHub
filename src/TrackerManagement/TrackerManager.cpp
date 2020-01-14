@@ -3,6 +3,9 @@
 TrackerManager::TrackerManager()
 {
 	
+	m_nextFreeTrackerID = 0;
+	m_nextFreeAKCamID = 0;
+
 	Console::log("TrackerManager::TrackerManager(): Created tracker manager.");
 
 }
@@ -13,10 +16,11 @@ int TrackerManager::createTracker(TrackerType type)
 	Console::log("TrackerManager::createTracker(): Creating tracker ...");
 
 	// get the next tracker id based on the tracker count
-	int id = m_trackerPool.size();
+	int id = m_nextFreeTrackerID;
 
-	// var for azure kinect tracker id calculation
-	int nextCamIdAk = 0;
+	m_nextFreeTrackerID++;
+
+	Tracker* tempTracker;
 
 	// create new tracker based on the tracker type
 	switch (type)
@@ -25,46 +29,47 @@ int TrackerManager::createTracker(TrackerType type)
 		// azure kinect
 		case azureKinect:
 
+
 			//lock the tracker pool
 			m_isTrackerPoolLocked.store(true);
 
-			// get next azure kinect camera id
-			for (auto itPoolTracker = m_trackerPool.begin(); itPoolTracker != m_trackerPool.end(); itPoolTracker++)
-			{
+			//create new AK Tracker with next free Cam ID
+			tempTracker = new AKTracker(id, m_nextFreeAKCamID);
 
-				if (itPoolTracker->first.first == "azureKinect")
-				{
-
-					//if there is already an AKTracker, increase the current cam id
-					nextCamIdAk = itPoolTracker->first.second + 1;
-
-				}
-
-			}
+			//next AK Tracker has new cam ID
+			m_nextFreeAKCamID++;
 
 			// create new azure kinect tracker and insert the tracker in the tracker pool
-			m_trackerPool.insert({ { "azureKinect", id }, new AKTracker(id, nextCamIdAk) });
+			m_trackerPool.push_back(tempTracker);
 
 			//unlock the tracker pool
 			m_isTrackerPoolLocked.store(false);
 
+
+
 			//a tracker has been added, so the tracker pool has changed
 			m_hasTrackerPoolChanged = true;
 
-			Console::log("TrackerManager::createTracker(): Created Azure Kinect tracker with cam id = " + std::to_string(nextCamIdAk) + ".");
+			Console::log("TrackerManager::createTracker(): Created Azure Kinect tracker with cam id = " + std::to_string(m_nextFreeAKCamID) + ".");
 
 			return id;
 
 		case optiTrack:
 
+
+
 			//lock the tracker pool
 			m_isTrackerPoolLocked.store(true);
 
+			tempTracker = new OTTracker(id);
+
 			// create new azure kinect tracker and insert the tracker in the tracker pool
-			m_trackerPool.insert({ { "optiTrack", id }, new OTTracker(id) });
+			m_trackerPool.push_back(tempTracker);
 
 			//unlock the tracker pool
 			m_isTrackerPoolLocked.store(false);
+
+
 
 			//a tracker has been added, so the tracker pool has changed
 			m_hasTrackerPoolChanged = true;
@@ -82,7 +87,7 @@ int TrackerManager::createTracker(TrackerType type)
 
 }
 
-void TrackerManager::removeTracker(int idToRemove)
+void TrackerManager::removeTracker(int positionInListToRemove)
 {
 
 	Console::log("TrackerManager::removeTracker(): Removing tracker ...");
@@ -90,27 +95,73 @@ void TrackerManager::removeTracker(int idToRemove)
 	//lock the tracker pool
 	m_isTrackerPoolLocked.store(true);
 
+	int i = 0;
+
 	// get key of tracker with id
 	for (auto itPoolTracker = m_trackerPool.begin(); itPoolTracker != m_trackerPool.end(); itPoolTracker++)
 	{
 
-		if (itPoolTracker->first.second == idToRemove)
+		if (i == positionInListToRemove)
 		{
 
 			// destroy tracker with key
-			m_trackerPool.at(itPoolTracker->first)->destroy();
+			(*itPoolTracker)->destroy();
 
 			// remove tracker with key from tracker pool
-			m_trackerPool.erase(itPoolTracker->first);
+			m_trackerPool.erase(itPoolTracker);
 
 			//a tracker has been removed, so the tracker pool has changed
 			m_hasTrackerPoolChanged = true;
 
-			Console::log("TrackerManager::removeTracker(): Removed tracker with id = " + std::to_string(idToRemove) + ".");
+			Console::log("TrackerManager::removeTracker(): Removed tracker with id = " + std::to_string(positionInListToRemove) + ".");
 
 			break;
 
 		}
+
+		i++;
+
+	}
+
+	//unlock the tracker pool
+	m_isTrackerPoolLocked.store(false);
+
+}
+
+void TrackerManager::removeTrackerAt(int positionInList)
+{
+
+	Console::log("TrackerManager::removeTracker(): Removing tracker ...");
+
+	//lock the tracker pool
+	m_isTrackerPoolLocked.store(true);
+
+	int i = 0;
+
+	// get key of tracker with id
+	for (auto itPoolTracker = m_trackerPool.begin(); itPoolTracker != m_trackerPool.end(); itPoolTracker++)
+	{
+
+		if (i == positionInList)
+		{
+
+
+			// destroy tracker with key
+			(*itPoolTracker)->destroy();
+
+			// remove tracker with key from tracker pool
+			m_trackerPool.erase(itPoolTracker);
+
+
+
+			//a tracker has been removed, so the tracker pool has changed
+			m_hasTrackerPoolChanged = true;
+
+			Console::log("TrackerManager::removeTracker(): Removed tracker with id = " + std::to_string(i) + ".");
+		}
+
+		i++;
+
 	}
 
 	//unlock the tracker pool
@@ -130,7 +181,7 @@ void TrackerManager::startTracker()
 	for (auto itTracker = m_trackerPool.begin(); itTracker != m_trackerPool.end(); itTracker++)
 	{
 
-		itTracker->second->start();
+		(*itTracker)->start();
 	
 	}
 
@@ -159,7 +210,7 @@ void TrackerManager::stopTracker()
 	for (auto itTracker = m_trackerPool.begin(); itTracker != m_trackerPool.end(); itTracker++)
 	{
 
-		itTracker->second->stop();
+		(*itTracker)->stop();
 
 	}
 
@@ -203,28 +254,38 @@ bool TrackerManager::isTrackerPoolLocked()
 
 }
 
-std::map<std::pair<std::string, int>, Tracker*>* TrackerManager::getPoolTracker()
+std::vector<Tracker*>* TrackerManager::getPoolTracker()
 {
 
 	return &m_trackerPool;
 
 }
 
-Tracker* TrackerManager::getTrackerRef(int id)
+Tracker* TrackerManager::getTrackerRefAt(int trackerPositionInList )
 {
+
+	Console::log("TrackerManager::getTrackerRef(): started getting Tracker. given id is: " + std::to_string(trackerPositionInList));
+
+	int i = 0;
 
 	//loop through tracker pool and return the tracker with given id
 	for (auto itTracker = m_trackerPool.begin(); itTracker != m_trackerPool.end(); itTracker++)
 	{
 
-		if (itTracker->first.second == id)
+		Console::log("TrackerManager::getTrackerRef(): current Tracker ID: " + std::to_string((*itTracker)->getProperties()->id) + ", current i: " + std::to_string(i));
+
+		if (i == trackerPositionInList)
 		{
 
-			return itTracker->second;
+			return *itTracker;
 
 		}
 
+		i++;
+
 	}
+
+	Console::logError("Tracker does not exist!");
 
 	return nullptr;
 
