@@ -50,7 +50,7 @@ int TrackerManager::createTracker(TrackerType type)
 			//a tracker has been added, so the tracker pool has changed
 			m_hasTrackerPoolChanged = true;
 
-			Console::log("TrackerManager::createTracker(): Created Azure Kinect tracker with cam id = " + std::to_string(m_nextFreeAKCamID) + ".");
+			Console::log("TrackerManager::createTracker(): Created Azure Kinect tracker with cam id = " + std::to_string(m_nextFreeAKCamID - 1) + ".");
 
 			return id;
 
@@ -87,46 +87,6 @@ int TrackerManager::createTracker(TrackerType type)
 
 }
 
-void TrackerManager::removeTracker(int positionInListToRemove)
-{
-
-	Console::log("TrackerManager::removeTracker(): Removing tracker ...");
-
-	//lock the tracker pool
-	m_isTrackerPoolLocked.store(true);
-
-	int i = 0;
-
-	// get key of tracker with id
-	for (auto itPoolTracker = m_trackerPool.begin(); itPoolTracker != m_trackerPool.end(); itPoolTracker++)
-	{
-
-		if (i == positionInListToRemove)
-		{
-
-			// destroy tracker with key
-			(*itPoolTracker)->destroy();
-
-			// remove tracker with key from tracker pool
-			m_trackerPool.erase(itPoolTracker);
-
-			//a tracker has been removed, so the tracker pool has changed
-			m_hasTrackerPoolChanged = true;
-
-			Console::log("TrackerManager::removeTracker(): Removed tracker with id = " + std::to_string(positionInListToRemove) + ".");
-
-			break;
-
-		}
-
-		i++;
-
-	}
-
-	//unlock the tracker pool
-	m_isTrackerPoolLocked.store(false);
-
-}
 
 void TrackerManager::removeTrackerAt(int positionInList)
 {
@@ -136,36 +96,42 @@ void TrackerManager::removeTrackerAt(int positionInList)
 	//lock the tracker pool
 	m_isTrackerPoolLocked.store(true);
 
-	int i = 0;
+	//int i = 0;
+
+
+	Tracker* temp;
 
 	// get key of tracker with id
-	for (auto itPoolTracker = m_trackerPool.begin(); itPoolTracker != m_trackerPool.end(); itPoolTracker++)
+	//for (auto itPoolTracker = m_trackerPool.begin(); itPoolTracker != m_trackerPool.end(); itPoolTracker++)
+	for(int i = 0; i < m_trackerPool.size(); i++)
 	{
 
 		if (i == positionInList)
 		{
-
-
-			// destroy tracker with key
-			(*itPoolTracker)->destroy();
+			temp = m_trackerPool.at(i);
+			//temp = (*itPoolTracker);
 
 			// remove tracker with key from tracker pool
-			m_trackerPool.erase(itPoolTracker);
+			m_trackerPool.erase(m_trackerPool.begin() + i);
 
-
+			// destroy tracker with key
+			temp->destroy();
 
 			//a tracker has been removed, so the tracker pool has changed
 			m_hasTrackerPoolChanged = true;
 
 			Console::log("TrackerManager::removeTracker(): Removed tracker with id = " + std::to_string(i) + ".");
+
+			//break;
+			m_isTrackerPoolLocked.store(false);
+			break;
 		}
 
-		i++;
+		//i++;
 
 	}
-
 	//unlock the tracker pool
-	m_isTrackerPoolLocked.store(false);
+	return;
 
 }
 
@@ -264,7 +230,7 @@ std::vector<Tracker*>* TrackerManager::getPoolTracker()
 Tracker* TrackerManager::getTrackerRefAt(int trackerPositionInList )
 {
 
-	Console::log("TrackerManager::getTrackerRef(): started getting Tracker. given id is: " + std::to_string(trackerPositionInList));
+	//Console::log("TrackerManager::getTrackerRef(): started getting Tracker. given id is: " + std::to_string(trackerPositionInList));
 
 	int i = 0;
 
@@ -272,7 +238,7 @@ Tracker* TrackerManager::getTrackerRefAt(int trackerPositionInList )
 	for (auto itTracker = m_trackerPool.begin(); itTracker != m_trackerPool.end(); itTracker++)
 	{
 
-		Console::log("TrackerManager::getTrackerRef(): current Tracker ID: " + std::to_string((*itTracker)->getProperties()->id) + ", current i: " + std::to_string(i));
+		//Console::log("TrackerManager::getTrackerRef(): current Tracker ID: " + std::to_string((*itTracker)->getProperties()->id) + ", current i: " + std::to_string(i));
 
 		if (i == trackerPositionInList)
 		{
@@ -285,7 +251,7 @@ Tracker* TrackerManager::getTrackerRefAt(int trackerPositionInList )
 
 	}
 
-	Console::logError("Tracker does not exist!");
+	//Console::logError("TrackerManager::getTrackerRefAt(): Tracker does not exist!");
 
 	return nullptr;
 

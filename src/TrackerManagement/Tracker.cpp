@@ -180,6 +180,14 @@ void Tracker::setScaleOffset(Vector3f scale)
 
 }
 
+Tracker* Tracker::getThis()
+{
+
+	return this;
+
+}
+
+
 #pragma endregion
 
 #pragma region protected_methods

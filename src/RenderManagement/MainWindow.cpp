@@ -41,10 +41,14 @@ MainWindow::~MainWindow()
 void MainWindow::update()
 {
 
+	Console::log("MainWindow::update(): update UI ...");
+
 	// update the hirachy
 	updateHirachy();
 	// update the inspector
 	updateInspector();
+
+	Console::log("MainWindow::update(): updated UI");
 
 }
   
@@ -61,15 +65,23 @@ void MainWindow::updateHirachy()
 	for (auto itTrackerPool = m_refTrackerPool->begin(); itTrackerPool != m_refTrackerPool->end(); itTrackerPool++)
 	{
 
+		while (m_refTrackerManager->isTrackerPoolLocked())
+		{
+
+			std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
+
+		}
+
 		// insert current tracker Item in map of top level items
 		m_hirachyItemPool.insert({ new QTreeWidgetItem(), std::list<QTreeWidgetItem*>() });
 
 		// get the trackers name and assign it to the display text
-		std::string trackerName = itTrackerPool->second->getProperties()->name;
+		std::string trackerName = (*itTrackerPool)->getProperties()->name;
 		m_hirachyItemPool.rbegin()->first->setText(0, QString::fromStdString(trackerName));
 
 		// loop through all skeletons of the current tracker
-		for (auto itSkeletonPool = itTrackerPool->second->getSkeletonPool()->begin(); itSkeletonPool != itTrackerPool->second->getSkeletonPool()->end(); itSkeletonPool++)
+		for (auto itSkeletonPool = (*itTrackerPool)->getSkeletonPool()->begin(); itSkeletonPool != (*itTrackerPool)->getSkeletonPool()->end(); itSkeletonPool++)
 		{
 			//insert current skeleton Item in list of child items
 			m_hirachyItemPool.rbegin()->second.push_back(new QTreeWidgetItem());
@@ -99,7 +111,7 @@ void MainWindow::updateHirachy()
 void MainWindow::updateInspector()
 {
 	//check if selected tracker exists
-	if (m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList) == nullptr)			//Inspector and tracker removing bug is here!!!!
+	if (m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList) == nullptr)
 	{
 		//when this tracker doesn't exist, updating the inspector is not needed				
 		m_selectedTrackerInList = -1;
@@ -415,8 +427,8 @@ void MainWindow::slotRemoveTracker()
 	if (m_selectedTrackerInList > -1)
 	{
 
-		// remove tracker from tracker pool
-		m_refTrackerManager->removeTracker(m_selectedTrackerInList);
+		//// remove tracker from tracker pool
+		m_refTrackerManager->removeTrackerAt(m_selectedTrackerInList);
 		// remove tracker from tracker list
 		ui->listWidget_tracker->takeItem(m_selectedTrackerInList);
 
@@ -438,6 +450,8 @@ void MainWindow::slotRemoveTracker()
 	//set the curser to default
 	QApplication::restoreOverrideCursor();
 	QApplication::processEvents();
+
+	Console::log("MainWindow::slotRemoveTracker(): processed events");
 
 }
 

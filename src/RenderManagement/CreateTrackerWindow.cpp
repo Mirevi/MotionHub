@@ -62,12 +62,14 @@ void CreateTrackerWindow::slotCreateTracker()
 	}
 
 
+	Console::log("CreateTrackerWindow::slotCreateTracker(): ");
+
 	std::vector<Tracker*>* trackerPoolRef = m_refTrackerManager->getPoolTracker();
 
-	for (auto itTracker = trackerPoolRef->begin(); itTracker < trackerPoolRef->end(); itTracker++)
+	for (auto itTracker = trackerPoolRef->begin(); itTracker != trackerPoolRef->end(); itTracker++)
 	{
 
-		if ((*itTracker)->getProperties()->id)
+		if ((*itTracker)->getProperties()->id == id)
 		{
 
 			m_refListWidgetTracker->addItem((*itTracker)->getProperties()->name.c_str());

@@ -156,6 +156,9 @@ public:
 	 */
 	virtual void setScaleOffset(Vector3f scale);
 
+	virtual Tracker* getThis();
+
+
 
 
 

@@ -115,7 +115,7 @@ private:
 	/*!
 	 * reference to the tracker pool in the tracker manager
 	 */
-	std::map<std::pair<std::string, int>, Tracker*>* m_refTrackerPool;
+	std::vector<Tracker*>* m_refTrackerPool;
 	/*!
 	 * map of top level items in hirachy
 	 * each tracker has a list of skeletons as children

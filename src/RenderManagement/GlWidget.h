@@ -73,7 +73,7 @@ private:
 
 	Vector3 m_colorRed, m_colorYellow, m_colorGreen;
 
-	std::map<std::pair<std::string, int>, std::vector<SkeletonMesh>> m_trackerRefPool;
+	std::map<int, std::vector<SkeletonMesh>> m_trackerRefPool;
 
 };
 

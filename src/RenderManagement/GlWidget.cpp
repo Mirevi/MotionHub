@@ -200,11 +200,11 @@ void GlWidget::paintGL()
 			for (auto itTracker = m_refTrackerManager->getPoolTracker()->begin(); itTracker != m_refTrackerManager->getPoolTracker()->end(); itTracker++)
 			{
 
-				if (m_trackerRefPool.find(itTracker->first) == m_trackerRefPool.end())
+				if (m_trackerRefPool.find((*itTracker)->getProperties()->id) == m_trackerRefPool.end())
 				{
 
-					m_trackerRefPool.insert(std::make_pair(itTracker->first, std::vector<SkeletonMesh>()));
-					Console::log("GlWidget::paintGL(): Added tracker refference to skeleton mesh pool. Tracker refference: " + itTracker->first.first + " with id = " + std::to_string(itTracker->first.second) + ".");
+					m_trackerRefPool.insert(std::make_pair((*itTracker)->getProperties()->id, std::vector<SkeletonMesh>()));
+					Console::log("GlWidget::paintGL(): Added tracker refference to skeleton mesh pool. Tracker refference: ... with id = " + std::to_string((*itTracker)->getProperties()->id) + ".");
 
 				}
 			}
@@ -219,14 +219,26 @@ void GlWidget::paintGL()
 				for (auto itSkeletonMesh = m_trackerRefPool.begin(); itSkeletonMesh != m_trackerRefPool.end(); itSkeletonMesh++)
 				{
 
-					if (m_refTrackerManager->getPoolTracker()->find(itSkeletonMesh->first) == m_refTrackerManager->getPoolTracker()->end())
+					for (auto i = m_refTrackerManager->getPoolTracker()->begin(); i != m_refTrackerManager->getPoolTracker()->end(); i++)
 					{
 
-						Console::log("GlWidget::paintGL(): Removed tracker refference from skeleton mesh pool. Tracker refference: " + itSkeletonMesh->first.first + " with id = " + std::to_string(itSkeletonMesh->first.second) + ".");
-						m_trackerRefPool.erase(itSkeletonMesh->first);
-						break;
+						if ((*i)->getProperties()->id == itSkeletonMesh->first)
+						{
+
+							if (i == m_refTrackerManager->getPoolTracker()->end())
+							{
+
+								Console::log("GlWidget::paintGL(): Removed tracker refference from skeleton mesh pool. Tracker refference: ... with id = " + std::to_string(itSkeletonMesh->first) + ".");
+								m_trackerRefPool.erase(itSkeletonMesh->first);
+								break;
+
+							}
+
+						}
 
 					}
+
+
 				}
 			}
 		}
@@ -234,21 +246,21 @@ void GlWidget::paintGL()
 		for (auto itTracker = m_refTrackerManager->getPoolTracker()->begin(); itTracker != m_refTrackerManager->getPoolTracker()->end(); itTracker++)
 		{
 
-			if (itTracker->second->getProperties()->isTracking)
+			if ((*itTracker)->getProperties()->isTracking)
 			{
 
-				int skeletonPoolSize = itTracker->second->getSkeletonPool()->size();
-				int skeletonMeshPoolSize = m_trackerRefPool.find(itTracker->first)->second.size();
+				int skeletonPoolSize = (*itTracker)->getSkeletonPool()->size();
+				int skeletonMeshPoolSize = m_trackerRefPool.find((*itTracker)->getProperties()->id)->second.size();
 
 				// add skeleton mesh to skeleton mesh pool
 				if (skeletonMeshPoolSize < skeletonPoolSize)
 				{
 
-					while (m_trackerRefPool.find(itTracker->first)->second.size() < itTracker->second->getSkeletonPool()->size())
+					while (m_trackerRefPool.find((*itTracker)->getProperties()->id)->second.size() < (*itTracker)->getSkeletonPool()->size())
 					{
 
-						m_trackerRefPool.find(itTracker->first)->second.push_back(SkeletonMesh());
-						Console::log("GlWidget::paintGL(): Added skeleton mesh to skeleton mesh pool. Tracker refference: " + itTracker->first.first + " with id = " + std::to_string(itTracker->first.second) + ".");
+						m_trackerRefPool.find((*itTracker)->getProperties()->id)->second.push_back(SkeletonMesh());
+						Console::log("GlWidget::paintGL(): Added skeleton mesh to skeleton mesh pool. Tracker refference: ... with id = " + std::to_string((*itTracker)->getProperties()->id) + ".");
 
 					}
 				}
@@ -256,11 +268,11 @@ void GlWidget::paintGL()
 				else if (skeletonMeshPoolSize > skeletonPoolSize)
 				{
 
-					while (m_trackerRefPool.find(itTracker->first)->second.size() > itTracker->second->getSkeletonPool()->size())
+					while (m_trackerRefPool.find((*itTracker)->getProperties()->id)->second.size() > (*itTracker)->getSkeletonPool()->size())
 					{
 
-						m_trackerRefPool.find(itTracker->first)->second.pop_back();
-						Console::log("GlWidget::paintGL(): Removed skeleton mesh from skeleton mesh pool. Tracker refference: " + itTracker->first.first + " with id = " + std::to_string(itTracker->first.second) + ".");
+						m_trackerRefPool.find((*itTracker)->getProperties()->id)->second.pop_back();
+						Console::log("GlWidget::paintGL(): Removed skeleton mesh from skeleton mesh pool. Tracker refference: ... with id = " + std::to_string((*itTracker)->getProperties()->id) + ".");
 
 					}
 				}
@@ -271,16 +283,16 @@ void GlWidget::paintGL()
 		for (auto itTracker = m_refTrackerManager->getPoolTracker()->begin(); itTracker != m_refTrackerManager->getPoolTracker()->end(); itTracker++)
 		{
 
-			if (itTracker->second->getProperties()->isTracking)
+			if ((*itTracker)->getProperties()->isTracking)
 			{
 
 				// update skeleton joint position and rotation if new data is available
-				if (itTracker->second->isDataAvailable())
+				if ((*itTracker)->isDataAvailable())
 				{
 
 					int indexSkeleton = 0;
 
-					for (auto itSkeleton = itTracker->second->getSkeletonPool()->begin(); itSkeleton != itTracker->second->getSkeletonPool()->end(); itSkeleton++)
+					for (auto itSkeleton = (*itTracker)->getSkeletonPool()->begin(); itSkeleton != (*itTracker)->getSkeletonPool()->end(); itSkeleton++)
 					{
 
 						int indexJoint = 0;
@@ -289,7 +301,7 @@ void GlWidget::paintGL()
 						{
 
 							// get current joint mesh
-							Cube* currJoint = m_trackerRefPool.find(itTracker->first)->second.at(indexSkeleton).m_joints[indexJoint];
+							Cube* currJoint = m_trackerRefPool.find((*itTracker)->getProperties()->id)->second.at(indexSkeleton).m_joints[indexJoint];
 
 							// set joint position and rotation
 							currJoint->setPosition(itJoint->second.getJointPosition());
