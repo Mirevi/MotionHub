@@ -111,6 +111,13 @@ void TrackerManager::removeTrackerAt(int positionInList)
 			temp = m_trackerPool.at(i);
 			//temp = (*itPoolTracker);
 
+			if (temp->getCamID() != -1)
+			{
+
+				m_nextFreeAKCamID = temp->getCamID();
+
+			}
+
 			// remove tracker with key from tracker pool
 			m_trackerPool.erase(m_trackerPool.begin() + i);
 

@@ -10,12 +10,12 @@ MainWindow::MainWindow(TrackerManager* trackerManager, QWidget *parent) : QMainW
 	// setup base class
 	ui->setupUi(this);
 
-	render_ogl = new GlWidget(trackerManager);
-	render_ogl->setObjectName(QStringLiteral("render_ogl"));
+	m_oglRenderer = new GlWidget(trackerManager);
+	m_oglRenderer->setObjectName(QStringLiteral("render_ogl"));
 	QSizePolicy sizePolicy2(QSizePolicy::Expanding, QSizePolicy::Preferred);
-	render_ogl->setSizePolicy(sizePolicy2);
+	m_oglRenderer->setSizePolicy(sizePolicy2);
 
-	ui->layout_center->addWidget(render_ogl);
+	ui->layout_center->addWidget(m_oglRenderer);
 
 	// assign reference to tracker manager
 	m_refTrackerManager = trackerManager;
@@ -846,5 +846,13 @@ QString MainWindow::toQString(float value)
 
 
 	return qstr;
+
+}
+
+GlWidget* MainWindow::getOglRenderer()
+{
+
+	return m_oglRenderer;
+
 
 }

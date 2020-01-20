@@ -167,6 +167,8 @@ void GlWidget::createShaderProgram()
 void GlWidget::paintGL()
 {
 
+
+
 	// set background color
 	glClearColor(m_clearColor.redF(), m_clearColor.greenF(), m_clearColor.blueF(), m_clearColor.alphaF());
 	// clear color and depth buffers
@@ -182,6 +184,18 @@ void GlWidget::paintGL()
 	m_camera.rotate();
 
 	renderMesh(m_meshGrid);
+
+	if (m_isPaintGLLocked.load())
+	{
+
+		update();
+
+		return;
+
+	}
+
+	m_isPaintGLLocked.store(true);
+
 
 	// skeleton render loop
 
@@ -216,29 +230,28 @@ void GlWidget::paintGL()
 			while (m_trackerRefPool.size() > m_refTrackerManager->getPoolTracker()->size())
 			{
 
-				for (auto itSkeletonMesh = m_trackerRefPool.begin(); itSkeletonMesh != m_trackerRefPool.end(); itSkeletonMesh++)
+				for (auto itRefTracker = m_trackerRefPool.begin(); itRefTracker != m_trackerRefPool.end(); itRefTracker++)
 				{
 
-					for (auto i = m_refTrackerManager->getPoolTracker()->begin(); i != m_refTrackerManager->getPoolTracker()->end(); i++)
-					{
+					//for (auto itTracker = m_refTrackerManager->getPoolTracker()->begin(); itTracker != m_refTrackerManager->getPoolTracker()->end(); itTracker++)
+					//{
 
-						if ((*i)->getProperties()->id == itSkeletonMesh->first)
-						{
+						//if ((*itTracker)->getProperties()->id == itRefTracker->first)
+						//{
 
-							if (i == m_refTrackerManager->getPoolTracker()->end())
+						//	if (itTracker == m_refTrackerManager->getPoolTracker()->end())
+						//	{
+
+							if(m_refTrackerManager->getTrackerRefAt(itRefTracker->first) == nullptr)
 							{
 
-								Console::log("GlWidget::paintGL(): Removed tracker refference from skeleton mesh pool. Tracker refference: ... with id = " + std::to_string(itSkeletonMesh->first) + ".");
-								m_trackerRefPool.erase(itSkeletonMesh->first);
+								Console::log("GlWidget::paintGL(): Removed tracker refference from skeleton mesh pool. Tracker refference: ... with id = " + std::to_string(itRefTracker->first) + ".");
+								m_trackerRefPool.erase(itRefTracker->first);
 								break;
 
 							}
-
-						}
-
-					}
-
-
+						// }
+					//}
 				}
 			}
 		}
@@ -283,73 +296,69 @@ void GlWidget::paintGL()
 		for (auto itTracker = m_refTrackerManager->getPoolTracker()->begin(); itTracker != m_refTrackerManager->getPoolTracker()->end(); itTracker++)
 		{
 
-			if ((*itTracker)->getProperties()->isTracking)
+			// update skeleton joint position and rotation if new data is available
+			if ((*itTracker)->getProperties()->isTracking && (*itTracker)->isDataAvailable())
 			{
 
-				// update skeleton joint position and rotation if new data is available
-				if ((*itTracker)->isDataAvailable())
+				int indexSkeleton = 0;
+
+				for (auto itSkeleton = (*itTracker)->getSkeletonPool()->begin(); itSkeleton != (*itTracker)->getSkeletonPool()->end(); itSkeleton++)
 				{
 
-					int indexSkeleton = 0;
+					int indexJoint = 0;
 
-					for (auto itSkeleton = (*itTracker)->getSkeletonPool()->begin(); itSkeleton != (*itTracker)->getSkeletonPool()->end(); itSkeleton++)
+					for (auto itJoint = itSkeleton->second->m_joints.begin(); itJoint != itSkeleton->second->m_joints.end(); itJoint++)
 					{
 
-						int indexJoint = 0;
+						// get current joint mesh
+						Cube* currJoint = m_trackerRefPool.find((*itTracker)->getProperties()->id)->second.at(indexSkeleton).m_joints[indexJoint];
 
-						for (auto itJoint = itSkeleton->second->m_joints.begin(); itJoint != itSkeleton->second->m_joints.end(); itJoint++)
+						// set joint position and rotation
+						currJoint->setPosition(itJoint->second.getJointPosition());
+						currJoint->setRotation(itJoint->second.getJointRotation());
+
+						// set joint confidence
+						switch (itJoint->second.getJointConfidence())
 						{
 
-							// get current joint mesh
-							Cube* currJoint = m_trackerRefPool.find((*itTracker)->getProperties()->id)->second.at(indexSkeleton).m_joints[indexJoint];
+							case Joint::HIGH:
+								currJoint->setDiffuseColor(m_colorGreen);
+								break;
 
-							// set joint position and rotation
-							currJoint->setPosition(itJoint->second.getJointPosition());
-							currJoint->setRotation(itJoint->second.getJointRotation());
+							case Joint::MEDIUM:
+								currJoint->setDiffuseColor(m_colorYellow);
+								break;
 
-							// set joint confidence
-							switch (itJoint->second.getJointConfidence())
-							{
+							case Joint::LOW:
+								currJoint->setDiffuseColor(m_colorRed);
+								break;
 
-								case Joint::HIGH:
-									currJoint->setDiffuseColor(m_colorGreen);
-									break;
+							case Joint::NONE:
+								currJoint->setDiffuseColor(Vector3::one());
+								break;
 
-								case Joint::MEDIUM:
-									currJoint->setDiffuseColor(m_colorYellow);
-									break;
-
-								case Joint::LOW:
-									currJoint->setDiffuseColor(m_colorRed);
-									break;
-
-								case Joint::NONE:
-									currJoint->setDiffuseColor(Vector3::one());
-									break;
-
-								default:
-									break;
-
-							}
-
-							indexJoint++;
+							default:
+								break;
 
 						}
 
-						indexSkeleton++;
+						indexJoint++;
 
 					}
+
+					indexSkeleton++;
+
 				}
+			}
 
-				for (auto itTrackerRef = m_trackerRefPool.begin(); itTrackerRef != m_trackerRefPool.end(); itTrackerRef++)
+			for (auto itTrackerRef = m_trackerRefPool.begin(); itTrackerRef != m_trackerRefPool.end(); itTrackerRef++)
+			{
+				for (auto itSkeletonMesh = itTrackerRef->second.begin(); itSkeletonMesh != itTrackerRef->second.end(); itSkeletonMesh++)
 				{
-					for (auto itSkeletonMesh = itTrackerRef->second.begin(); itSkeletonMesh != itTrackerRef->second.end(); itSkeletonMesh++)
-					{
 
-						// render skeleton mesh
-						renderSkeletonMesh(&*itSkeletonMesh);
+					// render skeleton mesh
+					renderSkeletonMesh(&*itSkeletonMesh);
 
-					}
 				}
 			}
 		}

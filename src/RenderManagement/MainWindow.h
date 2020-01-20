@@ -58,6 +58,8 @@ public:
 	void update();
 	void updateConsole();
 
+	GlWidget* getOglRenderer();
+
 private slots:
 	/*!
 	 * called when user clicks start/stop button 
@@ -103,7 +105,7 @@ private:
 	 */
 	Ui::MainWindow *ui;
 
-	GlWidget* render_ogl;
+	GlWidget* m_oglRenderer;
 	/*!
 	 * createTracker dialog
 	 */

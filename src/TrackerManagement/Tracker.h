@@ -158,7 +158,7 @@ public:
 
 	virtual Tracker* getThis();
 
-
+	virtual int getCamID();
 
 
 
@@ -184,6 +184,13 @@ protected:
 	 * pool containing all skeletons detected by this Tracker
 	 */
 	std::map<int, Skeleton*> m_skeletonPool;
+
+	/*!
+	 * id of the Azure Kinect Camera
+	 * k4a SDK assigns the ids internally and automatically
+	 * if only one camera is connected, this id should be 0
+	 */
+	int m_idCam = 0;
 
 
 	/*!

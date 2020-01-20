@@ -29,6 +29,8 @@ OTTracker::OTTracker(int id)
 	setRotationOffset(Vector3f(0.0f, 0.0f, 0.0f));
 	setScaleOffset(Vector3f(1.0f, 1.0f, 1.0f));
 
+	m_idCam = -1;
+
 	//BACKUP
 	//setPositionOffset(Vector3f(0.0f, 0.0f, 0.0f));
 	//setRotationOffset(Vector3f(0.0f, 0.0f, 0.0f));

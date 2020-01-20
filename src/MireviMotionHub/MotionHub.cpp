@@ -59,6 +59,7 @@ void MotionHub::update()
 					// send skeleton pool 
 					m_networkManager->sendSkeletonPool((*itTracker)->getSkeletonPool());
 
+
 					// update ui if skeleton was added or removed from pool
 					if ((*itTracker)->hasSkeletonPoolChanged())
 					{
@@ -80,5 +81,7 @@ void MotionHub::update()
 			m_uiManager->getMainWindow()->update();
 
 		}
+
+		m_uiManager->getMainWindow()->getOglRenderer()->m_isPaintGLLocked.store(false);
 	}
 }

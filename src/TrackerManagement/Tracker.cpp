@@ -141,6 +141,13 @@ std::map<int, Skeleton*>* Tracker::getSkeletonPool()
 
 }
 
+int Tracker::getCamID()
+{
+
+	return m_idCam;
+
+}
+
 #pragma endregion
 
 #pragma region tracker_Offset_handling
