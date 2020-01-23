@@ -82,6 +82,7 @@ void MotionHub::update()
 
 		}
 
-		m_uiManager->getMainWindow()->getOglRenderer()->m_isPaintGLLocked.store(false);
+		m_uiManager->getMainWindow()->getOglRenderer()->m_renderSkeleton.store(true);
+
 	}
 }

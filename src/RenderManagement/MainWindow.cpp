@@ -41,14 +41,10 @@ MainWindow::~MainWindow()
 void MainWindow::update()
 {
 
-	Console::log("MainWindow::update(): update UI ...");
-
 	// update the hirachy
 	updateHirachy();
 	// update the inspector
 	updateInspector();
-
-	Console::log("MainWindow::update(): updated UI");
 
 }
   
@@ -388,11 +384,19 @@ void MainWindow::slotToggleTracking()
 
 	// check if motion hub is tracking
 	if (!m_refTrackerManager->isTracking())
+	{
+
 		m_refTrackerManager->startTracker(); // start tracking if false
+
+	}
 	else
+	{
+
 		m_refTrackerManager->stopTracker(); // stop tracking if true
 
-	std::this_thread::sleep_for(std::chrono::milliseconds(100));
+	}
+
+	//std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
 	update();
 
@@ -853,6 +857,5 @@ GlWidget* MainWindow::getOglRenderer()
 {
 
 	return m_oglRenderer;
-
 
 }

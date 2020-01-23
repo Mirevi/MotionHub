@@ -89,6 +89,9 @@ public:
 	 */
 	bool isTrackerPoolLocked();
 
+	void setTrackerPoolLocked(bool state);
+
+
 	/*!
 	 * getter for m_trackerPool
 	 * 

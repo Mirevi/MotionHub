@@ -13,8 +13,6 @@ TrackerManager::TrackerManager()
 int TrackerManager::createTracker(TrackerType type)
 {
 
-	Console::log("TrackerManager::createTracker(): Creating tracker ...");
-
 	// get the next tracker id based on the tracker count
 	int id = m_nextFreeTrackerID;
 
@@ -29,6 +27,7 @@ int TrackerManager::createTracker(TrackerType type)
 		// azure kinect
 		case azureKinect:
 
+			Console::log("TrackerManager::createTracker(): Creating AKtracker ...");
 
 			//lock the tracker pool
 			m_isTrackerPoolLocked.store(true);
@@ -91,7 +90,12 @@ int TrackerManager::createTracker(TrackerType type)
 void TrackerManager::removeTrackerAt(int positionInList)
 {
 
-	Console::log("TrackerManager::removeTracker(): Removing tracker ...");
+	while (m_isTrackerPoolLocked.load())
+	{
+
+		std::this_thread::sleep_for(std::chrono::milliseconds(10));
+
+	}
 
 	//lock the tracker pool
 	m_isTrackerPoolLocked.store(true);
@@ -99,7 +103,7 @@ void TrackerManager::removeTrackerAt(int positionInList)
 	//int i = 0;
 
 
-	Tracker* temp;
+	Tracker* currTracker;
 
 	// get key of tracker with id
 	//for (auto itPoolTracker = m_trackerPool.begin(); itPoolTracker != m_trackerPool.end(); itPoolTracker++)
@@ -108,13 +112,14 @@ void TrackerManager::removeTrackerAt(int positionInList)
 
 		if (i == positionInList)
 		{
-			temp = m_trackerPool.at(i);
+			currTracker = m_trackerPool.at(i);
 			//temp = (*itPoolTracker);
 
-			if (temp->getCamID() != -1)
+			if (currTracker->getCamID() != -1)
 			{
 
-				m_nextFreeAKCamID = temp->getCamID();
+
+				m_nextFreeAKCamID = currTracker->getCamID();
 
 			}
 
@@ -122,7 +127,7 @@ void TrackerManager::removeTrackerAt(int positionInList)
 			m_trackerPool.erase(m_trackerPool.begin() + i);
 
 			// destroy tracker with key
-			temp->destroy();
+			currTracker->destroy();
 
 			//a tracker has been removed, so the tracker pool has changed
 			m_hasTrackerPoolChanged = true;
@@ -170,8 +175,6 @@ void TrackerManager::startTracker()
 
 void TrackerManager::stopTracker()
 {
-
-	Console::log("TrackerManager::stopTracker(): Stopping all tracker ...");
 
 	//the playMode has ended
 	m_isTracking = false;
@@ -224,6 +227,13 @@ bool TrackerManager::isTrackerPoolLocked()
 {
 
 	return m_isTrackerPoolLocked.load();
+
+}
+
+void TrackerManager::setTrackerPoolLocked(bool state)
+{
+
+	m_isTrackerPoolLocked.store(state);
 
 }
 

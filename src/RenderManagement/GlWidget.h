@@ -36,7 +36,7 @@ public:
 	explicit GlWidget(TrackerManager* trackerManager, QWidget* parent = 0);
 	~GlWidget();
 
-	std::atomic<bool> m_isPaintGLLocked = false;
+	std::atomic<bool> m_renderSkeleton = false;
 
 signals:
 	void clicked();
@@ -76,8 +76,6 @@ private:
 	Vector3 m_colorRed, m_colorYellow, m_colorGreen;
 
 	std::map<int, std::vector<SkeletonMesh>> m_trackerRefPool;
-
-
 
 };
 
