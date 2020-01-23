@@ -5,6 +5,8 @@ Tracker::Tracker()
 
 	m_properties = new Properties();
 
+	m_isCacheLocked.store(false);
+
 	init();
 
 }
@@ -82,6 +84,24 @@ void Tracker::clean()
 
 }
 
+void Tracker::cacheSkeletonData()
+{
+
+	m_isCacheLocked.store(true);
+
+	m_skeletonPoolCache.clear();
+
+	for (auto itSkeleton = m_skeletonPool.begin(); itSkeleton != m_skeletonPool.end(); itSkeleton++)
+	{
+
+		m_skeletonPoolCache.insert({ itSkeleton->first, *(itSkeleton->second) });
+
+	}
+
+	m_isCacheLocked.store(false);
+
+}
+
 #pragma endregion
 
 #pragma region getter/setter
@@ -140,6 +160,21 @@ std::map<int, Skeleton*>* Tracker::getSkeletonPool()
 	return &m_skeletonPool;
 
 }
+
+std::map<int, Skeleton>* Tracker::getSkeletonPoolCache()
+{
+
+	while (m_isCacheLocked.load())
+	{
+
+		std::this_thread::sleep_for(std::chrono::milliseconds(10));
+
+	}
+
+	return &m_skeletonPoolCache;
+
+}
+
 
 int Tracker::getCamID()
 {

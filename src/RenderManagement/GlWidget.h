@@ -3,6 +3,8 @@
 #ifndef GLWIDGET_H
 #define GLWIDGET_H
 
+#include "ConfigDllExportRenderManagement.h"
+
 #include <iostream>
 #include <vector>
 
@@ -28,7 +30,7 @@ QT_FORWARD_DECLARE_CLASS(QOpenGLTexture)
 
 using Framerate = std::chrono::duration<std::chrono::steady_clock::rep, std::ratio<1, 60>>;
 
-class GlWidget : public QOpenGLWidget, protected QOpenGLFunctions
+class RenderManagement_DLL_import_export GlWidget : public QOpenGLWidget, protected QOpenGLFunctions
 {
 	Q_OBJECT
 
@@ -36,7 +38,9 @@ public:
 	explicit GlWidget(TrackerManager* trackerManager, QWidget* parent = 0);
 	~GlWidget();
 
-	std::atomic<bool> m_renderSkeleton = false;
+	void updateSkeletonMeshPoolSize();
+	void updateSkeletonMeshCount();
+	void updateSkeletonMeshTransform();
 
 signals:
 	void clicked();
@@ -75,7 +79,7 @@ private:
 
 	Vector3 m_colorRed, m_colorYellow, m_colorGreen;
 
-	std::map<int, std::vector<SkeletonMesh>> m_trackerRefPool;
+	std::map<int, std::vector<SkeletonMesh>> m_skeletonMeshPool;
 
 };
 

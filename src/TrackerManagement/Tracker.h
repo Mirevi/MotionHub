@@ -130,6 +130,12 @@ public:
 	virtual std::map<int, Skeleton*>* getSkeletonPool();
 
 	/*!
+	 * getter for the trackers skeleton pool
+	 * \return the trackers skeleton pool
+	 */
+	virtual std::map<int, Skeleton>* getSkeletonPoolCache();
+
+	/*!
 	 * recalculates the update matrix
 	 * 
 	 */
@@ -185,6 +191,8 @@ protected:
 	 */
 	std::map<int, Skeleton*> m_skeletonPool;
 
+	std::map<int, Skeleton> m_skeletonPoolCache;
+
 	/*!
 	 * id of the Azure Kinect Camera
 	 * k4a SDK assigns the ids internally and automatically
@@ -209,6 +217,8 @@ protected:
 	 */
 	virtual void track() = 0;
 
+	virtual void cacheSkeletonData();
+
 	/*!
 	 * tracks the refresh cycles of a tracker
 	 * 
@@ -220,5 +230,7 @@ protected:
 	 * 
 	 */
 	Matrix4f m_offsetMatrix;
+
+	std::atomic<bool> m_isCacheLocked;
 
 };

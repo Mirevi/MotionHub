@@ -161,8 +161,12 @@ void AKTracker::track()
 			// extract skeletons from body frame and parse them into default skeleton pool
 			extractSkeleton(&body_frame);
 
+
+
 			// clean up skeleton pool - remove inactive skeletons
 			cleanSkeletonPool(&body_frame);
+
+			cacheSkeletonData();
 
 			// remember to release the body frame once you finish using it
 			k4abt_frame_release(body_frame); 
@@ -245,7 +249,7 @@ void AKTracker::extractSkeleton(k4abt_frame_t* body_frame)
 		{
 
 			// create new skeleton and add it to the skeleton pool
-			m_skeletonPool.insert(std::pair<int, Skeleton*>(id, parseSkeleton(&skeleton, id)));
+			m_skeletonPool.insert({ id, parseSkeleton(&skeleton, id) });
 			
 			//skeleton was added/removed, so UI updates
 			m_hasSkeletonPoolChanged = true;

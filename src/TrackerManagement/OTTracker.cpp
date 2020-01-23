@@ -214,6 +214,10 @@ void OTTracker::track()
 	//get skeleton data from frame data
 	extractSkeleton();
 
+	cleanSkeletonPool();
+
+	cacheSkeletonData();
+
 	//increase tracking cycle counter
 	m_trackingCycles++;
 
