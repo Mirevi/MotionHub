@@ -127,7 +127,7 @@ public:
 	 * getter for the trackers skeleton pool 
 	 * \return the trackers skeleton pool
 	 */
-	virtual std::map<int, Skeleton*>* getSkeletonPool();
+	virtual std::map<int, Skeleton>* getSkeletonPool();
 
 	/*!
 	 * getter for the trackers skeleton pool
@@ -189,7 +189,7 @@ protected:
 	/*!
 	 * pool containing all skeletons detected by this Tracker
 	 */
-	std::map<int, Skeleton*> m_skeletonPool;
+	std::map<int, Skeleton> m_skeletonPool;
 
 	std::map<int, Skeleton> m_skeletonPoolCache;
 

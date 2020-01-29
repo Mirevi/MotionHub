@@ -72,12 +72,12 @@ void Tracker::clean()
 	m_properties->countDetectedSkeleton = 0;
 
 	//delete all skeletons in pool
-	for (auto itSkeleton = m_skeletonPool.begin(); itSkeleton != m_skeletonPool.end(); itSkeleton++)
-	{
+	//for (auto itSkeleton = m_skeletonPool.begin(); itSkeleton != m_skeletonPool.end(); itSkeleton++)
+	//{
 
-		delete itSkeleton->second;
+	//	delete itSkeleton->second;
 
-	}
+	//}
 
 	//clear skeleton pool
 	m_skeletonPool.clear();
@@ -94,7 +94,7 @@ void Tracker::cacheSkeletonData()
 	for (auto itSkeleton = m_skeletonPool.begin(); itSkeleton != m_skeletonPool.end(); itSkeleton++)
 	{
 
-		m_skeletonPoolCache.insert({ itSkeleton->first, *(itSkeleton->second) });
+		m_skeletonPoolCache.insert({ itSkeleton->first, itSkeleton->second });
 
 	}
 
@@ -154,7 +154,7 @@ Tracker::Properties* Tracker::getProperties()
 
 }
 
-std::map<int, Skeleton*>* Tracker::getSkeletonPool()
+std::map<int, Skeleton>* Tracker::getSkeletonPool()
 {
 
 	return &m_skeletonPool;

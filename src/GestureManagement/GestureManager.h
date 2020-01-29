@@ -12,6 +12,6 @@ class GestureManagement_DLL_import_export GestureManager
 
 public:
 	GestureManager();
-	void updateAllSkeletonPostures(std::map<int, Skeleton*>* poolSkeletons);
+	void updateAllSkeletonPostures(std::map<int, Skeleton>* poolSkeletons);
 
 };

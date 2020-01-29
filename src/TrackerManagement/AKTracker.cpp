@@ -235,7 +235,7 @@ void AKTracker::extractSkeleton(k4abt_frame_t* body_frame)
 			{
 
 				// update all joints of existing skeleon with new data
-				m_skeletonPool[id]->m_joints = parseSkeleton(&skeleton, id)->m_joints;
+				m_skeletonPool[id].m_joints = parseSkeleton(&skeleton, id)->m_joints;
 
 				createNewSkeleton = false;
 
@@ -249,7 +249,7 @@ void AKTracker::extractSkeleton(k4abt_frame_t* body_frame)
 		{
 
 			// create new skeleton and add it to the skeleton pool
-			m_skeletonPool.insert({ id, parseSkeleton(&skeleton, id) });
+			m_skeletonPool.insert({ id, *parseSkeleton(&skeleton, id) });
 			
 			//skeleton was added/removed, so UI updates
 			m_hasSkeletonPoolChanged = true;
