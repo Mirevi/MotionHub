@@ -216,8 +216,6 @@ void OTTracker::track()
 
 	cleanSkeletonPool();
 
-	cacheSkeletonData();
-
 	//increase tracking cycle counter
 	m_trackingCycles++;
 

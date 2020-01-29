@@ -76,8 +76,11 @@ void MainWindow::updateHirachy()
 		std::string trackerName = (*itTrackerPool)->getProperties()->name;
 		m_hirachyItemPool.rbegin()->first->setText(0, QString::fromStdString(trackerName));
 
+		std::map<int, Skeleton> skeletonPoolTempCopy = (*itTrackerPool)->getSkeletonPoolCache();
+
+
 		// loop through all skeletons of the current tracker
-		for (auto itSkeletonPool = (*itTrackerPool)->getSkeletonPool()->begin(); itSkeletonPool != (*itTrackerPool)->getSkeletonPool()->end(); itSkeletonPool++)
+		for (auto itSkeletonPool = skeletonPoolTempCopy.begin(); itSkeletonPool != skeletonPoolTempCopy.end(); itSkeletonPool++)
 		{
 			//insert current skeleton Item in list of child items
 			m_hirachyItemPool.rbegin()->second.push_back(new QTreeWidgetItem());

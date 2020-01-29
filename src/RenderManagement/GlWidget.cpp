@@ -216,17 +216,19 @@ void GlWidget::updateSkeletonMeshCount()
 	for (auto itTracker = m_refTrackerManager->getPoolTracker()->begin(); itTracker != m_refTrackerManager->getPoolTracker()->end(); itTracker++)
 	{
 
+		std::map<int, Skeleton> skeletonPoolTempCopy = (*itTracker)->getSkeletonPoolCache();
+
 		if ((*itTracker)->getProperties()->isTracking)
 		{
 
-			int skeletonPoolSize = (*itTracker)->getSkeletonPoolCache()->size();
+			int skeletonPoolSize = skeletonPoolTempCopy.size();
 			int skeletonMeshPoolSize = m_skeletonMeshPool.find((*itTracker)->getProperties()->id)->second.size();
 
 			// add skeleton mesh to skeleton mesh pool
 			if (skeletonMeshPoolSize < skeletonPoolSize)
 			{
 
-				while (m_skeletonMeshPool.find((*itTracker)->getProperties()->id)->second.size() < (*itTracker)->getSkeletonPoolCache()->size())
+				while (m_skeletonMeshPool.find((*itTracker)->getProperties()->id)->second.size() < skeletonPoolTempCopy.size())
 				{
 
 					m_skeletonMeshPool.find((*itTracker)->getProperties()->id)->second.push_back(SkeletonMesh());
@@ -238,7 +240,7 @@ void GlWidget::updateSkeletonMeshCount()
 			else if (skeletonMeshPoolSize > skeletonPoolSize)
 			{
 
-				while (m_skeletonMeshPool.find((*itTracker)->getProperties()->id)->second.size() > (*itTracker)->getSkeletonPoolCache()->size())
+				while (m_skeletonMeshPool.find((*itTracker)->getProperties()->id)->second.size() > skeletonPoolTempCopy.size())
 				{
 
 					m_skeletonMeshPool.find((*itTracker)->getProperties()->id)->second.pop_back();
@@ -260,9 +262,12 @@ void GlWidget::updateSkeletonMeshTransform()
 		if ((*itTracker)->getProperties()->isTracking && (*itTracker)->isDataAvailable())
 		{
 
+			std::map<int, Skeleton> skeletonPoolTempCopy = (*itTracker)->getSkeletonPoolCache();
+
+
 			int indexSkeleton = 0;
 
-			for (auto itSkeleton = (*itTracker)->getSkeletonPoolCache()->begin(); itSkeleton != (*itTracker)->getSkeletonPoolCache()->end(); itSkeleton++)
+			for (auto itSkeleton = skeletonPoolTempCopy.begin(); itSkeleton != skeletonPoolTempCopy.end(); itSkeleton++)
 			{
 
 				int indexJoint = 0;
