@@ -10,6 +10,11 @@
 #include "Tracker.h"
 #include <list>
 
+
+/*!
+ * internal error management function
+ * 
+ */
 #define VERIFY_K4A_FUNCTION(result, error)																\
 	if(result != K4A_RESULT_SUCCEEDED)																	\
 	{																									\
@@ -50,12 +55,7 @@ public:
 
 private:
 
-	/*!
-	 * id of the Azure Kinect Camera
-	 * k4a SDK assigns the ids internally and automatically
-	 * if only one camera is connected, this id should be 0
-	 */
-	int m_idCam = 0;
+
 	 
 	/*!
 	 * k4a camera handle
@@ -113,8 +113,22 @@ private:
 	 */
 	void cleanSkeletonPool(k4abt_frame_t* bodyFrame);
 
+	/*!
+	 * Applies a rotation of 180 degrees around the y-axis on the given quaternion
+	 * 
+	 * \param value input quaternion
+	 * \return output quaternion
+	 */
 	Quaternionf convertKinectRotation(Quaternionf value);
 
+	/*!
+	 * converts the given euler angles to a quaternion
+	 * inverts the z-component, because of the different coordinate system
+	 * (we guess so; this is how it works)
+	 * 
+	 * \param euler input euler angles
+	 * \return output quaternion
+	 */
 	Quaternionf azureKinectEulerToQuaternion(Vector3f euler);
 
 };

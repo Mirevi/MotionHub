@@ -46,29 +46,38 @@ void MotionHub::update()
 		if (m_trackerManager->isTracking())
 		{
 
+			std::vector<Tracker*> trackerPoolTempCopy = m_trackerManager->getPoolTracker();
+
 			// iterates threw all tracker located in the tracker manager tracker pool 
-			for (auto itTracker = m_trackerManager->getPoolTracker()->begin(); itTracker != m_trackerManager->getPoolTracker()->end(); itTracker++)
+			for (auto itTracker = trackerPoolTempCopy.begin(); itTracker != trackerPoolTempCopy.end(); itTracker++)
 			{
 
 				// check if new skeleton data is available
-				if (itTracker->second->getProperties()->isEnabled && itTracker->second->isDataAvailable())
+				if ((*itTracker)->getProperties()->isEnabled && (*itTracker)->isDataAvailable())
 				{
 
+					(*itTracker)->cacheSkeletonData();
+
 					// send skeleton pool reference to gesture manager in order to update all postures
-					m_gestureManager->updateAllSkeletonPostures(itTracker->second->getSkeletonPool());
+					m_gestureManager->updateAllSkeletonPostures(&((*itTracker)->getSkeletonPoolCache()));
 					// send skeleton pool 
-					m_networkManager->sendSkeletonPool(itTracker->second->getSkeletonPool());
+					m_networkManager->sendSkeletonPool(			&((*itTracker)->getSkeletonPoolCache()));
+
 
 					// update ui if skeleton was added or removed from pool
-					if (itTracker->second->hasSkeletonPoolChanged())
+					if ((*itTracker)->hasSkeletonPoolChanged())
 					{
 						//update UI
 						m_uiManager->getMainWindow()->update();	
 
+						m_uiManager->getMainWindow()->getOglRenderer()->updateSkeletonMeshCount();
+
 					}
 
+					m_uiManager->getMainWindow()->getOglRenderer()->updateSkeletonMeshTransform();
+
 					// reset bool and start new tracking cycle
-					itTracker->second->resetIsDataAvailable();
+					(*itTracker)->resetIsDataAvailable();
 
 				}
 			}
@@ -78,6 +87,8 @@ void MotionHub::update()
 
 			//update UI
 			m_uiManager->getMainWindow()->update();
+
+			m_uiManager->getMainWindow()->getOglRenderer()->updateSkeletonMeshPoolSize();
 
 		}
 	}

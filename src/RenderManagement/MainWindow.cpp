@@ -10,16 +10,15 @@ MainWindow::MainWindow(TrackerManager* trackerManager, QWidget *parent) : QMainW
 	// setup base class
 	ui->setupUi(this);
 
-	render_ogl = new GlWidget(trackerManager);
-	render_ogl->setObjectName(QStringLiteral("render_ogl"));
+	m_oglRenderer = new GlWidget(trackerManager);
+	m_oglRenderer->setObjectName(QStringLiteral("render_ogl"));
 	QSizePolicy sizePolicy2(QSizePolicy::Expanding, QSizePolicy::Preferred);
-	render_ogl->setSizePolicy(sizePolicy2);
+	m_oglRenderer->setSizePolicy(sizePolicy2);
 
-	ui->layout_center->addWidget(render_ogl);
+	ui->layout_center->addWidget(m_oglRenderer);
 
 	// assign reference to tracker manager
 	m_refTrackerManager = trackerManager;
-	m_refTrackerPool = m_refTrackerManager->getPoolTracker();
 
 	// disable qt vector warning in console
 	qRegisterMetaType<QVector<int>>();
@@ -56,20 +55,27 @@ void MainWindow::updateHirachy()
 	ui->treeWidget_hirachy->clear();
 	// clear item pool
 	m_hirachyItemPool.clear();
+
+	std::vector<Tracker*> trackerPoolTempCopy = m_refTrackerManager->getPoolTracker();
 	 
 	// loop throgh all tracker
-	for (auto itTrackerPool = m_refTrackerPool->begin(); itTrackerPool != m_refTrackerPool->end(); itTrackerPool++)
+	for (auto itTrackerPool = trackerPoolTempCopy.begin(); itTrackerPool != trackerPoolTempCopy.end(); itTrackerPool++)
 	{
+
+		//MAYBE LOCK TRACKERPOOL HERE
 
 		// insert current tracker Item in map of top level items
 		m_hirachyItemPool.insert({ new QTreeWidgetItem(), std::list<QTreeWidgetItem*>() });
 
 		// get the trackers name and assign it to the display text
-		std::string trackerName = itTrackerPool->second->getProperties()->name;
+		std::string trackerName = (*itTrackerPool)->getProperties()->name;
 		m_hirachyItemPool.rbegin()->first->setText(0, QString::fromStdString(trackerName));
 
+		std::map<int, Skeleton> skeletonPoolTempCopy = (*itTrackerPool)->getSkeletonPoolCache();
+
+
 		// loop through all skeletons of the current tracker
-		for (auto itSkeletonPool = itTrackerPool->second->getSkeletonPool()->begin(); itSkeletonPool != itTrackerPool->second->getSkeletonPool()->end(); itSkeletonPool++)
+		for (auto itSkeletonPool = skeletonPoolTempCopy.begin(); itSkeletonPool != skeletonPoolTempCopy.end(); itSkeletonPool++)
 		{
 			//insert current skeleton Item in list of child items
 			m_hirachyItemPool.rbegin()->second.push_back(new QTreeWidgetItem());
@@ -99,16 +105,17 @@ void MainWindow::updateHirachy()
 void MainWindow::updateInspector()
 {
 	//check if selected tracker exists
-	if (m_refTrackerManager->getTrackerRef(m_selectedTrackerInList) == nullptr)
+	if (m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList) == nullptr)
 	{
-		//when this tracker doesn't exist, updating the inspector is not needed
+		//when this tracker doesn't exist, updating the inspector is not needed				
 		m_selectedTrackerInList = -1;
+
 		return;
 
 	}
 
 	//get properties of selected tracker
-	Tracker::Properties* trackerProperties = m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->getProperties();
+	Tracker::Properties* trackerProperties = m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->getProperties();
 
 	//set ID and name in inspector
 	ui->tableWidget_inspector->item(0, 1)->setText(std::to_string(trackerProperties->id).c_str());
@@ -153,25 +160,28 @@ void MainWindow::updateInspector()
 void MainWindow::updateConsole()
 {
 
-	if (Console::messagePool.size() > 0)
-	{
+	//if (Console::messagePool.size() > 0)
+	//{
 
-		QListWidgetItem* item = new QListWidgetItem(ui->listWidget_console);
-		item->setText(QString::fromStdString(Console::messagePool.front()));
-		item->setTextAlignment(Qt::AlignRight);
+	//	QListWidgetItem* item = new QListWidgetItem(ui->listWidget_console);
+	//	item->setText(QString::fromStdString(Console::messagePool.front()));
+	//	item->setTextAlignment(Qt::AlignRight);
 
-		ui->listWidget_console->scrollToBottom();
+	//	ui->listWidget_console->scrollToBottom();
 
-		Console::messagePool.pop_front();
-		
-	}
+	//	Console::messagePool.pop_front();
+	//	
+	//}
 }
 
 void MainWindow::drawInspector()
 {
 	//check if selected tracker exists
-	if (m_refTrackerManager->getTrackerRef(m_selectedTrackerInList) == nullptr)
+	if (m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList) == nullptr)
 	{
+
+		Console::log("MainWindow::drawInspector(): Tracker at " + std::to_string(m_selectedTrackerInList) + " is nullptr!");
+
 		//when this tracker doesn't exist, updating the inspector is not needed
 		m_selectedTrackerInList = -1;
 		return;
@@ -182,7 +192,7 @@ void MainWindow::drawInspector()
 	clearInspector();
 
 	//get properties of selected tracker
-	Tracker::Properties* trackerProperties = m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->getProperties();
+	Tracker::Properties* trackerProperties = m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->getProperties();
 
 	//add ID row to inspector
 	addRowToInspector("id", std::to_string(trackerProperties->id));
@@ -362,7 +372,7 @@ void MainWindow::slotToggleTracking()
 
 	// set cursor to wait circle
 	QApplication::setOverrideCursor(Qt::WaitCursor);
-	QApplication::processEvents();
+	//QApplication::processEvents();
 
 	// toggle buttons
 	toggleTrackingButtons();
@@ -372,17 +382,25 @@ void MainWindow::slotToggleTracking()
 
 	// check if motion hub is tracking
 	if (!m_refTrackerManager->isTracking())
+	{
+
 		m_refTrackerManager->startTracker(); // start tracking if false
+
+	}
 	else
+	{
+
 		m_refTrackerManager->stopTracker(); // stop tracking if true
 
-	std::this_thread::sleep_for(std::chrono::milliseconds(100));
+	}
+
+	//std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
 	update();
 
 	// reset cursor to default arrow
 	QApplication::restoreOverrideCursor();
-	QApplication::processEvents();
+	//QApplication::processEvents();
 
 }
 
@@ -405,14 +423,14 @@ void MainWindow::slotRemoveTracker()
 
 	//set the curser to waiting
 	QApplication::setOverrideCursor(Qt::WaitCursor);
-	QApplication::processEvents();
+	//QApplication::processEvents();
 
 	// check if user selected item
 	if (m_selectedTrackerInList > -1)
 	{
 
-		// remove tracker from tracker pool
-		m_refTrackerManager->removeTracker(m_selectedTrackerInList);
+		//// remove tracker from tracker pool
+		m_refTrackerManager->removeTrackerAt(m_selectedTrackerInList);
 		// remove tracker from tracker list
 		ui->listWidget_tracker->takeItem(m_selectedTrackerInList);
 
@@ -427,21 +445,24 @@ void MainWindow::slotRemoveTracker()
 	else
 	{
 
-		Console::logWarning("MainWindow::removeTracker(): No tracker in list selected!");
+		Console::logWarning("MainWindow::removeTracker(): No tracker in list selected! m_selectedTrackerInList = " + std::to_string(m_selectedTrackerInList));
 
 	}
 
 	//set the curser to default
 	QApplication::restoreOverrideCursor();
-	QApplication::processEvents();
+	//QApplication::processEvents();
+
+	Console::log("MainWindow::slotRemoveTracker(): processed events");
 
 }
 
 // SLOT: get selected tracker index from tracker list
 void MainWindow::slotSelectTracker(QModelIndex index)
 {
-
+	 
 	int previousSelectedTrackerInList = m_selectedTrackerInList;
+
 	// get index of selected tracker
 	m_selectedTrackerInList = ui->listWidget_tracker->currentRow();
 
@@ -449,10 +470,18 @@ void MainWindow::slotSelectTracker(QModelIndex index)
 
 	// update the inspector if current tracker was reselected
 	if (previousSelectedTrackerInList == m_selectedTrackerInList)
+	{
+
 		updateInspector();
-	// if other tracker than before was selected - draw the ui with new content
-	else
+
+	}
+	else // if other tracker than before was selected - draw the ui with new content
+	{
+
 		drawInspector();
+
+	}
+
 }
 
 void MainWindow::slotInspectorItemChanged(QTableWidgetItem* item)
@@ -467,19 +496,19 @@ void MainWindow::slotInspectorItemChanged(QTableWidgetItem* item)
 
 				// set the curser to wait circle
 				QApplication::setOverrideCursor(Qt::WaitCursor);
-				QApplication::processEvents();
+				//QApplication::processEvents();
 
 				// enabled or disable tracker based on check state
 				if (item->checkState() == Qt::Checked)
 				{
 
-					m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->enable();
+					m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->enable();
 
 				}
 				else if (item->checkState() == Qt::Unchecked)
 				{
 
-					m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->disable();
+					m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->disable();
 
 				}
 				// update ui
@@ -487,7 +516,7 @@ void MainWindow::slotInspectorItemChanged(QTableWidgetItem* item)
 
 				// reset cursor to default arrow
 				QApplication::restoreOverrideCursor();
-				QApplication::processEvents();
+				//QApplication::processEvents();
 
 				break;
 			}
@@ -540,9 +569,9 @@ void MainWindow::slotInspectorInputPosX(QString text)
 
 	}
 
-	Vector3f pos = m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->getProperties()->positionOffset;
+	Vector3f pos = m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->getProperties()->positionOffset;
 
-	m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->setPositionOffset(Vector3f(posX, pos.y(), pos.z()));
+	m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->setPositionOffset(Vector3f(posX, pos.y(), pos.z()));
 
 }
 
@@ -569,9 +598,9 @@ void MainWindow::slotInspectorInputPosY(QString text)
 
 	}
 
-	Vector3f pos = m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->getProperties()->positionOffset;
+	Vector3f pos = m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->getProperties()->positionOffset;
 
-	m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->setPositionOffset(Vector3f(pos.x(), posY, pos.z()));
+	m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->setPositionOffset(Vector3f(pos.x(), posY, pos.z()));
 
 }
 
@@ -596,9 +625,9 @@ void MainWindow::slotInspectorInputPosZ(QString text)
 
 	}
 
-	Vector3f pos = m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->getProperties()->positionOffset;
+	Vector3f pos = m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->getProperties()->positionOffset;
 
-	m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->setPositionOffset(Vector3f(pos.x(), pos.y(), posZ));
+	m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->setPositionOffset(Vector3f(pos.x(), pos.y(), posZ));
 
 }
 
@@ -623,9 +652,9 @@ void MainWindow::slotInspectorInputRotX(QString text)
 
 	}
 
-	Vector3f rot = m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->getProperties()->rotationOffset;
+	Vector3f rot = m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->getProperties()->rotationOffset;
 
-	m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->setRotationOffset(Vector3f(rotX, rot.y(), rot.z()));
+	m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->setRotationOffset(Vector3f(rotX, rot.y(), rot.z()));
 
 }
 
@@ -651,9 +680,9 @@ void MainWindow::slotInspectorInputRotY(QString text)
 
 	}
 
-	Vector3f rot = m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->getProperties()->rotationOffset;
+	Vector3f rot = m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->getProperties()->rotationOffset;
 
-	m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->setRotationOffset(Vector3f(rot.x(), rotY, rot.z()));
+	m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->setRotationOffset(Vector3f(rot.x(), rotY, rot.z()));
 
 }
 
@@ -679,9 +708,9 @@ void MainWindow::slotInspectorInputRotZ(QString text)
 
 	}
 
-	Vector3f rot = m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->getProperties()->rotationOffset;
+	Vector3f rot = m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->getProperties()->rotationOffset;
 
-	m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->setRotationOffset(Vector3f(rot.x(), rot.y(), rotZ));
+	m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->setRotationOffset(Vector3f(rot.x(), rot.y(), rotZ));
 
 }
 
@@ -708,9 +737,9 @@ void MainWindow::slotInspectorInputScaleX(QString text)
 
 	}
 
-	Vector3f scale = m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->getProperties()->scaleOffset;
+	Vector3f scale = m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->getProperties()->scaleOffset;
 
-	m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->setScaleOffset(Vector3f(scaleX, scale.y(), scale.z()));
+	m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->setScaleOffset(Vector3f(scaleX, scale.y(), scale.z()));
 
 }
 
@@ -736,9 +765,9 @@ void MainWindow::slotInspectorInputScaleY(QString text)
 
 	}
 
-	Vector3f scale = m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->getProperties()->scaleOffset;
+	Vector3f scale = m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->getProperties()->scaleOffset;
 
-	m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->setScaleOffset(Vector3f(scale.x(), scaleY, scale.z()));
+	m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->setScaleOffset(Vector3f(scale.x(), scaleY, scale.z()));
 
 }
 
@@ -762,9 +791,9 @@ void MainWindow::slotInspectorInputScaleZ(QString text)
 
 	}
 
-	Vector3f scale = m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->getProperties()->scaleOffset;
+	Vector3f scale = m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->getProperties()->scaleOffset;
 
-	m_refTrackerManager->getTrackerRef(m_selectedTrackerInList)->setScaleOffset(Vector3f(scale.x(), scale.y(), scaleZ));
+	m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->setScaleOffset(Vector3f(scale.x(), scale.y(), scaleZ));
 
 }
 
@@ -819,5 +848,12 @@ QString MainWindow::toQString(float value)
 
 
 	return qstr;
+
+}
+
+GlWidget* MainWindow::getOglRenderer()
+{
+
+	return m_oglRenderer;
 
 }

@@ -1,17 +1,16 @@
 #pragma once
 
 #include "ConfigDllExportRenderManagement.h"
-//#include "ConfigDllExportRenderManagement.h"
-#include <QtWidgets/QMainWindow>
-#include "MotionHubUtil/Console.h"
 #include "CreateTrackerWindow.h"
-#include "QtCore/qstringlistmodel.h"
-#include "QtCore/qstring.h"
+#include "GlWidget.h"
+#include "MotionHubUtil/Console.h"
+
+#include <QtWidgets/QMainWindow>
 #include "QtWidgets/qtreewidget.h"
 #include "QtWidgets/qtablewidget.h"
 #include "QtWidgets/qlineedit.h"
-//#include <QString>
-#include "GlWidget.h"
+#include "QtCore/qstringlistmodel.h"
+#include "QtCore/qstring.h"
 
 #include <math.h>
 
@@ -59,6 +58,8 @@ public:
 	void update();
 	void updateConsole();
 
+	GlWidget* getOglRenderer();
+
 private slots:
 	/*!
 	 * called when user clicks start/stop button 
@@ -104,7 +105,7 @@ private:
 	 */
 	Ui::MainWindow *ui;
 
-	GlWidget* render_ogl;
+	GlWidget* m_oglRenderer;
 	/*!
 	 * createTracker dialog
 	 */
@@ -113,10 +114,7 @@ private:
 	 * reference to the tracker manager 
 	 */
 	TrackerManager* m_refTrackerManager;
-	/*!
-	 * reference to the tracker pool in the tracker manager
-	 */
-	std::map<std::pair<std::string, int>, Tracker*>* m_refTrackerPool;
+
 	/*!
 	 * map of top level items in hirachy
 	 * each tracker has a list of skeletons as children
@@ -135,6 +133,8 @@ private:
 	 * id of the currently selected tracker 
 	 */
 	int m_selectedTrackerInList;
+
+	Tracker* m_selectedTracker;
 
 	/*!
 	 *  updates hirachy and items in it

@@ -5,6 +5,7 @@ Tracker::Tracker()
 
 	m_properties = new Properties();
 
+
 	init();
 
 }
@@ -70,15 +71,26 @@ void Tracker::clean()
 	m_properties->countDetectedSkeleton = 0;
 
 	//delete all skeletons in pool
-	for (auto itSkeleton = m_skeletonPool.begin(); itSkeleton != m_skeletonPool.end(); itSkeleton++)
-	{
+	//for (auto itSkeleton = m_skeletonPool.begin(); itSkeleton != m_skeletonPool.end(); itSkeleton++)
+	//{
 
-		delete itSkeleton->second;
+	//	delete itSkeleton->second;
 
-	}
+	//}
 
 	//clear skeleton pool
 	m_skeletonPool.clear();
+
+}
+
+void Tracker::cacheSkeletonData()
+{
+
+	m_isSkeletonPoolLocked.lock();
+
+	m_skeletonPoolCache = m_skeletonPool;
+
+	m_isSkeletonPoolLocked.unlock();
 
 }
 
@@ -134,10 +146,26 @@ Tracker::Properties* Tracker::getProperties()
 
 }
 
-std::map<int, Skeleton*>* Tracker::getSkeletonPool()
+std::map<int, Skeleton> Tracker::getSkeletonPoolCache()
 {
 
-	return &m_skeletonPool;
+	m_isSkeletonPoolLocked.lock();
+
+	std::map<int, Skeleton> skeletonPoolCacheCopy = m_skeletonPoolCache;
+
+	m_isSkeletonPoolLocked.unlock();
+
+
+
+	return skeletonPoolCacheCopy;
+
+}
+
+
+int Tracker::getCamID()
+{
+
+	return m_idCam;
 
 }
 
@@ -179,6 +207,14 @@ void Tracker::setScaleOffset(Vector3f scale)
 	updateMatrix();
 
 }
+
+Tracker* Tracker::getThis()
+{
+
+	return this;
+
+}
+
 
 #pragma endregion
 

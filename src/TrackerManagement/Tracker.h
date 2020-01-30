@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <thread>
+#include <mutex>
 
 #include "MotionHubUtil/Skeleton.h"
 #include "MotionHubUtil/Console.h"
@@ -127,7 +128,12 @@ public:
 	 * getter for the trackers skeleton pool 
 	 * \return the trackers skeleton pool
 	 */
-	virtual std::map<int, Skeleton*>* getSkeletonPool();
+
+	/*!
+	 * getter for the trackers skeleton pool
+	 * \return the trackers skeleton pool
+	 */
+	virtual std::map<int, Skeleton> getSkeletonPoolCache();
 
 	/*!
 	 * recalculates the update matrix
@@ -156,6 +162,11 @@ public:
 	 */
 	virtual void setScaleOffset(Vector3f scale);
 
+	virtual Tracker* getThis();
+
+	virtual int getCamID();
+
+	virtual void cacheSkeletonData();
 
 
 
@@ -180,7 +191,16 @@ protected:
 	/*!
 	 * pool containing all skeletons detected by this Tracker
 	 */
-	std::map<int, Skeleton*> m_skeletonPool;
+	std::map<int, Skeleton> m_skeletonPool;
+
+	std::map<int, Skeleton> m_skeletonPoolCache;
+
+	/*!
+	 * id of the Azure Kinect Camera
+	 * k4a SDK assigns the ids internally and automatically
+	 * if only one camera is connected, this id should be 0
+	 */
+	int m_idCam = 0;
 
 
 	/*!
@@ -199,6 +219,7 @@ protected:
 	 */
 	virtual void track() = 0;
 
+
 	/*!
 	 * tracks the refresh cycles of a tracker
 	 * 
@@ -210,5 +231,7 @@ protected:
 	 * 
 	 */
 	Matrix4f m_offsetMatrix;
+
+	std::mutex m_isSkeletonPoolLocked;
 
 };

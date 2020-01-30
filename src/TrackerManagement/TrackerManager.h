@@ -3,7 +3,9 @@
 #include "ConfigDllExportTrackingManagement.h"
 
 #include <map>
+#include <vector>
 #include <atomic>
+#include <mutex>
 
 #include "Tracker.h"
 #include "AKTracker.h"
@@ -35,7 +37,7 @@ public:
 	{
 
 		azureKinect,	// Azure Kinect Tracker
-		optiTrack
+		optiTrack		//OptiTrack		Tracker
 
 	};
 
@@ -51,6 +53,8 @@ public:
 	 * \param idToRemove tracker id
 	 */
 	void removeTracker(int idToRemove);
+
+	void removeTrackerAt(int positionInList);
 
 	/*!
 	 * starts all tracker in the tracker pool
@@ -79,19 +83,13 @@ public:
 	 */
 	bool hasTrackerPoolChanged();
 
-	/*!
-	 * getter for atomic m_isTrackerPoolLocked
-	 * 
-	 * \return 
-	 */
-	bool isTrackerPoolLocked();
 
 	/*!
 	 * getter for m_trackerPool
 	 * 
 	 * \return pointer to map of tracker
 	 */
-	std::map<std::pair<std::string, int>, Tracker*>* getPoolTracker();
+	std::vector<Tracker*> getPoolTracker();
 
 	/*!
 	 * getter for a specific tracker
@@ -99,14 +97,17 @@ public:
 	 * \param id the id of the tracker which should be returned
 	 * \return pointer to the tracker with given id
 	 */
-	Tracker* getTrackerRef(int id);
+	Tracker* getTrackerRefAt(int id);
+
+
+	std::mutex* getTrackerPoolLock();
 
 private:
 
 	/*!
 	 * pool of all created tracker 
 	 */
-	std::map<std::pair<std::string, int>, Tracker*> m_trackerPool;
+	std::vector<Tracker*> m_trackerPool;
 
 	/*!
 	 * true when tracker is tracking, when MMH is in playMode
@@ -120,10 +121,11 @@ private:
 	 */
 	bool m_hasTrackerPoolChanged = false;
 
-	/*!
-	 * true when some thread is reading from the tracker pool
-	 * 
-	 */
-	std::atomic<bool> m_isTrackerPoolLocked;
+
+	int m_nextFreeTrackerID;
+
+	int m_nextFreeAKCamID;
+
+	std::mutex m_trackerPoolLock;
 
 };

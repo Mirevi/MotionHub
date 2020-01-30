@@ -14,7 +14,6 @@ DataHandlerManager::DataHandlerManager(Tracker::Properties* properties)
 
 }
 
-// receives data from the server
 void DataHandlerManager::DataHandler(sFrameOfMocapData* data, void* pUserData)
 {
 
@@ -26,25 +25,20 @@ void DataHandlerManager::DataHandler(sFrameOfMocapData* data, void* pUserData)
 
 	}
 
-	//check if data wasn't already assigned
-	//if (m_data != data)
-	//{
-
-		m_data = data;
-
-	//}
-
-
-
-
-	//Console::log("DataHandlerManager::DataHandler(): data                : " + std::to_string(data->Skeletons[0].RigidBodyData[7].qx) + ", " + std::to_string(data->Skeletons[0].RigidBodyData[7].x));
-
+	//store data in this object
+	m_data = data;
 
 	//new data is now available
 	m_isDataAvailable.store(true);
 
 }
 
+sFrameOfMocapData* DataHandlerManager::getData()
+{
+
+	return m_data;
+
+}
 
 bool DataHandlerManager::isDataAvailable()
 {
@@ -63,9 +57,3 @@ bool DataHandlerManager::isDataAvailable()
 }
 
 
-sFrameOfMocapData* DataHandlerManager::getData()
-{
-
-	return m_data;
-
-}

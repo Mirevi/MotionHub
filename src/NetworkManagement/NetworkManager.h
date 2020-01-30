@@ -33,7 +33,7 @@ public:
 	 * sends skeleton pool to all network sender
 	 * \param skeletonPool skeleton pool to send
 	 */
-	void sendSkeletonPool(std::map<int, Skeleton*>* skeletonPool);
+	void sendSkeletonPool(std::map<int, Skeleton>* skeletonPool);
 
 private:
 	/*!

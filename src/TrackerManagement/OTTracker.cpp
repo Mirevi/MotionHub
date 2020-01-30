@@ -29,6 +29,8 @@ OTTracker::OTTracker(int id)
 	setRotationOffset(Vector3f(0.0f, 0.0f, 0.0f));
 	setScaleOffset(Vector3f(1.0f, 1.0f, 1.0f));
 
+	m_idCam = -1;
+
 	//BACKUP
 	//setPositionOffset(Vector3f(0.0f, 0.0f, 0.0f));
 	//setRotationOffset(Vector3f(0.0f, 0.0f, 0.0f));
@@ -212,6 +214,8 @@ void OTTracker::track()
 	//get skeleton data from frame data
 	extractSkeleton();
 
+	cleanSkeletonPool();
+
 	//increase tracking cycle counter
 	m_trackingCycles++;
 
@@ -254,13 +258,13 @@ void OTTracker::extractSkeleton()
 			{
 
 				//convert OptiTrack skeleton into MMH skeleton
-				Skeleton* currSkeleton = parseSkeleton(skData, skData.skeletonID, m_skeletonPool[skData.skeletonID]);
+				Skeleton* currSkeleton = parseSkeleton(skData, skData.skeletonID, &m_skeletonPool[skData.skeletonID]);
 
 				if (currSkeleton != nullptr)
 				{
 
 					// update all joints of existing skeleon with new data
-					m_skeletonPool[skData.skeletonID]->m_joints = currSkeleton->m_joints;
+					m_skeletonPool[skData.skeletonID].m_joints = currSkeleton->m_joints;
 
 				}
 
@@ -283,7 +287,7 @@ void OTTracker::extractSkeleton()
 		{
 
 			// create new skeleton and add it to the skeleton pool
-			m_skeletonPool.insert(std::pair<int, Skeleton*>(skData.skeletonID, parseSkeleton(skData, skData.skeletonID, new Skeleton())));
+			m_skeletonPool.insert({ skData.skeletonID, *parseSkeleton(skData, skData.skeletonID, new Skeleton()) });
 
 			//skeleton was added/removed, so UI updates
 			m_hasSkeletonPoolChanged = true;
