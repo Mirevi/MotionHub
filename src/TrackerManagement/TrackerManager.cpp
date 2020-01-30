@@ -267,3 +267,8 @@ Tracker* TrackerManager::getTrackerRefAt(int trackerPositionInList )
 	return nullptr;
 
 }
+
+std::mutex* TrackerManager::getTrackerPoolLock()
+{
+	return &m_trackerPoolLock;
+}

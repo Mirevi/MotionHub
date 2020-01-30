@@ -167,6 +167,7 @@ void GlWidget::updateSkeletonMeshPoolSize()
 {
 
 	std::vector<Tracker*> trackerTempCopy = m_refTrackerManager->getPoolTracker();
+	m_refTrackerManager->getTrackerPoolLock()->lock();
 
 	int trackerRefPoolSize = m_skeletonMeshPool.size();
 	int trackerPoolSize = trackerTempCopy.size();
@@ -199,7 +200,21 @@ void GlWidget::updateSkeletonMeshPoolSize()
 			for (auto itRefTracker = m_skeletonMeshPool.begin(); itRefTracker != m_skeletonMeshPool.end(); itRefTracker++)
 			{
 
-				if (m_refTrackerManager->getTrackerRefAt(itRefTracker->first) == nullptr)
+				bool isTrackerInPool = false;
+
+				for (int indexTrackerCopy = 0; indexTrackerCopy < trackerTempCopy.size(); indexTrackerCopy++)
+				{
+
+					if (trackerTempCopy.at(indexTrackerCopy)->getProperties()->id == itRefTracker->first)
+					{
+
+						isTrackerInPool = true;
+						break;
+
+					}
+				}
+
+				if (isTrackerInPool == false)
 				{
 
 					Console::log("GlWidget::paintGL(): Removed tracker refference from skeleton mesh pool. Tracker refference: ... with id = " + std::to_string(itRefTracker->first) + ".");
@@ -210,13 +225,14 @@ void GlWidget::updateSkeletonMeshPoolSize()
 			}
 		}
 	}
+	m_refTrackerManager->getTrackerPoolLock()->unlock();
 }
 
 void GlWidget::updateSkeletonMeshCount()
 {
 
 	std::vector<Tracker*> trackerTempCopy = m_refTrackerManager->getPoolTracker();
-
+	m_refTrackerManager->getTrackerPoolLock()->lock();
 	for (auto itTracker = trackerTempCopy.begin(); itTracker != trackerTempCopy.end(); itTracker++)
 	{
 
@@ -254,6 +270,7 @@ void GlWidget::updateSkeletonMeshCount()
 			}
 		}
 	}
+	m_refTrackerManager->getTrackerPoolLock()->unlock();
 }
 
 void GlWidget::updateSkeletonMeshTransform()

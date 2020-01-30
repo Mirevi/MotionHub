@@ -99,6 +99,9 @@ public:
 	 */
 	Tracker* getTrackerRefAt(int id);
 
+
+	std::mutex* getTrackerPoolLock();
+
 private:
 
 	/*!
