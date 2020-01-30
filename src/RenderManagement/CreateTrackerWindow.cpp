@@ -28,7 +28,7 @@ void CreateTrackerWindow::slotCreateTracker()
 {
 	//change curser to wait (Hourglass)
 	QApplication::setOverrideCursor(Qt::WaitCursor);
-	QApplication::processEvents();
+	//QApplication::processEvents();
 
 	int id = -1;
 
@@ -64,9 +64,9 @@ void CreateTrackerWindow::slotCreateTracker()
 
 	Console::log("CreateTrackerWindow::slotCreateTracker(): ");
 
-	std::vector<Tracker*>* trackerPoolRef = m_refTrackerManager->getPoolTracker();
+	std::vector<Tracker*> trackerPoolRef = m_refTrackerManager->getPoolTracker();
 
-	for (auto itTracker = trackerPoolRef->begin(); itTracker != trackerPoolRef->end(); itTracker++)
+	for (auto itTracker = trackerPoolRef.begin(); itTracker != trackerPoolRef.end(); itTracker++)
 	{
 
 		if ((*itTracker)->getProperties()->id == id)
@@ -81,7 +81,7 @@ void CreateTrackerWindow::slotCreateTracker()
 
 	//set the curser to default
 	QApplication::restoreOverrideCursor();
-	QApplication::processEvents();
+	//QApplication::processEvents();
 
 	// close dialog
 	close();

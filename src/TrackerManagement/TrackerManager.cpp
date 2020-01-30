@@ -30,7 +30,7 @@ int TrackerManager::createTracker(TrackerType type)
 			Console::log("TrackerManager::createTracker(): Creating AKtracker ...");
 
 			//lock the tracker pool
-			m_isTrackerPoolLocked.store(true);
+			m_trackerPoolLock.lock();
 
 			//create new AK Tracker with next free Cam ID
 			tempTracker = new AKTracker(id, m_nextFreeAKCamID);
@@ -42,7 +42,7 @@ int TrackerManager::createTracker(TrackerType type)
 			m_trackerPool.push_back(tempTracker);
 
 			//unlock the tracker pool
-			m_isTrackerPoolLocked.store(false);
+			m_trackerPoolLock.unlock();
 
 
 
@@ -58,7 +58,7 @@ int TrackerManager::createTracker(TrackerType type)
 
 
 			//lock the tracker pool
-			m_isTrackerPoolLocked.store(true);
+			m_trackerPoolLock.lock();
 
 			tempTracker = new OTTracker(id);
 
@@ -66,7 +66,7 @@ int TrackerManager::createTracker(TrackerType type)
 			m_trackerPool.push_back(tempTracker);
 
 			//unlock the tracker pool
-			m_isTrackerPoolLocked.store(false);
+			m_trackerPoolLock.unlock();
 
 
 
@@ -90,15 +90,7 @@ int TrackerManager::createTracker(TrackerType type)
 void TrackerManager::removeTrackerAt(int positionInList)
 {
 
-	while (m_isTrackerPoolLocked.load())
-	{
-
-		std::this_thread::sleep_for(std::chrono::milliseconds(10));
-
-	}
-
-	//lock the tracker pool
-	m_isTrackerPoolLocked.store(true);
+	m_trackerPoolLock.lock();
 
 	//int i = 0;
 
@@ -134,15 +126,15 @@ void TrackerManager::removeTrackerAt(int positionInList)
 
 			Console::log("TrackerManager::removeTracker(): Removed tracker with id = " + std::to_string(i) + ".");
 
-			//break;
-			m_isTrackerPoolLocked.store(false);
+
 			break;
 		}
 
-		//i++;
-
 	}
+
 	//unlock the tracker pool
+	m_trackerPoolLock.unlock();
+
 	return;
 
 }
@@ -153,7 +145,8 @@ void TrackerManager::startTracker()
 	Console::log("TrackerManager::startTracker(): Starting all tracker ...");
 
 	//lock the tracker pool
-	m_isTrackerPoolLocked.store(true);
+	m_trackerPoolLock.lock();
+
 
 	//loop through all tracker and start everyone of them
 	for (auto itTracker = m_trackerPool.begin(); itTracker != m_trackerPool.end(); itTracker++)
@@ -164,7 +157,7 @@ void TrackerManager::startTracker()
 	}
 
 	//unlock the tracker pool
-	m_isTrackerPoolLocked.store(false);
+	m_trackerPoolLock.unlock();
 
 	//we are now in playMode
 	m_isTracking = true;
@@ -180,7 +173,7 @@ void TrackerManager::stopTracker()
 	m_isTracking = false;
 
 	//lock the tracker pool
-	m_isTrackerPoolLocked.store(true);
+	m_trackerPoolLock.lock();
 
 	//loop through all tracker and disable everyone of them
 	for (auto itTracker = m_trackerPool.begin(); itTracker != m_trackerPool.end(); itTracker++)
@@ -191,7 +184,7 @@ void TrackerManager::stopTracker()
 	}
 
 	//unlock the tracker pool
-	m_isTrackerPoolLocked.store(false);
+	m_trackerPoolLock.unlock();
 
 	Console::log("TrackerManager::stopTracker(): Stopped all tracker.");
 
@@ -223,24 +216,19 @@ bool TrackerManager::isTracking()
 
 }
 
-bool TrackerManager::isTrackerPoolLocked()
+
+std::vector<Tracker*> TrackerManager::getPoolTracker()
 {
 
-	return m_isTrackerPoolLocked.load();
+	m_trackerPoolLock.lock();
 
-}
+	std::vector<Tracker*> trackerPoolCopyTemp = m_trackerPool;
 
-void TrackerManager::setTrackerPoolLocked(bool state)
-{
+	m_trackerPoolLock.unlock();
 
-	m_isTrackerPoolLocked.store(state);
 
-}
 
-std::vector<Tracker*>* TrackerManager::getPoolTracker()
-{
-
-	return &m_trackerPool;
+	return trackerPoolCopyTemp;
 
 }
 
@@ -251,6 +239,8 @@ Tracker* TrackerManager::getTrackerRefAt(int trackerPositionInList )
 
 	int i = 0;
 
+	m_trackerPoolLock.lock();
+
 	//loop through tracker pool and return the tracker with given id
 	for (auto itTracker = m_trackerPool.begin(); itTracker != m_trackerPool.end(); itTracker++)
 	{
@@ -260,6 +250,8 @@ Tracker* TrackerManager::getTrackerRefAt(int trackerPositionInList )
 		if (i == trackerPositionInList)
 		{
 
+			m_trackerPoolLock.unlock();
+
 			return *itTracker;
 
 		}
@@ -267,6 +259,8 @@ Tracker* TrackerManager::getTrackerRefAt(int trackerPositionInList )
 		i++;
 
 	}
+
+	m_trackerPoolLock.unlock();
 
 	//Console::logError("TrackerManager::getTrackerRefAt(): Tracker does not exist!");
 

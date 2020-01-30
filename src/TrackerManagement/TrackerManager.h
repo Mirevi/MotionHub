@@ -5,6 +5,7 @@
 #include <map>
 #include <vector>
 #include <atomic>
+#include <mutex>
 
 #include "Tracker.h"
 #include "AKTracker.h"
@@ -36,7 +37,7 @@ public:
 	{
 
 		azureKinect,	// Azure Kinect Tracker
-		optiTrack
+		optiTrack		//OptiTrack		Tracker
 
 	};
 
@@ -82,22 +83,13 @@ public:
 	 */
 	bool hasTrackerPoolChanged();
 
-	/*!
-	 * getter for atomic m_isTrackerPoolLocked
-	 * 
-	 * \return 
-	 */
-	bool isTrackerPoolLocked();
-
-	void setTrackerPoolLocked(bool state);
-
 
 	/*!
 	 * getter for m_trackerPool
 	 * 
 	 * \return pointer to map of tracker
 	 */
-	std::vector<Tracker*>* getPoolTracker();
+	std::vector<Tracker*> getPoolTracker();
 
 	/*!
 	 * getter for a specific tracker
@@ -112,7 +104,6 @@ private:
 	/*!
 	 * pool of all created tracker 
 	 */
-	//std::map<std::pair<std::string, int>, Tracker*> m_trackerPool;
 	std::vector<Tracker*> m_trackerPool;
 
 	/*!
@@ -127,14 +118,11 @@ private:
 	 */
 	bool m_hasTrackerPoolChanged = false;
 
-	/*!
-	 * true when some thread is reading from the tracker pool
-	 * 
-	 */
-	std::atomic<bool> m_isTrackerPoolLocked;
 
 	int m_nextFreeTrackerID;
 
 	int m_nextFreeAKCamID;
+
+	std::mutex m_trackerPoolLock;
 
 };

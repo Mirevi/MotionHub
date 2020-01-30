@@ -19,7 +19,6 @@ MainWindow::MainWindow(TrackerManager* trackerManager, QWidget *parent) : QMainW
 
 	// assign reference to tracker manager
 	m_refTrackerManager = trackerManager;
-	m_refTrackerPool = m_refTrackerManager->getPoolTracker();
 
 	// disable qt vector warning in console
 	qRegisterMetaType<QVector<int>>();
@@ -56,18 +55,14 @@ void MainWindow::updateHirachy()
 	ui->treeWidget_hirachy->clear();
 	// clear item pool
 	m_hirachyItemPool.clear();
+
+	std::vector<Tracker*> trackerPoolTempCopy = m_refTrackerManager->getPoolTracker();
 	 
 	// loop throgh all tracker
-	for (auto itTrackerPool = m_refTrackerPool->begin(); itTrackerPool != m_refTrackerPool->end(); itTrackerPool++)
+	for (auto itTrackerPool = trackerPoolTempCopy.begin(); itTrackerPool != trackerPoolTempCopy.end(); itTrackerPool++)
 	{
 
-		while (m_refTrackerManager->isTrackerPoolLocked())
-		{
-
-			std::this_thread::sleep_for(std::chrono::milliseconds(100));
-
-
-		}
+		//MAYBE LOCK TRACKERPOOL HERE
 
 		// insert current tracker Item in map of top level items
 		m_hirachyItemPool.insert({ new QTreeWidgetItem(), std::list<QTreeWidgetItem*>() });
@@ -165,18 +160,18 @@ void MainWindow::updateInspector()
 void MainWindow::updateConsole()
 {
 
-	if (Console::messagePool.size() > 0)
-	{
+	//if (Console::messagePool.size() > 0)
+	//{
 
-		QListWidgetItem* item = new QListWidgetItem(ui->listWidget_console);
-		item->setText(QString::fromStdString(Console::messagePool.front()));
-		item->setTextAlignment(Qt::AlignRight);
+	//	QListWidgetItem* item = new QListWidgetItem(ui->listWidget_console);
+	//	item->setText(QString::fromStdString(Console::messagePool.front()));
+	//	item->setTextAlignment(Qt::AlignRight);
 
-		ui->listWidget_console->scrollToBottom();
+	//	ui->listWidget_console->scrollToBottom();
 
-		Console::messagePool.pop_front();
-		
-	}
+	//	Console::messagePool.pop_front();
+	//	
+	//}
 }
 
 void MainWindow::drawInspector()
@@ -377,7 +372,7 @@ void MainWindow::slotToggleTracking()
 
 	// set cursor to wait circle
 	QApplication::setOverrideCursor(Qt::WaitCursor);
-	QApplication::processEvents();
+	//QApplication::processEvents();
 
 	// toggle buttons
 	toggleTrackingButtons();
@@ -405,7 +400,7 @@ void MainWindow::slotToggleTracking()
 
 	// reset cursor to default arrow
 	QApplication::restoreOverrideCursor();
-	QApplication::processEvents();
+	//QApplication::processEvents();
 
 }
 
@@ -428,7 +423,7 @@ void MainWindow::slotRemoveTracker()
 
 	//set the curser to waiting
 	QApplication::setOverrideCursor(Qt::WaitCursor);
-	QApplication::processEvents();
+	//QApplication::processEvents();
 
 	// check if user selected item
 	if (m_selectedTrackerInList > -1)
@@ -456,7 +451,7 @@ void MainWindow::slotRemoveTracker()
 
 	//set the curser to default
 	QApplication::restoreOverrideCursor();
-	QApplication::processEvents();
+	//QApplication::processEvents();
 
 	Console::log("MainWindow::slotRemoveTracker(): processed events");
 
@@ -501,7 +496,7 @@ void MainWindow::slotInspectorItemChanged(QTableWidgetItem* item)
 
 				// set the curser to wait circle
 				QApplication::setOverrideCursor(Qt::WaitCursor);
-				QApplication::processEvents();
+				//QApplication::processEvents();
 
 				// enabled or disable tracker based on check state
 				if (item->checkState() == Qt::Checked)
@@ -521,7 +516,7 @@ void MainWindow::slotInspectorItemChanged(QTableWidgetItem* item)
 
 				// reset cursor to default arrow
 				QApplication::restoreOverrideCursor();
-				QApplication::processEvents();
+				//QApplication::processEvents();
 
 				break;
 			}

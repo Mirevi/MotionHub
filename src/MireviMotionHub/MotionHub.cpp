@@ -46,8 +46,10 @@ void MotionHub::update()
 		if (m_trackerManager->isTracking())
 		{
 
+			std::vector<Tracker*> trackerPoolTempCopy = m_trackerManager->getPoolTracker();
+
 			// iterates threw all tracker located in the tracker manager tracker pool 
-			for (auto itTracker = m_trackerManager->getPoolTracker()->begin(); itTracker != m_trackerManager->getPoolTracker()->end(); itTracker++)
+			for (auto itTracker = trackerPoolTempCopy.begin(); itTracker != trackerPoolTempCopy.end(); itTracker++)
 			{
 
 				// check if new skeleton data is available
