@@ -3,6 +3,7 @@
 //_CRT_SECURE_NO_WARNINGS
 #pragma warning(disable : 4996)
 
+//redeclaration
 std::list<std::string> Console::messagePool;
 
 //outputs a string in console as info text

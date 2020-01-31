@@ -57,11 +57,40 @@ public:
 		HIGH
 	};
 
+	/*!
+	 * default constructor
+	 * 
+	 */
 	Joint();
+
+	/*!
+	 * standard constructor
+	 * 
+	 * \param position
+	 * \param rotation
+	 * \param confidence
+	 */
 	Joint(Vector4f position, Quaternionf rotation, Joint::JointConfidence confidence);
 
+	/*!
+	 * getter for Joints Position Vector
+	 * 
+	 * \return m_position
+	 */
 	Vector4f getJointPosition();
+
+	/*!
+	 * getter for Joints Rotation Quaternion
+	 *
+	 * \return m_rotation
+	 */
 	Quaternionf getJointRotation();
+
+	/*!
+	 * getter for Joints confidence value
+	 * 
+	 * \return m_confidence
+	 */
 	JointConfidence getJointConfidence();
 
 private:

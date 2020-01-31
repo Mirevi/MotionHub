@@ -36,8 +36,18 @@ public:
 	 * \param rotation
 	 */
 	void parseJoint(Joint::JointNames name, Vector4f position, Quaternionf rotation, Joint::JointConfidence confidence);
+
+	/*!
+	 * getter for skeleton ID
+	 * 
+	 * \return m_sid
+	 */
 	int getSid();
 
+	/*!
+	 * map of all skeleton joints with JointNames as keys
+	 * 
+	 */
 	std::map<Joint::JointNames, Joint> m_joints;
 
 	enum StateSkeleton
@@ -58,14 +68,48 @@ public:
 		LIE
 	};
 
+	/*!
+	 * getter for posture
+	 * 
+	 * \return m_posture
+	 */
 	StatePosture getPosture();
+
+	/*!
+	 * setter for posture
+	 * 
+	 * \param posture new posture
+	 */
 	void setPosture(StatePosture posture);
+
+	/*!
+	 *  getter for skeleton height
+	 * 
+	 * \return m_height
+	 */
 	float getHeight();
 	void setHeight(float height);
 
 private:
+
+	/*!
+	 * skeleton ID
+	 * 
+	 */
 	int m_sid;
+	/*!
+	 * shows if skeleton data is activly received
+	 * 
+	 */
 	StateSkeleton m_state;
+	/*!
+	 * skeleton posture
+	 * 
+	 */
 	StatePosture m_posture;
+	/*!
+	 * the skeleton height (from X/Z-plane to head joint)
+	 * 
+	 */
 	float m_height;
 };

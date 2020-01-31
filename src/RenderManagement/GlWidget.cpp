@@ -172,8 +172,6 @@ void GlWidget::updateSkeletonMeshPoolSize()
 	int trackerRefPoolSize = m_skeletonMeshPool.size();
 	int trackerPoolSize = trackerTempCopy.size();
 
-	//Console::logWarning("GlWidget::paintGL(): Skeleton mesh pool size = " + std::to_string(skeletonMeshPoolSize) + ", tracker pool size = " + std::to_string(trackerPoolSize) + ".");
-
 	// add tracker refferences to skeleton mesh pool
 	if (trackerRefPoolSize < trackerPoolSize)
 	{
@@ -185,7 +183,6 @@ void GlWidget::updateSkeletonMeshPoolSize()
 			{
 
 				m_skeletonMeshPool.insert(std::make_pair((*itTracker)->getProperties()->id, std::vector<SkeletonMesh>()));
-				Console::log("GlWidget::paintGL(): Added tracker refference to skeleton mesh pool. Tracker refference: ... with id = " + std::to_string((*itTracker)->getProperties()->id) + ".");
 
 			}
 		}
@@ -217,7 +214,6 @@ void GlWidget::updateSkeletonMeshPoolSize()
 				if (isTrackerInPool == false)
 				{
 
-					Console::log("GlWidget::paintGL(): Removed tracker refference from skeleton mesh pool. Tracker refference: ... with id = " + std::to_string(itRefTracker->first) + ".");
 					m_skeletonMeshPool.erase(itRefTracker->first);
 					break;
 
@@ -252,7 +248,6 @@ void GlWidget::updateSkeletonMeshCount()
 				{
 
 					m_skeletonMeshPool.find((*itTracker)->getProperties()->id)->second.push_back(SkeletonMesh());
-					Console::log("GlWidget::updateSkeletonMeshCount(): Added skeleton mesh to skeleton mesh pool. Tracker refference: ... with id = " + std::to_string((*itTracker)->getProperties()->id) + ".");
 
 				}
 			}
@@ -264,7 +259,6 @@ void GlWidget::updateSkeletonMeshCount()
 				{
 
 					m_skeletonMeshPool.find((*itTracker)->getProperties()->id)->second.pop_back();
-					Console::log("GlWidget::updateSkeletonMeshCount(): Removed skeleton mesh from skeleton mesh pool. Tracker refference: ... with id = " + std::to_string((*itTracker)->getProperties()->id) + ".");
 
 				}
 			}

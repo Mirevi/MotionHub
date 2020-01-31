@@ -42,7 +42,7 @@ void AKTracker::start()
 // stop tracking loop / thread
 void AKTracker::stop()
 {
-	//is not tracking, so the update loop exits 
+	//is not tracking, so the update loop exits after current loop
 	m_properties->isTracking = false;
 
 }
@@ -59,8 +59,6 @@ void AKTracker::destroy()
 	k4a_device_stop_cameras(m_cam);
 	k4a_device_close(m_cam);
 
-	Console::log("[cam id = " + std::to_string(m_idCam) + "] AKTracker::destroy(): Destroyed tracker with camera id = " + std::to_string(m_idCam) + ".");
-
 	// delete this object
 	delete this;
 
@@ -68,8 +66,6 @@ void AKTracker::destroy()
 
 void AKTracker::init()
 {
-	Console::log("AKTracker::init(): start initialization with cam id = " + std::to_string(m_idCam) + "]");
-
 
 	m_cam = NULL;
 	// open camera ---> ERROR:  libusb device(s) are all unavalable.
@@ -93,15 +89,11 @@ void AKTracker::init()
 	// create tracker
 	VERIFY_K4A_FUNCTION(k4abt_tracker_create(&m_calibrationCam, m_configTracker, &m_tracker), "[cam id = " + std::to_string(m_idCam) + "] + Body tracker initialization failed!");
 
-
-	Console::log("AKTracker::init(): init done");
 }
 
 // tracking loop
 void AKTracker::update()
 {
-
-	Console::log("[cam id = " + std::to_string(m_idCam) + "] AKTracker::track(): Started tracking thread.");
 
 	// track while tracking is true
 	while (m_properties->isTracking)
@@ -115,8 +107,6 @@ void AKTracker::update()
 
 	//clean skeleton pool after tracking
 	clean();
-
-	Console::log("[cam id = " + std::to_string(m_idCam) + "] AKTracker::track(): Stopped tracking thread.");
 
 }
 
@@ -252,7 +242,7 @@ void AKTracker::extractSkeleton(k4abt_frame_t* body_frame)
 			//skeleton was added/removed, so UI updates
 			m_hasSkeletonPoolChanged = true;
 
-			Console::log("[cam id = " + std::to_string(m_idCam) + "] AkTracker::updateSkeleton(): Created new skeleton with id = " + std::to_string(id) + ".");
+			Console::log("AkTracker::updateSkeleton(): [cam id = " + std::to_string(m_idCam) + "] Created new skeleton with id = " + std::to_string(id) + ".");
 
 		}
 	}
@@ -448,20 +438,8 @@ void AKTracker::cleanSkeletonPool(k4abt_frame_t* bodyFrame)
 		//skeleton was added/removed, so UI updates
 		m_hasSkeletonPoolChanged = true;
 
-		Console::log("[cam id = " + std::to_string(m_idCam) + "] AkTracker::cleanSkeletonList(): Removed skeleton with id = " + std::to_string(*itIndexIdSkeletonsToErase) + " from pool!");
+		Console::log("AkTracker::cleanSkeletonList(): [cam id = " + std::to_string(m_idCam) + "] Removed skeleton with id = " + std::to_string(*itIndexIdSkeletonsToErase) + " from pool!");
 
-		if (m_skeletonPool.size() == 0)
-		{
-
-			Console::log("[cam id = " + std::to_string(m_idCam) + "] AkTracker::cleanSkeletonList(): No skeletons detected.");
-
-		}
-		else
-		{
-
-			Console::log("[cam id = " + std::to_string(m_idCam) + "] AkTracker::cleanSkeletonList(): Skeleton pool count = " + std::to_string(m_skeletonPool.size()) + ".");
-
-		}
 	}
 }
 

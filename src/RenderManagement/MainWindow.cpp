@@ -423,7 +423,6 @@ void MainWindow::slotRemoveTracker()
 
 	//set the curser to waiting
 	QApplication::setOverrideCursor(Qt::WaitCursor);
-	//QApplication::processEvents();
 
 	// check if user selected item
 	if (m_selectedTrackerInList > -1)
@@ -451,9 +450,6 @@ void MainWindow::slotRemoveTracker()
 
 	//set the curser to default
 	QApplication::restoreOverrideCursor();
-	//QApplication::processEvents();
-
-	Console::log("MainWindow::slotRemoveTracker(): processed events");
 
 }
 
@@ -465,8 +461,6 @@ void MainWindow::slotSelectTracker(QModelIndex index)
 
 	// get index of selected tracker
 	m_selectedTrackerInList = ui->listWidget_tracker->currentRow();
-
-	Console::log("MainWindow::slotSelectTracker(): Selected tracker with id = " + std::to_string(m_selectedTrackerInList));
 
 	// update the inspector if current tracker was reselected
 	if (previousSelectedTrackerInList == m_selectedTrackerInList)

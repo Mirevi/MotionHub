@@ -57,6 +57,10 @@ public:
 	 */
 	static void writeToLogfile(std::string message);
 
+	/*!
+	 * temporary list of messages, which are pulled by the Console Widget in MainWindow
+	 * 
+	 */
 	static std::list<std::string> messagePool;
 	
 };

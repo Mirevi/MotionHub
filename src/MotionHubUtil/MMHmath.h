@@ -3,8 +3,8 @@
 #include "ConfigDllExportMotionHubUtil.h"
 #include <iostream>
 
+//include Eigen Library
 #include <Dense>
-//#include <src/plugins/BlockMethods.h>
 
 #define M_PI 3.141592653589793238462643383279502884L // pi
 #define Quaternion Quaternionf
@@ -12,8 +12,20 @@
 using namespace Eigen;
 
 
-
+/*!
+ * converts Euler Angles to transform matrix (translation or scale)
+ * 
+ * \param euler input euler angles as Vector
+ * \return tranform matrix
+ */
 static Matrix3f eulerToMatrix(Vector3f euler);
+
+/*!
+ * converts euler angles to rotationmatrix
+ * 
+ * \param euler input euler angles as Vector
+ * \return rotation matrix
+ */
 static Quaternionf eulerToQuaternion(Vector3f euler);
 
 /*!
@@ -49,11 +61,18 @@ static Matrix4f transformMatrix(Vector3f position, Vector3f rotation, Vector3f s
 	return mTransform;
 }
 
+/*!
+ * converts quaternion to euler angles
+ * 
+ * \param quaternion input quaternion
+ * \return output euler angles as Vector
+ */
 static Vector3f quaternionToEuler(Quaternionf quaternion)
 {
-	
+	//convert to euler angles as radient
 	Vector3f euler = quaternion.toRotationMatrix().eulerAngles(1, 2, 0);
 
+	//convert radient to degrees
 	euler.x() *= 180;
 	euler.x() /= M_PI;
 	euler.y() *= 180;
@@ -65,6 +84,12 @@ static Vector3f quaternionToEuler(Quaternionf quaternion)
 
 }
 
+/*!
+ * converts euler angles to matrix
+ * 
+ * \param euler input euler angles as vector
+ * \return output rotation matrix
+ */
 static Matrix3f eulerToMatrix(Vector3f euler)
 {
 
@@ -78,10 +103,14 @@ static Matrix3f eulerToMatrix(Vector3f euler)
 
 }
 
+/*!
+ * convert euler angles to quaternion
+ * 
+ * \param euler input euler angles as Vector
+ * \return output quaternion
+ */
 static Quaternionf eulerToQuaternion(Vector3f euler)
 {
-
-	//Console::log("Quaternionf eulerToQuaternion():: input euler" + toString(euler));
 
 	Quaternionf qRotation;
 
@@ -91,13 +120,16 @@ static Quaternionf eulerToQuaternion(Vector3f euler)
 	
 	qRotation = Quaternionf(qRotation.w(), qRotation.x(), qRotation.y(), qRotation.z());
 
-	//Console::log("Quaternionf eulerToQuaternion():: output quaternion" + toString(qRotation));
-
-
 	return qRotation;
 
 }
 
+/*!
+ * converts Vector4 to string
+ * 
+ * \param vector input vector
+ * \return output string
+ */
 static std::string toString(Eigen::Vector4f vector)
 {
 
@@ -109,6 +141,13 @@ static std::string toString(Eigen::Vector4f vector)
 
 }
 
+
+/*!
+ * converts Vector3 to string
+ * 
+ * \param vectorinput vector
+ * \return output string
+ */
 static std::string toString(Eigen::Vector3f vector)
 {
 
@@ -120,6 +159,12 @@ static std::string toString(Eigen::Vector3f vector)
 
 }
 
+/*!
+ * converts quaternion to string
+ * 
+ * \param quaternion input quaternion
+ * \return output string
+ */
 static std::string toString(Quaternionf quaternion)
 {
 

@@ -22,15 +22,33 @@ class OSCSender : public NetworkSender
 {
 
 private:
+
 	char buffer[OUTPUT_BUFFER_SIZE];
 	UdpTransmitSocket* m_transmitSocket = nullptr;
 	osc::OutboundPacketStream* m_packetStream = nullptr;
 
 public:
 
+	/*!
+	 * default constructor
+	 * 
+	 */
 	OSCSender();
+	/*!
+	 * standard constructor
+	 *
+	 * \param address the receivers address
+	 * \param port the receivers target port
+	 *
+	 */
 	OSCSender(std::string address, int port);
 
+	/*!
+	 * sends skeleton data via OSC protocol
+	 *
+	 * \param skeleton input skeleton data
+	 * \param uri messages title
+	 */
 	void sendSkeleton(Skeleton* skeleton, const char* uri) override;
 
 };

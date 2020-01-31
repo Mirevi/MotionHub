@@ -85,8 +85,6 @@ void OTTracker::stop()
 void OTTracker::destroy()
 {
 
-	Console::log("OTTracker::destroy(): Destroyed tracker.");
-
 	// delete this object
 	delete this;
 
@@ -175,7 +173,6 @@ void OTTracker::init()
 void OTTracker::update()
 {
 	
-	Console::log("OTTracker::track(): Started tracking thread.");
 
 	// track while tracking is true
 	while (m_properties->isTracking)
@@ -194,7 +191,6 @@ void OTTracker::update()
 	//clean skeleton pool after tracking
 	clean();
 
-	Console::log("OTTracker::track(): Stopped tracking thread.");
 	
 }
 
