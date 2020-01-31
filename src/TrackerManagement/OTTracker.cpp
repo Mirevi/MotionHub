@@ -31,12 +31,6 @@ OTTracker::OTTracker(int id)
 
 	m_idCam = -1;
 
-	//BACKUP
-	//setPositionOffset(Vector3f(0.0f, 0.0f, 0.0f));
-	//setRotationOffset(Vector3f(0.0f, 0.0f, 0.0f));
-	//setScaleOffset(Vector3f(-1.0f, 1.0f, 1.0f));
-
-
 }
 
 OTTracker::~OTTracker()
@@ -123,7 +117,6 @@ int OTTracker::createClient(int iConnectionType)
 	int retCode = m_client->Initialize(szMyIPAddress, szServerIPAddress);
 
 	// to use a different port for commands and/or data:
-	//int retCode = theClient->Initialize(szMyIPAddress, szServerIPAddress, MyServersCommandPort, MyServersDataPort);
 	if (retCode != ErrorCode_OK)
 	{
 				
@@ -166,7 +159,7 @@ int OTTracker::createClient(int iConnectionType)
 void OTTracker::init()
 {
 
-
+	//no init code. The receiver is created on start, because it cannot be deactivated
 
 }
 
@@ -242,6 +235,8 @@ void OTTracker::extractSkeleton()
 	{
 		//get current skeleton data
 		sSkeletonData skData = m_refData->Skeletons[i];
+
+		Console::log(toString(skData.skeletonID));
 
 		//true as long new skeleton will be added to the pool
 		bool createNewSkeleton = true;
@@ -333,12 +328,6 @@ Skeleton* OTTracker::parseSkeleton(sSkeletonData skeleton, int id, Skeleton* old
 			return nullptr;
 
 		}
-
-
-
-
-
-
 
 		//map the OptiTRack poses to the MMH skeleton joints
 		switch (j)
@@ -493,10 +482,8 @@ void OTTracker::cleanSkeletonPool()
 		//skeleton was added/removed, so UI updates
 		m_hasSkeletonPoolChanged = true;
 
-
 		Console::log("OTTracker::cleanSkeletonList(): Removed skeleton with id = " + std::to_string(itIndexIdSkeletonsToErase) + " from pool!");
 
-		Console::log("OTTracker::cleanSkeletonList(): Skeleton pool count = " + std::to_string(m_skeletonPool.size()) + ".");
 	}
 }
 
@@ -516,6 +503,6 @@ Quaternionf OTTracker::convertOptiTrackRotation(Quaternionf value)
 void MessageHandler(int msgType, char* msg)
 {
 
-
+	//the NatNet messages are muted. If you need the messages, output msg
 
 }

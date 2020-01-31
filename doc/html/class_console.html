@@ -63,6 +63,7 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
+<a href="#pub-static-attribs">Static Public Attributes</a> &#124;
 <a href="class_console-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">Console Class Reference</div>  </div>
@@ -91,6 +92,11 @@ Static Public Member Functions</h2></td></tr>
 <tr class="separator:a936cd2b60c3f5052b92aac06aefefa14"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3c0a71acce87ee05daa9e8fb4d078bb5"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_console.html#a3c0a71acce87ee05daa9e8fb4d078bb5">writeToLogfile</a> (std::string message)</td></tr>
 <tr class="separator:a3c0a71acce87ee05daa9e8fb4d078bb5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-attribs"></a>
+Static Public Attributes</h2></td></tr>
+<tr class="memitem:a2f5c2efc207dd8bcc72137f1a822b9b8"><td class="memItemLeft" align="right" valign="top">static std::list&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_console.html#a2f5c2efc207dd8bcc72137f1a822b9b8">messagePool</a></td></tr>
+<tr class="separator:a2f5c2efc207dd8bcc72137f1a822b9b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Utility Class for <a class="el" href="class_console.html" title="Utility Class for Console output.">Console</a> output. </p>
@@ -119,6 +125,12 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>outputs info message to console </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">message</td><td>output message </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -145,6 +157,12 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>outputs error message to console </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">message</td><td>output message </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -171,6 +189,12 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>outputs warning message to console </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">message</td><td>output message </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -196,6 +220,7 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>prints Application header with author names </p>
 
 </div>
 </div>
@@ -222,6 +247,36 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>prints message to logfile </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">message</td><td>output message </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a id="a2f5c2efc207dd8bcc72137f1a822b9b8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2f5c2efc207dd8bcc72137f1a822b9b8">&#9670;&nbsp;</a></span>messagePool</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::list&lt; std::string &gt; Console::messagePool</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>temporary list of messages, which are pulled by the <a class="el" href="class_console.html" title="Utility Class for Console output.">Console</a> Widget in <a class="el" href="class_main_window.html" title="Qt main Window wrapper containing slot methods.">MainWindow</a> </p>
 
 </div>
 </div>

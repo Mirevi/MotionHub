@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['value_1137',['value',['../structtinyxml2_1_1_entity.html#a7334e81e33b4615655a403711b24f3ed',1,'tinyxml2::Entity']]]
+  ['rotationoffset_1423',['rotationOffset',['../struct_tracker_1_1_properties.html#adda10bce9d4db1c8faf336fc92bb1ddb',1,'Tracker::Properties']]]
 ];

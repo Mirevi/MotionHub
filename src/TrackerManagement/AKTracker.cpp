@@ -100,9 +100,13 @@ void AKTracker::update()
 	{
 
 		// if no new data is procressed
-		if(!m_isDataAvailable)
-			track(); // get new data
+		if (!m_isDataAvailable)
+		{
 
+			// get new data
+			track();
+
+		}
 	}
 
 	//clean skeleton pool after tracking
@@ -132,6 +136,7 @@ void AKTracker::track()
 			// it should never hit timeout when K4A_WAIT_INFINITE is set
 			Console::logError("[cam id = " + std::to_string(m_idCam) + "] Add capture to tracker process queue timeout!");
 			return;
+
 		}
 		// error handling quene capture failure
 		else if (queue_capture_result == K4A_WAIT_RESULT_FAILED)

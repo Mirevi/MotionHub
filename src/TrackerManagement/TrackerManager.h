@@ -50,10 +50,8 @@ public:
 	/*!
 	 * removes a tracker from the pool
 	 * 
-	 * \param idToRemove tracker id
+	 * \param positionInList tracker id
 	 */
-	void removeTracker(int idToRemove);
-
 	void removeTrackerAt(int positionInList);
 
 	/*!
@@ -99,7 +97,11 @@ public:
 	 */
 	Tracker* getTrackerRefAt(int id);
 
-
+	/*!
+	 * getter for the tracker pool lock
+	 * 
+	 * \return m_trackerPoolLock
+	 */
 	std::mutex* getTrackerPoolLock();
 
 private:
@@ -121,11 +123,22 @@ private:
 	 */
 	bool m_hasTrackerPoolChanged = false;
 
-
+	/*!
+	 * the next created tracker gets this tracker ID
+	 * 
+	 */
 	int m_nextFreeTrackerID;
 
+	/*!
+	 * the next created AK tracker gets this cam ID
+	 *
+	 */
 	int m_nextFreeAKCamID;
 
+	/*!
+	 * mutex lock for the tracker pool
+	 * 
+	 */
 	std::mutex m_trackerPoolLock;
 
 };

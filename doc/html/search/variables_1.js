@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['buffer_1080',['buffer',['../class_o_s_c_sender.html#a574a2f176b535f02b66d81cc69d0ff0d',1,'OSCSender']]]
+  ['analogsamplespermocapframe_1327',['analogSamplesPerMocapFrame',['../class_o_t_tracker.html#a38a5de08bfd36158ef9583c4e7a19b92',1,'OTTracker']]]
 ];

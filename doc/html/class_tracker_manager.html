@@ -83,47 +83,69 @@ Collaboration diagram for TrackerManager:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:ab0456d60105d88830ad54e52cdc9cc57"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tracker_manager.html#ab0456d60105d88830ad54e52cdc9cc57">TypeTracker</a> { <a class="el" href="class_tracker_manager.html#ab0456d60105d88830ad54e52cdc9cc57a7836a19c2081f91332050abbf78fd633">AKT</a>, 
-<a class="el" href="class_tracker_manager.html#ab0456d60105d88830ad54e52cdc9cc57a3701ae0ce9545c3e7f2f57ec6763de8a">XST</a>
+<tr class="memitem:ae79f69c6e978ac4a631f1331c7f6eba4"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tracker_manager.html#ae79f69c6e978ac4a631f1331c7f6eba4">TrackerType</a> { <a class="el" href="class_tracker_manager.html#ae79f69c6e978ac4a631f1331c7f6eba4acb58322547ca8afbf7ce54ebe3af8b70">azureKinect</a>, 
+<a class="el" href="class_tracker_manager.html#ae79f69c6e978ac4a631f1331c7f6eba4ad081a822e82499ff325785f2e8ee1724">optiTrack</a>
  }</td></tr>
-<tr class="separator:ab0456d60105d88830ad54e52cdc9cc57"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="separator:ae79f69c6e978ac4a631f1331c7f6eba4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:aba18139126bb78efca30c81b40835bb3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tracker_manager.html#aba18139126bb78efca30c81b40835bb3">TrackerManager</a> ()</td></tr>
 <tr class="separator:aba18139126bb78efca30c81b40835bb3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a05cbbfcb0a1ff58239da1d3c7096659b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tracker_manager.html#a05cbbfcb0a1ff58239da1d3c7096659b">createTracker</a> (<a class="el" href="class_tracker_manager.html#ab0456d60105d88830ad54e52cdc9cc57">TypeTracker</a> type)</td></tr>
-<tr class="separator:a05cbbfcb0a1ff58239da1d3c7096659b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a74c6e2197193f394372479e0a71f4089"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tracker_manager.html#a74c6e2197193f394372479e0a71f4089">removeTracker</a> (int idToRemove)</td></tr>
-<tr class="separator:a74c6e2197193f394372479e0a71f4089"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8828f8c7a28bb46d208a82ab53a0f065"><td class="memItemLeft" align="right" valign="top">std::map&lt; std::pair&lt; <a class="el" href="class_tracker_manager.html#ab0456d60105d88830ad54e52cdc9cc57">TypeTracker</a>, int &gt;, <a class="el" href="class_tracker.html">Tracker</a> * &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tracker_manager.html#a8828f8c7a28bb46d208a82ab53a0f065">getPoolTracker</a> ()</td></tr>
-<tr class="separator:a8828f8c7a28bb46d208a82ab53a0f065"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a528191df15096f032ad3a0635b50f9b4"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tracker_manager.html#a528191df15096f032ad3a0635b50f9b4">createTracker</a> (<a class="el" href="class_tracker_manager.html#ae79f69c6e978ac4a631f1331c7f6eba4">TrackerType</a> type)</td></tr>
+<tr class="separator:a528191df15096f032ad3a0635b50f9b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4ca53221dc6be34a1c38349392abc62c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tracker_manager.html#a4ca53221dc6be34a1c38349392abc62c">removeTrackerAt</a> (int positionInList)</td></tr>
+<tr class="separator:a4ca53221dc6be34a1c38349392abc62c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae26a0d1fe42e6d3ddb03ebed95fa40b5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tracker_manager.html#ae26a0d1fe42e6d3ddb03ebed95fa40b5">startTracker</a> ()</td></tr>
+<tr class="separator:ae26a0d1fe42e6d3ddb03ebed95fa40b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab17a611e65858d20796ec8122633ce44"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tracker_manager.html#ab17a611e65858d20796ec8122633ce44">stopTracker</a> ()</td></tr>
+<tr class="separator:ab17a611e65858d20796ec8122633ce44"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a61690cab6d8e012664bfa452178695ed"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tracker_manager.html#a61690cab6d8e012664bfa452178695ed">isTracking</a> ()</td></tr>
+<tr class="separator:a61690cab6d8e012664bfa452178695ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a56e7e06200effa7f690915dca0d35e44"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tracker_manager.html#a56e7e06200effa7f690915dca0d35e44">hasTrackerPoolChanged</a> ()</td></tr>
+<tr class="separator:a56e7e06200effa7f690915dca0d35e44"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a60ba5893ec1b7a118c9e75bc5ce12485"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="class_tracker.html">Tracker</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tracker_manager.html#a60ba5893ec1b7a118c9e75bc5ce12485">getPoolTracker</a> ()</td></tr>
+<tr class="separator:a60ba5893ec1b7a118c9e75bc5ce12485"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a27c252b4df9235257fdb0e9a87976970"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_tracker.html">Tracker</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tracker_manager.html#a27c252b4df9235257fdb0e9a87976970">getTrackerRefAt</a> (int id)</td></tr>
+<tr class="separator:a27c252b4df9235257fdb0e9a87976970"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:affd52cc1a51b8df144d8f0174f723375"><td class="memItemLeft" align="right" valign="top">std::mutex *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tracker_manager.html#affd52cc1a51b8df144d8f0174f723375">getTrackerPoolLock</a> ()</td></tr>
+<tr class="separator:affd52cc1a51b8df144d8f0174f723375"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
-<tr class="memitem:a83f226c8f142e4d46125a51a551be401"><td class="memItemLeft" align="right" valign="top">std::map&lt; std::pair&lt; <a class="el" href="class_tracker_manager.html#ab0456d60105d88830ad54e52cdc9cc57">TypeTracker</a>, int &gt;, <a class="el" href="class_tracker.html">Tracker</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tracker_manager.html#a83f226c8f142e4d46125a51a551be401">m_poolTracker</a></td></tr>
-<tr class="separator:a83f226c8f142e4d46125a51a551be401"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a88d8a9980a591bb7d3e1e33b861ec95f"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="class_tracker.html">Tracker</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tracker_manager.html#a88d8a9980a591bb7d3e1e33b861ec95f">m_trackerPool</a></td></tr>
+<tr class="separator:a88d8a9980a591bb7d3e1e33b861ec95f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad2baff46a658c9124142bbfc7f0911f2"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tracker_manager.html#ad2baff46a658c9124142bbfc7f0911f2">m_isTracking</a> = false</td></tr>
+<tr class="separator:ad2baff46a658c9124142bbfc7f0911f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6da33b96b5b511c74c8a7b96edb2bb78"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tracker_manager.html#a6da33b96b5b511c74c8a7b96edb2bb78">m_hasTrackerPoolChanged</a> = false</td></tr>
+<tr class="separator:a6da33b96b5b511c74c8a7b96edb2bb78"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3fb084e767c03d3e9e1e6ea447615b5a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tracker_manager.html#a3fb084e767c03d3e9e1e6ea447615b5a">m_nextFreeTrackerID</a></td></tr>
+<tr class="separator:a3fb084e767c03d3e9e1e6ea447615b5a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a352bcafd2964ce019bb9e3aaf9964876"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tracker_manager.html#a352bcafd2964ce019bb9e3aaf9964876">m_nextFreeAKCamID</a></td></tr>
+<tr class="separator:a352bcafd2964ce019bb9e3aaf9964876"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad00ff39d680519a5072dd84e039136b9"><td class="memItemLeft" align="right" valign="top">std::mutex&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_tracker_manager.html#ad00ff39d680519a5072dd84e039136b9">m_trackerPoolLock</a></td></tr>
+<tr class="separator:ad00ff39d680519a5072dd84e039136b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p><a class="el" href="class_manager.html" title="contains the Qt application and main window">Manager</a> for all types of tracker. </p>
 <dl class="section note"><dt>Note</dt><dd>while Tracking, it collects all data from the tracker pool</dd></dl>
 <dl class="section author"><dt>Author</dt><dd>Kester Evers and Eric Jansen </dd></dl>
 </div><h2 class="groupheader">Member Enumeration Documentation</h2>
-<a id="ab0456d60105d88830ad54e52cdc9cc57"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab0456d60105d88830ad54e52cdc9cc57">&#9670;&nbsp;</a></span>TypeTracker</h2>
+<a id="ae79f69c6e978ac4a631f1331c7f6eba4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae79f69c6e978ac4a631f1331c7f6eba4">&#9670;&nbsp;</a></span>TrackerType</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">enum <a class="el" href="class_tracker_manager.html#ab0456d60105d88830ad54e52cdc9cc57">TrackerManager::TypeTracker</a></td>
+          <td class="memname">enum <a class="el" href="class_tracker_manager.html#ae79f69c6e978ac4a631f1331c7f6eba4">TrackerManager::TrackerType</a></td>
         </tr>
       </table>
 </div><div class="memdoc">
 <p>enum for all tracker types </p>
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ab0456d60105d88830ad54e52cdc9cc57a7836a19c2081f91332050abbf78fd633"></a>AKT&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ab0456d60105d88830ad54e52cdc9cc57a3701ae0ce9545c3e7f2f57ec6763de8a"></a>XST&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ae79f69c6e978ac4a631f1331c7f6eba4acb58322547ca8afbf7ce54ebe3af8b70"></a>azureKinect&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ae79f69c6e978ac4a631f1331c7f6eba4ad081a822e82499ff325785f2e8ee1724"></a>optiTrack&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 </div>
@@ -148,16 +170,16 @@ Private Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a05cbbfcb0a1ff58239da1d3c7096659b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a05cbbfcb0a1ff58239da1d3c7096659b">&#9670;&nbsp;</a></span>createTracker()</h2>
+<a id="a528191df15096f032ad3a0635b50f9b4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a528191df15096f032ad3a0635b50f9b4">&#9670;&nbsp;</a></span>createTracker()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void TrackerManager::createTracker </td>
+          <td class="memname">int TrackerManager::createTracker </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="class_tracker_manager.html#ab0456d60105d88830ad54e52cdc9cc57">TypeTracker</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="class_tracker_manager.html#ae79f69c6e978ac4a631f1331c7f6eba4">TrackerType</a>&#160;</td>
           <td class="paramname"><em>type</em></td><td>)</td>
           <td></td>
         </tr>
@@ -173,34 +195,119 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a8828f8c7a28bb46d208a82ab53a0f065"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8828f8c7a28bb46d208a82ab53a0f065">&#9670;&nbsp;</a></span>getPoolTracker()</h2>
+<a id="a60ba5893ec1b7a118c9e75bc5ce12485"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a60ba5893ec1b7a118c9e75bc5ce12485">&#9670;&nbsp;</a></span>getPoolTracker()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::map&lt; std::pair&lt; <a class="el" href="class_tracker_manager.html#ab0456d60105d88830ad54e52cdc9cc57">TrackerManager::TypeTracker</a>, int &gt;, <a class="el" href="class_tracker.html">Tracker</a> * &gt; * TrackerManager::getPoolTracker </td>
+          <td class="memname">std::vector&lt; <a class="el" href="class_tracker.html">Tracker</a> * &gt; TrackerManager::getPoolTracker </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>getter for m_trackerPool</p>
+<dl class="section return"><dt>Returns</dt><dd>pointer to map of tracker </dd></dl>
 
 </div>
 </div>
-<a id="a74c6e2197193f394372479e0a71f4089"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a74c6e2197193f394372479e0a71f4089">&#9670;&nbsp;</a></span>removeTracker()</h2>
+<a id="affd52cc1a51b8df144d8f0174f723375"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#affd52cc1a51b8df144d8f0174f723375">&#9670;&nbsp;</a></span>getTrackerPoolLock()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void TrackerManager::removeTracker </td>
+          <td class="memname">std::mutex * TrackerManager::getTrackerPoolLock </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>getter for the tracker pool lock</p>
+<dl class="section return"><dt>Returns</dt><dd>m_trackerPoolLock </dd></dl>
+
+</div>
+</div>
+<a id="a27c252b4df9235257fdb0e9a87976970"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a27c252b4df9235257fdb0e9a87976970">&#9670;&nbsp;</a></span>getTrackerRefAt()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_tracker.html">Tracker</a> * TrackerManager::getTrackerRefAt </td>
           <td>(</td>
           <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>idToRemove</em></td><td>)</td>
+          <td class="paramname"><em>id</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>getter for a specific tracker</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">id</td><td>the id of the tracker which should be returned </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>pointer to the tracker with given id </dd></dl>
+
+</div>
+</div>
+<a id="a56e7e06200effa7f690915dca0d35e44"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a56e7e06200effa7f690915dca0d35e44">&#9670;&nbsp;</a></span>hasTrackerPoolChanged()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool TrackerManager::hasTrackerPoolChanged </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>getter for m_hasTrackerPoolChanged also resets m_hasTrackerPoolChanged when it was true</p>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+</div>
+</div>
+<a id="a61690cab6d8e012664bfa452178695ed"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a61690cab6d8e012664bfa452178695ed">&#9670;&nbsp;</a></span>isTracking()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool TrackerManager::isTracking </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>getter for m_isTracking</p>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+</div>
+</div>
+<a id="a4ca53221dc6be34a1c38349392abc62c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4ca53221dc6be34a1c38349392abc62c">&#9670;&nbsp;</a></span>removeTrackerAt()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void TrackerManager::removeTrackerAt </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>positionInList</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -208,16 +315,52 @@ Private Attributes</h2></td></tr>
 <p>removes a tracker from the pool</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">idToRemove</td><td>tracker id </td></tr>
+    <tr><td class="paramname">positionInList</td><td>tracker id </td></tr>
   </table>
   </dd>
 </dl>
 
 </div>
 </div>
+<a id="ae26a0d1fe42e6d3ddb03ebed95fa40b5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae26a0d1fe42e6d3ddb03ebed95fa40b5">&#9670;&nbsp;</a></span>startTracker()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void TrackerManager::startTracker </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>starts all tracker in the tracker pool </p>
+
+</div>
+</div>
+<a id="ab17a611e65858d20796ec8122633ce44"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab17a611e65858d20796ec8122633ce44">&#9670;&nbsp;</a></span>stopTracker()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void TrackerManager::stopTracker </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>stops all tracker in the tracker pool </p>
+
+</div>
+</div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="a83f226c8f142e4d46125a51a551be401"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a83f226c8f142e4d46125a51a551be401">&#9670;&nbsp;</a></span>m_poolTracker</h2>
+<a id="a6da33b96b5b511c74c8a7b96edb2bb78"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6da33b96b5b511c74c8a7b96edb2bb78">&#9670;&nbsp;</a></span>m_hasTrackerPoolChanged</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -226,7 +369,99 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::map&lt;std::pair&lt;<a class="el" href="class_tracker_manager.html#ab0456d60105d88830ad54e52cdc9cc57">TypeTracker</a>, int&gt;, <a class="el" href="class_tracker.html">Tracker</a>*&gt; TrackerManager::m_poolTracker</td>
+          <td class="memname">bool TrackerManager::m_hasTrackerPoolChanged = false</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>true when tracker pool has gained or lost a tracker </p>
+
+</div>
+</div>
+<a id="ad2baff46a658c9124142bbfc7f0911f2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad2baff46a658c9124142bbfc7f0911f2">&#9670;&nbsp;</a></span>m_isTracking</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool TrackerManager::m_isTracking = false</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>true when tracker is tracking, when MMH is in playMode </p>
+
+</div>
+</div>
+<a id="a352bcafd2964ce019bb9e3aaf9964876"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a352bcafd2964ce019bb9e3aaf9964876">&#9670;&nbsp;</a></span>m_nextFreeAKCamID</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int TrackerManager::m_nextFreeAKCamID</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>the next created AK tracker gets this cam ID </p>
+
+</div>
+</div>
+<a id="a3fb084e767c03d3e9e1e6ea447615b5a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3fb084e767c03d3e9e1e6ea447615b5a">&#9670;&nbsp;</a></span>m_nextFreeTrackerID</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int TrackerManager::m_nextFreeTrackerID</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>the next created tracker gets this tracker ID </p>
+
+</div>
+</div>
+<a id="a88d8a9980a591bb7d3e1e33b861ec95f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a88d8a9980a591bb7d3e1e33b861ec95f">&#9670;&nbsp;</a></span>m_trackerPool</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;<a class="el" href="class_tracker.html">Tracker</a>*&gt; TrackerManager::m_trackerPool</td>
         </tr>
       </table>
   </td>
@@ -236,6 +471,29 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 <p>pool of all created tracker </p>
+
+</div>
+</div>
+<a id="ad00ff39d680519a5072dd84e039136b9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad00ff39d680519a5072dd84e039136b9">&#9670;&nbsp;</a></span>m_trackerPoolLock</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::mutex TrackerManager::m_trackerPoolLock</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>mutex lock for the tracker pool </p>
 
 </div>
 </div>

@@ -84,13 +84,13 @@ Collaboration diagram for NetworkManager:</div>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a5aaf71c4aa7a2efab7f1dbae02312280"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_network_manager.html#a5aaf71c4aa7a2efab7f1dbae02312280">NetworkManager</a> ()</td></tr>
 <tr class="separator:a5aaf71c4aa7a2efab7f1dbae02312280"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aba376aed50bc458514cae19c7d086705"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_network_manager.html#aba376aed50bc458514cae19c7d086705">sendSkeletonPool</a> (std::map&lt; int, <a class="el" href="class_skeleton.html">Skeleton</a> * &gt; *skeletonPool)</td></tr>
-<tr class="separator:aba376aed50bc458514cae19c7d086705"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab08494824e9686313c6c6a3c3af3d6bc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_network_manager.html#ab08494824e9686313c6c6a3c3af3d6bc">sendSkeletonPool</a> (std::map&lt; int, <a class="el" href="class_skeleton.html">Skeleton</a> &gt; *skeletonPool)</td></tr>
+<tr class="separator:ab08494824e9686313c6c6a3c3af3d6bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
-<tr class="memitem:aad869b257a670cfbeb8c966e9e830d3b"><td class="memItemLeft" align="right" valign="top">std::list&lt; <a class="el" href="class_network_sender.html">NetworkSender</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_network_manager.html#aad869b257a670cfbeb8c966e9e830d3b">poolSender</a></td></tr>
-<tr class="separator:aad869b257a670cfbeb8c966e9e830d3b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7d770e2c65898b252f88390a4ff8c7da"><td class="memItemLeft" align="right" valign="top">std::list&lt; <a class="el" href="class_network_sender.html">NetworkSender</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_network_manager.html#a7d770e2c65898b252f88390a4ff8c7da">m_poolSender</a></td></tr>
+<tr class="separator:a7d770e2c65898b252f88390a4ff8c7da"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p><a class="el" href="class_manager.html" title="contains the Qt application and main window">Manager</a> for different Network Sender and skeleton sending. </p>
@@ -111,12 +111,13 @@ Private Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>default constructor </p>
 
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="aba376aed50bc458514cae19c7d086705"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aba376aed50bc458514cae19c7d086705">&#9670;&nbsp;</a></span>sendSkeletonPool()</h2>
+<a id="ab08494824e9686313c6c6a3c3af3d6bc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab08494824e9686313c6c6a3c3af3d6bc">&#9670;&nbsp;</a></span>sendSkeletonPool()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -124,18 +125,24 @@ Private Attributes</h2></td></tr>
         <tr>
           <td class="memname">void NetworkManager::sendSkeletonPool </td>
           <td>(</td>
-          <td class="paramtype">std::map&lt; int, <a class="el" href="class_skeleton.html">Skeleton</a> * &gt; *&#160;</td>
+          <td class="paramtype">std::map&lt; int, <a class="el" href="class_skeleton.html">Skeleton</a> &gt; *&#160;</td>
           <td class="paramname"><em>skeletonPool</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>sends skeleton pool to all network sender </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">skeletonPool</td><td>skeleton pool to send </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="aad869b257a670cfbeb8c966e9e830d3b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aad869b257a670cfbeb8c966e9e830d3b">&#9670;&nbsp;</a></span>poolSender</h2>
+<a id="a7d770e2c65898b252f88390a4ff8c7da"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7d770e2c65898b252f88390a4ff8c7da">&#9670;&nbsp;</a></span>m_poolSender</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -144,7 +151,7 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::list&lt;<a class="el" href="class_network_sender.html">NetworkSender</a>*&gt; NetworkManager::poolSender</td>
+          <td class="memname">std::list&lt;<a class="el" href="class_network_sender.html">NetworkSender</a>*&gt; NetworkManager::m_poolSender</td>
         </tr>
       </table>
   </td>
@@ -153,6 +160,7 @@ Private Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>pool of all network sender </p>
 
 </div>
 </div>

@@ -79,8 +79,12 @@ Collaboration diagram for UIManager:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a601f2010a94490834ef4ea0f4660e280"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_u_i_manager.html#a601f2010a94490834ef4ea0f4660e280">UIManager</a> (int argc, char **argv, <a class="el" href="class_input_manager.html">InputManager</a> *inputManager)</td></tr>
-<tr class="separator:a601f2010a94490834ef4ea0f4660e280"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a06044b35f6171b59dd8dbfe1ace97f77"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_u_i_manager.html#a06044b35f6171b59dd8dbfe1ace97f77">UIManager</a> (int argc, char **argv, <a class="el" href="class_tracker_manager.html">TrackerManager</a> *trackerManager)</td></tr>
+<tr class="separator:a06044b35f6171b59dd8dbfe1ace97f77"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a62829a86ba377c84fc9aef352a0f5b28"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_main_window.html">MainWindow</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_u_i_manager.html#a62829a86ba377c84fc9aef352a0f5b28">getMainWindow</a> ()</td></tr>
+<tr class="separator:a62829a86ba377c84fc9aef352a0f5b28"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac2bd18908645eff86dd842d0d2929946"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_u_i_manager.html#ac2bd18908645eff86dd842d0d2929946">processInput</a> ()</td></tr>
+<tr class="separator:ac2bd18908645eff86dd842d0d2929946"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
@@ -88,12 +92,10 @@ Private Attributes</h2></td></tr>
 <tr class="separator:a98b20a6e9c94f0eb575dfc086f4ba5f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9c0ea07e028b02883f804df7477cbd73"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_main_window.html">MainWindow</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_u_i_manager.html#a9c0ea07e028b02883f804df7477cbd73">m_mainWindow</a></td></tr>
 <tr class="separator:a9c0ea07e028b02883f804df7477cbd73"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac6a52f4d3cd1a9ac0280e299e5320d2f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_input_manager.html">InputManager</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_u_i_manager.html#ac6a52f4d3cd1a9ac0280e299e5320d2f">m_refInputManager</a></td></tr>
-<tr class="separator:ac6a52f4d3cd1a9ac0280e299e5320d2f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a601f2010a94490834ef4ea0f4660e280"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a601f2010a94490834ef4ea0f4660e280">&#9670;&nbsp;</a></span>UIManager()</h2>
+<a id="a06044b35f6171b59dd8dbfe1ace97f77"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a06044b35f6171b59dd8dbfe1ace97f77">&#9670;&nbsp;</a></span>UIManager()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -113,8 +115,8 @@ Private Attributes</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="class_input_manager.html">InputManager</a> *&#160;</td>
-          <td class="paramname"><em>inputManager</em>&#160;</td>
+          <td class="paramtype"><a class="el" href="class_tracker_manager.html">TrackerManager</a> *&#160;</td>
+          <td class="paramname"><em>trackerManager</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -128,10 +130,47 @@ Private Attributes</h2></td></tr>
   <table class="params">
     <tr><td class="paramname">argc</td><td></td></tr>
     <tr><td class="paramname">argv</td><td></td></tr>
-    <tr><td class="paramname">inputManager</td><td>reference to the <a class="el" href="class_input_manager.html" title="container for input data">InputManager</a> </td></tr>
+    <tr><td class="paramname">inputManager</td><td>reference to the InputManager </td></tr>
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="a62829a86ba377c84fc9aef352a0f5b28"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a62829a86ba377c84fc9aef352a0f5b28">&#9670;&nbsp;</a></span>getMainWindow()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_main_window.html">MainWindow</a> * UIManager::getMainWindow </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>getter for <a class="el" href="class_main_window.html" title="Qt main Window wrapper containing slot methods.">MainWindow</a> pointer </p><dl class="section return"><dt>Returns</dt><dd>pointer to the <a class="el" href="class_main_window.html" title="Qt main Window wrapper containing slot methods.">MainWindow</a> Object </dd></dl>
+
+</div>
+</div>
+<a id="ac2bd18908645eff86dd842d0d2929946"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac2bd18908645eff86dd842d0d2929946">&#9670;&nbsp;</a></span>processInput()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void UIManager::processInput </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>updates Qt UI </p>
 
 </div>
 </div>
@@ -183,32 +222,9 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="ac6a52f4d3cd1a9ac0280e299e5320d2f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac6a52f4d3cd1a9ac0280e299e5320d2f">&#9670;&nbsp;</a></span>m_refInputManager</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="class_input_manager.html">InputManager</a>* UIManager::m_refInputManager</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>reference to the <a class="el" href="class_input_manager.html" title="container for input data">InputManager</a> </p>
-
-</div>
-</div>
 <hr/>The documentation for this class was generated from the following files:<ul>
-<li>src/UIManagement/<a class="el" href="_u_i_manager_8h_source.html">UIManager.h</a></li>
-<li>src/UIManagement/<a class="el" href="_u_i_manager_8cpp.html">UIManager.cpp</a></li>
+<li>src/RenderManagement/<a class="el" href="_u_i_manager_8h_source.html">UIManager.h</a></li>
+<li>src/RenderManagement/<a class="el" href="_u_i_manager_8cpp.html">UIManager.cpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

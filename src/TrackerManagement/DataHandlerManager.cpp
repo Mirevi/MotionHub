@@ -1,6 +1,6 @@
 #include "DataHandlerManager.h"
 
-//second declaration
+//redeclaration
 Tracker::Properties* DataHandlerManager::m_properties;
 sFrameOfMocapData* DataHandlerManager::m_data;
 std::atomic<bool> DataHandlerManager::m_isDataAvailable;

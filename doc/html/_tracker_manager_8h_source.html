@@ -73,47 +73,77 @@ $(function() {
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160; </div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="_config_dll_export_tracking_management_8h.html">ConfigDllExportTrackingManagement.h</a>&quot;</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160; </div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &lt;list&gt;</span></div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="_tracker_8h.html">Tracker.h</a>&quot;</span></div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160; </div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &lt;map&gt;</span></div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &lt;vector&gt;</span></div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160; </div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &lt;map&gt;</span></div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &lt;vector&gt;</span></div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &lt;atomic&gt;</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &lt;mutex&gt;</span></div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160; </div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="_tracker_8h.html">Tracker.h</a>&quot;</span></div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="_a_k_tracker_8h.html">AKTracker.h</a>&quot;</span></div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160; </div>
-<div class="line"><a name="l00022"></a><span class="lineno"><a class="line" href="class_tracker_manager.html">   22</a></span>&#160;<span class="keyword">class </span><a class="code" href="_config_dll_export_tracking_management_8h.html#ad6998d0dac995e57de6ad8a18c1a8adf">TrackingManagement_DLL_import_export</a> <a class="code" href="class_tracker_manager.html">TrackerManager</a></div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;{</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160; </div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160; </div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    <a class="code" href="class_tracker_manager.html">TrackerManager</a>();</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160; </div>
-<div class="line"><a name="l00035"></a><span class="lineno"><a class="line" href="class_tracker_manager.html#ab0456d60105d88830ad54e52cdc9cc57">   35</a></span>&#160;    <span class="keyword">enum</span> <a class="code" href="class_tracker_manager.html#ab0456d60105d88830ad54e52cdc9cc57">TypeTracker</a> </div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    {</div>
-<div class="line"><a name="l00037"></a><span class="lineno"><a class="line" href="class_tracker_manager.html#ab0456d60105d88830ad54e52cdc9cc57a7836a19c2081f91332050abbf78fd633">   37</a></span>&#160;        <a class="code" href="class_tracker_manager.html#ab0456d60105d88830ad54e52cdc9cc57a7836a19c2081f91332050abbf78fd633">AKT</a>,    <span class="comment">// Azure Kinect Tracker</span></div>
-<div class="line"><a name="l00038"></a><span class="lineno"><a class="line" href="class_tracker_manager.html#ab0456d60105d88830ad54e52cdc9cc57a3701ae0ce9545c3e7f2f57ec6763de8a">   38</a></span>&#160;        XST     <span class="comment">// XSense Tracker</span></div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    };;</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160; </div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    <span class="keywordtype">void</span> createTracker(TypeTracker type);</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    <span class="keywordtype">void</span> removeTracker(<span class="keywordtype">int</span> idToRemove);</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160; </div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    std::map&lt;std::pair&lt;TypeTracker, int&gt;, <a class="code" href="class_tracker.html">Tracker</a>*&gt;* getPoolTracker();</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160; </div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160; </div>
-<div class="line"><a name="l00061"></a><span class="lineno"><a class="line" href="class_tracker_manager.html#a83f226c8f142e4d46125a51a551be401">   61</a></span>&#160;    std::map&lt;std::pair&lt;TypeTracker, int&gt;, <a class="code" href="class_tracker.html">Tracker</a>*&gt; <a class="code" href="class_tracker_manager.html#a83f226c8f142e4d46125a51a551be401">m_poolTracker</a>;</div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="_o_t_tracker_8h.html">OTTracker.h</a>&quot;</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160; </div>
+<div class="line"><a name="l00023"></a><span class="lineno"><a class="line" href="class_tracker_manager.html">   23</a></span>&#160;<span class="keyword">class </span><a class="code" href="_config_dll_export_tracking_management_8h.html#ad6998d0dac995e57de6ad8a18c1a8adf">TrackingManagement_DLL_import_export</a> <a class="code" href="class_tracker_manager.html">TrackerManager</a></div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;{</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160; </div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160; </div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    <a class="code" href="class_tracker_manager.html">TrackerManager</a>();</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160; </div>
+<div class="line"><a name="l00036"></a><span class="lineno"><a class="line" href="class_tracker_manager.html#ae79f69c6e978ac4a631f1331c7f6eba4">   36</a></span>&#160;    <span class="keyword">enum</span> <a class="code" href="class_tracker_manager.html#ae79f69c6e978ac4a631f1331c7f6eba4">TrackerType</a> </div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    {</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
+<div class="line"><a name="l00039"></a><span class="lineno"><a class="line" href="class_tracker_manager.html#ae79f69c6e978ac4a631f1331c7f6eba4acb58322547ca8afbf7ce54ebe3af8b70">   39</a></span>&#160;        <a class="code" href="class_tracker_manager.html#ae79f69c6e978ac4a631f1331c7f6eba4acb58322547ca8afbf7ce54ebe3af8b70">azureKinect</a>,    <span class="comment">// Azure Kinect Tracker</span></div>
+<div class="line"><a name="l00040"></a><span class="lineno"><a class="line" href="class_tracker_manager.html#ae79f69c6e978ac4a631f1331c7f6eba4ad081a822e82499ff325785f2e8ee1724">   40</a></span>&#160;        optiTrack       <span class="comment">//OptiTrack     Tracker</span></div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160; </div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    };</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160; </div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    <span class="keywordtype">int</span> createTracker(TrackerType type);</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    <span class="keywordtype">void</span> removeTrackerAt(<span class="keywordtype">int</span> positionInList);</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160; </div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    <span class="keywordtype">void</span> startTracker();</div>
 <div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160; </div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;};</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    <span class="keywordtype">void</span> stopTracker();</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160; </div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    <span class="keywordtype">bool</span> isTracking();</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160; </div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    <span class="keywordtype">bool</span> hasTrackerPoolChanged();</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160; </div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160; </div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    std::vector&lt;Tracker*&gt; getPoolTracker();</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160; </div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    <a class="code" href="class_tracker.html">Tracker</a>* getTrackerRefAt(<span class="keywordtype">int</span> <span class="keywordtype">id</span>);</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160; </div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;    std::mutex* getTrackerPoolLock();</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160; </div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160; </div>
+<div class="line"><a name="l00112"></a><span class="lineno"><a class="line" href="class_tracker_manager.html#a88d8a9980a591bb7d3e1e33b861ec95f">  112</a></span>&#160;    std::vector&lt;Tracker*&gt; <a class="code" href="class_tracker_manager.html#a88d8a9980a591bb7d3e1e33b861ec95f">m_trackerPool</a>;</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160; </div>
+<div class="line"><a name="l00118"></a><span class="lineno"><a class="line" href="class_tracker_manager.html#ad2baff46a658c9124142bbfc7f0911f2">  118</a></span>&#160;    <span class="keywordtype">bool</span> m_isTracking = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160; </div>
+<div class="line"><a name="l00124"></a><span class="lineno"><a class="line" href="class_tracker_manager.html#a6da33b96b5b511c74c8a7b96edb2bb78">  124</a></span>&#160;    <span class="keywordtype">bool</span> m_hasTrackerPoolChanged = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160; </div>
+<div class="line"><a name="l00130"></a><span class="lineno"><a class="line" href="class_tracker_manager.html#a3fb084e767c03d3e9e1e6ea447615b5a">  130</a></span>&#160;    <span class="keywordtype">int</span> <a class="code" href="class_tracker_manager.html#a3fb084e767c03d3e9e1e6ea447615b5a">m_nextFreeTrackerID</a>;</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160; </div>
+<div class="line"><a name="l00136"></a><span class="lineno"><a class="line" href="class_tracker_manager.html#a352bcafd2964ce019bb9e3aaf9964876">  136</a></span>&#160;    <span class="keywordtype">int</span> <a class="code" href="class_tracker_manager.html#a352bcafd2964ce019bb9e3aaf9964876">m_nextFreeAKCamID</a>;</div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160; </div>
+<div class="line"><a name="l00142"></a><span class="lineno"><a class="line" href="class_tracker_manager.html#ad00ff39d680519a5072dd84e039136b9">  142</a></span>&#160;    std::mutex <a class="code" href="class_tracker_manager.html#ad00ff39d680519a5072dd84e039136b9">m_trackerPoolLock</a>;</div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160; </div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;};</div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="aclass_tracker_manager_html_ab0456d60105d88830ad54e52cdc9cc57"><div class="ttname"><a href="class_tracker_manager.html#ab0456d60105d88830ad54e52cdc9cc57">TrackerManager::TypeTracker</a></div><div class="ttdeci">TypeTracker</div><div class="ttdef"><b>Definition:</b> TrackerManager.h:35</div></div>
-<div class="ttc" id="aclass_tracker_manager_html_ab0456d60105d88830ad54e52cdc9cc57a7836a19c2081f91332050abbf78fd633"><div class="ttname"><a href="class_tracker_manager.html#ab0456d60105d88830ad54e52cdc9cc57a7836a19c2081f91332050abbf78fd633">TrackerManager::AKT</a></div><div class="ttdef"><b>Definition:</b> TrackerManager.h:37</div></div>
 <div class="ttc" id="a_config_dll_export_tracking_management_8h_html"><div class="ttname"><a href="_config_dll_export_tracking_management_8h.html">ConfigDllExportTrackingManagement.h</a></div></div>
+<div class="ttc" id="aclass_tracker_manager_html_ae79f69c6e978ac4a631f1331c7f6eba4"><div class="ttname"><a href="class_tracker_manager.html#ae79f69c6e978ac4a631f1331c7f6eba4">TrackerManager::TrackerType</a></div><div class="ttdeci">TrackerType</div><div class="ttdef"><b>Definition:</b> TrackerManager.h:36</div></div>
+<div class="ttc" id="aclass_tracker_manager_html_a88d8a9980a591bb7d3e1e33b861ec95f"><div class="ttname"><a href="class_tracker_manager.html#a88d8a9980a591bb7d3e1e33b861ec95f">TrackerManager::m_trackerPool</a></div><div class="ttdeci">std::vector&lt; Tracker * &gt; m_trackerPool</div><div class="ttdef"><b>Definition:</b> TrackerManager.h:112</div></div>
 <div class="ttc" id="a_tracker_8h_html"><div class="ttname"><a href="_tracker_8h.html">Tracker.h</a></div></div>
-<div class="ttc" id="aclass_tracker_html"><div class="ttname"><a href="class_tracker.html">Tracker</a></div><div class="ttdoc">Prototype class for implemetation - holds virtual methods.</div><div class="ttdef"><b>Definition:</b> Tracker.h:16</div></div>
+<div class="ttc" id="a_o_t_tracker_8h_html"><div class="ttname"><a href="_o_t_tracker_8h.html">OTTracker.h</a></div></div>
+<div class="ttc" id="aclass_tracker_manager_html_a3fb084e767c03d3e9e1e6ea447615b5a"><div class="ttname"><a href="class_tracker_manager.html#a3fb084e767c03d3e9e1e6ea447615b5a">TrackerManager::m_nextFreeTrackerID</a></div><div class="ttdeci">int m_nextFreeTrackerID</div><div class="ttdef"><b>Definition:</b> TrackerManager.h:130</div></div>
+<div class="ttc" id="aclass_tracker_html"><div class="ttname"><a href="class_tracker.html">Tracker</a></div><div class="ttdoc">Prototype class for implemetation - holds virtual methods.</div><div class="ttdef"><b>Definition:</b> Tracker.h:19</div></div>
 <div class="ttc" id="a_a_k_tracker_8h_html"><div class="ttname"><a href="_a_k_tracker_8h.html">AKTracker.h</a></div></div>
-<div class="ttc" id="a_config_dll_export_tracking_management_8h_html_ad6998d0dac995e57de6ad8a18c1a8adf"><div class="ttname"><a href="_config_dll_export_tracking_management_8h.html#ad6998d0dac995e57de6ad8a18c1a8adf">TrackingManagement_DLL_import_export</a></div><div class="ttdeci">#define TrackingManagement_DLL_import_export</div><div class="ttdef"><b>Definition:</b> ConfigDllExportTrackingManagement.h:2</div></div>
-<div class="ttc" id="aclass_tracker_manager_html_a83f226c8f142e4d46125a51a551be401"><div class="ttname"><a href="class_tracker_manager.html#a83f226c8f142e4d46125a51a551be401">TrackerManager::m_poolTracker</a></div><div class="ttdeci">std::map&lt; std::pair&lt; TypeTracker, int &gt;, Tracker * &gt; m_poolTracker</div><div class="ttdef"><b>Definition:</b> TrackerManager.h:61</div></div>
-<div class="ttc" id="aclass_tracker_manager_html"><div class="ttname"><a href="class_tracker_manager.html">TrackerManager</a></div><div class="ttdoc">Manager for all types of tracker.</div><div class="ttdef"><b>Definition:</b> TrackerManager.h:22</div></div>
+<div class="ttc" id="aclass_tracker_manager_html_a352bcafd2964ce019bb9e3aaf9964876"><div class="ttname"><a href="class_tracker_manager.html#a352bcafd2964ce019bb9e3aaf9964876">TrackerManager::m_nextFreeAKCamID</a></div><div class="ttdeci">int m_nextFreeAKCamID</div><div class="ttdef"><b>Definition:</b> TrackerManager.h:136</div></div>
+<div class="ttc" id="a_config_dll_export_tracking_management_8h_html_ad6998d0dac995e57de6ad8a18c1a8adf"><div class="ttname"><a href="_config_dll_export_tracking_management_8h.html#ad6998d0dac995e57de6ad8a18c1a8adf">TrackingManagement_DLL_import_export</a></div><div class="ttdeci">#define TrackingManagement_DLL_import_export</div><div class="ttdef"><b>Definition:</b> ConfigDllExportTrackingManagement.h:4</div></div>
+<div class="ttc" id="aclass_tracker_manager_html_ae79f69c6e978ac4a631f1331c7f6eba4acb58322547ca8afbf7ce54ebe3af8b70"><div class="ttname"><a href="class_tracker_manager.html#ae79f69c6e978ac4a631f1331c7f6eba4acb58322547ca8afbf7ce54ebe3af8b70">TrackerManager::azureKinect</a></div><div class="ttdef"><b>Definition:</b> TrackerManager.h:39</div></div>
+<div class="ttc" id="aclass_tracker_manager_html_ad00ff39d680519a5072dd84e039136b9"><div class="ttname"><a href="class_tracker_manager.html#ad00ff39d680519a5072dd84e039136b9">TrackerManager::m_trackerPoolLock</a></div><div class="ttdeci">std::mutex m_trackerPoolLock</div><div class="ttdef"><b>Definition:</b> TrackerManager.h:142</div></div>
+<div class="ttc" id="aclass_tracker_manager_html"><div class="ttname"><a href="class_tracker_manager.html">TrackerManager</a></div><div class="ttdoc">Manager for all types of tracker.</div><div class="ttdef"><b>Definition:</b> TrackerManager.h:23</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

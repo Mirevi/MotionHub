@@ -3,5 +3,5 @@ digraph "TrackerManager"
  // LATEX_PDF_SIZE
   edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
   node [fontname="Helvetica",fontsize="10",shape=record];
-  Node1 [label="{TrackerManager\n|- m_poolTracker\l|+ TrackerManager()\l+ createTracker()\l+ removeTracker()\l+ getPoolTracker()\l}",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip="Manager for all types of tracker."];
+  Node1 [label="{TrackerManager\n|- m_trackerPool\l- m_isTracking\l- m_hasTrackerPoolChanged\l- m_nextFreeTrackerID\l- m_nextFreeAKCamID\l- m_trackerPoolLock\l|+ TrackerManager()\l+ createTracker()\l+ removeTrackerAt()\l+ startTracker()\l+ stopTracker()\l+ isTracking()\l+ hasTrackerPoolChanged()\l+ getPoolTracker()\l+ getTrackerRefAt()\l+ getTrackerPoolLock()\l}",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip="Manager for all types of tracker."];
 }

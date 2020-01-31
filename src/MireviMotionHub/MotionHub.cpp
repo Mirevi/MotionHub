@@ -56,12 +56,13 @@ void MotionHub::update()
 				if ((*itTracker)->getProperties()->isEnabled && (*itTracker)->isDataAvailable())
 				{
 
+					//cache skeleton data of current tracker, so gesture- and network manager use current data
 					(*itTracker)->cacheSkeletonData();
 
 					// send skeleton pool reference to gesture manager in order to update all postures
 					m_gestureManager->updateAllSkeletonPostures(&((*itTracker)->getSkeletonPoolCache()));
 					// send skeleton pool 
-					m_networkManager->sendSkeletonPool(			&((*itTracker)->getSkeletonPoolCache()));
+					m_networkManager->sendSkeletonPool(			&((*itTracker)->getSkeletonPoolCache()), (*itTracker)->getProperties()->id);
 
 
 					// update ui if skeleton was added or removed from pool

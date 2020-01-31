@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['typetracker_1150',['TypeTracker',['../class_tracker_manager.html#ab0456d60105d88830ad54e52cdc9cc57',1,'TrackerManager']]]
+  ['trackertype_1442',['TrackerType',['../class_tracker_manager.html#ae79f69c6e978ac4a631f1331c7f6eba4',1,'TrackerManager']]]
 ];

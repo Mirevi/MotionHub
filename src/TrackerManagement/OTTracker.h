@@ -113,6 +113,7 @@ private:
 
 	/*!
 	 * creates a NatNet Receiver client
+	 * mainly code from the NatNet SDK
 	 * 
 	 * \param iConnectionType connection type
 	 * \return Error Code

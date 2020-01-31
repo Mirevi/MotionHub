@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['output_5fbuffer_5fsize_1242',['OUTPUT_BUFFER_SIZE',['../_network_management_2defines_8h.html#a29a61474854edfeed19457644161249f',1,'defines.h']]]
+  ['quaternion_1537',['Quaternion',['../_m_m_hmath_8h.html#a382bb42ea5e9af09ac578955ee0aeb5a',1,'MMHmath.h']]]
 ];

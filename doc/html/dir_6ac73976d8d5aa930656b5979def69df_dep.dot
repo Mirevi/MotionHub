@@ -7,5 +7,5 @@ digraph "src/GestureManagement" {
   dir_6ac73976d8d5aa930656b5979def69df [shape=box, label="GestureManagement", style="filled", fillcolor="#eeeeff", pencolor="black", URL="dir_6ac73976d8d5aa930656b5979def69df.html"];
   }
   dir_b4817ea3b0dc3a781298faaa4ae67ebf [shape=box label="MotionHubUtil" URL="dir_b4817ea3b0dc3a781298faaa4ae67ebf.html"];
-  dir_6ac73976d8d5aa930656b5979def69df->dir_b4817ea3b0dc3a781298faaa4ae67ebf [headlabel="3", labeldistance=1.5 headhref="dir_000002_000004.html"];
+  dir_6ac73976d8d5aa930656b5979def69df->dir_b4817ea3b0dc3a781298faaa4ae67ebf [headlabel="3", labeldistance=1.5 headhref="dir_000001_000003.html"];
 }

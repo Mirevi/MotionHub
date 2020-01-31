@@ -70,14 +70,6 @@ void Tracker::clean()
 	//reset number of skeletons
 	m_properties->countDetectedSkeleton = 0;
 
-	//delete all skeletons in pool
-	//for (auto itSkeleton = m_skeletonPool.begin(); itSkeleton != m_skeletonPool.end(); itSkeleton++)
-	//{
-
-	//	delete itSkeleton->second;
-
-	//}
-
 	//clear skeleton pool
 	m_skeletonPool.clear();
 
@@ -86,11 +78,12 @@ void Tracker::clean()
 void Tracker::cacheSkeletonData()
 {
 
-	m_isSkeletonPoolLocked.lock();
+	//lock the skeleton pool and copy it to the cache
+	m_skeletonPoolLock.lock();
 
 	m_skeletonPoolCache = m_skeletonPool;
 
-	m_isSkeletonPoolLocked.unlock();
+	m_skeletonPoolLock.unlock();
 
 }
 
@@ -131,7 +124,6 @@ bool Tracker::hasSkeletonPoolChanged()
 	}
 }
 
-
 void Tracker::setSkeletonPoolChanged(bool state)
 {
 
@@ -149,18 +141,19 @@ Tracker::Properties* Tracker::getProperties()
 std::map<int, Skeleton> Tracker::getSkeletonPoolCache()
 {
 
-	m_isSkeletonPoolLocked.lock();
+	//lock skeleton pool for the case, that cacheSkeletonData() is called while this method reads from the cache
+	m_skeletonPoolLock.lock();
 
+	//copy cache to local copy, so we can unlock the skeleton pool befor return
 	std::map<int, Skeleton> skeletonPoolCacheCopy = m_skeletonPoolCache;
 
-	m_isSkeletonPoolLocked.unlock();
+	m_skeletonPoolLock.unlock();
 
 
 
 	return skeletonPoolCacheCopy;
 
 }
-
 
 int Tracker::getCamID()
 {
@@ -205,13 +198,6 @@ void Tracker::setScaleOffset(Vector3f scale)
 	m_properties->scaleOffset = scale;
 
 	updateMatrix();
-
-}
-
-Tracker* Tracker::getThis()
-{
-
-	return this;
 
 }
 

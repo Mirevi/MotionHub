@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['joint_815',['Joint',['../class_joint.html#a79a7a4715b2166714e039d7c7c5ea3b4',1,'Joint::Joint()'],['../class_joint.html#a24778b816631a4178b2ff2a3e9ddfb99',1,'Joint::Joint(Vector3 position, Vector4 rotation, JointConfidence confidence)']]]
+  ['joint_1009',['Joint',['../class_joint.html#a79a7a4715b2166714e039d7c7c5ea3b4',1,'Joint::Joint()'],['../class_joint.html#a0567c691e81895115ddfbec7e6f7efdb',1,'Joint::Joint(Vector4f position, Quaternionf rotation, Joint::JointConfidence confidence)']]]
 ];

@@ -108,8 +108,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:af01a02f1ce9ae4c801cd6e66ccf7407f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a269e62b25d111a237a3c6e8b205941d6"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_skeleton.html#a269e62b25d111a237a3c6e8b205941d6">Skeleton</a> (int sid)</td></tr>
 <tr class="separator:a269e62b25d111a237a3c6e8b205941d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a62ca9757d595306a39b828faa577d70c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_skeleton.html#a62ca9757d595306a39b828faa577d70c">parseJoint</a> (<a class="el" href="class_joint.html#a4585063fdb4bca4f2898c27ee1bfabe8">Joint::JointNames</a> name, <a class="el" href="class_vector3.html">Vector3</a> position, <a class="el" href="class_vector4.html">Vector4</a> rotation, <a class="el" href="class_joint.html#a7d36d6681128a681d2d0b7bb5ff11529">Joint::JointConfidence</a> confidence)</td></tr>
-<tr class="separator:a62ca9757d595306a39b828faa577d70c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9a51c2849655ef3b6b0b51e718aa4602"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_skeleton.html#a9a51c2849655ef3b6b0b51e718aa4602">parseJoint</a> (<a class="el" href="class_joint.html#a4585063fdb4bca4f2898c27ee1bfabe8">Joint::JointNames</a> name, Vector4f position, Quaternionf rotation, <a class="el" href="class_joint.html#a7d36d6681128a681d2d0b7bb5ff11529">Joint::JointConfidence</a> confidence)</td></tr>
+<tr class="separator:a9a51c2849655ef3b6b0b51e718aa4602"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aab77a9adb8d6e24a7061cf45efb26c91"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_skeleton.html#aab77a9adb8d6e24a7061cf45efb26c91">getSid</a> ()</td></tr>
 <tr class="separator:aab77a9adb8d6e24a7061cf45efb26c91"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af9dbefc8edbaeaf1f1a0b5511a180dc1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_skeleton.html#a7ec4be41dc2982eaf7ff1a25cf074d77">StatePosture</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_skeleton.html#af9dbefc8edbaeaf1f1a0b5511a180dc1">getPosture</a> ()</td></tr>
@@ -241,6 +241,8 @@ Private Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>getter for skeleton height</p>
+<dl class="section return"><dt>Returns</dt><dd>m_height </dd></dl>
 
 </div>
 </div>
@@ -258,6 +260,8 @@ Private Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>getter for posture</p>
+<dl class="section return"><dt>Returns</dt><dd>m_posture </dd></dl>
 
 </div>
 </div>
@@ -275,11 +279,13 @@ Private Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>getter for skeleton ID</p>
+<dl class="section return"><dt>Returns</dt><dd>m_sid </dd></dl>
 
 </div>
 </div>
-<a id="a62ca9757d595306a39b828faa577d70c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a62ca9757d595306a39b828faa577d70c">&#9670;&nbsp;</a></span>parseJoint()</h2>
+<a id="a9a51c2849655ef3b6b0b51e718aa4602"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9a51c2849655ef3b6b0b51e718aa4602">&#9670;&nbsp;</a></span>parseJoint()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -293,13 +299,13 @@ Private Attributes</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="class_vector3.html">Vector3</a>&#160;</td>
+          <td class="paramtype">Vector4f&#160;</td>
           <td class="paramname"><em>position</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="class_vector4.html">Vector4</a>&#160;</td>
+          <td class="paramtype">Quaternionf&#160;</td>
           <td class="paramname"><em>rotation</em>, </td>
         </tr>
         <tr>
@@ -359,6 +365,13 @@ Private Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>setter for posture</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">posture</td><td>new posture </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -382,6 +395,7 @@ Private Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>the skeleton height (from X/Z-plane to head joint) </p>
 
 </div>
 </div>
@@ -396,6 +410,7 @@ Private Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>map of all skeleton joints with JointNames as keys </p>
 
 </div>
 </div>
@@ -418,6 +433,7 @@ Private Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>skeleton posture </p>
 
 </div>
 </div>
@@ -440,6 +456,7 @@ Private Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>skeleton ID </p>
 
 </div>
 </div>
@@ -462,6 +479,7 @@ Private Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>shows if skeleton data is activly received </p>
 
 </div>
 </div>

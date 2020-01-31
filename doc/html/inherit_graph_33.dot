@@ -4,7 +4,7 @@ digraph "Graphical Class Hierarchy"
   edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
   node [fontname="Helvetica",fontsize="10",shape=record];
   rankdir="LR";
-  Node0 [label="Tracker",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_tracker.html",tooltip="Prototype class for implemetation - holds virtual methods."];
+  Node0 [label="tinyxml2::XMLVisitor",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classtinyxml2_1_1_x_m_l_visitor.html",tooltip=" "];
   Node0 -> Node1 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
-  Node1 [label="AKTracker",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_a_k_tracker.html",tooltip="Manages Azure Kinect Body Tracking."];
+  Node1 [label="tinyxml2::XMLPrinter",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classtinyxml2_1_1_x_m_l_printer.html",tooltip=" "];
 }

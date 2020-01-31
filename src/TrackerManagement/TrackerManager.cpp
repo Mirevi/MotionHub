@@ -13,11 +13,13 @@ TrackerManager::TrackerManager()
 int TrackerManager::createTracker(TrackerType type)
 {
 
-	// get the next tracker id based on the tracker count
+	// get the next tracker id
 	int id = m_nextFreeTrackerID;
 
+	//next tracker ID is increased with 1
 	m_nextFreeTrackerID++;
 
+	//create local Tracker*
 	Tracker* tempTracker;
 
 	// create new tracker based on the tracker type
@@ -38,7 +40,7 @@ int TrackerManager::createTracker(TrackerType type)
 			//next AK Tracker has new cam ID
 			m_nextFreeAKCamID++;
 
-			// create new azure kinect tracker and insert the tracker in the tracker pool
+			//insert the tracker in the tracker pool
 			m_trackerPool.push_back(tempTracker);
 
 			//unlock the tracker pool
@@ -60,6 +62,7 @@ int TrackerManager::createTracker(TrackerType type)
 			//lock the tracker pool
 			m_trackerPoolLock.lock();
 
+			//create new Tracker with current ID
 			tempTracker = new OTTracker(id);
 
 			// create new azure kinect tracker and insert the tracker in the tracker pool
@@ -89,28 +92,25 @@ int TrackerManager::createTracker(TrackerType type)
 
 void TrackerManager::removeTrackerAt(int positionInList)
 {
-
+	//lock the tracker pool
 	m_trackerPoolLock.lock();
 
-	//int i = 0;
-
-
+	//current Tracker to delete
 	Tracker* currTracker;
 
-	// get key of tracker with id
-	//for (auto itPoolTracker = m_trackerPool.begin(); itPoolTracker != m_trackerPool.end(); itPoolTracker++)
+	// find tracker with positionInList
 	for(int i = 0; i < m_trackerPool.size(); i++)
 	{
 
 		if (i == positionInList)
 		{
+			//save the pointer to the tracker
 			currTracker = m_trackerPool.at(i);
-			//temp = (*itPoolTracker);
 
+			//when tracker is AKtracker
 			if (currTracker->getCamID() != -1)
 			{
-
-
+				//get the cam ID to reuse it
 				m_nextFreeAKCamID = currTracker->getCamID();
 
 			}
@@ -125,7 +125,6 @@ void TrackerManager::removeTrackerAt(int positionInList)
 			m_hasTrackerPoolChanged = true;
 
 			Console::log("TrackerManager::removeTracker(): Removed tracker with id = " + std::to_string(i) + ".");
-
 
 			break;
 		}
@@ -193,7 +192,7 @@ void TrackerManager::stopTracker()
 bool TrackerManager::hasTrackerPoolChanged()
 {
 
-	//m_hasTrackerPoolChanged is true, reset it to flase
+	//m_hasTrackerPoolChanged is true, reset it to false
 	if (m_hasTrackerPoolChanged)
 	{
 
@@ -216,17 +215,15 @@ bool TrackerManager::isTracking()
 
 }
 
-
 std::vector<Tracker*> TrackerManager::getPoolTracker()
 {
-
+	//lock the tracker pool to protect it from other methods to write on it during copying
 	m_trackerPoolLock.lock();
 
+	//make a local copy, so we can unlock the pool before return
 	std::vector<Tracker*> trackerPoolCopyTemp = m_trackerPool;
 
 	m_trackerPoolLock.unlock();
-
-
 
 	return trackerPoolCopyTemp;
 
@@ -235,8 +232,6 @@ std::vector<Tracker*> TrackerManager::getPoolTracker()
 Tracker* TrackerManager::getTrackerRefAt(int trackerPositionInList )
 {
 
-	//Console::log("TrackerManager::getTrackerRef(): started getting Tracker. given id is: " + std::to_string(trackerPositionInList));
-
 	int i = 0;
 
 	m_trackerPoolLock.lock();
@@ -244,8 +239,6 @@ Tracker* TrackerManager::getTrackerRefAt(int trackerPositionInList )
 	//loop through tracker pool and return the tracker with given id
 	for (auto itTracker = m_trackerPool.begin(); itTracker != m_trackerPool.end(); itTracker++)
 	{
-
-		//Console::log("TrackerManager::getTrackerRef(): current Tracker ID: " + std::to_string((*itTracker)->getProperties()->id) + ", current i: " + std::to_string(i));
 
 		if (i == trackerPositionInList)
 		{
@@ -261,8 +254,6 @@ Tracker* TrackerManager::getTrackerRefAt(int trackerPositionInList )
 	}
 
 	m_trackerPoolLock.unlock();
-
-	//Console::logError("TrackerManager::getTrackerRefAt(): Tracker does not exist!");
 
 	return nullptr;
 

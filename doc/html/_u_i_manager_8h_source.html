@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.16"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>MotionHub: src/UIManagement/UIManager.h Source File</title>
+<title>MotionHub: src/RenderManagement/UIManager.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -61,7 +61,7 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_9a5b046de8c7e3aee1c1ef438073eb0b.html">UIManagement</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_2aae01ed5b51607ff5c5467f5fbf0fdc.html">RenderManagement</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -73,39 +73,38 @@ $(function() {
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160; </div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &lt;QtWidgets/QMainWindow&gt;</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;QtWidgets/QApplication&gt;</span></div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160; </div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="_config_dll_export_u_i_management_8h.html">ConfigDllExportUIManagement.h</a>&quot;</span></div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160; </div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="_main_window_8h.html">MainWindow.h</a>&quot;</span></div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="_create_tracker_window_8h.html">CreateTrackerWindow.h</a>&quot;</span></div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="_input_manager_8h.html">MotionHubUtil/InputManager.h</a>&quot;</span></div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &lt;QtGui/qsurfaceformat.h&gt;</span></div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160; </div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="_config_dll_export_render_management_8h.html">ConfigDllExportRenderManagement.h</a>&quot;</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160; </div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="_main_window_8h.html">MainWindow.h</a>&quot;</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="_create_tracker_window_8h.html">CreateTrackerWindow.h</a>&quot;</span></div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160; </div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &lt;thread&gt;</span></div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160; </div>
-<div class="line"><a name="l00022"></a><span class="lineno"><a class="line" href="class_u_i_manager.html">   22</a></span>&#160;<span class="keyword">class </span><a class="code" href="_config_dll_export_u_i_management_8h.html#ab102d9e3addb2c627cbdb21f8bdf8a5e">UIManagement_DLL_import_export</a> <a class="code" href="class_u_i_manager.html">UIManager</a></div>
+<div class="line"><a name="l00022"></a><span class="lineno"><a class="line" href="class_u_i_manager.html">   22</a></span>&#160;<span class="keyword">class </span><a class="code" href="_config_dll_export_render_management_8h.html#a4d9c87411a07cf3cedc55989c4616061">RenderManagement_DLL_import_export</a> <a class="code" href="class_u_i_manager.html">UIManager</a></div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;{</div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160; </div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    <a class="code" href="class_u_i_manager.html">UIManager</a>(<span class="keywordtype">int</span> argc, <span class="keywordtype">char</span>** argv, <a class="code" href="class_input_manager.html">InputManager</a>* inputManager);</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    <a class="code" href="class_u_i_manager.html">UIManager</a>(<span class="keywordtype">int</span> argc, <span class="keywordtype">char</span>** argv, <a class="code" href="class_tracker_manager.html">TrackerManager</a>* trackerManager);</div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160; </div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00039"></a><span class="lineno"><a class="line" href="class_u_i_manager.html#a98b20a6e9c94f0eb575dfc086f4ba5f3">   39</a></span>&#160;    QApplication* <a class="code" href="class_u_i_manager.html#a98b20a6e9c94f0eb575dfc086f4ba5f3">m_app</a>;</div>
-<div class="line"><a name="l00043"></a><span class="lineno"><a class="line" href="class_u_i_manager.html#a9c0ea07e028b02883f804df7477cbd73">   43</a></span>&#160;    <a class="code" href="class_main_window.html">MainWindow</a>* <a class="code" href="class_u_i_manager.html#a9c0ea07e028b02883f804df7477cbd73">m_mainWindow</a>;</div>
-<div class="line"><a name="l00047"></a><span class="lineno"><a class="line" href="class_u_i_manager.html#ac6a52f4d3cd1a9ac0280e299e5320d2f">   47</a></span>&#160;    <a class="code" href="class_input_manager.html">InputManager</a>* <a class="code" href="class_u_i_manager.html#ac6a52f4d3cd1a9ac0280e299e5320d2f">m_refInputManager</a>;</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160; </div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;};</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    <a class="code" href="class_main_window.html">MainWindow</a>* getMainWindow();</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    <span class="keywordtype">void</span> processInput();</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160; </div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00049"></a><span class="lineno"><a class="line" href="class_u_i_manager.html#a98b20a6e9c94f0eb575dfc086f4ba5f3">   49</a></span>&#160;    QApplication* <a class="code" href="class_u_i_manager.html#a98b20a6e9c94f0eb575dfc086f4ba5f3">m_app</a>;</div>
+<div class="line"><a name="l00053"></a><span class="lineno"><a class="line" href="class_u_i_manager.html#a9c0ea07e028b02883f804df7477cbd73">   53</a></span>&#160;    <a class="code" href="class_main_window.html">MainWindow</a>* <a class="code" href="class_u_i_manager.html#a9c0ea07e028b02883f804df7477cbd73">m_mainWindow</a>;</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160; </div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;};</div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="a_input_manager_8h_html"><div class="ttname"><a href="_input_manager_8h.html">InputManager.h</a></div></div>
-<div class="ttc" id="aclass_u_i_manager_html_ac6a52f4d3cd1a9ac0280e299e5320d2f"><div class="ttname"><a href="class_u_i_manager.html#ac6a52f4d3cd1a9ac0280e299e5320d2f">UIManager::m_refInputManager</a></div><div class="ttdeci">InputManager * m_refInputManager</div><div class="ttdef"><b>Definition:</b> UIManager.h:47</div></div>
+<div class="ttc" id="a_config_dll_export_render_management_8h_html"><div class="ttname"><a href="_config_dll_export_render_management_8h.html">ConfigDllExportRenderManagement.h</a></div></div>
 <div class="ttc" id="a_main_window_8h_html"><div class="ttname"><a href="_main_window_8h.html">MainWindow.h</a></div></div>
+<div class="ttc" id="a_config_dll_export_render_management_8h_html_a4d9c87411a07cf3cedc55989c4616061"><div class="ttname"><a href="_config_dll_export_render_management_8h.html#a4d9c87411a07cf3cedc55989c4616061">RenderManagement_DLL_import_export</a></div><div class="ttdeci">#define RenderManagement_DLL_import_export</div><div class="ttdef"><b>Definition:</b> ConfigDllExportRenderManagement.h:2</div></div>
 <div class="ttc" id="aclass_u_i_manager_html"><div class="ttname"><a href="class_u_i_manager.html">UIManager</a></div><div class="ttdef"><b>Definition:</b> UIManager.h:22</div></div>
-<div class="ttc" id="a_config_dll_export_u_i_management_8h_html_ab102d9e3addb2c627cbdb21f8bdf8a5e"><div class="ttname"><a href="_config_dll_export_u_i_management_8h.html#ab102d9e3addb2c627cbdb21f8bdf8a5e">UIManagement_DLL_import_export</a></div><div class="ttdeci">#define UIManagement_DLL_import_export</div><div class="ttdef"><b>Definition:</b> ConfigDllExportUIManagement.h:2</div></div>
-<div class="ttc" id="aclass_u_i_manager_html_a98b20a6e9c94f0eb575dfc086f4ba5f3"><div class="ttname"><a href="class_u_i_manager.html#a98b20a6e9c94f0eb575dfc086f4ba5f3">UIManager::m_app</a></div><div class="ttdeci">QApplication * m_app</div><div class="ttdef"><b>Definition:</b> UIManager.h:39</div></div>
-<div class="ttc" id="aclass_input_manager_html"><div class="ttname"><a href="class_input_manager.html">InputManager</a></div><div class="ttdoc">container for input data</div><div class="ttdef"><b>Definition:</b> InputManager.h:16</div></div>
-<div class="ttc" id="a_config_dll_export_u_i_management_8h_html"><div class="ttname"><a href="_config_dll_export_u_i_management_8h.html">ConfigDllExportUIManagement.h</a></div></div>
-<div class="ttc" id="aclass_main_window_html"><div class="ttname"><a href="class_main_window.html">MainWindow</a></div><div class="ttdoc">Qt main Window wrapper containing slot methods.</div><div class="ttdef"><b>Definition:</b> MainWindow.h:23</div></div>
-<div class="ttc" id="aclass_u_i_manager_html_a9c0ea07e028b02883f804df7477cbd73"><div class="ttname"><a href="class_u_i_manager.html#a9c0ea07e028b02883f804df7477cbd73">UIManager::m_mainWindow</a></div><div class="ttdeci">MainWindow * m_mainWindow</div><div class="ttdef"><b>Definition:</b> UIManager.h:43</div></div>
+<div class="ttc" id="aclass_tracker_manager_html"><div class="ttname"><a href="class_tracker_manager.html">TrackerManager</a></div><div class="ttdoc">Manager for all types of tracker.</div><div class="ttdef"><b>Definition:</b> TrackerManager.h:23</div></div>
+<div class="ttc" id="aclass_u_i_manager_html_a98b20a6e9c94f0eb575dfc086f4ba5f3"><div class="ttname"><a href="class_u_i_manager.html#a98b20a6e9c94f0eb575dfc086f4ba5f3">UIManager::m_app</a></div><div class="ttdeci">QApplication * m_app</div><div class="ttdef"><b>Definition:</b> UIManager.h:49</div></div>
+<div class="ttc" id="aclass_main_window_html"><div class="ttname"><a href="class_main_window.html">MainWindow</a></div><div class="ttdoc">Qt main Window wrapper containing slot methods.</div><div class="ttdef"><b>Definition:</b> MainWindow.h:41</div></div>
+<div class="ttc" id="aclass_u_i_manager_html_a9c0ea07e028b02883f804df7477cbd73"><div class="ttname"><a href="class_u_i_manager.html#a9c0ea07e028b02883f804df7477cbd73">UIManager::m_mainWindow</a></div><div class="ttdeci">MainWindow * m_mainWindow</div><div class="ttdef"><b>Definition:</b> UIManager.h:53</div></div>
 <div class="ttc" id="a_create_tracker_window_8h_html"><div class="ttname"><a href="_create_tracker_window_8h.html">CreateTrackerWindow.h</a></div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

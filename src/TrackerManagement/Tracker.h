@@ -162,10 +162,17 @@ public:
 	 */
 	virtual void setScaleOffset(Vector3f scale);
 
-	virtual Tracker* getThis();
-
+	/*!
+	 * getter for the camera ID
+	 * 
+	 * \return m_idCam
+	 */
 	virtual int getCamID();
 
+	/*!
+	 * copys the skeleton pool to it's cache
+	 * 
+	 */
 	virtual void cacheSkeletonData();
 
 
@@ -232,6 +239,10 @@ protected:
 	 */
 	Matrix4f m_offsetMatrix;
 
-	std::mutex m_isSkeletonPoolLocked;
+	/*!
+	 * lock for save acces to skeleton pool
+	 * 
+	 */
+	std::mutex m_skeletonPoolLock;
 
 };
