@@ -49,6 +49,6 @@ public:
 	 * \param skeleton input skeleton data
 	 * \param uri messages title
 	 */
-	void sendSkeleton(Skeleton* skeleton, const char* uri) override;
+	void sendSkeleton(Skeleton* skeleton, const char* uri, int trackerID) override;
 
 };

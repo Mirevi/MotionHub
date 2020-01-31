@@ -12,7 +12,7 @@ NetworkManager::NetworkManager()
 }
 
 // send skeleton pool with all active sender
-void NetworkManager::sendSkeletonPool(std::map<int, Skeleton>* skeletonPool)
+void NetworkManager::sendSkeletonPool(std::map<int, Skeleton>* skeletonPool, int trackerID)
 {
 
 	// check if skeleton pool exists
@@ -32,7 +32,7 @@ void NetworkManager::sendSkeletonPool(std::map<int, Skeleton>* skeletonPool)
 				{
 
 					// send skeleton pool
-					(*itSenderPool)->sendSkeleton(&(itSkeletonPool->second), DEFAULT_URI);
+					(*itSenderPool)->sendSkeleton(&(itSkeletonPool->second), DEFAULT_URI, trackerID);
 				}
 			}
 		}

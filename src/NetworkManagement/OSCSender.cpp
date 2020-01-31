@@ -22,7 +22,7 @@ OSCSender::OSCSender(std::string address, int port) : NetworkSender(address, por
 }
 
 // send single skeleton
-void OSCSender::sendSkeleton(Skeleton* skeleton, const char* uri)
+void OSCSender::sendSkeleton(Skeleton* skeleton, const char* uri, int trackerID)
 {
 
 	// check if skeleton exists
@@ -30,7 +30,7 @@ void OSCSender::sendSkeleton(Skeleton* skeleton, const char* uri)
 	{
 
 		//first value in stream is user ID
-		*m_packetStream << osc::BeginBundleImmediate << osc::BeginMessage(uri) << skeleton->getSid();
+		*m_packetStream << osc::BeginBundleImmediate << osc::BeginMessage(uri) << (trackerID * 1000 + skeleton->getSid());
 
 		// create new var's for joint position, rotation and confidence
 		Vector4f currJointPosition;

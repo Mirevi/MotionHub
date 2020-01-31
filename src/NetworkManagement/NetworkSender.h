@@ -52,7 +52,7 @@ public:
 	 * \param skeleton input skeleton data
 	 * \param uri messages title
 	 */
-	virtual void sendSkeleton(Skeleton* skeleton, const char* uri) = 0;
+	virtual void sendSkeleton(Skeleton* skeleton, const char* uri, int trackerID) = 0;
 
 	
 protected:
