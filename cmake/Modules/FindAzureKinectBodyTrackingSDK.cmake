@@ -137,7 +137,7 @@ endif()
 
 
 # Look for the header file.
-FIND_PATH(K4ABT_INCLUDE_DIR NAMES k4abt.h HINTS ${CURRENT_DEPS_PATH}/include ) #OSG_INCLUDE_DIR gibt man in der CMAKE GUI an, wo sich die includes von OSG befinden
+FIND_PATH(K4ABT_INCLUDE_DIR NAMES k4abt.h HINTS ${CURRENT_DEPS_PATH}/include ) 
 
 
 # Look for the library path

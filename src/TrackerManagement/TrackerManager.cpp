@@ -21,6 +21,7 @@ int TrackerManager::createTracker(TrackerType type)
 
 	//create local Tracker*
 	Tracker* tempTracker;
+	std::thread* loadingThread;
 
 	// create new tracker based on the tracker type
 	switch (type)
@@ -50,6 +51,7 @@ int TrackerManager::createTracker(TrackerType type)
 
 			//a tracker has been added, so the tracker pool has changed
 			m_hasTrackerPoolChanged = true;
+
 
 			Console::log("TrackerManager::createTracker(): Created Azure Kinect tracker with cam id = " + std::to_string(m_nextFreeAKCamID - 1) + ".");
 

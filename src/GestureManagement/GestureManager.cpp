@@ -20,7 +20,6 @@ void GestureManager::updateAllSkeletonPostures(std::map<int, Skeleton>* poolSkel
 	for (auto itPoolSkeletons = poolSkeletons->begin(); itPoolSkeletons != poolSkeletons->end(); itPoolSkeletons++)
 	{
 
-
 		// get previous posture
 		previousPosture = itPoolSkeletons->second.getPosture();
 		// get skeleton base height
@@ -28,7 +27,6 @@ void GestureManager::updateAllSkeletonPostures(std::map<int, Skeleton>* poolSkel
 		// get current height of the head
 		currHeightHead = (itPoolSkeletons->second.m_joints[Joint::HEAD].getJointPosition().y() * (-1) + 950) / 1000;
 
-		//Console::log("GestureManager::updateAllSkeletonPostures(): Skeleton with id = " + std::to_string(itPoolSkeletons->second->getSid()) + " height head = " + std::to_string(heightHead) + ".");
 
 		// detect current posture based on head height
 		if (currHeightHead >= heightSkeleton * 1.1f)
@@ -62,9 +60,12 @@ void GestureManager::updateAllSkeletonPostures(std::map<int, Skeleton>* poolSkel
 		{
 
 			itPoolSkeletons->second.setPosture(currPosture);
-			//Console::log("GestureManager::updateAllSkeletonPostures(): Skeleton with id = " + std::to_string(itPoolSkeletons->second->getSid()) + " | previous posture = " + std::to_string(previousPosture) + " | current posture = " + std::to_string(currPosture) + ".");
-			//Console::log("GestureManager::updateAllSkeletonPostures(): Updated skeleton with id = " + std::to_string(itPoolSkeletons->second->getSid()) + " posture: " + currGestureName + ".");
+
 		}
 		
 	}
 }
+
+
+
+

@@ -32,8 +32,6 @@ MotionHub::MotionHub(int argc, char** argv)
 void MotionHub::update()
 {
 
-	Console::log("MotionHub::update(): Started update loop.");
-
 	// main loop
 	while (m_uiManager->getMainWindow()->isVisible())
 	{

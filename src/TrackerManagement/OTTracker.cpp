@@ -236,8 +236,6 @@ void OTTracker::extractSkeleton()
 		//get current skeleton data
 		sSkeletonData skData = m_refData->Skeletons[i];
 
-		Console::log(toString(skData.skeletonID));
-
 		//true as long new skeleton will be added to the pool
 		bool createNewSkeleton = true;
 
