@@ -101,89 +101,89 @@ $(function() {
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
 <div class="line"><a name="l00031"></a><span class="lineno"><a class="line" href="_gl_widget_8h.html#ac5dd1b358a0070fe7fc1b66b31efa3c5">   31</a></span>&#160;using <a class="code" href="_gl_widget_8h.html#ac5dd1b358a0070fe7fc1b66b31efa3c5">Framerate</a> = std::chrono::duration&lt;std::chrono::steady_clock::rep, std::ratio&lt;1, 60&gt;&gt;;</div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160; </div>
-<div class="line"><a name="l00033"></a><span class="lineno"><a class="line" href="class_gl_widget.html">   33</a></span>&#160;class <a class="code" href="_config_dll_export_render_management_8h.html#a4d9c87411a07cf3cedc55989c4616061">RenderManagement_DLL_import_export</a> <a class="code" href="class_gl_widget.html">GlWidget</a> : public QOpenGLWidget, protected QOpenGLFunctions</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;{</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    Q_OBJECT</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160; </div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    <span class="keyword">explicit</span> <a class="code" href="class_gl_widget.html">GlWidget</a>(<a class="code" href="class_tracker_manager.html">TrackerManager</a>* trackerManager, QWidget* parent = 0);</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    ~<a class="code" href="class_gl_widget.html">GlWidget</a>();</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160; </div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <span class="keywordtype">void</span> updateSkeletonMeshPoolSize();</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <span class="keywordtype">void</span> updateSkeletonMeshCount();</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    <span class="keywordtype">void</span> updateSkeletonMeshTransform();</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160; </div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;signals:</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    <span class="keywordtype">void</span> clicked();</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160; </div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="keyword">protected</span>:</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    <span class="keywordtype">void</span> initializeGL() <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    <span class="keywordtype">void</span> paintGL() <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160; </div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    <span class="keywordtype">void</span> resizeGL(<span class="keywordtype">int</span> width, <span class="keywordtype">int</span> height) <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160; </div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    <span class="keywordtype">void</span> mousePressEvent(QMouseEvent* event) <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    <span class="keywordtype">void</span> mouseMoveEvent(QMouseEvent* event) <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    <span class="keywordtype">void</span> mouseReleaseEvent(QMouseEvent* event) <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160; </div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00059"></a><span class="lineno"><a class="line" href="class_gl_widget.html#a842d31ffeaa0b2f7941e48361da282c0">   59</a></span>&#160;    QMatrix4x4 <a class="code" href="class_gl_widget.html#a842d31ffeaa0b2f7941e48361da282c0">m_worldMatrix</a>;</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160; </div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    <span class="keywordtype">void</span> init();</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160; </div>
-<div class="line"><a name="l00063"></a><span class="lineno"><a class="line" href="class_gl_widget.html#aa21f69b78913029b1c895d26b498414b">   63</a></span>&#160;    QOpenGLShaderProgram* <a class="code" href="class_gl_widget.html#aa21f69b78913029b1c895d26b498414b">m_shaderProgram_texture</a>;</div>
-<div class="line"><a name="l00064"></a><span class="lineno"><a class="line" href="class_gl_widget.html#adeadf07aea7b5505200a4463de2c3fa6">   64</a></span>&#160;    QOpenGLShaderProgram* <a class="code" href="class_gl_widget.html#adeadf07aea7b5505200a4463de2c3fa6">m_shaderProgram_confidence</a>;</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    <span class="keywordtype">void</span> createShaderProgram();</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    <span class="keywordtype">void</span> createMeshes();</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    <span class="keywordtype">void</span> renderMesh(<a class="code" href="class_mesh.html">Mesh</a>* mesh);</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    <span class="keywordtype">void</span> renderSkeletonMesh(<a class="code" href="class_skeleton_mesh.html">SkeletonMesh</a>* skeletonMesh);</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160; </div>
-<div class="line"><a name="l00071"></a><span class="lineno"><a class="line" href="class_gl_widget.html#a1e9c973963a542716cb0d2459b7289c9">   71</a></span>&#160;    <a class="code" href="class_plane.html">Plane</a>* <a class="code" href="class_gl_widget.html#a1e9c973963a542716cb0d2459b7289c9">m_meshGrid</a>;</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160; </div>
-<div class="line"><a name="l00073"></a><span class="lineno"><a class="line" href="class_gl_widget.html#a23fce3dd02cba2fee140eb52e37797b0">   73</a></span>&#160;    <a class="code" href="class_camera.html">Camera</a> <a class="code" href="class_gl_widget.html#a23fce3dd02cba2fee140eb52e37797b0">m_camera</a>;</div>
-<div class="line"><a name="l00074"></a><span class="lineno"><a class="line" href="class_gl_widget.html#ab0b85d8f05389f580340699f6b423424">   74</a></span>&#160;    QPoint <a class="code" href="class_gl_widget.html#ab0b85d8f05389f580340699f6b423424">lastPos</a>;</div>
+<div class="line"><a name="l00042"></a><span class="lineno"><a class="line" href="class_gl_widget.html">   42</a></span>&#160;class <a class="code" href="_config_dll_export_render_management_8h.html#a4d9c87411a07cf3cedc55989c4616061">RenderManagement_DLL_import_export</a> <a class="code" href="class_gl_widget.html">GlWidget</a> : public QOpenGLWidget, protected QOpenGLFunctions</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;{</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    Q_OBJECT</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; </div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    <span class="keyword">explicit</span> <a class="code" href="class_gl_widget.html">GlWidget</a>(<a class="code" href="class_tracker_manager.html">TrackerManager</a>* trackerManager, QWidget* parent = 0);</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    ~<a class="code" href="class_gl_widget.html">GlWidget</a>();</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160; </div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    <span class="keywordtype">void</span> updateSkeletonMeshPoolSize();</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    <span class="keywordtype">void</span> updateSkeletonMeshCount();</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    <span class="keywordtype">void</span> updateSkeletonMeshTransform();</div>
 <div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160; </div>
-<div class="line"><a name="l00076"></a><span class="lineno"><a class="line" href="class_gl_widget.html#a6d2f6fa1ba4d10fd82b4dcd5b492079d">   76</a></span>&#160;    QColor <a class="code" href="class_gl_widget.html#a6d2f6fa1ba4d10fd82b4dcd5b492079d">m_clearColor</a>;</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160; </div>
-<div class="line"><a name="l00078"></a><span class="lineno"><a class="line" href="class_gl_widget.html#ad73c997f8989cda39f5648e5c0b1e7a3">   78</a></span>&#160;    <a class="code" href="class_tracker_manager.html">TrackerManager</a>* <a class="code" href="class_gl_widget.html#ad73c997f8989cda39f5648e5c0b1e7a3">m_refTrackerManager</a>;</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160; </div>
-<div class="line"><a name="l00080"></a><span class="lineno"><a class="line" href="class_gl_widget.html#ab82a45f38b467b9d86bac6a82c5a4e4a">   80</a></span>&#160;    <a class="code" href="class_vector3.html">Vector3</a> m_colorRed, <a class="code" href="class_gl_widget.html#ab82a45f38b467b9d86bac6a82c5a4e4a">m_colorYellow</a>, m_colorGreen;</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160; </div>
-<div class="line"><a name="l00082"></a><span class="lineno"><a class="line" href="class_gl_widget.html#a1fea04d81c20e510bdd3637f0e99ea5e">   82</a></span>&#160;    std::map&lt;int, std::vector&lt;SkeletonMesh&gt;&gt; <a class="code" href="class_gl_widget.html#a1fea04d81c20e510bdd3637f0e99ea5e">m_skeletonMeshPool</a>;</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;signals:</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    <span class="keywordtype">void</span> clicked();</div>
 <div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160; </div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;};</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160; </div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;<span class="keyword">protected</span>:</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    <span class="keywordtype">void</span> initializeGL() <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;    <span class="keywordtype">void</span> paintGL() <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160; </div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;    <span class="keywordtype">void</span> resizeGL(<span class="keywordtype">int</span> width, <span class="keywordtype">int</span> height) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160; </div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;    <span class="keywordtype">void</span> mousePressEvent(QMouseEvent* event) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;    <span class="keywordtype">void</span> mouseMoveEvent(QMouseEvent* event) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;    <span class="keywordtype">void</span> mouseReleaseEvent(QMouseEvent* event) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160; </div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00135"></a><span class="lineno"><a class="line" href="class_gl_widget.html#a842d31ffeaa0b2f7941e48361da282c0">  135</a></span>&#160;    QMatrix4x4 <a class="code" href="class_gl_widget.html#a842d31ffeaa0b2f7941e48361da282c0">m_worldMatrix</a>;</div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160; </div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;    <span class="keywordtype">void</span> init();</div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160; </div>
+<div class="line"><a name="l00149"></a><span class="lineno"><a class="line" href="class_gl_widget.html#aa21f69b78913029b1c895d26b498414b">  149</a></span>&#160;    QOpenGLShaderProgram* <a class="code" href="class_gl_widget.html#aa21f69b78913029b1c895d26b498414b">m_shaderProgram_texture</a>;</div>
+<div class="line"><a name="l00155"></a><span class="lineno"><a class="line" href="class_gl_widget.html#adeadf07aea7b5505200a4463de2c3fa6">  155</a></span>&#160;    QOpenGLShaderProgram* <a class="code" href="class_gl_widget.html#adeadf07aea7b5505200a4463de2c3fa6">m_shaderProgram_confidence</a>;</div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;    <span class="keywordtype">void</span> createShaderProgram();</div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160; </div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;    <span class="keywordtype">void</span> createMeshes();</div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;    <span class="keywordtype">void</span> renderMesh(<a class="code" href="class_mesh.html">Mesh</a>* mesh);</div>
+<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;    <span class="keywordtype">void</span> renderSkeletonMesh(<a class="code" href="class_skeleton_mesh.html">SkeletonMesh</a>* skeletonMesh);</div>
+<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160; </div>
+<div class="line"><a name="l00189"></a><span class="lineno"><a class="line" href="class_gl_widget.html#a1e9c973963a542716cb0d2459b7289c9">  189</a></span>&#160;    <a class="code" href="class_plane.html">Plane</a>* <a class="code" href="class_gl_widget.html#a1e9c973963a542716cb0d2459b7289c9">m_meshGrid</a>;</div>
+<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160; </div>
+<div class="line"><a name="l00196"></a><span class="lineno"><a class="line" href="class_gl_widget.html#a23fce3dd02cba2fee140eb52e37797b0">  196</a></span>&#160;    <a class="code" href="class_camera.html">Camera</a> <a class="code" href="class_gl_widget.html#a23fce3dd02cba2fee140eb52e37797b0">m_camera</a>;</div>
+<div class="line"><a name="l00202"></a><span class="lineno"><a class="line" href="class_gl_widget.html#ab0b85d8f05389f580340699f6b423424">  202</a></span>&#160;    QPoint <a class="code" href="class_gl_widget.html#ab0b85d8f05389f580340699f6b423424">lastPos</a>;</div>
+<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160; </div>
+<div class="line"><a name="l00209"></a><span class="lineno"><a class="line" href="class_gl_widget.html#a6d2f6fa1ba4d10fd82b4dcd5b492079d">  209</a></span>&#160;    QColor <a class="code" href="class_gl_widget.html#a6d2f6fa1ba4d10fd82b4dcd5b492079d">m_clearColor</a>;</div>
+<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160; </div>
+<div class="line"><a name="l00216"></a><span class="lineno"><a class="line" href="class_gl_widget.html#ad73c997f8989cda39f5648e5c0b1e7a3">  216</a></span>&#160;    <a class="code" href="class_tracker_manager.html">TrackerManager</a>* <a class="code" href="class_gl_widget.html#ad73c997f8989cda39f5648e5c0b1e7a3">m_refTrackerManager</a>;</div>
+<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160; </div>
+<div class="line"><a name="l00223"></a><span class="lineno"><a class="line" href="class_gl_widget.html#ab82a45f38b467b9d86bac6a82c5a4e4a">  223</a></span>&#160;    <a class="code" href="class_vector3.html">Vector3</a> m_colorRed, <a class="code" href="class_gl_widget.html#ab82a45f38b467b9d86bac6a82c5a4e4a">m_colorYellow</a>, m_colorGreen;</div>
+<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160; </div>
+<div class="line"><a name="l00233"></a><span class="lineno"><a class="line" href="class_gl_widget.html#a1fea04d81c20e510bdd3637f0e99ea5e">  233</a></span>&#160;    std::map&lt;int, std::vector&lt;SkeletonMesh&gt;&gt; <a class="code" href="class_gl_widget.html#a1fea04d81c20e510bdd3637f0e99ea5e">m_skeletonMeshPool</a>;</div>
+<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160; </div>
+<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;};</div>
+<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160; </div>
+<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="a_cube_8h_html"><div class="ttname"><a href="_cube_8h.html">Cube.h</a></div></div>
-<div class="ttc" id="aclass_gl_widget_html_a23fce3dd02cba2fee140eb52e37797b0"><div class="ttname"><a href="class_gl_widget.html#a23fce3dd02cba2fee140eb52e37797b0">GlWidget::m_camera</a></div><div class="ttdeci">Camera m_camera</div><div class="ttdef"><b>Definition:</b> GlWidget.h:73</div></div>
+<div class="ttc" id="aclass_gl_widget_html_a23fce3dd02cba2fee140eb52e37797b0"><div class="ttname"><a href="class_gl_widget.html#a23fce3dd02cba2fee140eb52e37797b0">GlWidget::m_camera</a></div><div class="ttdeci">Camera m_camera</div><div class="ttdef"><b>Definition:</b> GlWidget.h:196</div></div>
 <div class="ttc" id="a_plane_8h_html"><div class="ttname"><a href="_plane_8h.html">Plane.h</a></div></div>
-<div class="ttc" id="aclass_gl_widget_html_a1e9c973963a542716cb0d2459b7289c9"><div class="ttname"><a href="class_gl_widget.html#a1e9c973963a542716cb0d2459b7289c9">GlWidget::m_meshGrid</a></div><div class="ttdeci">Plane * m_meshGrid</div><div class="ttdef"><b>Definition:</b> GlWidget.h:71</div></div>
+<div class="ttc" id="aclass_gl_widget_html_a1e9c973963a542716cb0d2459b7289c9"><div class="ttname"><a href="class_gl_widget.html#a1e9c973963a542716cb0d2459b7289c9">GlWidget::m_meshGrid</a></div><div class="ttdeci">Plane * m_meshGrid</div><div class="ttdef"><b>Definition:</b> GlWidget.h:189</div></div>
 <div class="ttc" id="a_config_dll_export_render_management_8h_html"><div class="ttname"><a href="_config_dll_export_render_management_8h.html">ConfigDllExportRenderManagement.h</a></div></div>
-<div class="ttc" id="aclass_gl_widget_html_a1fea04d81c20e510bdd3637f0e99ea5e"><div class="ttname"><a href="class_gl_widget.html#a1fea04d81c20e510bdd3637f0e99ea5e">GlWidget::m_skeletonMeshPool</a></div><div class="ttdeci">std::map&lt; int, std::vector&lt; SkeletonMesh &gt; &gt; m_skeletonMeshPool</div><div class="ttdef"><b>Definition:</b> GlWidget.h:82</div></div>
+<div class="ttc" id="aclass_gl_widget_html_a1fea04d81c20e510bdd3637f0e99ea5e"><div class="ttname"><a href="class_gl_widget.html#a1fea04d81c20e510bdd3637f0e99ea5e">GlWidget::m_skeletonMeshPool</a></div><div class="ttdeci">std::map&lt; int, std::vector&lt; SkeletonMesh &gt; &gt; m_skeletonMeshPool</div><div class="ttdef"><b>Definition:</b> GlWidget.h:233</div></div>
 <div class="ttc" id="aclass_vector3_html"><div class="ttname"><a href="class_vector3.html">Vector3</a></div><div class="ttdoc">Utility Class.</div><div class="ttdef"><b>Definition:</b> Vector3.h:16</div></div>
 <div class="ttc" id="a_gl_widget_8h_html_a86beb55253c83672bc37d22105f41a46"><div class="ttname"><a href="_gl_widget_8h.html#a86beb55253c83672bc37d22105f41a46">QT_FORWARD_DECLARE_CLASS</a></div><div class="ttdeci">QT_FORWARD_DECLARE_CLASS(QOpenGLShaderProgram)</div></div>
 <div class="ttc" id="a_config_dll_export_render_management_8h_html_a4d9c87411a07cf3cedc55989c4616061"><div class="ttname"><a href="_config_dll_export_render_management_8h.html#a4d9c87411a07cf3cedc55989c4616061">RenderManagement_DLL_import_export</a></div><div class="ttdeci">#define RenderManagement_DLL_import_export</div><div class="ttdef"><b>Definition:</b> ConfigDllExportRenderManagement.h:2</div></div>
 <div class="ttc" id="a_gl_widget_8h_html_ac5dd1b358a0070fe7fc1b66b31efa3c5"><div class="ttname"><a href="_gl_widget_8h.html#ac5dd1b358a0070fe7fc1b66b31efa3c5">Framerate</a></div><div class="ttdeci">std::chrono::duration&lt; std::chrono::steady_clock::rep, std::ratio&lt; 1, 60 &gt; &gt; Framerate</div><div class="ttdef"><b>Definition:</b> GlWidget.h:31</div></div>
-<div class="ttc" id="aclass_gl_widget_html_ab0b85d8f05389f580340699f6b423424"><div class="ttname"><a href="class_gl_widget.html#ab0b85d8f05389f580340699f6b423424">GlWidget::lastPos</a></div><div class="ttdeci">QPoint lastPos</div><div class="ttdef"><b>Definition:</b> GlWidget.h:74</div></div>
+<div class="ttc" id="aclass_gl_widget_html_ab0b85d8f05389f580340699f6b423424"><div class="ttname"><a href="class_gl_widget.html#ab0b85d8f05389f580340699f6b423424">GlWidget::lastPos</a></div><div class="ttdeci">QPoint lastPos</div><div class="ttdef"><b>Definition:</b> GlWidget.h:202</div></div>
 <div class="ttc" id="a_skeleton_mesh_8h_html"><div class="ttname"><a href="_skeleton_mesh_8h.html">SkeletonMesh.h</a></div></div>
-<div class="ttc" id="aclass_mesh_html"><div class="ttname"><a href="class_mesh.html">Mesh</a></div><div class="ttdef"><b>Definition:</b> Mesh.h:12</div></div>
+<div class="ttc" id="aclass_mesh_html"><div class="ttname"><a href="class_mesh.html">Mesh</a></div><div class="ttdoc">mesh base class</div><div class="ttdef"><b>Definition:</b> Mesh.h:21</div></div>
 <div class="ttc" id="a_vector3_8h_html"><div class="ttname"><a href="_vector3_8h.html">Vector3.h</a></div></div>
-<div class="ttc" id="aclass_gl_widget_html_ab82a45f38b467b9d86bac6a82c5a4e4a"><div class="ttname"><a href="class_gl_widget.html#ab82a45f38b467b9d86bac6a82c5a4e4a">GlWidget::m_colorYellow</a></div><div class="ttdeci">Vector3 m_colorYellow</div><div class="ttdef"><b>Definition:</b> GlWidget.h:80</div></div>
-<div class="ttc" id="aclass_gl_widget_html_a842d31ffeaa0b2f7941e48361da282c0"><div class="ttname"><a href="class_gl_widget.html#a842d31ffeaa0b2f7941e48361da282c0">GlWidget::m_worldMatrix</a></div><div class="ttdeci">QMatrix4x4 m_worldMatrix</div><div class="ttdef"><b>Definition:</b> GlWidget.h:59</div></div>
-<div class="ttc" id="aclass_gl_widget_html_ad73c997f8989cda39f5648e5c0b1e7a3"><div class="ttname"><a href="class_gl_widget.html#ad73c997f8989cda39f5648e5c0b1e7a3">GlWidget::m_refTrackerManager</a></div><div class="ttdeci">TrackerManager * m_refTrackerManager</div><div class="ttdef"><b>Definition:</b> GlWidget.h:78</div></div>
+<div class="ttc" id="aclass_gl_widget_html_ab82a45f38b467b9d86bac6a82c5a4e4a"><div class="ttname"><a href="class_gl_widget.html#ab82a45f38b467b9d86bac6a82c5a4e4a">GlWidget::m_colorYellow</a></div><div class="ttdeci">Vector3 m_colorYellow</div><div class="ttdef"><b>Definition:</b> GlWidget.h:223</div></div>
+<div class="ttc" id="aclass_gl_widget_html_a842d31ffeaa0b2f7941e48361da282c0"><div class="ttname"><a href="class_gl_widget.html#a842d31ffeaa0b2f7941e48361da282c0">GlWidget::m_worldMatrix</a></div><div class="ttdeci">QMatrix4x4 m_worldMatrix</div><div class="ttdef"><b>Definition:</b> GlWidget.h:135</div></div>
+<div class="ttc" id="aclass_gl_widget_html_ad73c997f8989cda39f5648e5c0b1e7a3"><div class="ttname"><a href="class_gl_widget.html#ad73c997f8989cda39f5648e5c0b1e7a3">GlWidget::m_refTrackerManager</a></div><div class="ttdeci">TrackerManager * m_refTrackerManager</div><div class="ttdef"><b>Definition:</b> GlWidget.h:216</div></div>
 <div class="ttc" id="aclass_tracker_manager_html"><div class="ttname"><a href="class_tracker_manager.html">TrackerManager</a></div><div class="ttdoc">Manager for all types of tracker.</div><div class="ttdef"><b>Definition:</b> TrackerManager.h:23</div></div>
 <div class="ttc" id="a_tracker_manager_8h_html"><div class="ttname"><a href="_tracker_manager_8h.html">TrackerManager.h</a></div></div>
 <div class="ttc" id="a_camera_8h_html"><div class="ttname"><a href="_camera_8h.html">Camera.h</a></div></div>
-<div class="ttc" id="aclass_plane_html"><div class="ttname"><a href="class_plane.html">Plane</a></div><div class="ttdef"><b>Definition:</b> Plane.h:5</div></div>
-<div class="ttc" id="aclass_gl_widget_html_adeadf07aea7b5505200a4463de2c3fa6"><div class="ttname"><a href="class_gl_widget.html#adeadf07aea7b5505200a4463de2c3fa6">GlWidget::m_shaderProgram_confidence</a></div><div class="ttdeci">QOpenGLShaderProgram * m_shaderProgram_confidence</div><div class="ttdef"><b>Definition:</b> GlWidget.h:64</div></div>
+<div class="ttc" id="aclass_plane_html"><div class="ttname"><a href="class_plane.html">Plane</a></div><div class="ttdoc">plane mesh</div><div class="ttdef"><b>Definition:</b> Plane.h:14</div></div>
+<div class="ttc" id="aclass_gl_widget_html_adeadf07aea7b5505200a4463de2c3fa6"><div class="ttname"><a href="class_gl_widget.html#adeadf07aea7b5505200a4463de2c3fa6">GlWidget::m_shaderProgram_confidence</a></div><div class="ttdeci">QOpenGLShaderProgram * m_shaderProgram_confidence</div><div class="ttdef"><b>Definition:</b> GlWidget.h:155</div></div>
 <div class="ttc" id="a_mesh_8h_html"><div class="ttname"><a href="_mesh_8h.html">Mesh.h</a></div></div>
 <div class="ttc" id="aclass_camera_html"><div class="ttname"><a href="class_camera.html">Camera</a></div><div class="ttdef"><b>Definition:</b> Camera.h:5</div></div>
-<div class="ttc" id="aclass_gl_widget_html_aa21f69b78913029b1c895d26b498414b"><div class="ttname"><a href="class_gl_widget.html#aa21f69b78913029b1c895d26b498414b">GlWidget::m_shaderProgram_texture</a></div><div class="ttdeci">QOpenGLShaderProgram * m_shaderProgram_texture</div><div class="ttdef"><b>Definition:</b> GlWidget.h:63</div></div>
-<div class="ttc" id="aclass_skeleton_mesh_html"><div class="ttname"><a href="class_skeleton_mesh.html">SkeletonMesh</a></div><div class="ttdef"><b>Definition:</b> SkeletonMesh.h:7</div></div>
-<div class="ttc" id="aclass_gl_widget_html_a6d2f6fa1ba4d10fd82b4dcd5b492079d"><div class="ttname"><a href="class_gl_widget.html#a6d2f6fa1ba4d10fd82b4dcd5b492079d">GlWidget::m_clearColor</a></div><div class="ttdeci">QColor m_clearColor</div><div class="ttdef"><b>Definition:</b> GlWidget.h:76</div></div>
-<div class="ttc" id="aclass_gl_widget_html"><div class="ttname"><a href="class_gl_widget.html">GlWidget</a></div><div class="ttdef"><b>Definition:</b> GlWidget.h:33</div></div>
+<div class="ttc" id="aclass_gl_widget_html_aa21f69b78913029b1c895d26b498414b"><div class="ttname"><a href="class_gl_widget.html#aa21f69b78913029b1c895d26b498414b">GlWidget::m_shaderProgram_texture</a></div><div class="ttdeci">QOpenGLShaderProgram * m_shaderProgram_texture</div><div class="ttdef"><b>Definition:</b> GlWidget.h:149</div></div>
+<div class="ttc" id="aclass_skeleton_mesh_html"><div class="ttname"><a href="class_skeleton_mesh.html">SkeletonMesh</a></div><div class="ttdoc">container for joint meshes</div><div class="ttdef"><b>Definition:</b> SkeletonMesh.h:14</div></div>
+<div class="ttc" id="aclass_gl_widget_html_a6d2f6fa1ba4d10fd82b4dcd5b492079d"><div class="ttname"><a href="class_gl_widget.html#a6d2f6fa1ba4d10fd82b4dcd5b492079d">GlWidget::m_clearColor</a></div><div class="ttdeci">QColor m_clearColor</div><div class="ttdef"><b>Definition:</b> GlWidget.h:209</div></div>
+<div class="ttc" id="aclass_gl_widget_html"><div class="ttname"><a href="class_gl_widget.html">GlWidget</a></div><div class="ttdoc">3d render context for skeleton visualisation</div><div class="ttdef"><b>Definition:</b> GlWidget.h:42</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

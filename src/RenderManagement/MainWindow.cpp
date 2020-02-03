@@ -830,9 +830,6 @@ void MainWindow::toggleTrackingButtons()
 
 #pragma endregion Utils
 
-
-
-
 QString MainWindow::toQString(float value)
 {
 

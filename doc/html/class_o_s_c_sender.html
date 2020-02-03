@@ -91,8 +91,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a026bca8d086dc1ef9d226bcc2855e0db"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5b0710d562f8e228b5cec12cdf05bd69"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_s_c_sender.html#a5b0710d562f8e228b5cec12cdf05bd69">OSCSender</a> (std::string address, int port)</td></tr>
 <tr class="separator:a5b0710d562f8e228b5cec12cdf05bd69"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a32c84ed179dea8cdb5794d95d36e300c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_s_c_sender.html#a32c84ed179dea8cdb5794d95d36e300c">sendSkeleton</a> (<a class="el" href="class_skeleton.html">Skeleton</a> *skeleton, const char *uri) override</td></tr>
-<tr class="separator:a32c84ed179dea8cdb5794d95d36e300c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3efa0c8235934d6d526acfc73f0d294b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_o_s_c_sender.html#a3efa0c8235934d6d526acfc73f0d294b">sendSkeleton</a> (<a class="el" href="class_skeleton.html">Skeleton</a> *skeleton, const char *uri, int trackerID) override</td></tr>
+<tr class="separator:a3efa0c8235934d6d526acfc73f0d294b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_class_network_sender"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_class_network_sender')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="class_network_sender.html">NetworkSender</a></td></tr>
 <tr class="memitem:a14bcf54d3c289d92c12c3e741619975f inherit pub_methods_class_network_sender"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_network_sender.html#a14bcf54d3c289d92c12c3e741619975f">NetworkSender</a> ()</td></tr>
 <tr class="separator:a14bcf54d3c289d92c12c3e741619975f inherit pub_methods_class_network_sender"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -179,8 +179,8 @@ Additional Inherited Members</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a32c84ed179dea8cdb5794d95d36e300c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a32c84ed179dea8cdb5794d95d36e300c">&#9670;&nbsp;</a></span>sendSkeleton()</h2>
+<a id="a3efa0c8235934d6d526acfc73f0d294b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3efa0c8235934d6d526acfc73f0d294b">&#9670;&nbsp;</a></span>sendSkeleton()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -198,7 +198,13 @@ Additional Inherited Members</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>uri</em>&#160;</td>
+          <td class="paramname"><em>uri</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>trackerID</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -221,7 +227,7 @@ Additional Inherited Members</h2></td></tr>
   </dd>
 </dl>
 
-<p>Implements <a class="el" href="class_network_sender.html#a876b6f8f1b97391cbe9edfc014fe777c">NetworkSender</a>.</p>
+<p>Implements <a class="el" href="class_network_sender.html#a4c053605b9d7b6899f3f16f0b917329f">NetworkSender</a>.</p>
 
 </div>
 </div>

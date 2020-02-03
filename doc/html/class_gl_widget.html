@@ -73,6 +73,9 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
+<p>3d render context for skeleton visualisation  
+ <a href="class_gl_widget.html#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="_gl_widget_8h_source.html">GlWidget.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for GlWidget:</div>
@@ -158,7 +161,11 @@ Private Attributes</h2></td></tr>
 <tr class="memitem:a1fea04d81c20e510bdd3637f0e99ea5e"><td class="memItemLeft" align="right" valign="top">std::map&lt; int, std::vector&lt; <a class="el" href="class_skeleton_mesh.html">SkeletonMesh</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_gl_widget.html#a1fea04d81c20e510bdd3637f0e99ea5e">m_skeletonMeshPool</a></td></tr>
 <tr class="separator:a1fea04d81c20e510bdd3637f0e99ea5e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>3d render context for skeleton visualisation </p>
+<dl class="section note"><dt>Note</dt><dd>derives from QOpenGLWidget</dd></dl>
+<dl class="section author"><dt>Author</dt><dd>Eric Jansen </dd></dl>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a1f6c5890ea15afd587ad834ba8bf032a"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a1f6c5890ea15afd587ad834ba8bf032a">&#9670;&nbsp;</a></span>GlWidget()</h2>
 
@@ -192,6 +199,8 @@ Private Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>standard constructor</p>
+<p>/parm trackerManager, parent </p>
 
 </div>
 </div>
@@ -235,6 +244,7 @@ Private Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>called when user clicks in render window </p>
 
 </div>
 </div>
@@ -260,6 +270,7 @@ Private Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>create static meshes ie the ground plane / grid </p>
 
 </div>
 </div>
@@ -285,6 +296,7 @@ Private Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>creates both shader programs </p>
 
 </div>
 </div>
@@ -310,6 +322,7 @@ Private Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>initialisation </p>
 
 </div>
 </div>
@@ -335,6 +348,7 @@ Private Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>initialize open gl </p>
 
 </div>
 </div>
@@ -361,6 +375,13 @@ Private Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>event for mouse move</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">event</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -387,6 +408,13 @@ Private Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>event for mouse press</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">event</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -413,6 +441,13 @@ Private Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>event for mouse release</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">event</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -438,6 +473,7 @@ Private Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>render loop </p>
 
 </div>
 </div>
@@ -464,6 +500,13 @@ Private Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>renders mesh</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">mesh</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -490,6 +533,13 @@ Private Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>top level render method for skeleton mesh</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">skeletonMesh</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -526,6 +576,14 @@ Private Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>window resize</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">width</td><td></td></tr>
+    <tr><td class="paramname">height</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -543,6 +601,7 @@ Private Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>updates the count of the skeleton meshes for each tracker </p>
 
 </div>
 </div>
@@ -560,6 +619,7 @@ Private Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>updates the size of tracker in the pool </p>
 
 </div>
 </div>
@@ -577,6 +637,7 @@ Private Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>updates the skeleton mesh / joint position and rotation </p>
 
 </div>
 </div>
@@ -600,6 +661,7 @@ Private Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>last mouse position </p>
 
 </div>
 </div>
@@ -622,6 +684,7 @@ Private Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>camera </p>
 
 </div>
 </div>
@@ -644,6 +707,7 @@ Private Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>background color of the opengl window </p>
 
 </div>
 </div>
@@ -688,6 +752,7 @@ Private Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>color components for the background color </p>
 
 </div>
 </div>
@@ -732,6 +797,7 @@ Private Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>ground plane / grid </p>
 
 </div>
 </div>
@@ -754,6 +820,7 @@ Private Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>refference to the trackerManager </p>
 
 </div>
 </div>
@@ -776,6 +843,7 @@ Private Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>shader for joint confidence with diffuse color </p>
 
 </div>
 </div>
@@ -798,6 +866,7 @@ Private Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>shader for diffuse texture </p>
 
 </div>
 </div>
@@ -820,6 +889,8 @@ Private Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>skeleton mesh pool</p>
+<p>key: tracker id refference value: skeleton mesh pool </p>
 
 </div>
 </div>
@@ -842,6 +913,7 @@ Private Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>matrix representing the world coordinate system </p>
 
 </div>
 </div>

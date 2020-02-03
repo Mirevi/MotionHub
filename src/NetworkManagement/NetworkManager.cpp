@@ -22,7 +22,7 @@ void NetworkManager::sendSkeletonPool(std::map<int, Skeleton>* skeletonPool, int
 		// skeleton loop
 		for (auto itSkeletonPool = skeletonPool->begin(); itSkeletonPool != skeletonPool->end(); itSkeletonPool++)
 		{
-
+			
 			// sender loop
 			for (auto itSenderPool = m_poolSender.begin(); itSenderPool != m_poolSender.end(); itSenderPool++)
 			{
