@@ -10,6 +10,7 @@
 #include "Tracker.h"
 #include "AKTracker.h"
 #include "OTTracker.h"
+#include "PN2Tracker.h"
 
 /*!
  * \class TrackerManager
@@ -37,7 +38,8 @@ public:
 	{
 
 		azureKinect,	// Azure Kinect Tracker
-		optiTrack		// OptiTrack	Tracker
+		optiTrack,		// OptiTrack	Tracker
+		perceptionNeuron2 // PerceptionNeuron Tracker
 
 	};
 

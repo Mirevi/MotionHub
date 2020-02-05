@@ -58,4 +58,6 @@ target_link_libraries(TrackerManagement
     debug legacy_stdio_definitions optimized legacy_stdio_definitions
 	
 	debug MotionHubUtil${CMAKE_DEBUG_POSTFIX} optimized MotionHubUtil
+	
+	ws2_32.lib
 )

@@ -82,6 +82,31 @@ int TrackerManager::createTracker(TrackerType type)
 
 			return id;
 
+		case perceptionNeuron2:
+
+
+
+			//lock the tracker pool
+			m_trackerPoolLock.lock();
+
+			//create new Tracker with current ID
+			tempTracker = new PN2Tracker(id);
+
+			// create new azure kinect tracker and insert the tracker in the tracker pool
+			m_trackerPool.push_back(tempTracker);
+
+			//unlock the tracker pool
+			m_trackerPoolLock.unlock();
+
+
+
+			//a tracker has been added, so the tracker pool has changed
+			m_hasTrackerPoolChanged = true;
+
+			Console::log("TrackerManager::createTracker(): Created PerceptionNeuron2 tracker.");
+
+			return id;
+
 		default:
 			Console::log("TrackerManager::createTracker(): Can not create tracker. Unknown tracker type!");
 

@@ -45,11 +45,20 @@ void CreateTrackerWindow::slotCreateTracker()
 
 		}
 
-		case 2:
+		case 1:
 		{
 			// create new azure kinect tracker and add tracker to the tracking manager tracker pool
 			id = m_refTrackerManager->createTracker(TrackerManager::optiTrack);
 						
+			break;
+
+		}
+
+		case 2:
+		{
+			// create new perception neuron 2 tracker and add tracker to the tracking manager tracker pool
+			id = m_refTrackerManager->createTracker(TrackerManager::perceptionNeuron2);
+
 			break;
 
 		}
