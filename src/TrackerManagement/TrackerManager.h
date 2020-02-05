@@ -37,7 +37,7 @@ public:
 	{
 
 		azureKinect,	// Azure Kinect Tracker
-		optiTrack		//OptiTrack		Tracker
+		optiTrack		// OptiTrack	Tracker
 
 	};
 

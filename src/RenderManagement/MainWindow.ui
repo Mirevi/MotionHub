@@ -145,7 +145,7 @@ QPushButton
     border-width: 1px;
     border-color: #1e1e1e;
     border-style: solid;
-    border-radius: 6;
+    border-radius: 0;
     padding: 3px;
     font-size: 12px;
     padding-left: 5px;
@@ -483,6 +483,10 @@ QCheckBox::indicator{
     border: 1px solid #b1b1b1;
     width: 9px;
     height: 9px;
+}
+
+QLabel{
+	background: transparent;
 }
 
 QRadioButton::indicator
