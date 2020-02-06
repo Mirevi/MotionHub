@@ -705,7 +705,7 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
              </property>
              <property name="geometry">
               <rect>
-               <x>80</x>
+               <x>160</x>
                <y>22</y>
                <width>60</width>
                <height>20</height>
@@ -721,7 +721,7 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
             <widget class="QPushButton" name="btn_startTracker">
              <property name="geometry">
               <rect>
-               <x>216</x>
+               <x>230</x>
                <y>12</y>
                <width>30</width>
                <height>30</height>
@@ -745,6 +745,27 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
              </property>
              <property name="flat">
               <bool>false</bool>
+             </property>
+            </widget>
+            <widget class="QPushButton" name="btn_addGroup">
+             <property name="geometry">
+              <rect>
+               <x>80</x>
+               <y>22</y>
+               <width>70</width>
+               <height>20</height>
+              </rect>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>-1</pointsize>
+              </font>
+             </property>
+             <property name="cursor">
+              <cursorShape>PointingHandCursor</cursorShape>
+             </property>
+             <property name="text">
+              <string>Add group</string>
              </property>
             </widget>
            </widget>
@@ -1282,8 +1303,8 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
    <slot>slotInspectorItemChanged(QTableWidgetItem*)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1156</x>
-     <y>350</y>
+     <x>1907</x>
+     <y>530</y>
     </hint>
     <hint type="destinationlabel">
      <x>778</x>
@@ -1298,7 +1319,7 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
    <slot>slotToggleTracking()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1257</x>
+     <x>1540</x>
      <y>74</y>
     </hint>
     <hint type="destinationlabel">
@@ -1314,8 +1335,8 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
    <slot>slotRemoveTracker()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1151</x>
-     <y>72</y>
+     <x>1500</x>
+     <y>74</y>
     </hint>
     <hint type="destinationlabel">
      <x>1767</x>
@@ -1330,8 +1351,8 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
    <slot>slotSelectTracker(QModelIndex)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1092</x>
-     <y>164</y>
+     <x>1907</x>
+     <y>170</y>
     </hint>
     <hint type="destinationlabel">
      <x>1068</x>
@@ -1346,12 +1367,28 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
    <slot>slotAddTracker()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1081</x>
-     <y>72</y>
+     <x>1350</x>
+     <y>74</y>
     </hint>
     <hint type="destinationlabel">
      <x>1800</x>
      <y>-11</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btn_addGroup</sender>
+   <signal>pressed()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>slotAddGroup()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1411</x>
+     <y>65</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1220</x>
+     <y>89</y>
     </hint>
    </hints>
   </connection>
@@ -1363,5 +1400,6 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
   <slot>slotSelectTracker(QModelIndex)</slot>
   <slot>slotTrackerSelectionChanged()</slot>
   <slot>slotInspectorItemChanged(QTableWidgetItem*)</slot>
+  <slot>slotAddGroup()</slot>
  </slots>
 </ui>

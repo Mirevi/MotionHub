@@ -417,6 +417,25 @@ void MainWindow::slotAddTracker()
 
 }
 
+void MainWindow::slotAddGroup()
+{
+
+	Console::log("MainWindow::slotAddGroup(): ADD GROUP");
+
+	//change curser to wait (Hourglass)
+	QApplication::setOverrideCursor(Qt::WaitCursor);
+
+	int id = -1;
+
+	id = m_refTrackerManager->createTracker(TrackerManager::group);
+
+	addTrackerToList(id);
+
+	//set the curser to default
+	QApplication::restoreOverrideCursor();
+
+}
+
 // SLOT: remove tracker button
 void MainWindow::slotRemoveTracker()
 {
@@ -846,5 +865,24 @@ GlWidget* MainWindow::getOglRenderer()
 {
 
 	return m_oglRenderer;
+
+}
+
+void MainWindow::addTrackerToList(int id)
+{
+
+	std::vector<Tracker*> trackerPoolRef = m_refTrackerManager->getPoolTracker();
+
+	for (auto itTracker = trackerPoolRef.begin(); itTracker != trackerPoolRef.end(); itTracker++)
+	{
+
+		if ((*itTracker)->getProperties()->id == id)
+		{
+
+			ui->listWidget_tracker->addItem((*itTracker)->getProperties()->name.c_str());
+
+		}
+
+	}
 
 }

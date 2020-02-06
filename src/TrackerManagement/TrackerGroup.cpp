@@ -43,7 +43,7 @@ void TrackerGroup::stop()
 void TrackerGroup::destroy()
 {
 
-	delete this;
+	//delete this;
 
 }
 
@@ -85,15 +85,24 @@ void TrackerGroup::track()
 void TrackerGroup::mergeSkeletons()
 {
 
+	//create new skeleton
 	Skeleton* currSkeleton;
 
-
-
-	for (auto itTracker = m_groupedTracker.begin(); itTracker != m_groupedTracker.end(); itTracker++)
+	//loop through al joints
+	for (int i = 0; i < currSkeleton->m_joints.size(); i++)
 	{
 
+		//loop through all tracker to get joint data
+		for (auto itTracker = m_groupedTracker.begin(); itTracker != m_groupedTracker.end(); itTracker++)
+		{
 
+
+
+		}
 
 	}
+
+
+
 
 }

@@ -69,6 +69,9 @@ private slots:
 	 * called when user clicks "add" tracker button 
 	 */
 	void slotAddTracker();
+
+	void slotAddGroup();
+
 	/*!
 	 * called when user clicks "remove" tracker button
 	 */
@@ -168,6 +171,8 @@ private:
 	std::map<std::string, QLineEdit*> m_inputFieldPool;
 
 	QString toQString(float _float);
+
+	void addTrackerToList(int id);
 
 
 };
