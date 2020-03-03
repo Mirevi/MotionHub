@@ -781,6 +781,9 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
             <property name="itemsExpandable">
              <bool>true</bool>
             </property>
+            <property name="headerHidden">
+             <bool>true</bool>
+            </property>
            </widget>
           </item>
           <item>

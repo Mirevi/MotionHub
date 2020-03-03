@@ -180,8 +180,6 @@ void MainWindow::drawInspector()
 	if (m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList) == nullptr)
 	{
 
-		Console::log("MainWindow::drawInspector(): Tracker at " + std::to_string(m_selectedTrackerInList) + " is nullptr!");
-
 		//when this tracker doesn't exist, updating the inspector is not needed
 		m_selectedTrackerInList = -1;
 		return;
@@ -420,8 +418,6 @@ void MainWindow::slotAddTracker()
 void MainWindow::slotAddGroup()
 {
 
-	Console::log("MainWindow::slotAddGroup(): ADD GROUP");
-
 	//change curser to wait (Hourglass)
 	QApplication::setOverrideCursor(Qt::WaitCursor);
 
@@ -476,8 +472,6 @@ void MainWindow::slotRemoveTracker()
 void MainWindow::slotTrackerSelectionChanged()
 {
 	 
-
-
 	int previousSelectedTrackerInList = m_selectedTrackerInList;
 
 	QList<QTreeWidgetItem*> selectedList = ui->treeWidget_tracker->selectedItems();
@@ -496,10 +490,6 @@ void MainWindow::slotTrackerSelectionChanged()
 		}
 
 	}
-
-
-
-	Console::log("selected " + m_selectedTrackerInList);
 
 	// update the inspector if current tracker was reselected
 	if (previousSelectedTrackerInList == m_selectedTrackerInList)
@@ -849,6 +839,8 @@ void MainWindow::toggleTrackingButtons()
 		//disable add/remove buttons
 		ui->btn_addTracker->setDisabled(true);
 		ui->btn_removeTracker->setDisabled(true);
+		ui->btn_addGroup->setDisabled(true);
+
 
 	}
 	else
@@ -859,6 +851,7 @@ void MainWindow::toggleTrackingButtons()
 		//enable add/remove buttons
 		ui->btn_addTracker->setDisabled(false);
 		ui->btn_removeTracker->setDisabled(false);
+		ui->btn_addGroup->setDisabled(false);
 
 	}
 
