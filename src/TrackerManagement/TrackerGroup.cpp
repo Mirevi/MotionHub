@@ -102,7 +102,4 @@ void TrackerGroup::mergeSkeletons()
 
 	}
 
-
-
-
 }

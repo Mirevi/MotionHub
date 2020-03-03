@@ -2,7 +2,7 @@
 #include "ui_createtrackerwindow.h"
 
 // default constructor
-CreateTrackerWindow::CreateTrackerWindow(TrackerManager* trackerManager, QListWidget* listWidgetTracker, QWidget *parent) : QDialog(parent), ui(new Ui::CreateTrackerWindow)
+CreateTrackerWindow::CreateTrackerWindow(TrackerManager* trackerManager, QTreeWidget* treeWidgetTracker, QWidget *parent) : QDialog(parent), ui(new Ui::CreateTrackerWindow)
 {
 
 	// setup dialog
@@ -10,7 +10,7 @@ CreateTrackerWindow::CreateTrackerWindow(TrackerManager* trackerManager, QListWi
 
 	// assign refference to tracker manager and list view of main window
 	m_refTrackerManager = trackerManager;
-	m_refListWidgetTracker = listWidgetTracker;
+	m_refTreeWidgetTracker = treeWidgetTracker;
 
 }
 
@@ -68,7 +68,14 @@ void CreateTrackerWindow::slotCreateTracker()
 		if ((*itTracker)->getProperties()->id == id)
 		{
 
-			m_refListWidgetTracker->addItem((*itTracker)->getProperties()->name.c_str());
+			//m_refTreeWidgetTracker->addItem((*itTracker)->getProperties()->name.c_str());
+			QTreeWidgetItem *topLevelItem = new QTreeWidgetItem(m_refTreeWidgetTracker);
+
+			// Set text for item
+			topLevelItem->setText(0, (*itTracker)->getProperties()->name.c_str());
+
+			// Add it on our tree as the top item.
+			m_refTreeWidgetTracker->addTopLevelItem(topLevelItem);
 
 		}
 

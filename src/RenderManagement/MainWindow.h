@@ -84,7 +84,7 @@ private slots:
 	 * called when user clicks on tracker in list 
 	 * \param index id of clicked tracker
 	 */
-	void slotSelectTracker(QModelIndex index);
+	void slotTrackerSelectionChanged();
 	/*!
 	 * called when user clicks on checkbox in inspector
 	 * \param item

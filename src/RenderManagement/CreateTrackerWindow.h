@@ -6,6 +6,7 @@
 #include "QtCore/qstringlistmodel.h"
 #include "QtCore/qstring.h"
 #include "QtWidgets/qlistwidget.h"
+#include "QtWidgets/qtreewidget.h"
 #include "TrackerManagement/TrackerManager.h"
 
 
@@ -29,7 +30,7 @@ public:
 	/*!
 	 * default constructor 
 	 */
-	explicit CreateTrackerWindow(TrackerManager* trackerManager, QListWidget* listWidgetTracker, QWidget *parent = 0);
+	explicit CreateTrackerWindow(TrackerManager* trackerManager, QTreeWidget* listWidgetTracker, QWidget *parent = 0);
 	~CreateTrackerWindow();
 
 private slots:
@@ -55,7 +56,8 @@ private:
 	/*!
 	 *  reference to the tracker list in main window
 	 */
-	QListWidget* m_refListWidgetTracker;
+	QTreeWidget* m_refTreeWidgetTracker;
+
 
 	int m_selectedTrackerIdInDropdown = 0;
 
