@@ -20,8 +20,12 @@ int TrackerManager::createTracker(TrackerType type)
 	m_nextFreeTrackerID++;
 
 	//create local Tracker*
-	Tracker* tempTracker;
-	std::thread* loadingThread;
+	Tracker* tempTracker = nullptr;
+
+
+	//lock the tracker pool
+	m_trackerPoolLock.lock();
+
 
 	// create new tracker based on the tracker type
 	switch (type)
@@ -29,11 +33,9 @@ int TrackerManager::createTracker(TrackerType type)
 
 		// azure kinect
 		case azureKinect:
+		{
 
-			Console::log("TrackerManager::createTracker(): Creating AKtracker ...");
-
-			//lock the tracker pool
-			m_trackerPoolLock.lock();
+			Console::log("TrackerManager::createTracker(): Creating AKtracker with cam ID = " + toString(m_nextFreeAKCamID) + " ...");
 
 			//create new AK Tracker with next free Cam ID
 			tempTracker = new AKTracker(id, m_nextFreeAKCamID);
@@ -41,53 +43,55 @@ int TrackerManager::createTracker(TrackerType type)
 			//next AK Tracker has new cam ID
 			m_nextFreeAKCamID++;
 
-			//insert the tracker in the tracker pool
-			m_trackerPool.push_back(tempTracker);
+			break;
 
-			//unlock the tracker pool
-			m_trackerPoolLock.unlock();
-
-
-
-			//a tracker has been added, so the tracker pool has changed
-			m_hasTrackerPoolChanged = true;
-
-
-			Console::log("TrackerManager::createTracker(): Created Azure Kinect tracker with cam id = " + std::to_string(m_nextFreeAKCamID - 1) + ".");
-
-			return id;
+		}
 
 		case optiTrack:
-
-
-
-			//lock the tracker pool
-			m_trackerPoolLock.lock();
+		{
 
 			//create new Tracker with current ID
 			tempTracker = new OTTracker(id);
 
-			// create new azure kinect tracker and insert the tracker in the tracker pool
-			m_trackerPool.push_back(tempTracker);
+			break;
+
+		}
+
+		case group:
+		{
+
+			tempTracker = new TrackerGroup(id);
+
+			break;
+
+		}
+
+		default:
+		{
+
+			Console::log("TrackerManager::createTracker(): Can not create tracker. Unknown tracker type!");
 
 			//unlock the tracker pool
 			m_trackerPoolLock.unlock();
 
-
-
-			//a tracker has been added, so the tracker pool has changed
-			m_hasTrackerPoolChanged = true;
-
-			Console::log("TrackerManager::createTracker(): Created OptiTrack tracker.");
-
-			return id;
-
-		default:
-			Console::log("TrackerManager::createTracker(): Can not create tracker. Unknown tracker type!");
-
 			return -1;
 
+		}
 	}
+
+
+	//insert the tracker in the tracker pool
+	m_trackerPool.push_back(tempTracker);
+
+	//unlock the tracker pool
+	m_trackerPoolLock.unlock();
+
+	//a tracker has been added, so the tracker pool has changed
+	m_hasTrackerPoolChanged = true;
+
+	Console::log("TrackerManager::createTracker(): Created tracker with ID = " + toString(id) + ".");
+
+	return id;
 
 }
 

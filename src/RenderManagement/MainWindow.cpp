@@ -180,8 +180,6 @@ void MainWindow::drawInspector()
 	if (m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList) == nullptr)
 	{
 
-		Console::log("MainWindow::drawInspector(): Tracker at " + std::to_string(m_selectedTrackerInList) + " is nullptr!");
-
 		//when this tracker doesn't exist, updating the inspector is not needed
 		m_selectedTrackerInList = -1;
 		return;
@@ -409,11 +407,28 @@ void MainWindow::slotAddTracker()
 {
 
 	// create dialog for creating new tracker
-	m_createTrackerWindow = new CreateTrackerWindow(m_refTrackerManager, ui->listWidget_tracker);
+	m_createTrackerWindow = new CreateTrackerWindow(m_refTrackerManager, ui->treeWidget_tracker);
 
 	// set modal and execute
 	m_createTrackerWindow->setModal(true);
 	m_createTrackerWindow->exec();
+
+}
+
+void MainWindow::slotAddGroup()
+{
+
+	//change curser to wait (Hourglass)
+	QApplication::setOverrideCursor(Qt::WaitCursor);
+
+	int id = -1;
+
+	id = m_refTrackerManager->createTracker(TrackerManager::group);
+
+	addTrackerToList(id);
+
+	//set the curser to default
+	QApplication::restoreOverrideCursor();
 
 }
 
@@ -431,14 +446,14 @@ void MainWindow::slotRemoveTracker()
 		//// remove tracker from tracker pool
 		m_refTrackerManager->removeTrackerAt(m_selectedTrackerInList);
 		// remove tracker from tracker list
-		ui->listWidget_tracker->takeItem(m_selectedTrackerInList);
+		delete ui->treeWidget_tracker->takeTopLevelItem(m_selectedTrackerInList);
 
 		// set to no tracker selected
 		m_selectedTrackerInList = -1;
 		// clear the inspector
 		clearInspector();
 
-		ui->listWidget_tracker->clearSelection();
+		ui->treeWidget_tracker->clearSelection();
 
 	}
 	else
@@ -454,13 +469,27 @@ void MainWindow::slotRemoveTracker()
 }
 
 // SLOT: get selected tracker index from tracker list
-void MainWindow::slotSelectTracker(QModelIndex index)
+void MainWindow::slotTrackerSelectionChanged()
 {
 	 
 	int previousSelectedTrackerInList = m_selectedTrackerInList;
 
-	// get index of selected tracker
-	m_selectedTrackerInList = ui->listWidget_tracker->currentRow();
+	QList<QTreeWidgetItem*> selectedList = ui->treeWidget_tracker->selectedItems();
+
+	if (selectedList.count() == 1)
+	{
+
+		QTreeWidgetItem* selectedItem = selectedList.at(0);
+
+		if (selectedItem != nullptr)
+		{
+
+			// get index of selected tracker
+			m_selectedTrackerInList = ui->treeWidget_tracker->indexOfTopLevelItem(selectedItem);
+
+		}
+
+	}
 
 	// update the inspector if current tracker was reselected
 	if (previousSelectedTrackerInList == m_selectedTrackerInList)
@@ -810,6 +839,8 @@ void MainWindow::toggleTrackingButtons()
 		//disable add/remove buttons
 		ui->btn_addTracker->setDisabled(true);
 		ui->btn_removeTracker->setDisabled(true);
+		ui->btn_addGroup->setDisabled(true);
+
 
 	}
 	else
@@ -820,6 +851,7 @@ void MainWindow::toggleTrackingButtons()
 		//enable add/remove buttons
 		ui->btn_addTracker->setDisabled(false);
 		ui->btn_removeTracker->setDisabled(false);
+		ui->btn_addGroup->setDisabled(false);
 
 	}
 
@@ -846,5 +878,34 @@ GlWidget* MainWindow::getOglRenderer()
 {
 
 	return m_oglRenderer;
+
+}
+
+void MainWindow::addTrackerToList(int id)
+{
+
+	std::vector<Tracker*> trackerPoolRef = m_refTrackerManager->getPoolTracker();
+
+	for (auto itTracker = trackerPoolRef.begin(); itTracker != trackerPoolRef.end(); itTracker++)
+	{
+
+		if ((*itTracker)->getProperties()->id == id)
+		{
+
+			//ui->treeWidget_tracker->addItem((*itTracker)->getProperties()->name.c_str());
+
+
+			//m_refTreeWidgetTracker->addItem((*itTracker)->getProperties()->name.c_str());
+			QTreeWidgetItem *topLevelItem = new QTreeWidgetItem(ui->treeWidget_tracker);
+
+			// Set text for item
+			topLevelItem->setText(0, (*itTracker)->getProperties()->name.c_str());
+
+			// Add it on our tree as the top item.
+			ui->treeWidget_tracker->addTopLevelItem(topLevelItem);
+
+		}
+
+	}
 
 }
