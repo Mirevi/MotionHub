@@ -1,5 +1,11 @@
 #include "PN2Tracker.h"
 
+#include <iostream>
+#include <WS2tcpip.h>
+#include <vector>
+#include <sstream>
+#include <iterator>
+
 // default constructor
 PN2Tracker::PN2Tracker(int id)
 {

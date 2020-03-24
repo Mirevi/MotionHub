@@ -1,16 +1,6 @@
 #pragma once
 
-#include <winsock2.h>
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <iostream>
-
-#include <vector>
-#include <sstream>
-#include <iterator>
-#include <list>
-
+#define WIN32_LEAN_AND_MEAN
 #include "Tracker.h"
 
 /*!

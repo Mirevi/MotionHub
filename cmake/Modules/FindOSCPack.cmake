@@ -136,7 +136,7 @@ else()
 endif()
 
 # Look for the header file.
-FIND_PATH(OSCp_INCLUDE_DIR NAMES OscTypes.h HINTS ${CURRENT_DEPS_PATH}/include ) #OSG_INCLUDE_DIR gibt man in der CMAKE GUI an, wo sich die includes von OSG befinden
+FIND_PATH(OSCp_INCLUDE_DIR NAMES OscTypes.h HINTS ${CURRENT_DEPS_PATH}/include )
 
 # Look for the library path
 FIND_PATH(OSCp_LIBRARIES_DIR NAMES oscpack.lib HINTS ${CURRENT_DEPS_PATH}/lib )
