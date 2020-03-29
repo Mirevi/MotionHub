@@ -1,13 +1,7 @@
-#include "PN2Tracker.h"
-
-#include <iostream>
-#include <WS2tcpip.h>
-#include <vector>
-#include <sstream>
-#include <iterator>
+#include "PNSTracker.h"
 
 // default constructor
-PN2Tracker::PN2Tracker(int id)
+PNSTracker::PNSTracker(int id)
 {
 	//create new Properties object
 	m_properties = new Properties();
@@ -33,14 +27,14 @@ PN2Tracker::PN2Tracker(int id)
 }
 
 // start azure kinect tracker
-void PN2Tracker::start()
+void PNSTracker::start()
 {
 
 	// set tracking to true
 	m_properties->isTracking = true;
 
 	// start tracking thread and detach the thread from method scope runtime
-	m_trackingThread = new std::thread(&PN2Tracker::update, this);
+	m_trackingThread = new std::thread(&PNSTracker::update, this);
 	m_trackingThread->detach();
 
 
@@ -101,7 +95,7 @@ void PN2Tracker::start()
 }
 
 // stop tracking loop / thread
-void PN2Tracker::stop()
+void PNSTracker::stop()
 {
 	//is not tracking, so the update loop exits after current loop
 	m_properties->isTracking = false;
@@ -109,7 +103,7 @@ void PN2Tracker::stop()
 }
 
 // shutdown and destroy azure kinect tracker
-void PN2Tracker::destroy()
+void PNSTracker::destroy()
 {
 
 	// shutdown and destroy tracker
@@ -125,7 +119,7 @@ void PN2Tracker::destroy()
 
 }
 
-void PN2Tracker::init()
+void PNSTracker::init()
 {
 
 	///////////////////////////////////////////////////////////////m_cam = NULL;
@@ -152,7 +146,7 @@ void PN2Tracker::init()
 }
 
 // tracking loop
-void PN2Tracker::update()
+void PNSTracker::update()
 {
 
 	// track while tracking is true
@@ -175,7 +169,7 @@ void PN2Tracker::update()
 }
 
 // get new skeleton data and parse it into the default skeleton
-void PN2Tracker::track()
+void PNSTracker::track()
 {
 
 	// create sensor capture and result

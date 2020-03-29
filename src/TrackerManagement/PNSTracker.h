@@ -3,14 +3,19 @@
 #define WIN32_LEAN_AND_MEAN
 #include "Tracker.h"
 
+#include <WS2tcpip.h>
+#include <vector>
+#include <sstream>
+#include <iterator>
+
 /*!
- * \class PN2Tracker
+ * \class PNSTracker
  *
  * \brief Manages Azure Kinect Body Tracking
  *
  * \author Kester Evers and Eric Jansen
  */
-class PN2Tracker : public Tracker
+class PNSTracker : public Tracker
 {
 
 public:
@@ -19,7 +24,7 @@ public:
 	 * constructor with config
 	 * \param idCam the cameras id number
 	 */
-	PN2Tracker(int id);
+	PNSTracker(int id);
 
 	/*!
 	 * calls the start() method of the base class which sets m_tracking to true 
