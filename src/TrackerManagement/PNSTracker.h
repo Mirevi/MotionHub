@@ -1,10 +1,10 @@
 #pragma once
 
 #define WIN32_LEAN_AND_MEAN
+
 #include "Tracker.h"
 #include "MotionHubUtil/Console.h"
 
-#include <WS2tcpip.h>
 #include <vector>
 #include <sstream>
 #include <iterator>
@@ -42,7 +42,6 @@ public:
 
 private:
 
-
 	SOCKET udpSocket;
 	
 	/*!
@@ -72,7 +71,7 @@ private:
 	*\param id the skeletons id
 	*\return returns the pointer of the default skeleton in the pool
 	 */
-	Skeleton* parseSkeleton();
+	void parseSkeleton();
 	/*!
 	 * deletes all old skeletons from the skeleton pool
 	 * \param bodyFrame the k4a frame with all skeleton data

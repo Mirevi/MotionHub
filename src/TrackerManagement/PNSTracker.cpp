@@ -1,5 +1,7 @@
 #include "PNSTracker.h"
 
+#include <ws2tcpip.h>
+
 // default constructor
 PNSTracker::PNSTracker(int id)
 {
@@ -173,10 +175,10 @@ void PNSTracker::track()
 	Console::log("PNSTracker::track(): Data values reveived = " + v.size());
 
 	// extract skeletons from body frame and parse them into default skeleton pool
-	extractSkeleton();
+	//extractSkeleton();
 
 	// clean up skeleton pool - remove inactive skeletons
-	cleanSkeletonPool();
+	//cleanSkeletonPool();
 
 	//count tracking cycles
 	m_trackingCycles++;
@@ -324,7 +326,7 @@ void PNSTracker::extractSkeleton()
 }
 
 //takes data from a k4a skeleton and pushes it into the list
-Skeleton* PNSTracker::parseSkeleton()
+void PNSTracker::parseSkeleton()
 {
 
 	/*

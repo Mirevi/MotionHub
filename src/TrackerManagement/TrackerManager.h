@@ -10,7 +10,7 @@
 #include "Tracker.h"
 #include "AKTracker.h"
 #include "OTTracker.h"
-#include "PN2Tracker.h"
+#include "PNSTracker.h"
 
 /*!
  * \class TrackerManager

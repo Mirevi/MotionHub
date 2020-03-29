@@ -90,7 +90,7 @@ int TrackerManager::createTracker(TrackerType type)
 			m_trackerPoolLock.lock();
 
 			//create new Tracker with current ID
-			tempTracker = new PN2Tracker(id);
+			tempTracker = new PNSTracker(id);
 
 			// create new azure kinect tracker and insert the tracker in the tracker pool
 			m_trackerPool.push_back(tempTracker);
