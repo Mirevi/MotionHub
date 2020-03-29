@@ -100,6 +100,7 @@ void PNSTracker::init()
 		Console::logError("PNSTracker::init(): Error binding WinSock = " + WSAGetLastError());
 		return;
 	}
+
 }
 
 // tracking loop
@@ -129,26 +130,29 @@ void PNSTracker::update()
 void PNSTracker::track()
 {
 
-	sockaddr_in client; // Use to hold the client information (port / ip address)
-	int clientLength = sizeof(client); // The size of the client information
+	// use to hold the client information (port / ip address)
+	sockaddr_in client; 
+	int clientSize = sizeof(client);
+	// clear the client structure
+	ZeroMemory(&client, clientSize); 
 
 	char dataBuffer[1024 * 3];
+	// clear the receive buffer
+	ZeroMemory(dataBuffer, 1024 * 3); 
 
-	ZeroMemory(&client, clientLength); // Clear the client structure
-	ZeroMemory(dataBuffer, 1024 * 3); // Clear the receive buffer
-
-	// Wait for message
-	int bytesIn = recvfrom(udpSocket, dataBuffer, 1024 * 3, 0, (sockaddr*)&client, &clientLength);
+	// wait for message and get data
+	int bytesIn = recvfrom(udpSocket, dataBuffer, 1024 * 3, 0, (sockaddr*)&client, &clientSize);
 	if (bytesIn == SOCKET_ERROR)
 	{
 		Console::logError("PNSTracker::track(): WSAGetLastError()");
 	}
 
-	// Display message and client info
-	char clientIp[256]; // Create enough space to convert the address byte array
-	ZeroMemory(clientIp, 256); // to string of characters
+	// display message and client info
+	// create enough space to convert the address byte array to string of characters
+	char clientIp[256]; 
+	ZeroMemory(clientIp, 256);
 
-	// Convert from byte array to chars
+	// convert from byte array to chars
 	inet_ntop(AF_INET, &client.sin_addr, clientIp, 256);
 
 	dataBuffer[2] = '0';
@@ -167,6 +171,18 @@ void PNSTracker::track()
 	copy(std::istream_iterator<float>(iss), std::istream_iterator<float>(), back_inserter(v));
 	v.erase(v.begin(), v.begin() + 2);
 	Console::log("PNSTracker::track(): Data values reveived = " + v.size());
+
+	// extract skeletons from body frame and parse them into default skeleton pool
+	extractSkeleton();
+
+	// clean up skeleton pool - remove inactive skeletons
+	cleanSkeletonPool();
+
+	//count tracking cycles
+	m_trackingCycles++;
+
+	// set data available to true
+	m_isDataAvailable = true;
 
 	/*
 	 create sensor capture and result
@@ -249,12 +265,14 @@ void PNSTracker::track()
 		Console::logError("[cam id = " + std::to_string(m_idCam) + "] Get depth capture returned error: " + std::to_string(get_capture_result));
 		return;
 	}
+	*/
 }
 
- extract skeletons from body frame and parse them into default skeleton pool
-void PN2Tracker::extractSkeleton(k4abt_frame_t* body_frame)
+// extract skeletons from body frame and parse them into default skeleton pool
+void PNSTracker::extractSkeleton()
 {
 
+	/*
 	// set number of detected bodies in frame
 	m_properties->countDetectedSkeleton = k4abt_frame_get_num_bodies(*body_frame);
 
@@ -302,12 +320,14 @@ void PN2Tracker::extractSkeleton(k4abt_frame_t* body_frame)
 
 		}
 	}
+	*/
 }
 
 //takes data from a k4a skeleton and pushes it into the list
-Skeleton* PN2Tracker::parseSkeleton(k4abt_skeleton_t* skeleton, int id)
+Skeleton* PNSTracker::parseSkeleton()
 {
 
+	/*
 	// skeleton data container
 	Skeleton* currSkeleton = new Skeleton(id);
 
@@ -448,13 +468,14 @@ Skeleton* PN2Tracker::parseSkeleton(k4abt_skeleton_t* skeleton, int id)
 
 	// return parsed default skeleton
 	return currSkeleton;
-
+	*/
 }
 
 // erase all unused skeletons from pool
-void PN2Tracker::cleanSkeletonPool(k4abt_frame_t* bodyFrame)
+void PNSTracker::cleanSkeletonPool()
 {
 
+	/*
 	//all skeletons with ids in this list will be erased at the end of this method
 	std::list<int> idSkeletonsToErase;
 

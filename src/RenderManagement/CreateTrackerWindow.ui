@@ -581,7 +581,7 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
         </item>
         <item>
          <property name="text">
-          <string>PerceptionNeuron2</string>
+          <string>PerceptionNeuronStudio</string>
          </property>
         </item>
        </widget>
