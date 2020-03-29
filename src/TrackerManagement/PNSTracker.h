@@ -2,6 +2,7 @@
 
 #define WIN32_LEAN_AND_MEAN
 #include "Tracker.h"
+#include "MotionHubUtil/Console.h"
 
 #include <WS2tcpip.h>
 #include <vector>
@@ -42,7 +43,7 @@ public:
 private:
 
 
-	 
+	SOCKET udpSocket;
 	///*!
 	// * k4a camera handle
 	// */
