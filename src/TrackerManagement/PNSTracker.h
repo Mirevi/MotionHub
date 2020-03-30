@@ -12,9 +12,9 @@
 /*!
  * \class PNSTracker
  *
- * \brief Manages Azure Kinect Body Tracking
+ * \brief Manages Perception Neuron Studio Tracking
  *
- * \author Kester Evers and Eric Jansen
+ * \author Eric Jansen
  */
 class PNSTracker : public Tracker
 {
@@ -23,7 +23,7 @@ public:
 	
 	/*!
 	 * constructor with config
-	 * \param idCam the cameras id number
+	 * \param id
 	 */
 	PNSTracker(int id);
 
@@ -36,18 +36,17 @@ public:
 	*/
 	void stop() override;
 	/*!
-	 * stops and closes tracker and camera
+	 * stops and closes udpSocket
 	 */
 	void destroy() override;
 
 private:
-
-	SOCKET udpSocket;
 	
+	SOCKET udpSocket;
+
 	/*!
-	 * initializes the camera, must only be called once in the beginning
+	 * initializes the udpSocket, must only be called once in the beginning
 	 * stop() resets all initialization
-	 * \param configDevice configuration parameters, standart: DISABLE_ALL
 	 */
 	void init() override;
 	/*!
@@ -55,26 +54,21 @@ private:
 	 */
 	void update() override;
 	/*!
-	 * starts tracking by getting the capture result and body frame
+	 * starts one tracking cylce by getting the udp data package from socket
 	 * calls updateSkeletons(...)
 	 */
 	void track() override;
 	/*!
-	 * gets the current skeleton data from the current body frame
 	 * pushes new skeleton into the pool or updates existing one
-	 * \param body_frame
 	 */
 	void extractSkeleton();
 	/*!
-	 *convertes k4a skeleton to default skeleton
-	*\param skeleton the k4a skeleton to convert
-	*\param id the skeletons id
-	*\return returns the pointer of the default skeleton in the pool
+	 * gets the current skeleton data the udp data package
+	 * convertes data to default skeleton
 	 */
 	void parseSkeleton();
 	/*!
 	 * deletes all old skeletons from the skeleton pool
-	 * \param bodyFrame the k4a frame with all skeleton data
 	 */
 	void cleanSkeletonPool();
 

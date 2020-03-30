@@ -270,7 +270,7 @@ void PNSTracker::track()
 	*/
 }
 
-// extract skeletons from body frame and parse them into default skeleton pool
+// extract skeletons from udp data package and psuh them into skeleton pool
 void PNSTracker::extractSkeleton()
 {
 
@@ -325,7 +325,7 @@ void PNSTracker::extractSkeleton()
 	*/
 }
 
-//takes data from a k4a skeleton and pushes it into the list
+// takes udp data package and returns default skeleton
 void PNSTracker::parseSkeleton()
 {
 
