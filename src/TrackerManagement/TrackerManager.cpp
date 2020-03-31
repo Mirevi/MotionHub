@@ -21,7 +21,6 @@ int TrackerManager::createTracker(TrackerType type)
 
 	//create local Tracker*
 	Tracker* tempTracker;
-	std::thread* loadingThread;
 
 	// create new tracker based on the tracker type
 	switch (type)
@@ -82,7 +81,7 @@ int TrackerManager::createTracker(TrackerType type)
 
 			return id;
 
-		case perceptionNeuron2:
+		case perceptionNeuronStudio:
 
 
 

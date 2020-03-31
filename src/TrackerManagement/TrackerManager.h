@@ -39,7 +39,7 @@ public:
 
 		azureKinect,	// Azure Kinect Tracker
 		optiTrack,		// OptiTrack	Tracker
-		perceptionNeuron2 // PerceptionNeuron Tracker
+		perceptionNeuronStudio // PerceptionNeuronStudio Tracker
 
 	};
 
