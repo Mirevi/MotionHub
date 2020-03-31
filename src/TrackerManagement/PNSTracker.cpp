@@ -131,7 +131,10 @@ void PNSTracker::update()
 // get new skeleton data and parse it into the default skeleton
 void PNSTracker::track()
 {
-	
+
+	// OPTIMAL SIZE??
+	char dataBuffer[1024 * 3];
+
 	// clear the receive buffer
 	ZeroMemory(dataBuffer, 1024 * 3); 
 
@@ -154,17 +157,8 @@ void PNSTracker::track()
 	// Display the received data
 	Console::log("PNSTracker::track(): " + sDataBuffer);
 
-	/*
-	std::vector<float> v;
-	std::istringstream iss(sDataBuffer);
-
-	copy(std::istream_iterator<float>(iss), std::istream_iterator<float>(), back_inserter(v));
-	v.erase(v.begin(), v.begin() + 2);
-	Console::log("PNSTracker::track(): Data values reveived = " + v.size());
-	*/
-
 	// extract skeletons from body frame and parse them into default skeleton pool
-	//extractSkeleton();
+	extractSkeleton(dataBuffer);
 
 	// clean up skeleton pool - remove inactive skeletons
 	//cleanSkeletonPool();
@@ -260,8 +254,17 @@ void PNSTracker::track()
 }
 
 // extract skeletons from udp data package and psuh them into skeleton pool
-void PNSTracker::extractSkeleton()
+void PNSTracker::extractSkeleton(char data[])
 {
+
+	/*
+	std::vector<float> v;
+	std::istringstream iss(sDataBuffer);
+
+	copy(std::istream_iterator<float>(iss), std::istream_iterator<float>(), back_inserter(v));
+	v.erase(v.begin(), v.begin() + 2);
+	Console::log("PNSTracker::track(): Data values reveived = " + v.size());
+	*/
 
 	/*
 	// set number of detected bodies in frame
