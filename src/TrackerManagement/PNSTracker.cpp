@@ -133,13 +133,13 @@ void PNSTracker::track()
 {
 
 	// OPTIMAL SIZE??
-	char dataBuffer[1024 * 3];
+	char rawData[1024 * 3];
 
 	// clear the receive buffer
-	ZeroMemory(dataBuffer, 1024 * 3); 
+	ZeroMemory(rawData, 1024 * 3); 
 
 	// wait for message and get data
-	int bytesIn = recvfrom(udpSocket, dataBuffer, 1024 * 3, 0, (sockaddr*)&client, &clientSize);
+	int bytesIn = recvfrom(udpSocket, rawData, 1024 * 3, 0, (sockaddr*)&client, &clientSize);
 	if (bytesIn == SOCKET_ERROR)
 	{
 		Console::logError("PNSTracker::track(): " + WSAGetLastError());
@@ -147,18 +147,19 @@ void PNSTracker::track()
 	}
 
 	/*
+	// replace "chr" with "000" in rawData
 	dataBuffer[2] = '0';
 	dataBuffer[3] = '0';
 	dataBuffer[4] = '0';
 	*/
 
 	// std::string sClientIp(clientIp);
-	std::string sDataBuffer(dataBuffer);
+	std::string sRawData(rawData);
 	// Display the received data
-	Console::log("PNSTracker::track(): " + sDataBuffer);
+	Console::log("PNSTracker::track(): " + sRawData);
 
 	// extract skeletons from body frame and parse them into default skeleton pool
-	extractSkeleton(dataBuffer);
+	extractSkeleton(rawData);
 
 	// clean up skeleton pool - remove inactive skeletons
 	//cleanSkeletonPool();
