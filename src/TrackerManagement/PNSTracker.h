@@ -43,6 +43,13 @@ private:
 	
 	SOCKET udpSocket;
 
+	// use to hold the client information (port / ip address)
+	sockaddr_in client;
+	int clientSize;
+
+	// OPTIMAL SIZE??
+	char dataBuffer[1024 * 3];
+
 	/*!
 	 * initializes the udpSocket, must only be called once in the beginning
 	 * stop() resets all initialization

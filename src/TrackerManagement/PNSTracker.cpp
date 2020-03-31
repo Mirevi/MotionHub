@@ -101,6 +101,8 @@ void PNSTracker::init()
 		return;
 	}
 
+	clientSize = sizeof(client);
+
 }
 
 // tracking loop
@@ -129,14 +131,7 @@ void PNSTracker::update()
 // get new skeleton data and parse it into the default skeleton
 void PNSTracker::track()
 {
-
-	// use to hold the client information (port / ip address)
-	sockaddr_in client; 
-	int clientSize = sizeof(client);
-	// clear the client structure
-	ZeroMemory(&client, clientSize); 
-
-	char dataBuffer[1024 * 3];
+	
 	// clear the receive buffer
 	ZeroMemory(dataBuffer, 1024 * 3); 
 
