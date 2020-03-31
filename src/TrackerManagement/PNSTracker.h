@@ -41,14 +41,11 @@ public:
 
 private:
 	
-	SOCKET udpSocket;
+	SOCKET inSocket;
 
 	// use to hold the client information (port / ip address)
 	sockaddr_in client;
-	int clientSize;
-
-	// OPTIMAL SIZE??
-	char dataBuffer[1024 * 3];
+	int clientMemSize;
 
 	/*!
 	 * initializes the udpSocket, must only be called once in the beginning

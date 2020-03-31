@@ -102,7 +102,7 @@ int TrackerManager::createTracker(TrackerType type)
 			//a tracker has been added, so the tracker pool has changed
 			m_hasTrackerPoolChanged = true;
 
-			Console::log("TrackerManager::createTracker(): Created PerceptionNeuron2 tracker.");
+			Console::log("TrackerManager::createTracker(): Created PerceptionNeuronStudio tracker.");
 
 			return id;
 

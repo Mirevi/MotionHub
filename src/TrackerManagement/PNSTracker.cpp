@@ -42,7 +42,7 @@ void PNSTracker::stop()
 {
 
 	// Close socket
-	closesocket(udpSocket);
+	closesocket(inSocket);
 
 	// Shutdown winsock
 	WSACleanup();
@@ -75,33 +75,33 @@ void PNSTracker::init()
 	WORD version = MAKEWORD(2, 2);
 
 	// start WinSock
-	int errorCodeWinSock = WSAStartup(version, &data);
+	int errCodeSocket = WSAStartup(version, &data);
 
-	if (errorCodeWinSock != 0)
+	if (errCodeSocket != 0)
 	{
-		Console::logError("PNSTracker::init(): Error starting WinSock = " + errorCodeWinSock);
+		Console::logError("PNSTracker::init(): Error starting WinSock = " + errCodeSocket);
 		return;
 	}
 
 	// SOCKET CREATION AND BINDING
 
 	// create a socket, notice that it is a user datagram socket (UDP)
-	udpSocket = socket(AF_INET, SOCK_DGRAM, 0);
+	inSocket = socket(AF_INET, SOCK_DGRAM, 0);
 
 	// Create a server hint structure for the server
-	sockaddr_in serverHint;
-	serverHint.sin_addr.S_un.S_addr = ADDR_ANY; // use any IP address available on the machine -> CHANGE TO LOCALHOST?
-	serverHint.sin_family = AF_INET; // address format is IPv4
-	serverHint.sin_port = htons(7001); // convert from little to big endian 54000
+	sockaddr_in socketSettings;
+	socketSettings.sin_addr.S_un.S_addr = ADDR_ANY; // use any IP address available on the machine -> CHANGE TO LOCALHOST?
+	socketSettings.sin_family = AF_INET; // address format is IPv4
+	socketSettings.sin_port = htons(7001); // convert from little to big endian 54000
 
 	// try and bind the socket to the IP and port
-	if (bind(udpSocket, (sockaddr*)&serverHint, sizeof(serverHint)) == SOCKET_ERROR)
+	if (bind(inSocket, (sockaddr*)&socketSettings, sizeof(socketSettings)) == SOCKET_ERROR)
 	{
 		Console::logError("PNSTracker::init(): Error binding WinSock = " + WSAGetLastError());
 		return;
 	}
 
-	clientSize = sizeof(client);
+	clientMemSize = sizeof(client);
 
 }
 
@@ -139,8 +139,8 @@ void PNSTracker::track()
 	ZeroMemory(rawData, 1024 * 3); 
 
 	// wait for message and get data
-	int bytesIn = recvfrom(udpSocket, rawData, 1024 * 3, 0, (sockaddr*)&client, &clientSize);
-	if (bytesIn == SOCKET_ERROR)
+	int errCodeSocket = recvfrom(inSocket, rawData, 1024 * 3, 0, (sockaddr*)&client, &clientMemSize);
+	if (errCodeSocket == SOCKET_ERROR)
 	{
 		Console::logError("PNSTracker::track(): " + WSAGetLastError());
 		return;
