@@ -135,10 +135,10 @@ void PNSTracker::track()
 	// OPTIMAL SIZE??
 	char rawData[1024 * 3];
 
-	// clear the receive buffer
+	// clear the raw data variable
 	ZeroMemory(rawData, 1024 * 3); 
 
-	// wait for message and get data
+	// wait and get raw data
 	int errCodeSocket = recvfrom(inSocket, rawData, 1024 * 3, 0, (sockaddr*)&client, &clientMemSize);
 	if (errCodeSocket == SOCKET_ERROR)
 	{
@@ -146,13 +146,13 @@ void PNSTracker::track()
 		return;
 	}
 
-	// extract skeletons from body frame and parse them into default skeleton pool
+	// extract skeletons from raw data and parse them into skeleton pool
 	extractSkeleton(rawData);
 
 	// clean up skeleton pool - remove inactive skeletons
 	//cleanSkeletonPool();
 
-	//count tracking cycles
+	// increase tracking cycles count
 	m_trackingCycles++;
 
 	// set data available to true
@@ -246,7 +246,7 @@ void PNSTracker::track()
 void PNSTracker::extractSkeleton(char rawData[])
 {
 
-	// process raw data
+	// PROCESS RAW DATA
 
 	// replace "chr" with "000" in rawData
 	rawData[2] = '0';
@@ -255,12 +255,14 @@ void PNSTracker::extractSkeleton(char rawData[])
 
 	// convert processed data to string
 	std::string data(rawData);
+
+	// split string into vector
 	std::istringstream issData(data);
 	std::vector<std::string> dataValues((std::istream_iterator<std::string>(issData)), std::istream_iterator<std::string>());
 
 	// display the received data
-	//Console::log("PNSTracker::track(): Data = " + data);
-	//Console::log("PNSTracker::track(): Count data values = " + std::to_string(dataValues.size()));
+	// Console::log("PNSTracker::track(): Data = " + data);
+	// Console::log("PNSTracker::track(): Count data values = " + std::to_string(dataValues.size()));
 	Console::log("PNSTracker::track(): Euler rotation hips = (" + dataValues.at(5) + ", " + dataValues.at(6) + ", " + dataValues.at(7) + ")");
 
 	/*
