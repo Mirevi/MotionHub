@@ -64,7 +64,7 @@ private:
 	/*!
 	 * pushes new skeleton into the pool or updates existing one
 	 */
-	void extractSkeleton(char data[]);
+	void extractSkeleton(char rawData[]);
 	/*!
 	 * gets the current skeleton data the udp data package
 	 * convertes data to default skeleton

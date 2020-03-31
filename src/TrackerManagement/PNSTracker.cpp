@@ -146,18 +146,6 @@ void PNSTracker::track()
 		return;
 	}
 
-	/*
-	// replace "chr" with "000" in rawData
-	dataBuffer[2] = '0';
-	dataBuffer[3] = '0';
-	dataBuffer[4] = '0';
-	*/
-
-	// std::string sClientIp(clientIp);
-	std::string sRawData(rawData);
-	// Display the received data
-	Console::log("PNSTracker::track(): " + sRawData);
-
 	// extract skeletons from body frame and parse them into default skeleton pool
 	extractSkeleton(rawData);
 
@@ -255,17 +243,25 @@ void PNSTracker::track()
 }
 
 // extract skeletons from udp data package and psuh them into skeleton pool
-void PNSTracker::extractSkeleton(char data[])
+void PNSTracker::extractSkeleton(char rawData[])
 {
 
-	/*
-	std::vector<float> v;
-	std::istringstream iss(sDataBuffer);
+	// process raw data
 
-	copy(std::istream_iterator<float>(iss), std::istream_iterator<float>(), back_inserter(v));
-	v.erase(v.begin(), v.begin() + 2);
-	Console::log("PNSTracker::track(): Data values reveived = " + v.size());
-	*/
+	// replace "chr" with "000" in rawData
+	rawData[2] = '0';
+	rawData[3] = '0';
+	rawData[4] = '0';
+
+	// convert processed data to string
+	std::string data(rawData);
+	std::istringstream issData(data);
+	std::vector<std::string> dataValues((std::istream_iterator<std::string>(issData)), std::istream_iterator<std::string>());
+
+	// display the received data
+	//Console::log("PNSTracker::track(): Data = " + data);
+	//Console::log("PNSTracker::track(): Count data values = " + std::to_string(dataValues.size()));
+	Console::log("PNSTracker::track(): Euler rotation hips = (" + dataValues.at(5) + ", " + dataValues.at(6) + ", " + dataValues.at(7) + ")");
 
 	/*
 	// set number of detected bodies in frame
