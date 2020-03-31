@@ -143,30 +143,25 @@ void PNSTracker::track()
 		return;
 	}
 
-	// display message and client info
-	// create enough space to convert the address byte array to string of characters
-	char clientIp[256]; 
-	ZeroMemory(clientIp, 256);
-
-	// convert from byte array to chars
-	inet_ntop(AF_INET, &client.sin_addr, clientIp, 256);
-
+	/*
 	dataBuffer[2] = '0';
 	dataBuffer[3] = '0';
 	dataBuffer[4] = '0';
+	*/
 
-	std::string sClientIp(clientIp);
+	// std::string sClientIp(clientIp);
 	std::string sDataBuffer(dataBuffer);
+	// Display the received data
+	Console::log("PNSTracker::track(): " + sDataBuffer);
 
-	// Display the message / who sent it
-	Console::log("PNSTracker::track(): Data received from = " + sClientIp + ":" + sDataBuffer);
-
+	/*
 	std::vector<float> v;
 	std::istringstream iss(sDataBuffer);
 
 	copy(std::istream_iterator<float>(iss), std::istream_iterator<float>(), back_inserter(v));
 	v.erase(v.begin(), v.begin() + 2);
 	Console::log("PNSTracker::track(): Data values reveived = " + v.size());
+	*/
 
 	// extract skeletons from body frame and parse them into default skeleton pool
 	//extractSkeleton();
