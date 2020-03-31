@@ -57,7 +57,7 @@ void CreateTrackerWindow::slotCreateTracker()
 		case 2:
 		{
 			// create new perception neuron 2 tracker and add tracker to the tracking manager tracker pool
-			id = m_refTrackerManager->createTracker(TrackerManager::perceptionNeuron2);
+			id = m_refTrackerManager->createTracker(TrackerManager::perceptionNeuronStudio);
 
 			break;
 

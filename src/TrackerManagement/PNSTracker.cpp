@@ -144,7 +144,8 @@ void PNSTracker::track()
 	int bytesIn = recvfrom(udpSocket, dataBuffer, 1024 * 3, 0, (sockaddr*)&client, &clientSize);
 	if (bytesIn == SOCKET_ERROR)
 	{
-		Console::logError("PNSTracker::track(): WSAGetLastError()");
+		Console::logError("PNSTracker::track(): " + WSAGetLastError());
+		return;
 	}
 
 	// display message and client info
