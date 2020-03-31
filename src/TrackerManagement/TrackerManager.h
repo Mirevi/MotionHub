@@ -2,15 +2,15 @@
 
 #include "ConfigDllExportTrackingManagement.h"
 
+#include "PNSTracker.h"
+#include "Tracker.h"
+#include "AKTracker.h"
+#include "OTTracker.h"
+
 #include <map>
 #include <vector>
 #include <atomic>
 #include <mutex>
-
-#include "Tracker.h"
-#include "AKTracker.h"
-#include "OTTracker.h"
-#include "PNSTracker.h"
 
 /*!
  * \class TrackerManager

@@ -2,12 +2,11 @@
 
 #include "ConfigDllExportRenderManagement.h"
 #include <QtWidgets/QDialog>
+#include "TrackerManagement/TrackerManager.h"
 #include "MotionHubUtil/Console.h"
 #include "QtCore/qstringlistmodel.h"
 #include "QtCore/qstring.h"
 #include "QtWidgets/qlistwidget.h"
-#include "TrackerManagement/TrackerManager.h"
-
 
 namespace Ui {
 	class CreateTrackerWindow;

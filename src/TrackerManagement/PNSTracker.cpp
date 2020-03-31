@@ -1,7 +1,5 @@
 #include "PNSTracker.h"
 
-#include <ws2tcpip.h>
-
 // default constructor
 PNSTracker::PNSTracker(int id)
 {

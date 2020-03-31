@@ -5,6 +5,8 @@
 
 #include "ConfigDllExportRenderManagement.h"
 
+#include "TrackerManagement/TrackerManager.h"
+
 #include <iostream>
 #include <vector>
 
@@ -16,7 +18,6 @@
 #include <Qt3DInput/QMouseEvent>
 
 #include "MotionHubUtil/Vector3.h"
-#include "TrackerManagement/TrackerManager.h"
 
 #include "Mesh.h"
 #include "Plane.h"

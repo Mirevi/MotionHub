@@ -1,9 +1,8 @@
 #pragma once
 
-#define WIN32_LEAN_AND_MEAN
+#include <ws2tcpip.h>
 
 #include "Tracker.h"
-#include "MotionHubUtil/Console.h"
 
 #include <vector>
 #include <sstream>

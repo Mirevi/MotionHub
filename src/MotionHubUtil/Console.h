@@ -2,7 +2,9 @@
 
 #include "ConfigDllExportMotionHubUtil.h"
 
+#define _WINSOCKAPI_
 #include <windows.h>
+
 #include <iostream>
 #include <fstream>
 
@@ -17,7 +19,6 @@
 
 #include <atomic>
 #include <mutex>
-#include <thread>
 #include <chrono>
 
 
