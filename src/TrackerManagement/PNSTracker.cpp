@@ -262,83 +262,60 @@ void PNSTracker::extractSkeleton(char rawData[])
 
 	// display the received data
 	// Console::log("PNSTracker::track(): Data = " + data);
-	// Console::log("PNSTracker::track(): Count data values = " + std::to_string(dataValues.size()));
-	Console::log("PNSTracker::track(): Euler rotation hips = (" + dataValues.at(5) + ", " + dataValues.at(6) + ", " + dataValues.at(7) + ")");
+	// Console::log("PNSTracker::track(): Count data values = " + std::to_string(dataValues.size() - 9)); // -> 174 values without header and footer
+	// Console::log("PNSTracker::track(): Euler rotation hips = (" + dataValues.at(5) + ", " + dataValues.at(6) + ", " + dataValues.at(7) + ")");
 
-	/*
-	// set number of detected bodies in frame
-	m_properties->countDetectedSkeleton = k4abt_frame_get_num_bodies(*body_frame);
+	// TMP -> currently there is only one tracking suit for testing available at MIREVI so that the detected count never exeeds 1
+	m_properties->countDetectedSkeleton = 1;
 
-	//Console::log(std::to_string(m_numBodies));
+	// get skeleton id from data values at index 1 in vector
+	int skeletonId = std::stoi(dataValues.at(1));
 
-	// skeleton loop
-	for (int indexSkeleton = 0; indexSkeleton < m_properties->countDetectedSkeleton; indexSkeleton++)
+	if (m_skeletonPool.size() == 1)
 	{
 
-		// get the skeleton and the id
-		k4abt_skeleton_t skeleton;
-		k4abt_frame_get_body_skeleton(*body_frame, indexSkeleton, &skeleton);
-		uint32_t id = k4abt_frame_get_body_id(*body_frame, indexSkeleton);
+		// update existing skeleon with new data
+		m_skeletonPool[0].m_joints = parseSkeleton(dataValues, skeletonId).m_joints;
 
-		bool createNewSkeleton = true;
-
-		// update existing skeleton
-		for (auto itPoolSkeletons = m_skeletonPool.begin(); itPoolSkeletons != m_skeletonPool.end(); itPoolSkeletons++)
-		{
-
-			if (id == itPoolSkeletons->first)
-			{
-
-				// update all joints of existing skeleon with new data
-				m_skeletonPool[id].m_joints = parseSkeleton(&skeleton, id)->m_joints;
-
-				createNewSkeleton = false;
-
-				break;
-
-			}
-		}
-
-		// create new skeleton
-		if (createNewSkeleton)
-		{
-
-			// create new skeleton and add it to the skeleton pool
-			m_skeletonPool.insert({ id, *parseSkeleton(&skeleton, id) });
-			
-			//skeleton was added/removed, so UI updates
-			m_hasSkeletonPoolChanged = true;
-
-			Console::log("PN2Tracker::updateSkeleton(): [cam id = " + std::to_string(m_idCam) + "] Created new skeleton with id = " + std::to_string(id) + ".");
-
-		}
 	}
-	*/
+	else if (m_skeletonPool.size() == 0)
+	{
+
+		// create new skeleton and add it to the skeleton pool
+		m_skeletonPool.insert({ skeletonId, parseSkeleton(dataValues, skeletonId) });
+
+		// skeleton was added/removed, so UI updates
+		m_hasSkeletonPoolChanged = true;
+
+		Console::log("PNSTracker::updateSkeleton(): Created new skeleton with id = " + std::to_string(skeletonId) + ".");
+
+	}
 }
 
 // takes udp data package and returns default skeleton
-void PNSTracker::parseSkeleton()
+Skeleton PNSTracker::parseSkeleton(std::vector<std::string> dataValues, int skeletonId)
 {
 
-	/*
 	// skeleton data container
-	Skeleton* currSkeleton = new Skeleton(id);
+	Skeleton currSkeleton(skeletonId);
 
-	// loop through all joints, get the position and rotation and pass them into the joint map
-	for (int jointIndex = 0; jointIndex < K4ABT_JOINT_COUNT; jointIndex++)
+	/*
+	// loop through all values, get the rotation and pass them into the joint map
+	// start at index 2 to skip the header (index 0 -> channel, index 1 -> skeletonId)
+	for (int indexValues = 2; indexValues < ((dataValues.size() - 9) / 3); indexValues + 3)
 	{
 
-		// get position and rotation
-		k4a_float3_t skeleton_position = skeleton->joints[jointIndex].position;
-		k4a_quaternion_t skeleton_rotation = skeleton->joints[jointIndex].orientation;
-
+		// parse rotation
+		Eigen::Vector3f localJointRotation(std::stof(dataValues.at(indexValues)),
+										   std::stof(dataValues.at(indexValues + 1)),
+										   std::stof(dataValues.at(indexValues + 2)));
 		
 		// convert from k4a Vectors and quaternions into Eigen vector and quaternion with coordinate transformation
 		Vector4f pos	= m_offsetMatrix * Vector4f(skeleton_position.xyz.x, skeleton_position.xyz.y, skeleton_position.xyz.z, 1);
 		Quaternionf rot = Quaternionf(skeleton_rotation.wxyz.w, skeleton_rotation.wxyz.x, skeleton_rotation.wxyz.y, skeleton_rotation.wxyz.z);
 
-		// get joint confidence level from azure kinect body tracker API
-		Joint::JointConfidence confidence = (Joint::JointConfidence)skeleton->joints[jointIndex].confidence_level;
+		// set joint confidence to default HIGH
+		Joint::JointConfidence confidence = Joint::JointConfidence::HIGH;
 
 		// map azure kinect skeleton joints to default skeleton joints and set confidence level
 		//rotations are converted from global to local
@@ -458,10 +435,11 @@ void PNSTracker::parseSkeleton()
 	// set body heigt based on head position
 	currSkeleton->setHeight(currSkeleton->m_joints[Joint::HEAD].getJointPosition().y());
 
-
-	// return parsed default skeleton
-	return currSkeleton;
 	*/
+
+	// return parsed skeleton
+	return currSkeleton;
+
 }
 
 // erase all unused skeletons from pool

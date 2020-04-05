@@ -69,7 +69,7 @@ private:
 	 * gets the current skeleton data the udp data package
 	 * convertes data to default skeleton
 	 */
-	void parseSkeleton();
+	Skeleton parseSkeleton(std::vector<std::string> dataValues, int skeletonId);
 	/*!
 	 * deletes all old skeletons from the skeleton pool
 	 */
