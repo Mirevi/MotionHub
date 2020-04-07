@@ -262,27 +262,32 @@ void PNSTracker::extractSkeleton(char rawData[])
 
 	// display the received data
 	// Console::log("PNSTracker::track(): Data = " + data);
-	// Console::log("PNSTracker::track(): Count data values = " + std::to_string(dataValues.size() - 9)); // -> 174 values without header and footer
+	// Console::log("PNSTracker::track(): Count data values = " + std::to_string(dataValues.size())); // dataValues.size() -> 357 values in total with header and footer
 	// Console::log("PNSTracker::track(): Euler rotation hips = (" + dataValues.at(5) + ", " + dataValues.at(6) + ", " + dataValues.at(7) + ")");
 
-	// TMP -> currently there is only one tracking suit for testing available at MIREVI so that the detected count never exeeds 1
-	m_properties->countDetectedSkeleton = 1;
+	// calculate the count of all detected skeletons
+	// m_properties->countDetectedSkeleton = dataValues.size() / 357;
 
 	// get skeleton id from data values at index 1 in vector
 	int skeletonId = std::stoi(dataValues.at(1));
 
-	if (m_skeletonPool.size() == 1)
+	int sizeSkeletonPool = m_skeletonPool.size();
+
+	if (sizeSkeletonPool == 1)
 	{
 
 		// update existing skeleon with new data
 		m_skeletonPool[0].m_joints = parseSkeleton(dataValues, skeletonId).m_joints;
 
 	}
-	else if (m_skeletonPool.size() == 0)
+	else if (sizeSkeletonPool == 0)
 	{
 
 		// create new skeleton and add it to the skeleton pool
 		m_skeletonPool.insert({ skeletonId, parseSkeleton(dataValues, skeletonId) });
+
+		// TMP -> currently there is only one tracking suit for testing available at MIREVI so that the detected count never exeeds 1
+		m_properties->countDetectedSkeleton = 1;
 
 		// skeleton was added/removed, so UI updates
 		m_hasSkeletonPoolChanged = true;
