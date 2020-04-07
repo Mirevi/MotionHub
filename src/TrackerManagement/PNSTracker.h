@@ -70,9 +70,5 @@ private:
 	 * convertes data to default skeleton
 	 */
 	Skeleton parseSkeleton(std::vector<std::string> dataValues, int skeletonId);
-	/*!
-	 * deletes all old skeletons from the skeleton pool
-	 */
-	void cleanSkeletonPool();
 
 };

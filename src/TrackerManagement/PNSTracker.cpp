@@ -17,7 +17,7 @@ PNSTracker::PNSTracker(int id)
 	//set default values for offsets
 	setPositionOffset(Vector3f(0.0f, 0.0f, 0.0f));
 	setRotationOffset(Vector3f(0.0f, 0.0f, 0.0f));
-	setScaleOffset(Vector3f(1.0f, 1.0f, 1.0f));
+	setScaleOffset(Vector3f(0.01f, 0.01f, 0.01f));
 
 	// initialize udp server
 	init();
@@ -158,88 +158,6 @@ void PNSTracker::track()
 	// set data available to true
 	m_isDataAvailable = true;
 
-	/*
-	 create sensor capture and result
-	k4a_capture_t sensor_capture;
-	k4a_wait_result_t get_capture_result = k4a_device_get_capture(m_cam, &sensor_capture, K4A_WAIT_INFINITE);
-
-	 process capture if result succeeded
-	if (get_capture_result == K4A_WAIT_RESULT_SUCCEEDED)
-	{
-
-		// add capture to body tracker process quene
-		k4a_wait_result_t queue_capture_result = k4abt_tracker_enqueue_capture(m_tracker, sensor_capture, K4A_WAIT_INFINITE);
-		k4a_capture_release(sensor_capture); // release the sensor capture once we finish using it
-
-		// error handling quene capture timeout
-		if (queue_capture_result == K4A_WAIT_RESULT_TIMEOUT)
-		{
-			// it should never hit timeout when K4A_WAIT_INFINITE is set
-			Console::logError("[cam id = " + std::to_string(m_idCam) + "] Add capture to tracker process queue timeout!");
-			return;
-
-		}
-		// error handling quene capture failure
-		else if (queue_capture_result == K4A_WAIT_RESULT_FAILED)
-		{
-			Console::logError("[cam id = " + std::to_string(m_idCam) + "] Add capture to tracker process queue failed!");
-			return;
-		}
-
-		// extract body frame out of capture
-		k4abt_frame_t body_frame = NULL;
-		k4a_wait_result_t pop_frame_result = k4abt_tracker_pop_result(m_tracker, &body_frame, K4A_WAIT_INFINITE);
-
-		// successfully popped the body tracking result
-		if (pop_frame_result == K4A_WAIT_RESULT_SUCCEEDED)
-		{
-
-			// extract skeletons from body frame and parse them into default skeleton pool
-			extractSkeleton(&body_frame);
-
-
-
-			// clean up skeleton pool - remove inactive skeletons
-			cleanSkeletonPool(&body_frame);
-
-			// remember to release the body frame once you finish using it
-			k4abt_frame_release(body_frame); 
-
-			//count tracking cycles
-			m_trackingCycles++;
-
-			// set data available to true
-			m_isDataAvailable = true;
-
-
-		}
-		// error handling
-		else if (pop_frame_result == K4A_WAIT_RESULT_TIMEOUT)
-		{
-			//  it should never hit timeout when K4A_WAIT_INFINITE is set
-			Console::logError("[cam id = " + std::to_string(m_idCam) + "] Pop body frame result timeout!");
-			m_isDataAvailable = false;
-
-			return;
-		}
-		else
-		{
-			Console::logError("[cam id = " + std::to_string(m_idCam) + "] Pop body frame result failed!");
-			return;
-		}
-	}
-	else if (get_capture_result == K4A_WAIT_RESULT_TIMEOUT)
-	{
-		// It should never hit time out when K4A_WAIT_INFINITE is set.
-		Console::logError("[cam id = " + std::to_string(m_idCam) + "] Get depth frame time out!");
-		return;
-	}
-	else
-	{
-		Console::logError("[cam id = " + std::to_string(m_idCam) + "] Get depth capture returned error: " + std::to_string(get_capture_result));
-		return;
-	}
-	*/
 }
 
 // extract skeletons from udp data package and psuh them into skeleton pool
@@ -279,6 +197,9 @@ void PNSTracker::extractSkeleton(char rawData[])
 		// update existing skeleon with new data
 		m_skeletonPool[0].m_joints = parseSkeleton(dataValues, skeletonId).m_joints;
 
+		// skeleton was added/removed, so UI updates
+		m_hasSkeletonPoolChanged = true;
+
 	}
 	else if (sizeSkeletonPool == 0)
 	{
@@ -295,6 +216,9 @@ void PNSTracker::extractSkeleton(char rawData[])
 		Console::log("PNSTracker::updateSkeleton(): Created new skeleton with id = " + std::to_string(skeletonId) + ".");
 
 	}
+
+	m_trackingCycles++;
+
 }
 
 // takes udp data package and returns default skeleton
@@ -420,54 +344,4 @@ Skeleton PNSTracker::parseSkeleton(std::vector<std::string> dataValues, int skel
 	// return parsed skeleton
 	return currSkeleton;
 
-}
-
-// erase all unused skeletons from pool
-void PNSTracker::cleanSkeletonPool()
-{
-
-	/*
-	//all skeletons with ids in this list will be erased at the end of this method
-	std::list<int> idSkeletonsToErase;
-
-	// loop through all skeletons in pool
-	for (auto itPoolSkeletons = m_skeletonPool.begin(); itPoolSkeletons != m_skeletonPool.end(); itPoolSkeletons++)
-	{	
-
-		// get current skeleton id
-		int idCurrPoolSkeleton = itPoolSkeletons->first;
-		bool isK4aSkeletonInPool = false;
-
-		//loop thorugh all k4a skeletons in frame
-		for (int indexK4aSkeleton = 0; indexK4aSkeleton < m_properties->countDetectedSkeleton; indexK4aSkeleton++)
-		{
-			// current k4a skeleton id
-			int idCurrK4aSkeleton = k4abt_frame_get_body_id(*bodyFrame, indexK4aSkeleton);
-
-			// if k4a skeleton is in pool set isK4aSkeletonInPool to true
-			if (idCurrPoolSkeleton == idCurrK4aSkeleton)
-			{
-				isK4aSkeletonInPool = true;
-			}
-		}
-
-		if (!isK4aSkeletonInPool)
-		{
-			idSkeletonsToErase.push_back(idCurrPoolSkeleton);
-		}
-	}
-
-	for (auto itIndexIdSkeletonsToErase = idSkeletonsToErase.begin(); itIndexIdSkeletonsToErase != idSkeletonsToErase.end(); itIndexIdSkeletonsToErase++)
-	{
-
-		// erase skeleton with id
-		m_skeletonPool.erase(*itIndexIdSkeletonsToErase);
-
-		//skeleton was added/removed, so UI updates
-		m_hasSkeletonPoolChanged = true;
-
-		Console::log("PN2Tracker::cleanSkeletonList(): [cam id = " + std::to_string(m_idCam) + "] Removed skeleton with id = " + std::to_string(*itIndexIdSkeletonsToErase) + " from pool!");
-
-	}
-	*/
 }
