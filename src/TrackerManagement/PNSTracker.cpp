@@ -301,135 +301,112 @@ void PNSTracker::extractSkeleton(char rawData[])
 Skeleton PNSTracker::parseSkeleton(std::vector<std::string> dataValues, int skeletonId)
 {
 
+	// remove header and footer from dataValues
+	dataValues.erase(dataValues.begin());
+	dataValues.erase(dataValues.begin());
+	dataValues.pop_back();
+
+	// Console::log("PNSTracker::track(): Count joints = " + std::to_string(dataValues.size() / 6)); // dataValues.size() -> 357 values in total with header and footer
+	
 	// skeleton data container
 	Skeleton currSkeleton(skeletonId);
 
-	/*
-	// loop through all values, get the rotation and pass them into the joint map
-	// start at index 2 to skip the header (index 0 -> channel, index 1 -> skeletonId)
-	for (int indexValues = 2; indexValues < ((dataValues.size() - 9) / 3); indexValues + 3)
+	for (int indexJoint = 0; indexJoint < 59; indexJoint++)
 	{
 
+		// parse position and apply offset matrix
+		Vector4f jointPos = m_offsetMatrix * Vector4f(std::stof(dataValues.at(indexJoint * 6 + 0)),
+													  std::stof(dataValues.at(indexJoint * 6 + 1)),
+													  std::stof(dataValues.at(indexJoint * 6 + 2)), 1);
+
 		// parse rotation
-		Eigen::Vector3f localJointRotation(std::stof(dataValues.at(indexValues)),
-										   std::stof(dataValues.at(indexValues + 1)),
-										   std::stof(dataValues.at(indexValues + 2)));
+		Vector3f eulerJointRot(std::stof(dataValues.at(indexJoint * 6 + 3)),
+							   std::stof(dataValues.at(indexJoint * 6 + 4)),
+							   std::stof(dataValues.at(indexJoint * 6 + 5)));
 		
-		// convert from k4a Vectors and quaternions into Eigen vector and quaternion with coordinate transformation
-		Vector4f pos	= m_offsetMatrix * Vector4f(skeleton_position.xyz.x, skeleton_position.xyz.y, skeleton_position.xyz.z, 1);
-		Quaternionf rot = Quaternionf(skeleton_rotation.wxyz.w, skeleton_rotation.wxyz.x, skeleton_rotation.wxyz.y, skeleton_rotation.wxyz.z);
+		// convert rotation to quaternion
+		Quaternionf jointRot = eulerToQuaternion(eulerJointRot);
 
 		// set joint confidence to default HIGH
-		Joint::JointConfidence confidence = Joint::JointConfidence::HIGH;
-
-		// map azure kinect skeleton joints to default skeleton joints and set confidence level
-		//rotations are converted from global to local
-		switch (jointIndex)
+		Joint::JointConfidence jointConfidence = Joint::JointConfidence::HIGH;
+		
+		switch (indexJoint)
 		{
 
 			case 0:
-				 rot *= azureKinectEulerToQuaternion(Vector3f(90, -90, 0));
-				currSkeleton->m_joints.insert({ Joint::HIPS, Joint(pos, rot, confidence) });
+				currSkeleton.m_joints.insert({ Joint::HIPS, Joint(jointPos, jointRot, jointConfidence) });
 				break;
 
 			case 1:
-				 rot *= azureKinectEulerToQuaternion(Vector3f(90, -90, 0));
-				currSkeleton->m_joints.insert({ Joint::SPINE, Joint(pos, rot, confidence) });
+				currSkeleton.m_joints.insert({ Joint::UPLEG_R, Joint(jointPos, jointRot, jointConfidence) });
 				break;
 
 			case 2:
-				 rot *= azureKinectEulerToQuaternion(Vector3f(90, -90, 0));
-				currSkeleton->m_joints.insert({ Joint::CHEST, Joint(pos, rot, confidence) });
+				currSkeleton.m_joints.insert({ Joint::LEG_R, Joint(jointPos, jointRot, jointConfidence) });
 				break;
 				 
 			case 3:
-				 rot *= azureKinectEulerToQuaternion(Vector3f(90, -90, 0));
-				currSkeleton->m_joints.insert({ Joint::NECK, Joint(pos, rot, confidence) });
+				currSkeleton.m_joints.insert({ Joint::FOOT_R, Joint(jointPos, jointRot, jointConfidence) });
 				break;
 
 			case 4:
-				 rot *= azureKinectEulerToQuaternion(Vector3f(90, 0, 0));
-				currSkeleton->m_joints.insert({ Joint::SHOULDER_L, Joint(pos, rot, confidence) });
+				currSkeleton.m_joints.insert({ Joint::UPLEG_L, Joint(jointPos, jointRot, jointConfidence) });
 				break;
 
 			case 5:
-				 rot *= azureKinectEulerToQuaternion(Vector3f(90, 0, 0));
-				currSkeleton->m_joints.insert({ Joint::ARM_L, Joint(pos, rot, confidence) });
+				currSkeleton.m_joints.insert({ Joint::LEG_L, Joint(jointPos, jointRot, jointConfidence) });
 				break;
 
 			case 6:
-				 rot *= azureKinectEulerToQuaternion(Vector3f(90, 0, 0));
-				currSkeleton->m_joints.insert({ Joint::FOREARM_L, Joint(pos, rot, confidence) });
+				currSkeleton.m_joints.insert({ Joint::FOOT_L, Joint(jointPos, jointRot, jointConfidence) });
 				break;
 
 			case 7:
-				 rot *= azureKinectEulerToQuaternion(Vector3f(0, 180, 180));
-				currSkeleton->m_joints.insert({ Joint::HAND_L, Joint(pos, rot, confidence) });
+				currSkeleton.m_joints.insert({ Joint::SPINE, Joint(jointPos, jointRot, jointConfidence) });
+				break;
+
+			case 9:
+				currSkeleton.m_joints.insert({ Joint::CHEST, Joint(jointPos, jointRot, jointConfidence) });
 				break;
 
 			case 11:
-				 rot *= azureKinectEulerToQuaternion(Vector3f(270, 0, 0));
-				currSkeleton->m_joints.insert({ Joint::SHOULDER_R, Joint(pos, rot, confidence) });
+				currSkeleton.m_joints.insert({ Joint::NECK, Joint(jointPos, jointRot, jointConfidence) });
 				break;
 
 			case 12:
-				 rot *= azureKinectEulerToQuaternion(Vector3f(270, 0, 0));
-				currSkeleton->m_joints.insert({ Joint::ARM_R, Joint(pos, rot, confidence) });
+				currSkeleton.m_joints.insert({ Joint::HEAD, Joint(jointPos, jointRot, jointConfidence) });
 				break;
 
 			case 13:
-				 rot *= azureKinectEulerToQuaternion(Vector3f(270, 0, 0));
-				currSkeleton->m_joints.insert({ Joint::FOREARM_R, Joint(pos, rot, confidence) });
+				currSkeleton.m_joints.insert({ Joint::SHOULDER_R, Joint(jointPos, jointRot, jointConfidence) });
 				break;
 
 			case 14:
-				 rot *= azureKinectEulerToQuaternion(Vector3f(0, 0, 0));
-				currSkeleton->m_joints.insert({ Joint::HAND_R, Joint(pos, rot, confidence) });
+				currSkeleton.m_joints.insert({ Joint::ARM_R, Joint(jointPos, jointRot, jointConfidence) });
 				break;
 
-			case 18:
-				 rot *= azureKinectEulerToQuaternion(Vector3f(90, -90, 0));
-				currSkeleton->m_joints.insert({ Joint::UPLEG_L, Joint(pos, rot, confidence) });
+			case 15:
+				currSkeleton.m_joints.insert({ Joint::FOREARM_R, Joint(jointPos, jointRot, jointConfidence) });
 				break;
 
-			case 19:
-				 rot *= azureKinectEulerToQuaternion(Vector3f(90, -90, 0));
-				currSkeleton->m_joints.insert({ Joint::LEG_L, Joint(pos, rot, confidence) });
+			case 16:
+				currSkeleton.m_joints.insert({ Joint::HAND_R, Joint(jointPos, jointRot, jointConfidence) });
 				break;
 
-			case 20:
-				 rot *= azureKinectEulerToQuaternion(Vector3f(90, -90, 0));
-				currSkeleton->m_joints.insert({ Joint::FOOT_L, Joint(pos, rot, confidence) });
+			case 36:
+				currSkeleton.m_joints.insert({ Joint::SHOULDER_L, Joint(jointPos, jointRot, jointConfidence) });
 				break;
 
-			case 21:
-				 rot *= azureKinectEulerToQuaternion(Vector3f(0, -90, 0));
-				currSkeleton->m_joints.insert({ Joint::TOE_L, Joint(pos, rot, confidence) });
+			case 37:
+				currSkeleton.m_joints.insert({ Joint::ARM_L, Joint(jointPos, jointRot, jointConfidence) });
 				break;
 
-			case 22:
-				 rot *= azureKinectEulerToQuaternion(Vector3f(-90, -90, 0));
-				currSkeleton->m_joints.insert({ Joint::UPLEG_R, Joint(pos, rot, confidence) });
+			case 38:
+				currSkeleton.m_joints.insert({ Joint::FOREARM_L, Joint(jointPos, jointRot, jointConfidence) });
 				break;
 
-			case 23:
-				 rot *= azureKinectEulerToQuaternion(Vector3f(-90, -90, 0));
-				currSkeleton->m_joints.insert({ Joint::LEG_R, Joint(pos, rot, confidence) });
-				break;
-
-			case 24:
-				 rot *= azureKinectEulerToQuaternion(Vector3f(-90, -90, 0));
-				currSkeleton->m_joints.insert({ Joint::FOOT_R, Joint(pos, rot, confidence) });
-				break;
-
-			case 25:
-				 rot *= azureKinectEulerToQuaternion(Vector3f(0, 90, 180));
-				currSkeleton->m_joints.insert({ Joint::TOE_R, Joint(pos, rot, confidence) });
-				break;
-
-			case 26:
-				 rot *= azureKinectEulerToQuaternion(Vector3f(90, -90, 0));
-				currSkeleton->m_joints.insert({ Joint::HEAD, Joint(pos, rot, confidence) });
+			case 39:
+				currSkeleton.m_joints.insert({ Joint::ARM_L, Joint(jointPos, jointRot, jointConfidence) });
 				break;
 
 			default:
@@ -438,9 +415,7 @@ Skeleton PNSTracker::parseSkeleton(std::vector<std::string> dataValues, int skel
 	}
 
 	// set body heigt based on head position
-	currSkeleton->setHeight(currSkeleton->m_joints[Joint::HEAD].getJointPosition().y());
-
-	*/
+	currSkeleton.setHeight(currSkeleton.m_joints[Joint::HEAD].getJointPosition().y());
 
 	// return parsed skeleton
 	return currSkeleton;
