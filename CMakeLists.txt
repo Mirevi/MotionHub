@@ -109,3 +109,23 @@ add_subdirectory("${CMAKE_SOURCE_DIR}/src/RenderManagement")
 # add_subdirectory("${CMAKE_SOURCE_DIR}/src/3DRenderManagement")
 add_subdirectory("${CMAKE_SOURCE_DIR}/src/GestureManagement")
 add_subdirectory("${CMAKE_SOURCE_DIR}/src/MotionHubUtil")
+
+message(STATUS "Copiyng files to bin")
+
+file(COPY deps/qt-5920/bin/Qt5Widgetsd.dll DESTINATION ${CMAKE_BINARY_DIR}/bin)
+file(COPY deps/qt-5920/bin/Qt5Widgets.dll DESTINATION ${CMAKE_BINARY_DIR}/bin)
+file(COPY deps/qt-5920/bin/Qt5Guid.dll DESTINATION ${CMAKE_BINARY_DIR}/bin)
+file(COPY deps/qt-5920/bin/Qt5Gui.dll DESTINATION ${CMAKE_BINARY_DIR}/bin)
+file(COPY deps/qt-5920/bin/Qt5Cored.dll DESTINATION ${CMAKE_BINARY_DIR}/bin)
+file(COPY deps/qt-5920/bin/Qt5Core.dll DESTINATION ${CMAKE_BINARY_DIR}/bin)
+file(COPY deps/azurekinectsensorsdk0130/bin/k4a.dll DESTINATION ${CMAKE_BINARY_DIR}/bin)
+file(COPY deps/azurekinectbodytrackingsdk0100/bin/k4abt.dll DESTINATION ${CMAKE_BINARY_DIR}/bin)
+
+# platforms dir
+set( EXPECTED_SHA256 e3c37954f82f401333a1a3e20b1e11a48a16010e2a4fb0826c201913702ea24f ) 
+set(CURRENT_DEPS_PATH ${CMAKE_BINARY_DIR}/bin/platforms/) 
+set( URL https://claymore.mirevi.com/mirevimotionhub/platforms.zip )
+getsTheDepsNameFromURL("${URL}")
+set(CHECK_IF_DEPS_EXIST "${CURRENT_DEPS_PATH}/qwindows.dll")
+FIND_PACKAGE( Platforms REQUIRED )
+
