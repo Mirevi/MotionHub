@@ -10,6 +10,7 @@
 #include "GestureManagement/GestureManager.h"
 #include "RenderManagement/UIManager.h"
 
+#include <chrono>
 #include <string>
 
 /*!

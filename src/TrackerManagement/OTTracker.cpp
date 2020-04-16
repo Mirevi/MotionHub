@@ -159,7 +159,7 @@ int OTTracker::createClient(int iConnectionType)
 void OTTracker::init()
 {
 
-	//no init code. The receiver is created on start, because it cannot be deactivated
+	//no init code. The receiver is created on start, because it cannot be deactivated/paused
 
 }
 

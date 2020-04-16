@@ -10,6 +10,7 @@ UIManager::UIManager(int argc, char** argv, TrackerManager* trackerManager)
 	QSurfaceFormat format;
 	format.setDepthBufferSize(24);
 	QSurfaceFormat::setDefaultFormat(format);
+	
 
 	// create new main window and show window
 	m_mainWindow = new MainWindow(trackerManager);

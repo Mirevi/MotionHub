@@ -32,6 +32,9 @@ MotionHub::MotionHub(int argc, char** argv)
 void MotionHub::update()
 {
 
+
+	int framesElapsed = 0;
+
 	// main loop
 	while (m_uiManager->getMainWindow()->isVisible())
 	{
@@ -58,9 +61,10 @@ void MotionHub::update()
 					(*itTracker)->cacheSkeletonData();
 
 					// send skeleton pool reference to gesture manager in order to update all postures
-					m_gestureManager->updateAllSkeletonPostures(&((*itTracker)->getSkeletonPoolCache()));
+					m_gestureManager->updateAllSkeletonPostures(&((*itTracker)->getSkeletonPoolCache())									  );
 					// send skeleton pool 
 					m_networkManager->sendSkeletonPool(			&((*itTracker)->getSkeletonPoolCache()), (*itTracker)->getProperties()->id);
+
 
 
 					// update ui if skeleton was added or removed from pool
@@ -79,6 +83,7 @@ void MotionHub::update()
 					(*itTracker)->resetIsDataAvailable();
 
 				}
+
 			}
 		}	//check if tracker is added or removed
 		else if(m_trackerManager->hasTrackerPoolChanged())
@@ -90,5 +95,7 @@ void MotionHub::update()
 			m_uiManager->getMainWindow()->getOglRenderer()->updateSkeletonMeshPoolSize();
 
 		}
+
 	}
+
 }

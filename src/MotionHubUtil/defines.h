@@ -17,13 +17,26 @@ static std::string toString(bool state)
 }
 
 /*!
- * converts integer to sring
+ * converts integer to string
  * 
  * \param number input int
  * \return int as string
  */
 static std::string toString(int number)
 { 
+
+	return std::to_string(number);
+
+}
+
+/*!
+ * converts float to string
+ *
+ * \param number input float
+ * \return int as string
+ */
+static std::string toString(float number)
+{
 
 	return std::to_string(number);
 
