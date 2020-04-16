@@ -1,12 +1,23 @@
 #pragma once
 
-#include <ws2tcpip.h>
+// #include <ws2tcpip.h>
 
 #include "Tracker.h"
+
+#include "NeuronDataReader.h"
 
 #include <vector>
 #include <sstream>
 #include <iterator>
+
+// register callbacks
+typedef void (CALLBACK *FrameDataReceived)(void* customedObj, SOCKET_REF sender, BvhDataHeader* header, float* data);
+typedef void (CALLBACK *CalculationDataReceived)(void* customedObj, SOCKET_REF sender, CalcDataHeader * header, float* data);
+typedef void (CALLBACK *SocketStatusChanged)(void* customedObj, SOCKET_REF sender, SocketStatus status, char* message);
+
+static void onReceiveFrameData(void* customedObj, SOCKET_REF sender, BvhDataHeader* header, float* data);
+static void onReceiveCalcData(void* customedObj, SOCKET_REF sender, CalcDataHeader * header, float* data);
+static void onChangeSocketStatus(void* customedObj, SOCKET_REF sender, SocketStatus status, char* message);
 
 /*!
  * \class PNSTracker
@@ -39,36 +50,50 @@ public:
 	 */
 	void destroy() override;
 
-private:
-	
+private:	 
+
+	/*
+
 	SOCKET inSocket;
 
 	// use to hold the client information (port / ip address)
 	sockaddr_in client;
 	int clientMemSize;
 
+	*/
+
+	SOCKET_REF udpSocket;
+
+	int serverPort{ 7001 };
+
+	void* customData;
+
 	/*!
 	 * initializes the udpSocket, must only be called once in the beginning
 	 * stop() resets all initialization
 	 */
 	void init() override;
+
 	/*!
 	 * tracking loop 
 	 */
 	void update() override;
+
 	/*!
 	 * starts one tracking cylce by getting the udp data package from socket
 	 * calls updateSkeletons(...)
 	 */
 	void track() override;
+
 	/*!
 	 * pushes new skeleton into the pool or updates existing one
 	 */
-	void extractSkeleton(char rawData[]);
+	// void extractSkeleton(/*char rawData[]*/);
+
 	/*!
 	 * gets the current skeleton data the udp data package
 	 * convertes data to default skeleton
 	 */
-	Skeleton parseSkeleton(std::vector<std::string> dataValues, int skeletonId);
+	// Skeleton parseSkeleton(/*std::vector<std::string> dataValues, int skeletonId*/);
 
 };

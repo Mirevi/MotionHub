@@ -24,9 +24,47 @@ PNSTracker::PNSTracker(int id)
 
 }
 
-// start azure kinect tracker
 void PNSTracker::start()
 {
+	// create udp socket
+	udpSocket = BRStartUDPServiceAt(serverPort);
+
+	if (udpSocket == NULL)
+	{
+		std::string lastErrorMessage(BRGetLastErrorMessage());
+		Console::logError("PNSTracker::start(): " + lastErrorMessage);
+
+		return;
+	}
+	else
+	{
+		Console::log("PNSTracker::start(): Created UDP socket.");
+
+		switch (BRGetSocketStatus(udpSocket))
+		{
+		case 0:
+			Console::log("PNSTracker::start(): UDP socket status = CONNECTED");
+			break;
+		case 1:
+			Console::logWarning("PNSTracker::start(): UDP socket status = CONNECTING");
+			break;
+		case 2:
+			Console::logError("PNSTracker::start(): UDP socket status = DISCONNECTED");
+			BRCloseSocket(udpSocket);
+			return;
+			break;
+		default:
+			Console::logError("PNSTracker::start(): Invalid socket status!");
+			BRCloseSocket(udpSocket);
+			return;
+			break;
+		}
+	}
+
+	// register callback functions - start data receive
+	BRRegisterFrameDataCallback(customData, onReceiveFrameData);
+	BRRegisterCalculationDataCallback(customData, onReceiveCalcData);
+	BRRegisterSocketStatusCallback(customData, onChangeSocketStatus);
 
 	// set tracking to true
 	m_properties->isTracking = true;
@@ -41,28 +79,36 @@ void PNSTracker::start()
 void PNSTracker::stop()
 {
 
+	// is not tracking, so the update loop exits after current loop
+	m_properties->isTracking = false;
+
+	// close server connection
+	BRCloseSocket(udpSocket);
+
+	/*
+
 	// Close socket
 	closesocket(inSocket);
 
 	// Shutdown winsock
 	WSACleanup();
 
-	//is not tracking, so the update loop exits after current loop
-	m_properties->isTracking = false;
+	*/
 
 }
 
-// shutdown and destroy azure kinect tracker
 void PNSTracker::destroy()
 {
-
-	// delete this object
+	delete customData;
 	delete this;
-
 }
 
 void PNSTracker::init()
 {
+
+	customData = new int{ 1 };
+
+	/*
 
 	// INITIALIZE WINSOCK
 
@@ -103,6 +149,8 @@ void PNSTracker::init()
 
 	clientMemSize = sizeof(client);
 
+	*/
+
 }
 
 // tracking loop
@@ -132,6 +180,8 @@ void PNSTracker::update()
 void PNSTracker::track()
 {
 
+	/*
+
 	// OPTIMAL SIZE??
 	char rawData[1024 * 3];
 
@@ -146,8 +196,10 @@ void PNSTracker::track()
 		return;
 	}
 
+	*/
+
 	// extract skeletons from raw data and parse them into skeleton pool
-	extractSkeleton(rawData);
+	//extractSkeleton(rawData);
 
 	// clean up skeleton pool - remove inactive skeletons
 	//cleanSkeletonPool();
@@ -160,9 +212,12 @@ void PNSTracker::track()
 
 }
 
+#if 0
 // extract skeletons from udp data package and psuh them into skeleton pool
-void PNSTracker::extractSkeleton(char rawData[])
+void PNSTracker::extractSkeleton(/*char rawData[]*/)
 {
+
+	/*
 
 	// PROCESS RAW DATA
 
@@ -217,13 +272,18 @@ void PNSTracker::extractSkeleton(char rawData[])
 
 	}
 
-	m_trackingCycles++;
+	*/
 
 }
 
 // takes udp data package and returns default skeleton
-Skeleton PNSTracker::parseSkeleton(std::vector<std::string> dataValues, int skeletonId)
+Skeleton PNSTracker::parseSkeleton(/*std::vector<std::string> dataValues, int skeletonId*/)
 {
+
+	// skeleton data container
+	Skeleton currSkeleton(0);
+
+	/*
 
 	// remove header and footer from dataValues
 	dataValues.erase(dataValues.begin());
@@ -232,9 +292,6 @@ Skeleton PNSTracker::parseSkeleton(std::vector<std::string> dataValues, int skel
 
 	// Console::log("PNSTracker::track(): Count joints = " + std::to_string(dataValues.size() / 6)); // dataValues.size() -> 357 values in total with header and footer
 	
-	// skeleton data container
-	Skeleton currSkeleton(skeletonId);
-
 	for (int indexJoint = 0; indexJoint < 59; indexJoint++)
 	{
 
@@ -341,7 +398,46 @@ Skeleton PNSTracker::parseSkeleton(std::vector<std::string> dataValues, int skel
 	// set body heigt based on head position
 	currSkeleton.setHeight(currSkeleton.m_joints[Joint::HEAD].getJointPosition().y());
 
+	*/
+
 	// return parsed skeleton
 	return currSkeleton;
 
+}
+#endif
+
+static void onReceiveFrameData(void* customedObj, SOCKET_REF sender, BvhDataHeader* header, float* data)
+{
+
+	int* customData = (int*)(customedObj);
+
+	// Console::log("PNSTracker::onReceiveFrameData(): Hello from frame data callback function!");
+	Console::log("PNSTracker::onReceiveFrameData(): Received avatar with id = " + std::to_string(header->AvatarIndex) + ".");
+}
+
+static void onReceiveCalcData(void* customedObj, SOCKET_REF sender, CalcDataHeader * header, float* data)
+{
+	Console::log("PNSTracker::onReceiveCalcData(): Hello from calc data callback function!");
+}
+
+static void onChangeSocketStatus(void* customedObj, SOCKET_REF sender, SocketStatus status, char* message)
+{
+	switch (status)
+	{
+		case 0:
+			Console::log("PNSTracker::onSocketStatusChange(): UDP socket status changed to = CONNECTED");
+			break;
+		case 1:
+			Console::log("PNSTracker::onSocketStatusChange(): UDP socket changed to = CONNECTING");
+			break;
+		case 2:
+			Console::log("PNSTracker::onSocketStatusChange(): UDP socket changed to = DISCONNECTED");
+			break;
+		default:
+			Console::logError("PNSTracker::onSocketStatusChange(): Invalid socket status!");
+			break;
+	}
+
+	std::string messageString(message);
+	Console::log("PNSTracker::onSocketStatusChange(): " + messageString);
 }
