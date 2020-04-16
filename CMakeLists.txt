@@ -119,7 +119,11 @@ file(COPY deps/qt-5920/bin/Qt5Gui.dll DESTINATION ${CMAKE_BINARY_DIR}/bin)
 file(COPY deps/qt-5920/bin/Qt5Cored.dll DESTINATION ${CMAKE_BINARY_DIR}/bin)
 file(COPY deps/qt-5920/bin/Qt5Core.dll DESTINATION ${CMAKE_BINARY_DIR}/bin)
 file(COPY deps/azurekinectsensorsdk0130/bin/k4a.dll DESTINATION ${CMAKE_BINARY_DIR}/bin)
+file(COPY deps/azurekinectsensorsdk0130/bin/depthengine_2_0.dll DESTINATION ${CMAKE_BINARY_DIR}/bin)
 file(COPY deps/azurekinectbodytrackingsdk0100/bin/k4abt.dll DESTINATION ${CMAKE_BINARY_DIR}/bin)
+file(COPY deps/azurekinectbodytrackingsdk0100/bin/onnxruntime.dll DESTINATION ${CMAKE_BINARY_DIR}/bin)
+file(COPY deps/azurekinectbodytrackingsdk0100/bin/dnn_model_2_0.onnx DESTINATION ${CMAKE_BINARY_DIR}/bin)
+file(COPY deps/cudnn101windows10x64_76224/bin/cudnn64_7.dll DESTINATION ${CMAKE_BINARY_DIR}/bin)
 
 # platforms dir
 set( EXPECTED_SHA256 e3c37954f82f401333a1a3e20b1e11a48a16010e2a4fb0826c201913702ea24f ) 
