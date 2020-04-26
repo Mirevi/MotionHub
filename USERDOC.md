@@ -2,7 +2,7 @@ USERDOC
 
 # Mirevi MotionHub User Documentation
 
-![Organisations Logos][./assets/images/Logos.png]
+![Organisations Logos][assets/images/Logos.png]
 
 Mirevi MotionHub (MMH) is a middleware for multiple body tracking systems and it unifies them in a single plug-in for the Unity game engine.
 
@@ -39,7 +39,7 @@ Beyond that, MMH is capable of merging different tracking systems into one in or
 
 ---
 
-![Main Window][./assets/images/img_mmhUi_v001_ej.png]
+![Main Window][assets/images/img_mmhUi_v001_ej.png]
 
 MMH consists of four panels. From left to bottom right:
 
@@ -56,7 +56,7 @@ The render window camera can be rotated by holding the left mouse button down in
 
 ---
 
-![Tracker Controls 1][./assets/images/img_trackerList_v002_ej.png]
+![Tracker Controls 1][assets/images/img_trackerList_v002_ej.png]
 
 Add a new tracker by pressing the "Add"(1) button. A new popup will appear where you can select the type in a dropdown. Click "Create" to add the tracker to the list.
 
@@ -66,7 +66,7 @@ Remove a tracker by clicking on the name in the tracker list and click "Remove"(
 
 ---
 
-![Tracker Controls 2][./assets/images/img_trackerList_v002_ej.png]
+![Tracker Controls 2][assets/images/img_trackerList_v002_ej.png]
 
 Start all trackers by pressing the play icon(3). This will start all tracker and the preview in the render window.
 
@@ -76,7 +76,7 @@ Stop all tacker by clicking the same button (now displayed as a stop icon)(3). T
 
 ---
 
-![Tracker Property][./assets/images/img_trackerPropertyInspector_v001_ej.png]
+![Tracker Property][assets/images/img_trackerPropertyInspector_v001_ej.png]
 
 Offset a tracker by selecting one in the tracker list and enter values in the position, rotation and scale fields. This will offset the trackers origin. All values are in meters.
 
