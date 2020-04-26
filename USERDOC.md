@@ -14,16 +14,12 @@ Beyond that, MMH is capable of merging different tracking systems into one in or
 
 ## Content
 
----
-
 1. [Systems](#1-systems)
 2. [Overview and Navigation](#2-overview-and-navigation)
 3. [Adding and Removing Tracker](#3-adding-and-removing-tracker)
 4. [Start and Stop Tracking](#4-start-and-stop-tracking)
 
 ## 1. Systems
-
----
 
 | Supported         
 | -------------
@@ -36,8 +32,6 @@ Beyond that, MMH is capable of merging different tracking systems into one in or
 | OpenPose
 
 ## 2. Overview and Navigation
-
----
 
 <p align="center">
   <img src="assets/images/img_mmhUi_v001_ej.png" />
@@ -56,8 +50,6 @@ The render window camera can be rotated by holding the left mouse button down in
 
 ## 3. Adding and Removing Tracker
 
----
-
 <img src="assets/images/img_trackerList_v002_ej.png" />
 
 Add a new tracker by pressing the "Add"(1) button. A new popup will appear where you can select the type in a dropdown. Click "Create" to add the tracker to the list.
@@ -66,8 +58,6 @@ Remove a tracker by clicking on the name in the tracker list and click "Remove"(
 
 ## 4. Start and Stop Tracking
 
----
-
 <img src="assets/images/img_trackerList_v002_ej.png" />
 
 Start all trackers by pressing the play icon(3). This will start all tracker and the preview in the render window.
@@ -75,8 +65,6 @@ Start all trackers by pressing the play icon(3). This will start all tracker and
 Stop all tacker by clicking the same button (now displayed as a stop icon)(3). This will stop all tracker.
 
 ## 5. Offset Tracker
-
----
 
 <img src="assets/images/img_trackerPropertyInspector_v001_ej.png" />
 
