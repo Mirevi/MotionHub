@@ -1,6 +1,8 @@
 # Mirevi MotionHub User Documentation
 
-<img src="assets/images/Logos.png" />
+<p align="center">
+  <img width="50%" src="assets/images/Logos.png" />
+</p>
 
 Mirevi MotionHub (MMH) is a middleware for multiple body tracking systems and it unifies them in a single plug-in for the Unity game engine.
 
@@ -38,7 +40,7 @@ Beyond that, MMH is capable of merging different tracking systems into one in or
 ---
 
 <p align="center">
-  <img width="25%" src="assets/images/img_mmhUi_v001_ej.png" />
+  <img src="assets/images/img_mmhUi_v001_ej.png" />
 </p>
 
 MMH consists of four panels. From left to bottom right:
