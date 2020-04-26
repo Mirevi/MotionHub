@@ -37,7 +37,9 @@ Beyond that, MMH is capable of merging different tracking systems into one in or
 
 ---
 
-<img src="assets/images/img_mmhUi_v001_ej.png" />
+<div style="text-align:center">
+  <img width="50%" src="assets/images/img_mmhUi_v001_ej.png" />
+</div>
 
 MMH consists of four panels. From left to bottom right:
 
