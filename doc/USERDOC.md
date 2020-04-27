@@ -24,15 +24,15 @@ The project Hive is sponsored by: [German Federal Ministry of Education and Rese
 
 ## 1. Systems
 
-| Supported         
-| -------------
-| Azure Kinect
-| OptiTrack
+| Supported     |
+| ------------- |
+| Azure Kinect  |
+| OptiTrack     |
 
-| Planned
-| -------------
-| Perception Neuron Studio
-| OpenPose
+| Planned                   |
+| ------------------------- |
+| Perception Neuron Studio  |
+| OpenPose                  |
 
 ## 2. Overview and Navigation
 
