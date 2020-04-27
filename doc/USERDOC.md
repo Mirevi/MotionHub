@@ -1,7 +1,7 @@
 # Mirevi MotionHub User Documentation
 
 <p align="center">
-  <img width="50%" src="assets/images/orgLogos.png" />
+  <img width="65%" src="assets/images/orgLogos.png" />
 </p>
 
 Mirevi MotionHub (MMH) is a middleware for multiple body tracking systems and it unifies them in a single plug-in for the Unity game engine.
@@ -12,8 +12,8 @@ Beyond that, MMH is capable of merging different tracking systems into one in or
 
 MotionHub is developed at the research lab [MIREVI](https://www.mirevi.de/) from the [University of Applied Sciences Düsseldorf](https://hs-duesseldorf.de/en) within the scope of the project [HIVE](https://tinyurl.com/y3ugxo3p).
 
-Acknowledgements:
-The project Hive is sponsored by: German Federal Ministry of Education and Research (BMBF) under the project number 16SV8182.
+Acknowledgements:  
+The project Hive is sponsored by: [German Federal Ministry of Education and Research](https://www.bmbf.de/en/index.html) (BMBF) under the project number 16SV8182.
 
 ## Content
 
