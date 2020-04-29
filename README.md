@@ -16,7 +16,7 @@ The project [HIVE](https://mirevi.de/research/immersive-digital-technologies-for
 
 # Requirements
 
-At the moment the middleware is only supported on Microsoft Windows operation systems.
+At the moment the middleware is only supported on Microsoft Windows operating systems.
 
 - This Version of MotionHub was tested on Microsoft **Windows 10 64 bit**.
 
@@ -42,7 +42,7 @@ MMH currently supports the listed body tracking systems.
 
 # Setup and Building
 
-The CMake System is used to generate Build Files and download all dependencies required. Please use the `CMakeLists.txt` file for generating.
+The CMake System is used to generate Build Files and download all required dependencies. Please use the `CMakeLists.txt` file for generating.
 
 - MMH is developed with Microsoft **Visual Studio 2017**. CMake has only been tested with this IDE.
 
