@@ -8,26 +8,28 @@ Mirevi **MotionHub** (MMH) is a middleware for merging body tracking data from d
 
 MMH offers support for several body tracking systems and encompasses a game engine plug-in that connects the MMH with Unity by means of a standardized protocol. The plug-in allows for the usage of a single type of skeleton for any body tracking system and, therefore, facilitates the switch between different body tracking systems during app development significantly.
 
-**MotionHub** is developed at the research lab [MIREVI](https://www.mirevi.de/) from the [University of Applied Sciences Düsseldorf](https://hs-duesseldorf.de/en) within the scope of the project [HIVE](https://tinyurl.com/y3ugxo3p).
+**MotionHub** is developed at the research lab [MIREVI](https://www.mirevi.de/) from the [University of Applied Sciences Düsseldorf](https://hs-duesseldorf.de/en) within the scope of the project [HIVE](https://mirevi.de/research/immersive-digital-technologies-for-a-healthy-life-through-exercise-and-well-being-hive-lab).
 
-# Acknowledgements
+### Acknowledgements
 
-The project Hive is sponsored by the [German Federal Ministry of Education and Research](https://www.bmbf.de/en/index.html) (BMBF) under the project number 16SV8182.
+The project [HIVE](https://mirevi.de/research/immersive-digital-technologies-for-a-healthy-life-through-exercise-and-well-being-hive-lab) is sponsored by the [German Federal Ministry of Education and Research](https://www.bmbf.de/en/index.html) (BMBF) under the project number 16SV8182.
 
 ## Content
 
-1. [Systems](#1-systems)
+1. [Supported Systems](#1-supported-systems)
 2. [Overview and Navigation](#2-overview-and-navigation)
 3. [Adding and Removing Tracker](#3-adding-and-removing-tracker)
 4. [Start and Stop Tracking](#4-start-and-stop-tracking)
 5. [Offset Tracker](#5-offset-tracker)
 
-## 1. Systems
+## 1. Supported Systems
 
-| Supported     |
-| ------------- |
-| Azure Kinect  |
-| OptiTrack     |
+MMH currently supports the listed body tracking systems.
+
+| Supported Systems |
+| ----------------- |
+| Azure Kinect      |
+| OptiTrack         |
 
 ## 2. Overview and Navigation
 
