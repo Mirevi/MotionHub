@@ -32,7 +32,7 @@ public:
 	 * \param argc
 	 * \param argv
 	 */
-	MotionHub(int argc, char** argv);
+	MotionHub(int argc, char** argv, TrackerManager* trackemManager, NetworkManager* networkManager);
 
 private:
 	/*!
@@ -65,14 +65,10 @@ private:
 	 */
 	UIManager* m_uiManager;
 
-
-
-
 	/*!
 	 * contains the main loop, loops as long as the UI Window exists 
 	 */
 	void update();
-
 
 
 };

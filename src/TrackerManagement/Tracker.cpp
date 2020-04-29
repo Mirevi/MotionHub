@@ -161,6 +161,16 @@ int Tracker::getCamID()
 	return m_idCam;
 
 }
+ 
+void Tracker::setSendSkeletonDelegate(void (*sendSkeletonDelegate)(std::map<int, Skeleton>* skeletonPool, int trackerID))
+{
+
+	m_sendSkeletonDelegate = sendSkeletonDelegate;
+
+}
+
+
+
 
 #pragma endregion
 
@@ -209,6 +219,7 @@ void Tracker::setScaleOffset(Vector3f scale)
 void Tracker::init()
 {
 
+	Console::log("Tracker::init()");
 
 
 }
@@ -216,8 +227,13 @@ void Tracker::init()
 void Tracker::update()
 {
 
+	Console::log("Tracker::update()");
+
+
 	while (m_properties->isTracking)
 	{
+
+		Console::log("Tracker::update()");
 
 		if (!m_isDataAvailable)
 			track();
@@ -228,11 +244,11 @@ void Tracker::update()
 void Tracker::track()
 {
 
+	Console::log("Tracker::track()");
+
+
 	m_isDataAvailable = true;
 
 }
 
 #pragma endregion
-
-
-

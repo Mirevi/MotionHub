@@ -171,14 +171,19 @@ void OTTracker::update()
 	while (m_properties->isTracking)
 	{
 
-		// if no new data is procressed
-		if (!m_isDataAvailable)
-		{
+		//// if no new data is procressed
+		//if (!m_isDataAvailable)
+		//{
 
-			// get new data
-			track();
 
-		}
+
+
+		//}
+
+		// get new data
+		track();
+
+		//m_sendSkeletonDelegate(&m_skeletonPool, m_properties->id);
 	}
 
 	//clean skeleton pool after tracking
