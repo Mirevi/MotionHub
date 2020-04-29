@@ -25,6 +25,7 @@ At the moment the middleware is only supported on Microsoft Windows operation sy
 - Seventh Gen Intel i5 Processor
 - NVidia GeForce GTX 1070
 - 4 GB Memory
+- 6 GB Storage
 
 # Documentation
 
