@@ -1,10 +1,10 @@
-# Mirevi MotionHub
+# MIREVI MotionHub
 
 <p align="center">
   <img width="65%" src="doc/assets/images/orgLogos.png" />
 </p>
 
-Mirevi MotionHub (MMH) is a middleware for merging body tracking data from different systems into one coordinate space in real-time in order to combine and use their individual benefits.
+MIREVI MotionHub (MMH) is a middleware for merging body tracking data from different systems into one coordinate space in real-time in order to combine and use their individual benefits.
 
 MMH offers support for several body tracking systems and encompasses a game engine plug-in that connects the MMH with Unity by means of a standardized protocol. The plug-in allows for the usage of a single type of skeleton for any body tracking system and, therefore, facilitates the switch between different body tracking systems during app development significantly.
 
@@ -35,24 +35,24 @@ The user, developer and API documentation including a class graph can be found i
 
 MMH currently supports the listed body tracking systems.
 
-| Supported Systems |
-| ----------------- |
-| Azure Kinect      |
-| OptiTrack         |
+| Supported Systems                                                       |
+| ----------------------------------------------------------------------- |
+| [Azure Kinect](https://azure.microsoft.com/en-gb/services/kinect-dk/)   |
+| [OptiTrack](https://optitrack.com/)                                     |
 
 # Setup and Building
 
-The CMake System is used to generate Build Files and download all required dependencies. Please use the `CMakeLists.txt` file for generating.
+The [CMake](https://cmake.org/) System is used to generate Build Files and download all required dependencies. Please use the `CMakeLists.txt` file for generating.
 
-- MMH is developed with Microsoft **Visual Studio 2017**. CMake has only been tested with this IDE.
+- MMH is developed with Microsoft **Visual Studio 2017**. *([CMake](https://cmake.org/) has only been tested with this IDE.)*
 
 Please Note that we use the Framework Qt for the UI. To build the project you need the [Qt Visual Studio Tools](https://marketplace.visualstudio.com/items?itemName=TheQtCompany.QtVisualStudioTools-19123) and for editing `.ui` files you need [Qt Designer](https://www.qt.io/download).
 
 # Authors
 
-- **Philipp Ladwig** - Project Manager and Developer
-- **Kester Evers** - Developer
-- **Eric Jansen** - Developer
+- **[Philipp Ladwig](https://www.mirevi.de/team/philipp-ladwig)** - Project Manager and Developer
+- **[Kester Evers](https://www.mirevi.de/team/kester-evers)** - Developer
+- **[Eric Jansen](https://www.mirevi.de/team/eric-jansen)** - Developer
 
 # Build with
 
