@@ -17,13 +17,13 @@ The project [HIVE](https://mirevi.de/research/immersive-digital-technologies-for
 # Content
 
 1. [Supported Systems](#1-supported-systems)
-2. [MotionHub](#2-motionhub)
-  2.1 [Overview and Navigation](#21-overview-and-navigation)
-  2.2 [Adding and Removing Tracker](#22-adding-and-removing-tracker)
-  2.3 [Start and Stop Tracking](#23-start-and-stop-tracking)
+2. [MotionHub](#2-motionhub)  
+  2.1 [Overview and Navigation](#21-overview-and-navigation)  
+  2.2 [Adding and Removing Tracker](#22-adding-and-removing-tracker)  
+  2.3 [Start and Stop Tracking](#23-start-and-stop-tracking)  
   2.4 [Offset Tracker](#24-offset-tracker)
-3. [Setup Body Tracking Systems](#3-setup-body-tracking-systems)
-  3.1 [Azure Kinect](#31-azure-kinect)
+3. [Setup Body Tracking Systems](#3-setup-body-tracking-systems)  
+  3.1 [Azure Kinect](#31-azure-kinect)  
   3.2 [OptiTrack](#32-optitrack)
 
 # 1. Supported Systems
