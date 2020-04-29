@@ -175,6 +175,9 @@ public:
 	 */
 	virtual void cacheSkeletonData();
 
+	virtual void setDelegate(void (*sendSkeletonDelegate)(std::map<int, Skeleton>* skeletonPool, int trackerID));
+
+
 
 
 protected:
@@ -244,5 +247,8 @@ protected:
 	 * 
 	 */
 	std::mutex m_skeletonPoolLock;
+
+
+	void (*m_sendSkeletonDelegate)(std::map<int, Skeleton>* skeletonPool, int trackerID);
 
 };

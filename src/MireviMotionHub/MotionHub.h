@@ -32,7 +32,7 @@ public:
 	 * \param argc
 	 * \param argv
 	 */
-	MotionHub(int argc, char** argv);
+	MotionHub(int argc, char** argv, NetworkManager* networkManager, TrackerManager* trackerManager);
 
 private:
 	/*!
