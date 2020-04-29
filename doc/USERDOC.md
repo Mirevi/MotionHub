@@ -1,19 +1,18 @@
 # Mirevi MotionHub User Documentation
 
 <p align="center">
-  <img width="65%" src="assets/images/orgLogos.png" />
+  <img width="65%" src="doc/assets/images/orgLogos.png" />
 </p>
 
-Mirevi MotionHub (MMH) is a middleware for multiple body tracking systems and it unifies them in a single plug-in for the Unity game engine.
+Mirevi **MotionHub** (MMH) is a middleware for merging body tracking data from different systems into one coordinate space in real-time in order to combine and use their individual benefits.
 
-MMH offers support for several body tracking systems and encompasses a game engine plug-in that connects the MMH with Unity by means of a standardized protocol. The plug-in allows for the usage of a single type of skeleton for any body tracking system and, therefore, facilitates the switch between different tracking systems during app development significantly.
+MMH offers support for several body tracking systems and encompasses a game engine plug-in that connects the MMH with Unity by means of a standardized protocol. The plug-in allows for the usage of a single type of skeleton for any body tracking system and, therefore, facilitates the switch between different body tracking systems during app development significantly.
 
-Beyond that, MMH is capable of merging different tracking systems into one in order to combine and use their individual benefits.
+**MotionHub** is developed at the research lab [MIREVI](https://www.mirevi.de/) from the [University of Applied Sciences Düsseldorf](https://hs-duesseldorf.de/en) within the scope of the project [HIVE](https://tinyurl.com/y3ugxo3p).
 
-MotionHub is developed at the research lab [MIREVI](https://www.mirevi.de/) from the [University of Applied Sciences Düsseldorf](https://hs-duesseldorf.de/en) within the scope of the project [HIVE](https://tinyurl.com/y3ugxo3p).
+# Acknowledgements
 
-Acknowledgements:  
-The project Hive is sponsored by: [German Federal Ministry of Education and Research](https://www.bmbf.de/en/index.html) (BMBF) under the project number 16SV8182.
+The project Hive is sponsored by the [German Federal Ministry of Education and Research](https://www.bmbf.de/en/index.html) (BMBF) under the project number 16SV8182.
 
 ## Content
 
@@ -21,6 +20,7 @@ The project Hive is sponsored by: [German Federal Ministry of Education and Rese
 2. [Overview and Navigation](#2-overview-and-navigation)
 3. [Adding and Removing Tracker](#3-adding-and-removing-tracker)
 4. [Start and Stop Tracking](#4-start-and-stop-tracking)
+5. [Offset Tracker](#5-offset-tracker)
 
 ## 1. Systems
 
@@ -28,11 +28,6 @@ The project Hive is sponsored by: [German Federal Ministry of Education and Rese
 | ------------- |
 | Azure Kinect  |
 | OptiTrack     |
-
-| Planned                   |
-| ------------------------- |
-| Perception Neuron Studio  |
-| OpenPose                  |
 
 ## 2. Overview and Navigation
 
@@ -72,5 +67,3 @@ Stop all tacker by clicking the same button (now displayed as a stop icon)(3). T
 <img src="assets/images/img_trackerPropertyInspector_v001_ej.png" />
 
 Offset a tracker by selecting one in the tracker list and enter values in the position, rotation and scale fields. This will offset the trackers origin. All values are in meters.
-
-**Version 1.0**

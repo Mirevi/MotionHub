@@ -1,13 +1,63 @@
-# MireviMotionHub
+# Mirevi MotionHub
 
-Software for combining different body tracking solutions and sending position and rotation data of skeleton joints via ip.
+<p align="center">
+  <img width="65%" src="doc/assets/images/orgLogos.png" />
+</p>
 
-## About
+Mirevi MotionHub (MMH) is a middleware for merging body tracking data from different systems into one coordinate space in real-time in order to combine and use their individual benefits.
 
-*MotionHub* is created at [MIREVI](https://www.mirevi.de/) within the scope of the project [HIVE](https://tinyurl.com/y3ugxo3p).
-Currently *MotionHub* is developed by Kester Evers, Eric Jansen and supervised by Philipp Ladwid.
+MMH offers support for several body tracking systems and encompasses a game engine plug-in that connects the MMH with Unity by means of a standardized protocol. The plug-in allows for the usage of a single type of skeleton for any body tracking system and, therefore, facilitates the switch between different body tracking systems during app development significantly.
 
-## Dependencies
+MotionHub is developed at the research lab [MIREVI](https://www.mirevi.de/) from the [University of Applied Sciences Düsseldorf](https://hs-duesseldorf.de/en) within the scope of the project [HIVE](https://tinyurl.com/y3ugxo3p).
 
-Download [all dependencies](https://1drv.ms/u/s!ApZ4gzhGh6Rfx_UDhsWPawn3otvqmQ?e=CROM9f), extract the file and place the folders in the project root directory.
-Use [CMake](https://cmake.org/) to link all dependencies and build the project. After that put all files from "bin" next to the .exe.
+### Acknowledgements
+
+The project Hive is sponsored by the [German Federal Ministry of Education and Research](https://www.bmbf.de/en/index.html) (BMBF) under the project number 16SV8182.
+
+# Requirements
+
+At the moment the middleware is only supported on Microsoft Windows operation systems.
+
+- This Version of MotionHub was tested on Microsoft **Windows 10 64 bit**.
+
+### Minimum Computer Requirements
+
+- Seventh Gen Intel® CoreTM i3 Processor (Dual Core 2.4 GHz with HD620 GPU or faster)
+- 4 GB Memory
+
+# Documentation
+
+The user and developer documentation including a full class diagram can be found in the `doc` folder.
+
+# Supported Systems
+
+MMH currently supports the listed body tracking systems.
+
+| Supported Systems |
+| ----------------- |
+| Azure Kinect      |
+| OptiTrack         |
+
+# Setup and Building
+
+The CMake System is used to generate Build Files and download all dependencies required. Please use the `CMakeLists.txt` file for generating.
+
+- MMH is developed with Microsoft **Visual Studio 2017**. CMake has only been tested with this IDE.
+
+Please Note that we use the Framework Qt for the UI. To build the project you need the [Qt Visual Studio Tools](https://marketplace.visualstudio.com/items?itemName=TheQtCompany.QtVisualStudioTools-19123) and for editing `.ui` files you need [Qt Designer](https://www.qt.io/download).
+
+# Authors
+
+- Kester Evers - Developer
+- Philipp Ladwig - Project Manager and Developer
+- Eric Jansen - Developer
+
+# License
+
+Pending
+
+### Build with
+
+- [Qt](https://www.qt.io/)
+- [Eigen](http://eigen.tuxfamily.org/index.php?title=Main_Page)
+- [OSC Pack](http://www.rossbencina.com/code/oscpack)
