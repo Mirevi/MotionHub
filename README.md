@@ -22,7 +22,8 @@ At the moment the middleware is only supported on Microsoft Windows operation sy
 
 ### Minimum Computer Requirements
 
-- Seventh Gen Intel® CoreTM i3 Processor (Dual Core 2.4 GHz with HD620 GPU or faster)
+- Seventh Gen Intel i5 Processor
+- NVidia GeForce GTX 1070
 - 4 GB Memory
 
 # Documentation
