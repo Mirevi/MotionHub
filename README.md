@@ -48,16 +48,16 @@ Please Note that we use the Framework Qt for the UI. To build the project you ne
 
 # Authors
 
-- Kester Evers - Developer
-- Philipp Ladwig - Project Manager and Developer
-- Eric Jansen - Developer
+- **Philipp Ladwig** - Project Manager and Developer
+- **Kester Evers** - Developer
+- **Eric Jansen** - Developer
 
-# License
-
-Pending
-
-### Build with
+# Build with
 
 - [Qt](https://www.qt.io/)
 - [Eigen](http://eigen.tuxfamily.org/index.php?title=Main_Page)
 - [OSC Pack](http://www.rossbencina.com/code/oscpack)
+
+# License
+
+Pending
