@@ -1,7 +1,7 @@
 # MIREVI MotionHub User Documentation
 
 <p align="center">
-  <img width="65%" src="assets/images/orgLogos.png" />
+  <img width="85%" src="assets/images/headerLogo.jpg" />
 </p>
 
 [MIREVI](https://www.mirevi.de/) MotionHub (MMH) is a middleware for merging body tracking data from different systems into one coordinate space in real-time in order to combine and use their individual benefits.
@@ -12,7 +12,7 @@ MotionHub is developed at the research lab [MIREVI](https://www.mirevi.de/) from
 
 ### Acknowledgements
 
-The project [HIVE](https://mirevi.de/research/immersive-digital-technologies-for-a-healthy-life-through-exercise-and-well-being-hive-lab) is sponsored by the [German Federal Ministry of Education and Research](https://www.bmbf.de/en/index.html) (BMBF) under the project number 16SV8182.
+The project [HIVE](https://mirevi.de/research/immersive-digital-technologies-for-a-healthy-life-through-exercise-and-well-being-hive-lab) is sponsored by the [German Federal Ministry of Education and Research](https://www.bmbf.de/en/index.html) (BMBF) under the project number **16SV8182**.
 
 # Content
 
