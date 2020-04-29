@@ -59,6 +59,7 @@ Please Note that we use the Framework Qt for the UI. To build the project you ne
 - [Qt](https://www.qt.io/)
 - [Eigen](http://eigen.tuxfamily.org/index.php?title=Main_Page)
 - [OSC Pack](http://www.rossbencina.com/code/oscpack)
+- [TinyXML](http://www.grinninglizard.com/tinyxml/)
 
 # License
 
