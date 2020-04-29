@@ -29,7 +29,7 @@ At the moment the middleware is only supported on Microsoft Windows operation sy
 
 # Documentation
 
-The user and developer documentation including a full class diagram can be found in the `doc` folder.
+The user and developer documentation including a class graph can be found in the `doc` folder.
 
 # Supported Systems
 

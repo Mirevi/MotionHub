@@ -1,7 +1,7 @@
 # Mirevi MotionHub User Documentation
 
 <p align="center">
-  <img width="65%" src="doc/assets/images/orgLogos.png" />
+  <img width="65%" src="assets/images/orgLogos.png" />
 </p>
 
 Mirevi **MotionHub** (MMH) is a middleware for merging body tracking data from different systems into one coordinate space in real-time in order to combine and use their individual benefits.
