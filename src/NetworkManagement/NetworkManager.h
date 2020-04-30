@@ -35,9 +35,6 @@ public:
 	 */
 	void sendSkeletonPool(std::map<int, Skeleton>* skeletonPool, int trackerID);
 
-	void createSender(int ID);
-
-	void removeSender(int ID);
 
 private:
 	/*!

@@ -28,35 +28,16 @@ void NetworkManager::sendSkeletonPool(std::map<int, Skeleton>* skeletonPool, int
 		// skeleton loop
 		for (auto itSkeletonPool = skeletonPool->begin(); itSkeletonPool != skeletonPool->end(); itSkeletonPool++)
 		{
-			
-			// sender loop
-			//for (auto itSenderPool = m_poolSender.begin(); itSenderPool != m_poolSender.end(); itSenderPool++)
-			//{
+		
+			// check if current sender is active
+			if (m_poolSender[trackerID]->isActive())
+			{
 
-				// check if current sender is active
-				if (m_poolSender[trackerID]->isActive())
-				{
+				// send skeleton pool
+				m_poolSender[trackerID]->sendSkeleton(&(itSkeletonPool->second), DEFAULT_URI, trackerID);
 
-					// send skeleton pool
-					m_poolSender[trackerID]->sendSkeleton(&(itSkeletonPool->second), DEFAULT_URI, trackerID);
-				}
-			//}
+			}
 		}
 	}
 }
 
-
-void NetworkManager::createSender(int ID)
-{
-
-
-
-}
-
-
-void NetworkManager::removeSender(int ID)
-{
-
-
-
-}
