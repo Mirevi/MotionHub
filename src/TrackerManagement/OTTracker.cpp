@@ -31,6 +31,9 @@ OTTracker::OTTracker(int id)
 
 	m_idCam = -1;
 
+
+
+
 }
 
 OTTracker::~OTTracker()
