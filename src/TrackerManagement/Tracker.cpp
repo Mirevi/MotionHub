@@ -162,15 +162,6 @@ int Tracker::getCamID()
 
 }
 
-
-void Tracker::setDelegate(void (*sendSkeletonDelegate)(std::map<int, Skeleton>* skeletonPool, int trackerID))
-{
-	
-	m_sendSkeletonDelegate = sendSkeletonDelegate;
-
-}
-
-
 #pragma endregion
 
 #pragma region tracker_Offset_handling

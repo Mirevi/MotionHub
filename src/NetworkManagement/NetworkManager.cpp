@@ -7,7 +7,7 @@ NetworkManager::NetworkManager()
 	Console::log("NetworkManager::NetworkManager(): Created network manager.");
 
 	// create new osc sender and add to sender pool
-	m_poolSender.push_back(new OSCSender(LOCALHOST, DEFAULT_PORT));
+	m_poolSender.push_back(new OSCSender(BROADCAST, DEFAULT_PORT));
 
 }
 

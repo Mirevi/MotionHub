@@ -1,6 +1,6 @@
 #include "MotionHub.h"
 
-MotionHub::MotionHub(int argc, char** argv, NetworkManager* networkManager, TrackerManager* trackerManager)
+MotionHub::MotionHub(int argc, char** argv)
 {
 
 	// save arguments
@@ -17,11 +17,10 @@ MotionHub::MotionHub(int argc, char** argv, NetworkManager* networkManager, Trac
 	// load config file
 	m_configReader->readConfigFile(CONFIG_PATH);
 	
-	// create/pass manager
-	m_networkManager = networkManager;
-	m_trackerManager = trackerManager;
-
+	// create manager
+	m_trackerManager = new TrackerManager();
 	m_gestureManager = new GestureManager();
+	m_networkManager = new NetworkManager();
 	m_uiManager = new UIManager(m_argc, m_argv, m_trackerManager);
 
 	// start update loop
@@ -64,7 +63,7 @@ void MotionHub::update()
 					// send skeleton pool reference to gesture manager in order to update all postures
 					m_gestureManager->updateAllSkeletonPostures(&((*itTracker)->getSkeletonPoolCache())									  );
 					// send skeleton pool 
-					//m_networkManager->sendSkeletonPool(			&((*itTracker)->getSkeletonPoolCache()), (*itTracker)->getProperties()->id);
+					m_networkManager->sendSkeletonPool(			&((*itTracker)->getSkeletonPoolCache()), (*itTracker)->getProperties()->id);
 
 
 

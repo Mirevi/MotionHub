@@ -178,8 +178,6 @@ void OTTracker::update()
 			// get new data
 			track();
 
-			m_sendSkeletonDelegate(&m_skeletonPool, m_properties->id);
-
 		}
 	}
 

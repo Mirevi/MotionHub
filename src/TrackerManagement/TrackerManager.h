@@ -106,9 +106,6 @@ public:
 	 */
 	std::mutex* getTrackerPoolLock();
 
-
-	void setDelegate(void (*sendSkeletonDelegate)(std::map<int, Skeleton>* skeletonPool, int trackerID));
-
 private:
 
 	/*!
@@ -145,8 +142,5 @@ private:
 	 * 
 	 */
 	std::mutex m_trackerPoolLock;
-
-
-	void (*m_sendSkeletonDelegate)(std::map<int, Skeleton>* skeletonPool, int trackerID);
 
 };

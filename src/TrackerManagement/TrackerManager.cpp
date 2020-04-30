@@ -40,7 +40,6 @@ int TrackerManager::createTracker(TrackerType type)
 			//create new AK Tracker with next free Cam ID
 			tempTracker = new AKTracker(id, m_nextFreeAKCamID);
 
-
 			//next AK Tracker has new cam ID
 			m_nextFreeAKCamID++;
 
@@ -79,8 +78,6 @@ int TrackerManager::createTracker(TrackerType type)
 
 		}
 	}
-
-	tempTracker->setDelegate(m_sendSkeletonDelegate);
 
 
 	//insert the tracker in the tracker pool
@@ -271,12 +268,4 @@ Tracker* TrackerManager::getTrackerRefAt(int trackerPositionInList )
 std::mutex* TrackerManager::getTrackerPoolLock()
 {
 	return &m_trackerPoolLock;
-}
-
-
-void TrackerManager::setDelegate(void (*sendSkeletonDelegate)(std::map<int, Skeleton>* skeletonPool, int trackerID))
-{
-
-	m_sendSkeletonDelegate = sendSkeletonDelegate;
-
 }
