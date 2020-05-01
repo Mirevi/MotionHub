@@ -64,7 +64,7 @@ Follow the listed steps to implement a new tracker in the MMH.
   6.4 note the index of the item in the list *(starting from 0 at the top)*<br>
   6.5 save and close the `CreateTrackerWindow.ui` file<br>
   6.6 add the tracker name with the correct index position in the `TrackerType` enum in `TrackerManager.h`<br>
-  6.7 add the tracker with the correct index position in the `createTracker()` method in `TrackerManager.cpp` and implement the logic *(please see other tracker for implementation reference)*<br>
+  6.7 add the tracker with the correct index position in the `createTracker()` method in `TrackerManager.cpp` and implement the logic *(please see other tracker for implementation reference)*
 
 # 5. Skeleton OSC Data Structure
 
