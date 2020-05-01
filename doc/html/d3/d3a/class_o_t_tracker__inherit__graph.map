@@ -1,0 +1,4 @@
+<map id="OTTracker" name="OTTracker">
+<area shape="rect" id="node1" title="Manages OptiTrack Body Tracking via NatNet protocol." alt="" coords="5,453,220,809"/>
+<area shape="rect" id="node2" href="$de/dbb/class_tracker.html" title="Prototype class for implemetation &#45; holds virtual methods." alt="" coords="13,5,213,405"/>
+</map>

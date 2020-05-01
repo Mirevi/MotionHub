@@ -1,0 +1,8 @@
+<map id="Entity" name="Entity">
+<area shape="rect" id="node1" title="base class for all objects in openGl window" alt="" coords="156,5,264,273"/>
+<area shape="rect" id="node2" href="$da/dbb/class_camera.html" title=" " alt="" coords="5,402,116,523"/>
+<area shape="rect" id="node3" href="$dc/dbe/class_mesh.html" title="mesh base class" alt="" coords="141,321,279,604"/>
+<area shape="rect" id="node6" href="$d2/d34/class_skeleton_mesh.html" title="container for joint meshes" alt="" coords="303,417,437,509"/>
+<area shape="rect" id="node4" href="$d9/dbf/class_cube.html" title=" " alt="" coords="112,652,199,773"/>
+<area shape="rect" id="node5" href="$d2/d8d/class_plane.html" title="plane mesh" alt="" coords="223,667,306,759"/>
+</map>

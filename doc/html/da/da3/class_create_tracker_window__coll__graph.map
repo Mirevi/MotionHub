@@ -1,0 +1,5 @@
+<map id="CreateTrackerWindow" name="CreateTrackerWindow">
+<area shape="rect" id="node1" title="dialog for creating new trackers" alt="" coords="7,351,224,501"/>
+<area shape="rect" id="node2" title=" " alt="" coords="5,108,73,185"/>
+<area shape="rect" id="node3" href="$dc/dbc/class_tracker_manager.html" title="Manager for all types of tracker." alt="" coords="98,5,287,288"/>
+</map>

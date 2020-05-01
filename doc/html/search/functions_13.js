@@ -1,21 +1,5 @@
 var searchData=
 [
-  ['uimanager_1208',['UIManager',['../class_u_i_manager.html#a06044b35f6171b59dd8dbfe1ace97f77',1,'UIManager']]],
-  ['unlink_1209',['Unlink',['../classtinyxml2_1_1_x_m_l_node.html#a9546e242b6a4f232415befb1cfe0fdd4',1,'tinyxml2::XMLNode']]],
-  ['unsigned64attribute_1210',['Unsigned64Attribute',['../classtinyxml2_1_1_x_m_l_element.html#a226502bab8f1be7ede1fdd255398eb85',1,'tinyxml2::XMLElement']]],
-  ['unsigned64text_1211',['Unsigned64Text',['../classtinyxml2_1_1_x_m_l_element.html#af48c1023abbac1acdf4927c51c3a5f0c',1,'tinyxml2::XMLElement']]],
-  ['unsigned64value_1212',['Unsigned64Value',['../classtinyxml2_1_1_x_m_l_attribute.html#ab25d1eb942c7b76c03a73e7710aadd38',1,'tinyxml2::XMLAttribute']]],
-  ['unsignedattribute_1213',['UnsignedAttribute',['../classtinyxml2_1_1_x_m_l_element.html#afea43a1d4aa33e3703ddee5fc9adc26c',1,'tinyxml2::XMLElement']]],
-  ['unsignedtext_1214',['UnsignedText',['../classtinyxml2_1_1_x_m_l_element.html#a49bad014ffcc17b0b6119d5b2c97dfb5',1,'tinyxml2::XMLElement']]],
-  ['unsignedvalue_1215',['UnsignedValue',['../classtinyxml2_1_1_x_m_l_attribute.html#a0be5343b08a957c42c02c5d32c35d338',1,'tinyxml2::XMLAttribute']]],
-  ['untracked_1216',['Untracked',['../classtinyxml2_1_1_mem_pool_t.html#a3bcdc302ae15d2810e11192321a8f5f1',1,'tinyxml2::MemPoolT']]],
-  ['update_1217',['update',['../class_motion_hub.html#a4bc14162912934453a08fac81de1a8e9',1,'MotionHub::update()'],['../class_main_window.html#a128f71880d4b9683149023fc46fcc9f8',1,'MainWindow::update()'],['../class_a_k_tracker.html#a1829d7f5ff0a91f01fe87473b9307df0',1,'AKTracker::update()'],['../class_o_t_tracker.html#a607b617ee48851efdcc3c11fe2417dc5',1,'OTTracker::update()'],['../class_tracker.html#af0ea9c06512afcdd9ee1b93e0059bd2b',1,'Tracker::update()']]],
-  ['updateallskeletonpostures_1218',['updateAllSkeletonPostures',['../class_gesture_manager.html#ad375fc8e119e66127cbcd1742a6cbcd2',1,'GestureManager']]],
-  ['updateconsole_1219',['updateConsole',['../class_main_window.html#ac7151c5f992fa2af3fd75bc11081049e',1,'MainWindow']]],
-  ['updatehirachy_1220',['updateHirachy',['../class_main_window.html#aa83add9109bbe31aad400d4a1505efb5',1,'MainWindow']]],
-  ['updateinspector_1221',['updateInspector',['../class_main_window.html#a26c758ea10ddadce51c1f681d220758a',1,'MainWindow']]],
-  ['updatematrix_1222',['updateMatrix',['../class_tracker.html#ac4feb4700ca537785b90f750103be153',1,'Tracker']]],
-  ['updateskeletonmeshcount_1223',['updateSkeletonMeshCount',['../class_gl_widget.html#aebe2f40cc5e16cce1268815768c14a52',1,'GlWidget']]],
-  ['updateskeletonmeshpoolsize_1224',['updateSkeletonMeshPoolSize',['../class_gl_widget.html#a7f8e122f7a50e05213f726fccea3885c',1,'GlWidget']]],
-  ['updateskeletonmeshtransform_1225',['updateSkeletonMeshTransform',['../class_gl_widget.html#ab3b2e7bb19965d31798f82f3fc515c5a',1,'GlWidget']]]
+  ['_7emainwindow_362',['~MainWindow',['../d9/dc6/class_main_window.html#ae98d00a93bc118200eeef9f9bba1dba7',1,'MainWindow']]],
+  ['_7eottracker_363',['~OTTracker',['../dc/d9d/class_o_t_tracker.html#ab319c5cdb3e28134c3497d52b6a547e4',1,'OTTracker']]]
 ];

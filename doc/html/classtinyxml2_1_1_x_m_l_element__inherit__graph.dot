@@ -1,9 +1,0 @@
-digraph "tinyxml2::XMLElement"
-{
- // LATEX_PDF_SIZE
-  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
-  node [fontname="Helvetica",fontsize="10",shape=record];
-  Node1 [label="{tinyxml2::XMLElement\n|- _closingType\l- _rootAttribute\l|+ Name()\l+ SetName()\l+ ToElement()\l+ ToElement()\l+ Accept()\l+ Attribute()\l+ IntAttribute()\l+ UnsignedAttribute()\l+ Int64Attribute()\l+ Unsigned64Attribute()\land 55 more...\l# ParseDeep()\l- XMLElement()\l- ~XMLElement()\l- XMLElement()\l- operator=()\l- FindOrCreateAttribute()\l- ParseAttributes()\l- CreateAttribute()\l- DeleteAttribute()\l}",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip=" "];
-  Node2 -> Node1 [dir="back",color="midnightblue",fontsize="10",style="solid",arrowtail="onormal",fontname="Helvetica"];
-  Node2 [label="{tinyxml2::XMLNode\n|# _document\l# _parent\l# _value\l# _parseLineNum\l# _firstChild\l# _lastChild\l# _prev\l# _next\l# _userData\l- _memPool\l|+ GetDocument()\l+ GetDocument()\l+ ToElement()\l+ ToText()\l+ ToComment()\l+ ToDocument()\l+ ToDeclaration()\l+ ToUnknown()\l+ ToElement()\l+ ToText()\land 38 more...\l# XMLNode()\l# ~XMLNode()\l# ParseDeep()\l- Unlink()\l- InsertChildPreamble()\l- ToElementWithName()\l- XMLNode()\l- operator=()\l- DeleteNode()\l}",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classtinyxml2_1_1_x_m_l_node.html",tooltip=" "];
-}
