@@ -1,0 +1,6 @@
+<map id="Tracker" name="Tracker">
+<area shape="rect" id="node1" title="Prototype class for implemetation &#45; holds virtual methods." alt="" coords="251,5,451,405"/>
+<area shape="rect" id="node2" href="$d0/d4c/class_a_k_tracker.html" title="Manages Azure Kinect Body Tracking." alt="" coords="5,483,220,780"/>
+<area shape="rect" id="node3" href="$dc/d9d/class_o_t_tracker.html" title="Manages OptiTrack Body Tracking via NatNet protocol." alt="" coords="244,453,459,809"/>
+<area shape="rect" id="node4" href="$d0/dc6/class_tracker_group.html" title=" " alt="" coords="483,512,622,751"/>
+</map>

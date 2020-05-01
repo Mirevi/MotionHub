@@ -1,0 +1,12 @@
+<map id="GlWidget" name="GlWidget">
+<area shape="rect" id="node1" title="3d render context for skeleton visualisation" alt="" coords="377,1225,598,1596"/>
+<area shape="rect" id="node2" title=" " alt="" coords="5,983,127,1060"/>
+<area shape="rect" id="node3" title=" " alt="" coords="151,983,288,1060"/>
+<area shape="rect" id="node4" href="$dc/dbc/class_tracker_manager.html" title="Manager for all types of tracker." alt="" coords="313,880,502,1163"/>
+<area shape="rect" id="node5" href="$da/dbb/class_camera.html" title=" " alt="" coords="624,593,735,715"/>
+<area shape="rect" id="node6" href="$d2/d96/class_entity.html" title="base class for all objects in openGl window" alt="" coords="447,182,555,450"/>
+<area shape="rect" id="node10" href="$dc/dbe/class_mesh.html" title="mesh base class" alt="" coords="461,520,599,788"/>
+<area shape="rect" id="node7" href="$d3/de7/class_vector3.html" title="Utility Class." alt="" coords="641,175,739,457"/>
+<area shape="rect" id="node8" href="$df/d32/struct_vector3_1_1_position.html" title=" " alt="" coords="629,5,751,112"/>
+<area shape="rect" id="node9" href="$d2/d8d/class_plane.html" title="plane mesh" alt="" coords="527,975,610,1067"/>
+</map>

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['debuglevel_1436',['DebugLevel',['../class_config_reader.html#adee445654c84d6f4ef5152c57e58e344',1,'ConfigReader']]]
+  ['trackertype_442',['TrackerType',['../dc/dbc/class_tracker_manager.html#ae79f69c6e978ac4a631f1331c7f6eba4',1,'TrackerManager']]]
 ];

@@ -1,13 +1,22 @@
 var searchData=
 [
-  ['findattribute_941',['FindAttribute',['../classtinyxml2_1_1_x_m_l_element.html#a157750dac8037a316fd1af1a973dfa2c',1,'tinyxml2::XMLElement']]],
-  ['findorcreateattribute_942',['FindOrCreateAttribute',['../classtinyxml2_1_1_x_m_l_element.html#ac9d8fc849ec8acf46678217de011e896',1,'tinyxml2::XMLElement']]],
-  ['firstattribute_943',['FirstAttribute',['../classtinyxml2_1_1_x_m_l_element.html#a3e191704c8d499906ec11fe2f60c6686',1,'tinyxml2::XMLElement']]],
-  ['firstchild_944',['FirstChild',['../classtinyxml2_1_1_x_m_l_node.html#ae7dc225e1018cdd685f7563593a1fe08',1,'tinyxml2::XMLNode::FirstChild() const'],['../classtinyxml2_1_1_x_m_l_node.html#a2d6c70c475146b48bc93a7fafdeff5e0',1,'tinyxml2::XMLNode::FirstChild()'],['../classtinyxml2_1_1_x_m_l_handle.html#a536447dc7f54c0cd11e031dad94795ae',1,'tinyxml2::XMLHandle::FirstChild()'],['../classtinyxml2_1_1_x_m_l_const_handle.html#aef06bd16cb308652a32b864b0a743136',1,'tinyxml2::XMLConstHandle::FirstChild()']]],
-  ['firstchildelement_945',['FirstChildElement',['../classtinyxml2_1_1_x_m_l_node.html#a1bec132dcf085284e0a10755f2cf0d57',1,'tinyxml2::XMLNode::FirstChildElement(const char *name=0) const'],['../classtinyxml2_1_1_x_m_l_node.html#af1e0e475cc27d5e7eeaf4d732691b741',1,'tinyxml2::XMLNode::FirstChildElement(const char *name=0)'],['../classtinyxml2_1_1_x_m_l_handle.html#a74b04dd0f15e0bf01860e282b840b6a3',1,'tinyxml2::XMLHandle::FirstChildElement()'],['../classtinyxml2_1_1_x_m_l_const_handle.html#ac747db472ffc55c5af2e82ffec813640',1,'tinyxml2::XMLConstHandle::FirstChildElement()']]],
-  ['fits_946',['Fits',['../structtinyxml2_1_1_long_fits_into_size_t_minus_one.html#a3057710104ab733963eb32fda0bc374c',1,'tinyxml2::LongFitsIntoSizeTMinusOne::Fits()'],['../structtinyxml2_1_1_long_fits_into_size_t_minus_one_3_01false_01_4.html#a29b01087f38a951276df69d358dc0764',1,'tinyxml2::LongFitsIntoSizeTMinusOne&lt; false &gt;::Fits()']]],
-  ['floatattribute_947',['FloatAttribute',['../classtinyxml2_1_1_x_m_l_element.html#ab1f4be2332e27dc640e9b6abd01d64dd',1,'tinyxml2::XMLElement']]],
-  ['floattext_948',['FloatText',['../classtinyxml2_1_1_x_m_l_element.html#a45444eb21f99ca46101545992dc2e927',1,'tinyxml2::XMLElement']]],
-  ['floatvalue_949',['FloatValue',['../classtinyxml2_1_1_x_m_l_attribute.html#a27797b45d21c981257720db94f5f8801',1,'tinyxml2::XMLAttribute']]],
-  ['free_950',['Free',['../classtinyxml2_1_1_mem_pool.html#a49e3bfac2cba2ebd6776b31e571f64f7',1,'tinyxml2::MemPool::Free()'],['../classtinyxml2_1_1_mem_pool_t.html#a408ce0918e9d3d5e5e1cc4896944875f',1,'tinyxml2::MemPoolT::Free()']]]
+  ['getcamid_269',['getCamID',['../de/dbb/class_tracker.html#a0289f3adacab058b14de29a4816241ae',1,'Tracker']]],
+  ['getdata_270',['getData',['../d0/d53/class_data_handler_manager.html#aceb3009e85d41a118bcfc0e8cfbb3ecb',1,'DataHandlerManager']]],
+  ['getheight_271',['getHeight',['../d7/d08/class_skeleton.html#afacb2a37a35cb29782a14f5633eab68b',1,'Skeleton']]],
+  ['getjointconfidence_272',['getJointConfidence',['../d6/dd7/class_joint.html#adf4638000b227f494076e19f920b2790',1,'Joint']]],
+  ['getjointposition_273',['getJointPosition',['../d6/dd7/class_joint.html#a6ac6c09fb302d25a3acc171d24b46aa1',1,'Joint']]],
+  ['getjointrotation_274',['getJointRotation',['../d6/dd7/class_joint.html#aaf05300bc343d45cb1a17da6a658a291',1,'Joint']]],
+  ['getmainwindow_275',['getMainWindow',['../d7/d75/class_u_i_manager.html#a62829a86ba377c84fc9aef352a0f5b28',1,'UIManager']]],
+  ['getmatrix_276',['getMatrix',['../d2/d96/class_entity.html#a49e7049b79648a2e37552770a744d3ee',1,'Entity']]],
+  ['getpooltracker_277',['getPoolTracker',['../dc/dbc/class_tracker_manager.html#a60ba5893ec1b7a118c9e75bc5ce12485',1,'TrackerManager']]],
+  ['getposition_278',['getPosition',['../d2/d96/class_entity.html#a66067332cc542b2477fb16587deddea1',1,'Entity']]],
+  ['getposture_279',['getPosture',['../d7/d08/class_skeleton.html#af9dbefc8edbaeaf1f1a0b5511a180dc1',1,'Skeleton']]],
+  ['getproperties_280',['getProperties',['../de/dbb/class_tracker.html#a1acab311278e9eddb49dd7d438e8eb9b',1,'Tracker']]],
+  ['getrotation_281',['getRotation',['../d2/d96/class_entity.html#a036244a9ccfd24a7b151da29fa68e03b',1,'Entity']]],
+  ['getscale_282',['getScale',['../d2/d96/class_entity.html#a3beb3aa687cbb8c3b3272a63bb1cc470',1,'Entity']]],
+  ['getsid_283',['getSid',['../d7/d08/class_skeleton.html#aab77a9adb8d6e24a7061cf45efb26c91',1,'Skeleton']]],
+  ['getskeletonpoolcache_284',['getSkeletonPoolCache',['../de/dbb/class_tracker.html#a630ecc0cbc6d7fefdaae9664c3f79dc3',1,'Tracker']]],
+  ['gettrackerpoollock_285',['getTrackerPoolLock',['../dc/dbc/class_tracker_manager.html#affd52cc1a51b8df144d8f0174f723375',1,'TrackerManager']]],
+  ['gettrackerrefat_286',['getTrackerRefAt',['../dc/dbc/class_tracker_manager.html#a27c252b4df9235257fdb0e9a87976970',1,'TrackerManager']]],
+  ['glwidget_287',['GlWidget',['../d8/d32/class_gl_widget.html#a1f6c5890ea15afd587ad834ba8bf032a',1,'GlWidget']]]
 ];

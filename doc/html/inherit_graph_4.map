@@ -1,0 +1,8 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node1" href="$d2/d96/class_entity.html" title="base class for all objects in openGl window" alt="" coords="5,56,61,83"/>
+<area shape="rect" id="node2" href="$da/dbb/class_camera.html" title=" " alt="" coords="129,5,195,32"/>
+<area shape="rect" id="node3" href="$dc/dbe/class_mesh.html" title="mesh base class" alt="" coords="135,56,189,83"/>
+<area shape="rect" id="node6" href="$d2/d34/class_skeleton_mesh.html" title="container for joint meshes" alt="" coords="109,107,215,133"/>
+<area shape="rect" id="node4" href="$d9/dbf/class_cube.html" title=" " alt="" coords="264,31,316,57"/>
+<area shape="rect" id="node5" href="$d2/d8d/class_plane.html" title="plane mesh" alt="" coords="263,81,317,108"/>
+</map>

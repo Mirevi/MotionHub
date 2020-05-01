@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['entity_761',['Entity',['../structtinyxml2_1_1_entity.html',1,'tinyxml2::Entity'],['../class_entity.html',1,'Entity']]]
+  ['gesturemanager_219',['GestureManager',['../d1/d12/class_gesture_manager.html',1,'']]],
+  ['glwidget_220',['GlWidget',['../d8/d32/class_gl_widget.html',1,'']]]
 ];
