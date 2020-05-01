@@ -52,7 +52,7 @@ The main loop method named `update()` is located in the `MotionHub` class. Follo
 
 Follow the listed steps to implement a new tracker in the MMH.
 
-1. create class files in the explorer under `src/TrackerManagement` *(please follow the name convention <trackerAcronym> + Tracker e.g AKTracker for Azure Kinect Tracker)*
+1. create class files in the explorer under `src/TrackerManagement` *(please follow the name convention "trackerAcronym + Tracker" e.g AKTracker for Azure Kinect Tracker)*
 2. run CMake to add them to the Visual Studio project
 3. inherence your new class from the `Tracker` base class
 4. implement the pure virtual methods `start()`, `stop()` and `destroy()` *(please see other specific tracker classes for implementation reference)*
