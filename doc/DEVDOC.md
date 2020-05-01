@@ -19,8 +19,8 @@ The project [HIVE](https://mirevi.de/research/immersive-digital-technologies-for
 1. [Setup and Building](#1-setup-and-building)
 2. [Class Collaboration Diagram](#2-class-collaboration-diagram)
 3. [Tracking Loop](#3-tracking-loop)
-4. [Implementing a new Tracker](4#-implementing-a-new-tracker)
-5. [Skeleton OSC Data Structure](5#-skeleton-osc-data-structure)
+4. [Implementing a new Tracker](#4-implementing-a-new-tracker)
+5. [Skeleton OSC Data Structure](#5-skeleton-osc-data-structure)
 
 # 1. Setup and Building
 
