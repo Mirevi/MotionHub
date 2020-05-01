@@ -80,4 +80,15 @@ Offset a tracker by selecting one in the tracker list and enter values in the po
 
 ## 3.1 Azure Kinect
 
+1. Follow the official [Quick Start Guide](https://docs.microsoft.com/en-us/azure/kinect-dk/set-up-azure-kinect-dk).
+2. Add the Tracker in MMH (see `2.2 Adding and Removing Tracker`).
+
 ## 3.2 OptiTrack
+
+1. Follow the official [Quick Start Guide](https://v22.wiki.optitrack.com/index.php?title=Quick_Start_Guide:_Getting_Started).
+2. Configure the [Motive](https://optitrack.com/products/motive/) Software for data streaming.
+- **At the moment MMH only supports Motive version x.x!**
+
+[//]: # "Image Motive Settings"
+
+3. Add the Tracker in MMH (see `2.2 Adding and Removing Tracker`).
