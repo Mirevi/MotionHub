@@ -73,27 +73,27 @@ Follow data is send by the `NetworkManager` with the OSC protocol to localhost.
 **The coordinate system is right handed and all position values are in meters.**
 
 | Index     | Name                    | DataType        | DataStructue
-| --------- | ----------------------- | --------------- | ------------------------------------------------------------------------------------------
-| 0         | trackerID + skeletonID  | int             | eg. 1001 -> 1 is trackerID 001 is skeletonID
-| 1 - 8     | HIPS                    | 7 float + 1 int | positionX, positionY, positionZ, quaternionX, quaternionY, quaternionZ, confidence (0 - 3)
-| 9 - 16    | SPINE                   | 7 float + 1 int | positionX, positionY, positionZ, quaternionX, quaternionY, quaternionZ, confidence (0 - 3)
-| 17 - 24   | CHEST                   | 7 float + 1 int | positionX, positionY, positionZ, quaternionX, quaternionY, quaternionZ, confidence (0 - 3)
-| 25 - 32   | NECK                    | 7 float + 1 int | positionX, positionY, positionZ, quaternionX, quaternionY, quaternionZ, confidence (0 - 3)
-| 33 - 40   | SHOULDER_L              | 7 float + 1 int | positionX, positionY, positionZ, quaternionX, quaternionY, quaternionZ, confidence (0 - 3)
-| 41 - 48   | ARM_L                   | 7 float + 1 int | positionX, positionY, positionZ, quaternionX, quaternionY, quaternionZ, confidence (0 - 3)
-| 49 - 56   | FOREARM_L               | 7 float + 1 int | positionX, positionY, positionZ, quaternionX, quaternionY, quaternionZ, confidence (0 - 3)
-| 57 - 64   | HAND_L                  | 7 float + 1 int | positionX, positionY, positionZ, quaternionX, quaternionY, quaternionZ, confidence (0 - 3)
-| 65 - 72   | SHOULDER_R              | 7 float + 1 int | positionX, positionY, positionZ, quaternionX, quaternionY, quaternionZ, confidence (0 - 3)
-| 73 - 80   | ARM_R                   | 7 float + 1 int | positionX, positionY, positionZ, quaternionX, quaternionY, quaternionZ, confidence (0 - 3)
-| 81 - 88   | FOREARM_R               | 7 float + 1 int | positionX, positionY, positionZ, quaternionX, quaternionY, quaternionZ, confidence (0 - 3)
-| 89 - 96   | HAND_R                  | 7 float + 1 int | positionX, positionY, positionZ, quaternionX, quaternionY, quaternionZ, confidence (0 - 3)
-| 97 - 104  | UPLEG_L                 | 7 float + 1 int | positionX, positionY, positionZ, quaternionX, quaternionY, quaternionZ, confidence (0 - 3)
-| 105 - 112 | LEG_L                   | 7 float + 1 int | positionX, positionY, positionZ, quaternionX, quaternionY, quaternionZ, confidence (0 - 3)
-| 113 - 120 | FOOT_L                  | 7 float + 1 int | positionX, positionY, positionZ, quaternionX, quaternionY, quaternionZ, confidence (0 - 3)
-| 121 - 128 | TOE_L                   | 7 float + 1 int | positionX, positionY, positionZ, quaternionX, quaternionY, quaternionZ, confidence (0 - 3)
-| 129 - 136 | UPLEG_R                 | 7 float + 1 int | positionX, positionY, positionZ, quaternionX, quaternionY, quaternionZ, confidence (0 - 3)
-| 137 - 144 | LEG_R                   | 7 float + 1 int | positionX, positionY, positionZ, quaternionX, quaternionY, quaternionZ, confidence (0 - 3)
-| 145 - 152 | FOOT_R                  | 7 float + 1 int | positionX, positionY, positionZ, quaternionX, quaternionY, quaternionZ, confidence (0 - 3)
-| 153 - 160 | TOE_R                   | 7 float + 1 int | positionX, positionY, positionZ, quaternionX, quaternionY, quaternionZ, confidence (0 - 3)
-| 261 - 268 | HEAD                    | 7 float + 1 int | positionX, positionY, positionZ, quaternionX, quaternionY, quaternionZ, confidence (0 - 3)
-| 269       | skeleton posture        | int             | posture (0 - 5) [UNKNOWN, STAND, SIT,	CROUCH,	JUMP,	LIE]
+| --------- | ----------------------- | --------------- | ---------------------------------------------------------------------------------------------------------------------------------
+| 0         | trackerID + skeletonID  | int             | e.g. 1001 -> 1 is trackerID 001 is skeletonID
+| 1 - 8     | HIPS                    | 7 float + 1 int | positionX, positionY, positionZ, quaternionX, quaternionY, quaternionZ, quaternionW, confidence enum (0 - 3) [NONE, LOW, MEDIUM, HIGH]
+| 9 - 16    | SPINE                   | 7 float + 1 int | positionX, positionY, positionZ, quaternionX, quaternionY, quaternionZ, quaternionW, confidence enum (0 - 3) [NONE, LOW, MEDIUM, HIGH]
+| 17 - 24   | CHEST                   | 7 float + 1 int | positionX, positionY, positionZ, quaternionX, quaternionY, quaternionZ, quaternionW, confidence enum (0 - 3) [NONE, LOW, MEDIUM, HIGH]
+| 25 - 32   | NECK                    | 7 float + 1 int | positionX, positionY, positionZ, quaternionX, quaternionY, quaternionZ, quaternionW, confidence enum (0 - 3) [NONE, LOW, MEDIUM, HIGH]
+| 33 - 40   | SHOULDER_L              | 7 float + 1 int | positionX, positionY, positionZ, quaternionX, quaternionY, quaternionZ, quaternionW, confidence enum (0 - 3) [NONE, LOW, MEDIUM, HIGH]
+| 41 - 48   | ARM_L                   | 7 float + 1 int | positionX, positionY, positionZ, quaternionX, quaternionY, quaternionZ, quaternionW, confidence enum (0 - 3) [NONE, LOW, MEDIUM, HIGH]
+| 49 - 56   | FOREARM_L               | 7 float + 1 int | positionX, positionY, positionZ, quaternionX, quaternionY, quaternionZ, quaternionW, confidence enum (0 - 3) [NONE, LOW, MEDIUM, HIGH]
+| 57 - 64   | HAND_L                  | 7 float + 1 int | positionX, positionY, positionZ, quaternionX, quaternionY, quaternionZ, quaternionW, confidence enum (0 - 3) [NONE, LOW, MEDIUM, HIGH]
+| 65 - 72   | SHOULDER_R              | 7 float + 1 int | positionX, positionY, positionZ, quaternionX, quaternionY, quaternionZ, quaternionW, confidence enum (0 - 3) [NONE, LOW, MEDIUM, HIGH]
+| 73 - 80   | ARM_R                   | 7 float + 1 int | positionX, positionY, positionZ, quaternionX, quaternionY, quaternionZ, quaternionW, confidence enum (0 - 3) [NONE, LOW, MEDIUM, HIGH]
+| 81 - 88   | FOREARM_R               | 7 float + 1 int | positionX, positionY, positionZ, quaternionX, quaternionY, quaternionZ, quaternionW, confidence enum (0 - 3) [NONE, LOW, MEDIUM, HIGH]
+| 89 - 96   | HAND_R                  | 7 float + 1 int | positionX, positionY, positionZ, quaternionX, quaternionY, quaternionZ, quaternionW, confidence enum (0 - 3) [NONE, LOW, MEDIUM, HIGH]
+| 97 - 104  | UPLEG_L                 | 7 float + 1 int | positionX, positionY, positionZ, quaternionX, quaternionY, quaternionZ, quaternionW, confidence enum (0 - 3) [NONE, LOW, MEDIUM, HIGH]
+| 105 - 112 | LEG_L                   | 7 float + 1 int | positionX, positionY, positionZ, quaternionX, quaternionY, quaternionZ, quaternionW, confidence enum (0 - 3) [NONE, LOW, MEDIUM, HIGH]
+| 113 - 120 | FOOT_L                  | 7 float + 1 int | positionX, positionY, positionZ, quaternionX, quaternionY, quaternionZ, quaternionW, confidence enum (0 - 3) [NONE, LOW, MEDIUM, HIGH]
+| 121 - 128 | TOE_L                   | 7 float + 1 int | positionX, positionY, positionZ, quaternionX, quaternionY, quaternionZ, quaternionW, confidence enum (0 - 3) [NONE, LOW, MEDIUM, HIGH]
+| 129 - 136 | UPLEG_R                 | 7 float + 1 int | positionX, positionY, positionZ, quaternionX, quaternionY, quaternionZ, quaternionW, confidence enum (0 - 3) [NONE, LOW, MEDIUM, HIGH]
+| 137 - 144 | LEG_R                   | 7 float + 1 int | positionX, positionY, positionZ, quaternionX, quaternionY, quaternionZ, quaternionW, confidence enum (0 - 3) [NONE, LOW, MEDIUM, HIGH]
+| 145 - 152 | FOOT_R                  | 7 float + 1 int | positionX, positionY, positionZ, quaternionX, quaternionY, quaternionZ, quaternionW, confidence enum (0 - 3) [NONE, LOW, MEDIUM, HIGH]
+| 153 - 160 | TOE_R                   | 7 float + 1 int | positionX, positionY, positionZ, quaternionX, quaternionY, quaternionZ, quaternionW, confidence enum (0 - 3) [NONE, LOW, MEDIUM, HIGH]
+| 261 - 268 | HEAD                    | 7 float + 1 int | positionX, positionY, positionZ, quaternionX, quaternionY, quaternionZ, quaternionW, confidence enum (0 - 3) [NONE, LOW, MEDIUM, HIGH]
+| 269       | skeleton posture        | int             | posture enum (0 - 5) [UNKNOWN, STAND, SIT,	CROUCH,	JUMP,	LIE]
