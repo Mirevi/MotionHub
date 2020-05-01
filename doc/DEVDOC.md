@@ -57,14 +57,14 @@ Follow the listed steps to implement a new tracker in the MMH.
 3. inherence your new class from the `Tracker` base class
 4. implement the pure virtual methods `start()`, `stop()` and `destroy()` *(please see other specific tracker classes for implementation reference)*
 5. include the new tracker in `TrackerManager.h`
-6. add the new tracker to the UI and connect the signals for user interaction
-  6.1 open `CreateTrackerWindow.ui` in `RenderManagement` with [Qt Designer](https://www.qt.io/download)
-  6.2 open `dropdown_tracker`
-  6.3 add a new item with the tracker name at the end of the list
-  6.4 note the index of the item in the list *(starting from 0 at the top)*
-  6.5 save and close the `CreateTrackerWindow.ui` file
-  6.6 add the tracker name with the correct index position in the `TrackerType` enum in `TrackerManager.h`
-  6.7 add the tracker with the correct index position in the `createTracker()` method in `TrackerManager.cpp` and implement the logic *(please see other tracker for implementation reference)*
+6. add the new tracker to the UI and connect the signals for user interaction<br>
+  6.1 open `CreateTrackerWindow.ui` in `RenderManagement` with [Qt Designer](https://www.qt.io/download)<br>
+  6.2 open `dropdown_tracker`<br>
+  6.3 add a new item with the tracker name at the end of the list<br>
+  6.4 note the index of the item in the list *(starting from 0 at the top)*<br>
+  6.5 save and close the `CreateTrackerWindow.ui` file<br>
+  6.6 add the tracker name with the correct index position in the `TrackerType` enum in `TrackerManager.h`<br>
+  6.7 add the tracker with the correct index position in the `createTracker()` method in `TrackerManager.cpp` and implement the logic *(please see other tracker for implementation reference)*<br>
 
 # 5. Skeleton OSC Data Structure
 
