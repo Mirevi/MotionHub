@@ -1,0 +1,12 @@
+Mirevi MotionHub
+
+Copyright (c) 2020 Hochschule Düsseldorf, Münsterstr. 154 ,40476 Düsseldorf, Germany
+Contact: Philipp Ladwig -> philipp.ladwig@hs-duesseldorf.de
+
+QT5 -> LGPL
+Azure Kinect Sensor SDK -> MIT
+Azure Body Tracking SDK -> No license? Many Third Party licenses -> https://3rdpartysource.microsoft.com/
+OpenVR -> 3-clause-BSD and proprietary (not GPL-compatible!)
+NatNet SDK -> Examples are Apache2 and binaries under proprietary (not GPL-compatible) -> Answer by OptiTrack (Ryan from OptiTrack Support), which license it is and are we allowed to host on our own server: "We retain the ownership of the NatNet libraries and associated code, request that you attribute them to NaturalPoint and include the copyright statements. We use the Apache2 license for NatNet. Feel free to host these files on your server."
+Eigen -> MPL2, BSD, and LGPL2.1 and GPL...Eigen is part of Azure Body Tracking SDK...they have even added the GPL license to their third party lib license file...?... 
+
