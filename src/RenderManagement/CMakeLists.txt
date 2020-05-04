@@ -1,20 +1,33 @@
 # CmakeLists for RenderManagement
 
 #k4a
-include_directories(${CMAKE_BINARY_DIR}/src ${K4A_INCLUDE_DIR})
-link_directories(${CMAKE_BINARY_DIR}/lib "${CMAKE_BINARY_DIR}/lib" ${K4A_LIBRARIES_DIR})
+include_directories(${CMAKE_BINARY_DIR}/src
+${K4A_INCLUDE_DIR}
+${K4ABT_INCLUDE_DIR}
+${Cudnn_INCLUDE_DIR}
+${NATNET_SDK_INCLUDE_DIR}
+${OSCp_INCLUDE_DIR}
+${EIGEN_INCLUDE_DIR}
+)
+
+
+#link_directories(${CMAKE_BINARY_DIR}/lib "${CMAKE_BINARY_DIR}/lib" )
 #k4abt
-include_directories(${CMAKE_BINARY_DIR}/src ${K4ABT_INCLUDE_DIR})
-link_directories(${CMAKE_BINARY_DIR}/lib "${CMAKE_BINARY_DIR}/lib" ${K4ABT_LIBRARIES_DIR})
+#link_directories(${CMAKE_BINARY_DIR}/lib "${CMAKE_BINARY_DIR}/lib" )
 #Cudnn
-include_directories(${CMAKE_BINARY_DIR}/src ${Cudnn_INCLUDE_DIR})
-link_directories(${CMAKE_BINARY_DIR}/lib "${CMAKE_BINARY_DIR}/lib" ${Cudnn_LIBRARIES_DIR})
+#link_directories(${CMAKE_BINARY_DIR}/lib "${CMAKE_BINARY_DIR}/lib" )
 #NatNetSDK
-include_directories(${CMAKE_BINARY_DIR}/src ${NATNET_SDK_INCLUDE_DIR})
-link_directories(${CMAKE_BINARY_DIR}/lib "${CMAKE_BINARY_DIR}/lib" ${NATNET_SDK_LIBRARIES_DIR})
+#link_directories(${CMAKE_BINARY_DIR}/lib "${CMAKE_BINARY_DIR}/lib" )
 
 #eigen
-include_directories(${CMAKE_BINARY_DIR}/src ${EIGEN_INCLUDE_DIR})
+link_directories(${CMAKE_BINARY_DIR}/lib
+ "${CMAKE_BINARY_DIR}/lib"
+${K4A_LIBRARIES_DIR}
+${K4ABT_LIBRARIES_DIR}
+${Cudnn_LIBRARIES_DIR}
+${NATNET_SDK_LIBRARIES_DIR}
+${OSCp_LIBRARIES_DIR}
+)
 
 # Find includes in corresponding build directories
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -39,6 +52,9 @@ target_link_libraries(RenderManagement
 	Qt5::Widgets
 	debug MotionHubUtil${CMAKE_DEBUG_POSTFIX} optimized MotionHubUtil
 	debug TrackerManagement${CMAKE_DEBUG_POSTFIX} optimized TrackerManagement
+	debug NetworkManagement${CMAKE_DEBUG_POSTFIX} optimized NetworkManagement
+
+	
 	debug k4a optimized k4a
 	debug k4abt optimized k4abt
 	debug cudnn optimized cudnn

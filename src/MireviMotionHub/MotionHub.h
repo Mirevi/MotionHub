@@ -6,7 +6,7 @@
 #include "MotionHubUtil/ConfigReader.h"
 
 #include "TrackerManagement/TrackerManager.h"
-#include "NetworkManagement/NetworkManager.h"
+//#include "NetworkManagement/NetworkManager.h"
 #include "GestureManagement/GestureManager.h"
 #include "RenderManagement/UIManager.h"
 

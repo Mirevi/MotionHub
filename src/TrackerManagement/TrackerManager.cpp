@@ -41,7 +41,7 @@ int TrackerManager::createTracker(TrackerType type)
 			tempTracker = new AKTracker(id, m_nextFreeAKCamID);
 
 			//sendSkeletonDelegate() funcPtr pass through
-			tempTracker->setSendSkeletonDelegate(m_sendSkeletonDelegate);
+			//tempTracker->setSendSkeletonDelegate(m_sendSkeletonDelegate);
 
 			//next AK Tracker has new cam ID
 			m_nextFreeAKCamID++;
@@ -57,7 +57,7 @@ int TrackerManager::createTracker(TrackerType type)
 			tempTracker = new OTTracker(id);
 
 			//sendSkeletonDelegate() funcPtr pass through
-			tempTracker->setSendSkeletonDelegate(m_sendSkeletonDelegate);
+			//tempTracker->setSendSkeletonDelegate(m_sendSkeletonDelegate);
 
 
 			break;
@@ -277,9 +277,9 @@ std::mutex* TrackerManager::getTrackerPoolLock()
 	return &m_trackerPoolLock;
 }
 
-void TrackerManager::setSendSkeletonPtr(void (*sendSkeleton)(std::map<int, Skeleton>* skeletonPool, int trackerID))
-{
-
-	m_sendSkeletonDelegate = sendSkeleton;
-
-}
+//void TrackerManager::setSendSkeletonPtr(void (*sendSkeleton)(std::map<int, Skeleton>* skeletonPool, int trackerID))
+//{
+//
+//	m_sendSkeletonDelegate = sendSkeleton;
+//
+//}

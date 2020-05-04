@@ -179,7 +179,7 @@ public:
 	 * pointer to sendSkeletonDelegate() in main.cpp
 	 *
 	 */
-	virtual void setSendSkeletonDelegate(void (*sendSkeletonDelegate)(std::map<int, Skeleton>* skeletonPool, int trackerID));
+	//virtual void setSendSkeletonDelegate(void (*sendSkeletonDelegate)(std::map<int, Skeleton>* skeletonPool, int trackerID));
 
 
 
@@ -251,6 +251,6 @@ protected:
 	 */
 	std::mutex m_skeletonPoolLock;
 
-	void (*m_sendSkeletonDelegate)(std::map<int, Skeleton>* skeletonPool, int trackerID);
+	//void (*m_sendSkeletonDelegate)(std::map<int, Skeleton>* skeletonPool, int trackerID);
 
 };

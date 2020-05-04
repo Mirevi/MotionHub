@@ -11,6 +11,7 @@
 #include "AKTracker.h"
 #include "OTTracker.h"
 #include "TrackerGroup.h"
+#include "NetworkManagement/NetworkManager.h"
 
 /*!
  * \class TrackerManager
@@ -112,7 +113,7 @@ public:
 	 * \param skeletonPool the skeletons detected by the tracker
 	 * \param trackerID the trackers ID
 	 */
-	void setSendSkeletonPtr(void (*)(std::map<int, Skeleton>* skeletonPool, int trackerID));
+	//void setSendSkeletonPtr(void (*)(std::map<int, Skeleton>* skeletonPool, int trackerID));
 
 private:
 
@@ -155,6 +156,6 @@ private:
 	 * pointer to sendSkeletonDelegate() in main.cpp
 	 *
 	 */
-	void (*m_sendSkeletonDelegate)(std::map<int, Skeleton>* skeletonPool, int trackerID);
+	//void (*m_sendSkeletonDelegate)(std::map<int, Skeleton>* skeletonPool, int trackerID);
 
 };

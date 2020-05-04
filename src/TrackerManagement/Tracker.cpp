@@ -162,12 +162,12 @@ int Tracker::getCamID()
 
 }
  
-void Tracker::setSendSkeletonDelegate(void (*sendSkeletonDelegate)(std::map<int, Skeleton>* skeletonPool, int trackerID))
-{
-
-	m_sendSkeletonDelegate = sendSkeletonDelegate;
-
-}
+//void Tracker::setSendSkeletonDelegate(void (*sendSkeletonDelegate)(std::map<int, Skeleton>* skeletonPool, int trackerID))
+//{
+//
+//	m_sendSkeletonDelegate = sendSkeletonDelegate;
+//
+//}
 
 
 

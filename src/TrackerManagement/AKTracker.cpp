@@ -104,7 +104,7 @@ void AKTracker::update()
 		track();
 
 		//send Skeleton Pool to NetworkManager via funcPtr to main.cpp::sendSkeletonDelegate()
-		m_sendSkeletonDelegate(&m_skeletonPool, m_properties->id);
+		//m_sendSkeletonDelegate(&m_skeletonPool, m_properties->id);
 
 	}
 
