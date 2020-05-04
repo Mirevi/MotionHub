@@ -1,0 +1,7 @@
+Azure Body Tracking SDK -- Special Microsoft License. It is allowd to (re)distribute the files in REDIST.txt
+Azure Sensor SDK --------- Special Microsoft License. It is allowd to (re)distribute the files in REDIST.txt
+CUDNN -------------------- Special Nvidia License, but distribution of .h, .dll and .so files are permitted. License must be copied.
+NETNAT ------------------- Sample Code is Apache 2.0 and dlls can be distributed.
+OSCPACK	------------------ MIT
+QT5 ---------------------- LGPL
+EIGEN -------------------- MPL
