@@ -35,11 +35,16 @@ public:
 	 */
 	void sendSkeletonPool(std::map<int, Skeleton>* skeletonPool, int trackerID);
 
+	void createOSCSender(int ID);
+
+	void removeNetworkSender(int ID);
+
+
 
 private:
 	/*!
 	 *  pool of all network sender
 	 */
-	std::vector<NetworkSender*> m_poolSender;
+	std::map<int, NetworkSender*> m_poolSender;
 	
 };

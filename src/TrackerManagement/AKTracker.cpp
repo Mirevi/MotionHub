@@ -1,7 +1,7 @@
 #include "AKTracker.h"
 
 // default constructor
-AKTracker::AKTracker(int id, int idCam)
+AKTracker::AKTracker(int id, int idCam, NetworkManager* networkManager)
 {
 	//create new Properties object
 	m_properties = new Properties();
@@ -9,6 +9,8 @@ AKTracker::AKTracker(int id, int idCam)
 	//assign id and name to properties
 	m_properties->id = id;
 	m_properties->name = "tracker_azureKinect_" + std::to_string(id);
+
+	m_networkManager = networkManager;
 
 	// assign cam id
 	m_idCam = idCam;
@@ -103,8 +105,8 @@ void AKTracker::update()
 		// get new data
 		track();
 
-		//send Skeleton Pool to NetworkManager via funcPtr to main.cpp::sendSkeletonDelegate()
-		//m_sendSkeletonDelegate(&m_skeletonPool, m_properties->id);
+		//send Skeleton Pool to NetworkManager
+		m_networkManager->sendSkeletonPool(&m_skeletonPool, m_properties->id);
 
 	}
 

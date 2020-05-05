@@ -8,7 +8,7 @@ OTTracker::OTTracker()
 
 }
 
-OTTracker::OTTracker(int id)
+OTTracker::OTTracker(int id, NetworkManager* networkManager)
 {
 
 
@@ -19,6 +19,8 @@ OTTracker::OTTracker(int id)
 	//assign id and name to properties
 	m_properties->id = id;
 	m_properties->name = "tracker_optiTrack_" + std::to_string(id);
+
+	m_networkManager = networkManager;
 
 	//default is enabled
 	m_properties->isEnabled = true;
@@ -182,7 +184,7 @@ void OTTracker::update()
 			// get new data
 			track();
 
-			//m_sendSkeletonDelegate(&m_skeletonPool, m_properties->id);
+			m_networkManager->sendSkeletonPool(&m_skeletonPool, m_properties->id);
 
 
 		}

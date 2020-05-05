@@ -11,7 +11,6 @@
 #include "AKTracker.h"
 #include "OTTracker.h"
 #include "TrackerGroup.h"
-#include "NetworkManagement/NetworkManager.h"
 
 /*!
  * \class TrackerManager
@@ -30,7 +29,7 @@ public:
 	/*!
 	 * default constructor (empty)
 	 */
-	TrackerManager();
+	TrackerManager(NetworkManager* networkManager);
 
 	/*!
 	 * enum for all tracker types 
@@ -152,10 +151,7 @@ private:
 	 */
 	std::mutex m_trackerPoolLock;
 
-	/*!
-	 * pointer to sendSkeletonDelegate() in main.cpp
-	 *
-	 */
-	//void (*m_sendSkeletonDelegate)(std::map<int, Skeleton>* skeletonPool, int trackerID);
+
+	NetworkManager* m_networkManager;
 
 };

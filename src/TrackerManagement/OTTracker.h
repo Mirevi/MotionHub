@@ -47,7 +47,7 @@ public:
 	 * 
 	 * \param id Tracker ID
 	 */
-	OTTracker(int id);
+	OTTracker(int id, NetworkManager* networkManager);
 	/*!
 	 * default destructor
 	 * 

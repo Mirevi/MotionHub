@@ -7,6 +7,7 @@
 #include "MotionHubUtil/Skeleton.h"
 #include "MotionHubUtil/Console.h"
 #include "MotionHubUtil/MMHmath.h"
+#include "NetworkManagement/NetworkManager.h"
 
 
 /*!
@@ -251,6 +252,7 @@ protected:
 	 */
 	std::mutex m_skeletonPoolLock;
 
-	//void (*m_sendSkeletonDelegate)(std::map<int, Skeleton>* skeletonPool, int trackerID);
+
+	NetworkManager* m_networkManager;
 
 };

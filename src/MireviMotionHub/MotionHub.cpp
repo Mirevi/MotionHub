@@ -1,6 +1,6 @@
 #include "MotionHub.h"
 
-MotionHub::MotionHub(int argc, char** argv, TrackerManager* trackemManager, NetworkManager* networkManager)
+MotionHub::MotionHub(int argc, char** argv)
 {
 
 	// save arguments
@@ -20,9 +20,9 @@ MotionHub::MotionHub(int argc, char** argv, TrackerManager* trackemManager, Netw
 	m_configReader->readConfigFile(CONFIG_PATH);
 	
 	// create manager
-	m_trackerManager = trackemManager;
 	m_gestureManager = new GestureManager();
-	m_networkManager = networkManager;
+	m_networkManager = new NetworkManager();
+	m_trackerManager = new TrackerManager(m_networkManager);
 	m_uiManager = new UIManager(m_argc, m_argv, m_trackerManager);
 
 
