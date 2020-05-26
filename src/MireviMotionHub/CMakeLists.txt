@@ -47,11 +47,11 @@ target_link_libraries(MireviMotionHub
     debug NatNetLibStatic optimized NatNetLibStatic
 	
 	debug MotionHubUtil${CMAKE_DEBUG_POSTFIX} optimized MotionHubUtil
-	debug NetworkManagement${CMAKE_DEBUG_POSTFIX} optimized NetworkManagement
 	debug TrackerManagement${CMAKE_DEBUG_POSTFIX} optimized TrackerManagement
 	debug GestureManagement${CMAKE_DEBUG_POSTFIX} optimized GestureManagement
 	debug RenderManagement${CMAKE_DEBUG_POSTFIX} optimized RenderManagement
-	# debug 3DRenderManagement${CMAKE_DEBUG_POSTFIX} optimized 3DRenderManagement	
+	debug NetworkManagement${CMAKE_DEBUG_POSTFIX} optimized NetworkManagement
+
 )
 
 set_target_properties(MireviMotionHub PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/bin")

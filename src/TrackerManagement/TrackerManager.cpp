@@ -1,10 +1,12 @@
 #include "TrackerManager.h"
 
-TrackerManager::TrackerManager()
+TrackerManager::TrackerManager(NetworkManager* networkManager)
 {
 	
 	m_nextFreeTrackerID = 0;
 	m_nextFreeAKCamID = 0;
+
+	m_networkManager = networkManager;
 
 	Console::log("TrackerManager::TrackerManager(): Created tracker manager.");
 
@@ -38,7 +40,10 @@ int TrackerManager::createTracker(TrackerType type)
 			Console::log("TrackerManager::createTracker(): Creating AKtracker with cam ID = " + toString(m_nextFreeAKCamID) + " ...");
 
 			//create new AK Tracker with next free Cam ID
-			tempTracker = new AKTracker(id, m_nextFreeAKCamID);
+			tempTracker = new AKTracker(id, m_nextFreeAKCamID, m_networkManager);
+
+			//sendSkeletonDelegate() funcPtr pass through
+			//tempTracker->setSendSkeletonDelegate(m_sendSkeletonDelegate);
 
 			//next AK Tracker has new cam ID
 			m_nextFreeAKCamID++;
@@ -51,7 +56,11 @@ int TrackerManager::createTracker(TrackerType type)
 		{
 
 			//create new Tracker with current ID
-			tempTracker = new OTTracker(id);
+			tempTracker = new OTTracker(id, m_networkManager);
+
+			//sendSkeletonDelegate() funcPtr pass through
+			//tempTracker->setSendSkeletonDelegate(m_sendSkeletonDelegate);
+
 
 			break;
 
@@ -79,6 +88,8 @@ int TrackerManager::createTracker(TrackerType type)
 		}
 	}
 
+	m_networkManager->createOSCSender(id);
+
 
 	//insert the tracker in the tracker pool
 	m_trackerPool.push_back(tempTracker);
@@ -104,6 +115,8 @@ void TrackerManager::removeTrackerAt(int positionInList)
 	//current Tracker to delete
 	Tracker* currTracker;
 
+	int currID;
+
 	// find tracker with positionInList
 	for(int i = 0; i < m_trackerPool.size(); i++)
 	{
@@ -124,6 +137,8 @@ void TrackerManager::removeTrackerAt(int positionInList)
 			// remove tracker with key from tracker pool
 			m_trackerPool.erase(m_trackerPool.begin() + i);
 
+			currID = currTracker->getProperties()->id;
+
 			// destroy tracker with key
 			currTracker->destroy();
 
@@ -139,6 +154,8 @@ void TrackerManager::removeTrackerAt(int positionInList)
 
 	//unlock the tracker pool
 	m_trackerPoolLock.unlock();
+
+	m_networkManager->removeNetworkSender(currID);
 
 	return;
 
@@ -269,3 +286,10 @@ std::mutex* TrackerManager::getTrackerPoolLock()
 {
 	return &m_trackerPoolLock;
 }
+
+//void TrackerManager::setSendSkeletonPtr(void (*sendSkeleton)(std::map<int, Skeleton>* skeletonPool, int trackerID))
+//{
+//
+//	m_sendSkeletonDelegate = sendSkeleton;
+//
+//}

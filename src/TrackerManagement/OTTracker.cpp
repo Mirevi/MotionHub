@@ -8,7 +8,7 @@ OTTracker::OTTracker()
 
 }
 
-OTTracker::OTTracker(int id)
+OTTracker::OTTracker(int id, NetworkManager* networkManager)
 {
 
 
@@ -20,6 +20,8 @@ OTTracker::OTTracker(int id)
 	m_properties->id = id;
 	m_properties->name = "tracker_optiTrack_" + std::to_string(id);
 
+	m_networkManager = networkManager;
+
 	//default is enabled
 	m_properties->isEnabled = true;
 
@@ -30,6 +32,9 @@ OTTracker::OTTracker(int id)
 	setScaleOffset(Vector3f(1.0f, 1.0f, 1.0f));
 
 	m_idCam = -1;
+
+
+
 
 }
 
@@ -175,10 +180,16 @@ void OTTracker::update()
 		if (!m_isDataAvailable)
 		{
 
+
 			// get new data
 			track();
 
+			m_networkManager->sendSkeletonPool(&m_skeletonPool, m_properties->id);
+
+
 		}
+
+
 	}
 
 	//clean skeleton pool after tracking

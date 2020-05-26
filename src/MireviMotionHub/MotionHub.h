@@ -6,7 +6,6 @@
 #include "MotionHubUtil/ConfigReader.h"
 
 #include "TrackerManagement/TrackerManager.h"
-#include "NetworkManagement/NetworkManager.h"
 #include "GestureManagement/GestureManager.h"
 #include "RenderManagement/UIManager.h"
 
@@ -65,14 +64,10 @@ private:
 	 */
 	UIManager* m_uiManager;
 
-
-
-
 	/*!
 	 * contains the main loop, loops as long as the UI Window exists 
 	 */
 	void update();
-
 
 
 };

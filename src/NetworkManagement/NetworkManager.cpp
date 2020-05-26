@@ -6,8 +6,6 @@ NetworkManager::NetworkManager()
 	
 	Console::log("NetworkManager::NetworkManager(): Created network manager.");
 
-	// create new osc sender and add to sender pool
-	m_poolSender.push_back(new OSCSender(BROADCAST, DEFAULT_PORT));
 
 }
 
@@ -22,19 +20,33 @@ void NetworkManager::sendSkeletonPool(std::map<int, Skeleton>* skeletonPool, int
 		// skeleton loop
 		for (auto itSkeletonPool = skeletonPool->begin(); itSkeletonPool != skeletonPool->end(); itSkeletonPool++)
 		{
-			
-			// sender loop
-			for (auto itSenderPool = m_poolSender.begin(); itSenderPool != m_poolSender.end(); itSenderPool++)
+		
+			// check if current sender is active
+			if (m_poolSender[trackerID]->isActive())
 			{
 
-				// check if current sender is active
-				if ((*itSenderPool)->isActive())
-				{
+				// send skeleton pool
+				m_poolSender[trackerID]->sendSkeleton(&(itSkeletonPool->second), DEFAULT_URI, trackerID);
 
-					// send skeleton pool
-					(*itSenderPool)->sendSkeleton(&(itSkeletonPool->second), DEFAULT_URI, trackerID);
-				}
 			}
 		}
 	}
+}
+
+
+
+void NetworkManager::createOSCSender(int ID)
+{
+
+	m_poolSender.insert({ID, new OSCSender(LOCALHOST, DEFAULT_PORT) });
+
+}
+
+void NetworkManager::removeNetworkSender(int ID)
+{
+
+	m_poolSender.erase(ID);
+
+	Console::log("NetworkManager::removeNetworkSender(): erased Sender " + toString(ID) + ". remaining Sender: " + toString((int)m_poolSender.size()));
+
 }

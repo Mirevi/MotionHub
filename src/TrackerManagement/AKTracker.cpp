@@ -1,7 +1,7 @@
 #include "AKTracker.h"
 
 // default constructor
-AKTracker::AKTracker(int id, int idCam)
+AKTracker::AKTracker(int id, int idCam, NetworkManager* networkManager)
 {
 	//create new Properties object
 	m_properties = new Properties();
@@ -9,6 +9,8 @@ AKTracker::AKTracker(int id, int idCam)
 	//assign id and name to properties
 	m_properties->id = id;
 	m_properties->name = "tracker_azureKinect_" + std::to_string(id);
+
+	m_networkManager = networkManager;
 
 	// assign cam id
 	m_idCam = idCam;
@@ -99,14 +101,13 @@ void AKTracker::update()
 	while (m_properties->isTracking)
 	{
 
-		// if no new data is procressed
-		if (!m_isDataAvailable)
-		{
 
-			// get new data
-			track();
+		// get new data
+		track();
 
-		}
+		//send Skeleton Pool to NetworkManager
+		m_networkManager->sendSkeletonPool(&m_skeletonPool, m_properties->id);
+
 	}
 
 	//clean skeleton pool after tracking
@@ -393,6 +394,8 @@ Skeleton* AKTracker::parseSkeleton(k4abt_skeleton_t* skeleton, int id)
 
 	// set body heigt based on head position
 	currSkeleton->setHeight(currSkeleton->m_joints[Joint::HEAD].getJointPosition().y());
+
+
 
 
 	// return parsed default skeleton

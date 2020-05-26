@@ -7,6 +7,7 @@
 #include "MotionHubUtil/Skeleton.h"
 #include "MotionHubUtil/Console.h"
 #include "MotionHubUtil/MMHmath.h"
+#include "NetworkManagement/NetworkManager.h"
 
 
 /*!
@@ -175,6 +176,12 @@ public:
 	 */
 	virtual void cacheSkeletonData();
 
+	/*!
+	 * pointer to sendSkeletonDelegate() in main.cpp
+	 *
+	 */
+	//virtual void setSendSkeletonDelegate(void (*sendSkeletonDelegate)(std::map<int, Skeleton>* skeletonPool, int trackerID));
+
 
 
 protected:
@@ -244,5 +251,8 @@ protected:
 	 * 
 	 */
 	std::mutex m_skeletonPoolLock;
+
+
+	NetworkManager* m_networkManager;
 
 };

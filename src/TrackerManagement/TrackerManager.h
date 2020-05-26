@@ -29,7 +29,7 @@ public:
 	/*!
 	 * default constructor (empty)
 	 */
-	TrackerManager();
+	TrackerManager(NetworkManager* networkManager);
 
 	/*!
 	 * enum for all tracker types 
@@ -106,6 +106,14 @@ public:
 	 */
 	std::mutex* getTrackerPoolLock();
 
+	/*!
+	 * sets the pointer to sendSkeletonDelegate() in main.cpp
+	 *
+	 * \param skeletonPool the skeletons detected by the tracker
+	 * \param trackerID the trackers ID
+	 */
+	//void setSendSkeletonPtr(void (*)(std::map<int, Skeleton>* skeletonPool, int trackerID));
+
 private:
 
 	/*!
@@ -142,5 +150,8 @@ private:
 	 * 
 	 */
 	std::mutex m_trackerPoolLock;
+
+
+	NetworkManager* m_networkManager;
 
 };

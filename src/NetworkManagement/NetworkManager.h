@@ -10,7 +10,7 @@
 
 #include <string>
 #include <iostream>
-#include <list>
+#include <vector>
 
 /*!
  * \class NetworkManager
@@ -35,10 +35,16 @@ public:
 	 */
 	void sendSkeletonPool(std::map<int, Skeleton>* skeletonPool, int trackerID);
 
+	void createOSCSender(int ID);
+
+	void removeNetworkSender(int ID);
+
+
+
 private:
 	/*!
 	 *  pool of all network sender
 	 */
-	std::list<NetworkSender*> m_poolSender;
+	std::map<int, NetworkSender*> m_poolSender;
 	
 };
