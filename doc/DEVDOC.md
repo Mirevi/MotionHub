@@ -21,6 +21,7 @@ The project [HIVE](https://mirevi.de/research/immersive-digital-technologies-for
 3. [Tracking Loop](#3-tracking-loop)
 4. [Implement a new Tracker](#4-implement-a-new-tracker)
 5. [Skeleton OSC Data Structure](#5-skeleton-osc-data-structure)
+6. [Azure Kinect Offset Values](#6-azure-kinect-offset-values)
 
 # 1. Setup and Building
 
@@ -97,3 +98,31 @@ Follow data is send by the `NetworkManager` with the OSC protocol to localhost.
 | 153 - 160 | TOE_R                   | 7 float + 1 int | positionX, positionY, positionZ, quaternionX, quaternionY, quaternionZ, quaternionW, confidence enum (0 - 3) [NONE, LOW, MEDIUM, HIGH]
 | 261 - 268 | HEAD                    | 7 float + 1 int | positionX, positionY, positionZ, quaternionX, quaternionY, quaternionZ, quaternionW, confidence enum (0 - 3) [NONE, LOW, MEDIUM, HIGH]
 | 269       | skeleton posture        | int             | posture enum (0 - 5) [UNKNOWN, STAND, SIT,	CROUCH,	JUMP,	LIE]
+
+# 6. Azure Kinect Offset Values
+
+Listed offset quaternions for each joint can be used to transform them into a right handed coordinate system.
+
+| Index | Name       | Quaternion Offset Value (x,y,z,w)
+| ----- | ---------- | -----------------------------------------
+| 0     | HIPS       | (0.500000, -0.500000, 0.500000, 0.500000)
+| 1     | SPINE      | (0.500000, -0.500000, 0.500000, 0.500000)
+| 2     | CHEST      | (0.500000, -0.500000, 0.500000, 0.500000)
+| 3     | NECK       | (0.500000, -0.500000, 0.500000, 0.500000)
+| 4     | SHOULDER_L | (0.707107, 0.000000, -0.000000, 0.707107)
+| 5     | ARM_L      | (0.707107, 0.000000, -0.000000, 0.707107)
+| 6     | FOREARM_L  | (0.707107, 0.000000, -0.000000, 0.707107)
+| 7     | HAND_L     | (1.000000, -0.000000, 0.000000, 0.000000)
+| 8     | SHOULDER_R | (0.707107, 0.000000, -0.000000, -0.707107)
+| 9     | ARM_R      | (0.707107, 0.000000, -0.000000, -0.707107)
+| 10    | FOREARM_R  | (0.707107, 0.000000, -0.000000, -0.707107)
+| 11    | HAND_R     | (0.000000, 0.000000, -0.000000, 1.000000)
+| 12    | UPLEG_L    | (0.500000, -0.500000, 0.500000, 0.500000)
+| 13    | LEG_L      | (0.500000, -0.500000, 0.500000, 0.500000)
+| 14    | FOOT_L     | (0.500000, -0.500000, 0.500000, 0.500000)
+| 15    | TOE_L      | (0.000000, -0.707107, -0.000000, 0.707107)
+| 16    | UPLEG_R    | (-0.500000, -0.500000, -0.500000, 0.500000)
+| 17    | LEG_R      | (-0.500000, -0.500000, -0.500000, 0.500000)
+| 18    | FOOT_R     | (-0.500000, -0.500000, -0.500000, 0.500000)
+| 19    | TOE_R      | (0.707107, -0.000000, -0.707107, -0.000000)
+| 20    | HEAD       | (0.500000, -0.500000, 0.500000, 0.500000)

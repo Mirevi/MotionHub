@@ -16,7 +16,7 @@ The project [HIVE](https://mirevi.de/research/immersive-digital-technologies-for
 
 # Requirements
 
-currently MMH is only supported on Microsoft Windows operating systems.
+Currently MMH is only supported on Microsoft Windows operating systems.
 
 - This version of MotionHub was tested on Microsoft **Windows 10 64 bit**.
 
@@ -25,7 +25,7 @@ currently MMH is only supported on Microsoft Windows operating systems.
 - Seventh Gen Intel i5 Processor
 - NVidia GeForce GTX 1070
 - 4 GB Memory
-- 6 GB Storage
+- 700 MB Storage
 
 # Documentation
 
@@ -53,6 +53,7 @@ Please Note that we use Qt Framework for the UI. To build the project you need t
 - **[Philipp Ladwig](https://www.mirevi.de/team/philipp-ladwig)** - Project Manager and Developer
 - **[Kester Evers](https://www.mirevi.de/team/kester-evers)** - Developer
 - **[Eric Jansen](https://www.mirevi.de/team/eric-jansen)** - Developer
+- **[Manuel Zohlen](https://www.mirevi.de/team/manuel-zohlen)** - Developer
 
 # Build with
 
