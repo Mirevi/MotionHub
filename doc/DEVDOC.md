@@ -126,3 +126,7 @@ Listed offset quaternions for each joint can be used to transform them into a ri
 | 18    | FOOT_R     | (-0.500000, -0.500000, -0.500000, 0.500000)
 | 19    | TOE_R      | (0.707107, -0.000000, -0.707107, -0.000000)
 | 20    | HEAD       | (0.500000, -0.500000, 0.500000, 0.500000)
+
+## Acknowledgment
+
+- **[bibigone](https://github.com/bibigone)**: [k4a.net](https://github.com/bibigone/k4a.net) - *For Azure Kinect local to global joint transformation quaternions.*
