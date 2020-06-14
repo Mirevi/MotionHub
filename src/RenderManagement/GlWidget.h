@@ -22,13 +22,10 @@
 #include "Plane.h"
 #include "Cube.h"
 #include "SkeletonMesh.h"
-
 #include "Camera.h"
 
 QT_FORWARD_DECLARE_CLASS(QOpenGLShaderProgram);
 QT_FORWARD_DECLARE_CLASS(QOpenGLTexture)
-
-using Framerate = std::chrono::duration<std::chrono::steady_clock::rep, std::ratio<1, 60>>;
 
 /*!
  * \class GlWidget

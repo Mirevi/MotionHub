@@ -12,7 +12,7 @@ GlWidget::GlWidget(TrackerManager* trackerManager, QWidget* parent)	: QOpenGLWid
 
 	m_refTrackerManager = trackerManager;
 
-	m_worldMatrix.scale(1.0f, 1.0f, 1.0f);
+	m_worldMatrix.setToIdentity();
 
 }
 
@@ -41,9 +41,7 @@ void GlWidget::initializeGL()
 	initializeOpenGLFunctions();
 
 	// enable depth test and backface culling
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_CULL_FACE);
-	glEnable(GL_MULTISAMPLE);
+	glEnable(GL_DEPTH_TEST | GL_CULL_FACE | GL_MULTISAMPLE);
 
 	// load meshes and shader program
 	init();
@@ -76,8 +74,6 @@ void GlWidget::createShaderProgram()
 	// create fragment shader
 	QOpenGLShader* fshader = new QOpenGLShader(QOpenGLShader::Fragment, this);
 	const char* fsrc;
-
-
 
 	// ### TEXTURE SHADER PROGRAM ###
 
@@ -340,6 +336,8 @@ void GlWidget::updateSkeletonMeshTransform()
 void GlWidget::paintGL()
 {
 
+	auto startTime = std::chrono::high_resolution_clock::now();
+
 	// set background color
 	glClearColor(m_clearColor.redF(), m_clearColor.greenF(), m_clearColor.blueF(), m_clearColor.alphaF());
 	// clear color and depth buffers
@@ -371,6 +369,18 @@ void GlWidget::paintGL()
 
 	// update render window
 	update();
+
+	auto endTime = std::chrono::high_resolution_clock::now();
+
+	auto elapsedTimeNs = endTime - startTime;
+	float elapsedTimeMs = elapsedTimeNs.count() / 1e+6;
+	int sleepTimeMs = 12 - elapsedTimeMs;
+
+	Console::log("GlWidget::paintGL: Elapsed time = " + std::to_string(elapsedTimeMs) + " ms.");
+	Console::log("GlWidget::paintGL: Sleep time = " + std::to_string(sleepTimeMs) + " ms.");
+
+	if (sleepTimeMs > 0)
+		std::this_thread::sleep_for(std::chrono::milliseconds(sleepTimeMs));
 
 }
 
