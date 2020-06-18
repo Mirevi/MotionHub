@@ -4,6 +4,7 @@
 
 #include "MotionHubUtil/Console.h"
 #include "MotionHubUtil/ConfigReader.h"
+#include "MotionHubUtil/Timer.h"
 
 #include "TrackerManagement/TrackerManager.h"
 #include "GestureManagement/GestureManager.h"

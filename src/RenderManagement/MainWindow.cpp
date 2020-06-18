@@ -117,8 +117,11 @@ void MainWindow::updateInspector()
 	//get properties of selected tracker
 	Tracker::Properties* trackerProperties = m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->getProperties();
 
+	//Console::logWarning("MainWindow::updateInspector()");
+
 	//set ID and name in inspector
 	ui->tableWidget_inspector->item(0, 1)->setText(std::to_string(trackerProperties->id).c_str());
+	//ui->tableWidget_inspector->item(0, 1)->setText(std::to_string(1).c_str());
 	ui->tableWidget_inspector->item(1, 1)->setText(trackerProperties->name.c_str());
 
 	//check if tracker is tracking and set checkbox in inspector
@@ -491,19 +494,25 @@ void MainWindow::slotTrackerSelectionChanged()
 
 	}
 
+
+
+	//#### Correct if no errors occur (17.06.2020) #####
+
 	// update the inspector if current tracker was reselected
-	if (previousSelectedTrackerInList == m_selectedTrackerInList)
-	{
+	//if (previousSelectedTrackerInList == m_selectedTrackerInList)
+	//{
 
-		updateInspector();
+	//	//updateInspector();	
+	//	drawInspector();
 
-	}
-	else // if other tracker than before was selected - draw the ui with new content
-	{
+
+	//}
+	//else // if other tracker than before was selected - draw the ui with new content
+	//{
 
 		drawInspector();
 
-	}
+	//}
 
 }
 
