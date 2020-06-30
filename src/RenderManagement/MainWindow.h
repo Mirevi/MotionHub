@@ -4,6 +4,7 @@
 #include "CreateTrackerWindow.h"
 #include "GlWidget.h"
 #include "MotionHubUtil/Console.h"
+#include "NetworkSettingsWindow.h"
 
 #include <QtWidgets/QMainWindow>
 #include "QtWidgets/qtreewidget.h"
@@ -91,6 +92,8 @@ private slots:
 	 */
 	void slotInspectorItemChanged(QTableWidgetItem *item);
 
+	void slotNetworkSettings();
+
 	void slotInspectorInputPosX(QString text);
 	void slotInspectorInputPosY(QString text);
 	void slotInspectorInputPosZ(QString text);
@@ -113,6 +116,9 @@ private:
 	 * createTracker dialog
 	 */
 	CreateTrackerWindow* m_createTrackerWindow;
+
+	NetworkSettingsWindow* m_netwokSettingsWindow;
+
 	/*!
 	 * reference to the tracker manager 
 	 */

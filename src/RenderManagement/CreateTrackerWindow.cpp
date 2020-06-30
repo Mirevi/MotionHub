@@ -37,7 +37,7 @@ void CreateTrackerWindow::slotCreateTracker()
 		case 0:
 		{
 			// create new azure kinect tracker and add tracker to the tracking manager tracker pool
-			id = m_refTrackerManager->createTracker(TrackerManager::azureKinect); 
+			id = m_refTrackerManager->createTracker(TrackerManager::azureKinect);
 			
 
 

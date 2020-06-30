@@ -41,6 +41,10 @@ public:
 
 
 
+	std::string m_ipAddress;
+
+
+
 private:
 	/*!
 	 *  pool of all network sender

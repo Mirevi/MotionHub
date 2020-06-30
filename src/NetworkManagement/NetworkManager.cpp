@@ -4,6 +4,8 @@
 NetworkManager::NetworkManager()
 {
 	
+	m_ipAddress = LOCALHOST;
+
 	Console::log("NetworkManager::NetworkManager(): Created network manager.");
 
 
@@ -38,7 +40,7 @@ void NetworkManager::sendSkeletonPool(std::map<int, Skeleton>* skeletonPool, int
 void NetworkManager::createOSCSender(int ID)
 {
 
-	m_poolSender.insert({ID, new OSCSender(LOCALHOST, DEFAULT_PORT) });
+	m_poolSender.insert({ID, new OSCSender(m_ipAddress, DEFAULT_PORT) });
 
 }
 

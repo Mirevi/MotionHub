@@ -114,6 +114,9 @@ public:
 	 */
 	//void setSendSkeletonPtr(void (*)(std::map<int, Skeleton>* skeletonPool, int trackerID));
 
+	NetworkManager* m_networkManager;
+
+
 private:
 
 	/*!
@@ -152,6 +155,5 @@ private:
 	std::mutex m_trackerPoolLock;
 
 
-	NetworkManager* m_networkManager;
 
 };
