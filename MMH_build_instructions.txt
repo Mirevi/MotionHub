@@ -1,0 +1,22 @@
+CMake MMH manual:
+
+
+1.  Download or clone MMH
+2.  Download CMake GUI and start it
+3.  In CMake, set source to the MMH path
+4.  Set binaries to (MMH path)/build
+5.  Click configure. This will take a few minutes so go on with 6 and 7.
+
+6.  Download Azure Kinect Sensor		   SDK (https://docs.microsoft.com/en-us/azure/kinect-dk/sensor-sdk-download)
+7.  Download Azure Kinect Body Tracking SDK (https://docs.microsoft.com/en-us/azure/kinect-dk/body-sdk-download)
+8.  Meanwhile, the configuration process in CMake should have failed. 
+9.  Copy the installed Azure Kinect Folders to MMH/deps. You can delete the "tools"-Folder in both, they are very big
+
+10. In CMake, set the flags "advanced" and "grouped", you should see all dependencies listed
+11. Under K4A set the paths to the include (something like this: MMH/deps/Azure Kinect SDK v1.4.0/sdk/include) and lib folder (MMH/deps/Azure Kinect SDK v1.4.0/sdk/windows-desktop/amd64/release/lib)
+12. Repeat for K4ABT (MMH/deps/AzureKinectBodyTrackingSDKv1.0.1/sdk/include) and (MMH/deps/AzureKinectBodyTrackingSDKv1.0.1/sdk/windows-desktop/amd64/release/lib)
+13. Again, click "Configure" (This should be successful), then click "Generate".
+
+14. You can now click "Open Project" or open the Solution with visual Studio (MMH/build/MireviMotionHub.sln)
+15. In the VS Solution Explorer, right click on the project "MireviMotionHub"->"Set as Startup Project" and "MireviMotionHub"->"build"
+16. After the code is compiled, you can push F5 in VS or start MMH/build/bin/MireviMotionHub.exe to start the MotionHub
