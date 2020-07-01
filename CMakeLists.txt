@@ -70,9 +70,9 @@ set(CHECK_IF_DEPS_EXIST "${CURRENT_DEPS_PATH}/Dense")
 FIND_PACKAGE( Eigen REQUIRED )
 
 # AzureKinectBodyTrackingSDK
-set( EXPECTED_SHA256 d3c1ffe8af8b92008c8043abea92f23c69dad6e02f68508356cbfdc1e66b919a ) 
+set( EXPECTED_SHA256 a4205d3c9d54b202327ef5a31673b301981d7ec1fb672db2e85d238ab68fefcc ) 
 set(CURRENT_DEPS_PATH ${CMAKE_BINARY_DIR}/../deps/azurekinectbodytrackingsdk0101//)  
-set( URL https://claymore.mirevi.com/mirevimotionhub/azurekinectbodytrackingsdk0100.zip )
+set( URL https://claymore.mirevi.com/mirevimotionhub/azurekinectbodytrackingsdk0101.zip )
 getsTheDepsNameFromURL("${URL}")
 set(CHECK_IF_DEPS_EXIST "${CURRENT_DEPS_PATH}/include/k4abt.h")
 FIND_PACKAGE( AzureKinectBodyTrackingSDK REQUIRED )
