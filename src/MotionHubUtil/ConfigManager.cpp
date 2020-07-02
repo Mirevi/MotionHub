@@ -1,5 +1,5 @@
 // ClayMore - Immersive Mesh Modelling --- Copyright (c) 2014-2017 Philipp Ladwig, Jannik Fiedler, Jan Beutgen
-#include "ConfigReader.h"
+#include "ConfigManager.h"
 #include "StringParser.h"
 
 #include <iostream>
@@ -7,22 +7,22 @@
 //Must be declared in .cpp since it is static
 
 
-ConfigReader::ConfigReader()
+ConfigManager::ConfigManager()
 {
 
 }
 
-ConfigReader::~ConfigReader()
+ConfigManager::~ConfigManager()
 {
 
 }
 
-ConfigReader::DebugLevel ConfigReader::getDebugLevel()
+ConfigManager::DebugLevel ConfigManager::getDebugLevel()
 {
 	return m_debugLevel;
 }
 
-std::string ConfigReader::getStringFromStartupConfig(std::string mapKeyIn)
+std::string ConfigManager::getStringFromStartupConfig(std::string mapKeyIn)
 {
 	auto it = m_startupConfig.find(mapKeyIn);
 	if (it == m_startupConfig.end())
@@ -32,17 +32,17 @@ std::string ConfigReader::getStringFromStartupConfig(std::string mapKeyIn)
 	return m_startupConfig[mapKeyIn];
 }
 
-float ConfigReader::getFloatFromStartupConfig(std::string mapKeyIn)
+float ConfigManager::getFloatFromStartupConfig(std::string mapKeyIn)
 {
 	return StringParser::parseFloat(m_startupConfig[mapKeyIn]);
 }
 
-int ConfigReader::getIntFromStartupConfig(std::string mapKeyIn)
+int ConfigManager::getIntFromStartupConfig(std::string mapKeyIn)
 {
 	return StringParser::parseInt(m_startupConfig[mapKeyIn]);
 }
 
-bool ConfigReader::getBoolFromStartupConfig(std::string mapKeyIn)
+bool ConfigManager::getBoolFromStartupConfig(std::string mapKeyIn)
 {
 	if (getStringFromStartupConfig(mapKeyIn).compare("true") == 0)
 	{
@@ -68,11 +68,10 @@ bool ConfigReader::getBoolFromStartupConfig(std::string mapKeyIn)
 //	return output;
 //}
 
-bool ConfigReader::readConfigFile(const char * filePath)
+bool ConfigManager::readConfigFile(const char * filePath)
 {
 	//Read XML file
-	tinyxml2::XMLDocument xmlFile;
-	int res = xmlFile.LoadFile(filePath);
+	int res = m_xmlFile.LoadFile(filePath);
 
 	if (res != tinyxml2::XMLError::XML_SUCCESS)
 	{
@@ -126,13 +125,16 @@ bool ConfigReader::readConfigFile(const char * filePath)
 	}
 
 	//Loop over all first level nodes
-	tinyxml2::XMLElement const *rootElement = xmlFile.RootElement();
+	tinyxml2::XMLElement const *rootElement = m_xmlFile.RootElement();
 
 	for (tinyxml2::XMLElement const *firstLevelNodes = rootElement->FirstChildElement(); firstLevelNodes != NULL; firstLevelNodes = firstLevelNodes->NextSiblingElement())
 	{
 		//parse the startup config first level node
 		if (strcmp(firstLevelNodes->Name(), "startup_config") == 0)
 		{
+
+			m_startUpConfigNode = firstLevelNodes;
+
 			//Loop over all startup_config attributes
 			for (tinyxml2::XMLElement const *secondLevelNodes = firstLevelNodes->FirstChildElement(); secondLevelNodes != NULL; secondLevelNodes = secondLevelNodes->NextSiblingElement())
 			{
@@ -155,8 +157,23 @@ bool ConfigReader::readConfigFile(const char * filePath)
 	return true;
 }
 
-void ConfigReader::printDebugMessage(const char * message)
+void ConfigManager::printDebugMessage(const char * message)
 {
 	std::cout << message << std::endl;
+}
+
+
+void ConfigManager::writeToConfig(std::string mapKeyIn, std::string value)
+{
+
+
+	m_startupConfig[mapKeyIn] = value;
+
+	tinyxml2::XMLElement* currElem = m_xmlFile.RootElement()->FirstChildElement("startup_config")->FirstChildElement(mapKeyIn.c_str())->ToElement();
+
+
+	currElem->SetText(value.c_str());
+	m_xmlFile.SaveFile(CONFIG_PATH);
+
 }
 

@@ -1,7 +1,7 @@
 #include "UIManager.h"
 
 // default constructor
-UIManager::UIManager(int argc, char** argv, TrackerManager* trackerManager)
+UIManager::UIManager(int argc, char** argv, TrackerManager* trackerManager, ConfigManager* configManager)
 {
 
 	// create new qt ui application
@@ -13,7 +13,7 @@ UIManager::UIManager(int argc, char** argv, TrackerManager* trackerManager)
 	
 
 	// create new main window and show window
-	m_mainWindow = new MainWindow(trackerManager);
+	m_mainWindow = new MainWindow(trackerManager, configManager);
 	m_mainWindow->show();
 	   
 }

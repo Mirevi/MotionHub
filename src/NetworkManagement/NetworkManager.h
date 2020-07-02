@@ -4,6 +4,8 @@
 
 #include "MotionHubUtil/Skeleton.h"
 #include "MotionHubUtil/Console.h"
+#include "MotionHubUtil/ConfigManager.h"
+
 #include "defines.h"
 
 #include "OSCSender.h"
@@ -28,7 +30,7 @@ public:
 	/*!
 	 * default constructor 
 	 */
-	NetworkManager();
+	NetworkManager(ConfigManager* configManager);
 	/*!
 	 * sends skeleton pool to all network sender
 	 * \param skeletonPool skeleton pool to send
@@ -50,5 +52,7 @@ private:
 	 *  pool of all network sender
 	 */
 	std::map<int, NetworkSender*> m_poolSender;
+
+	ConfigManager* m_configManager;
 	
 };

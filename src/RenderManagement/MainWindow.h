@@ -47,7 +47,7 @@ public:
 	/*!
 	 * default constructor  
 	 */
-	explicit MainWindow(TrackerManager* trackerManager, QWidget *parent = 0);
+	explicit MainWindow(TrackerManager* trackerManager, ConfigManager* configManager, QWidget *parent = 0);
 	/*!
 	 * default destructor 
 	 */
@@ -116,6 +116,8 @@ private:
 	 * createTracker dialog
 	 */
 	CreateTrackerWindow* m_createTrackerWindow;
+
+	ConfigManager* m_configManager;
 
 	NetworkSettingsWindow* m_netwokSettingsWindow;
 

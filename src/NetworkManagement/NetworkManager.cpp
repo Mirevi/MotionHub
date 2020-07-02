@@ -1,13 +1,14 @@
 #include "NetworkManager.h"
 
 // default constructor
-NetworkManager::NetworkManager()
+NetworkManager::NetworkManager(ConfigManager* configManager)
 {
 	
-	m_ipAddress = LOCALHOST;
+	m_configManager = configManager;
+
+	m_ipAddress = m_configManager->getStringFromStartupConfig("ipAddress");
 
 	Console::log("NetworkManager::NetworkManager(): Created network manager.");
-
 
 }
 

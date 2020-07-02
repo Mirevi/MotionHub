@@ -3,7 +3,7 @@
 #include "defines.h"
 
 #include "MotionHubUtil/Console.h"
-#include "MotionHubUtil/ConfigReader.h"
+#include "MotionHubUtil/ConfigManager.h"
 #include "MotionHubUtil/Timer.h"
 
 #include "TrackerManagement/TrackerManager.h"
@@ -47,7 +47,7 @@ private:
 	/*!
 	 *  pointer to the config reader
 	 */
-	ConfigReader* m_configReader;
+	ConfigManager* m_configManager;
 	/*!
 	 *  pointer to the tracker manager
 	 */

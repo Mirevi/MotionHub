@@ -30,7 +30,7 @@ public:
 	 * \param argv
 	 * \param inputManager reference to the InputManager
 	 */
-	UIManager(int argc, char** argv, TrackerManager* trackerManager);
+	UIManager(int argc, char** argv, TrackerManager* trackerManager, ConfigManager* configManager);
 
 	/*!
 	 * getter for MainWindow pointer 
@@ -51,5 +51,6 @@ private:
 	 * main window containing all other windows 
 	 */
 	MainWindow* m_mainWindow;
+
 
 };

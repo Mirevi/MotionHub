@@ -12,12 +12,14 @@
 
 #include "tinyxml2.h"
 
-class MotionHubUtil_DLL_import_export ConfigReader
+#include "Console.h"
+
+class MotionHubUtil_DLL_import_export ConfigManager
 {
 	// #### CONSTRUCTOR & DESTRUCTOR ###############
 public:
-	ConfigReader();
-	~ConfigReader();
+	ConfigManager();
+	~ConfigManager();
 
 	enum DebugLevel
 	{
@@ -30,6 +32,10 @@ private:
 	std::map<std::string, std::string> m_startupConfig;
 	DebugLevel m_debugLevel;
 
+	tinyxml2::XMLDocument m_xmlFile;
+	tinyxml2::XMLElement const* m_startUpConfigNode;
+
+
 public:
 	DebugLevel getDebugLevel();
 	//TODO: Remove Warning for not dll exported stl class ->look here: http://stackoverflow.com/questions/4145605/stdvector-needs-to-have-dll-interface-to-be-used-by-clients-of-class-xt-war
@@ -39,6 +45,9 @@ public:
 	bool getBoolFromStartupConfig(std::string mapKeyIn);
 	//osg::Vec3f getVec3fFromStartupConfig(std::string mapKeyIn);
 	//osg::Vec4f getVec4fFromStartupConfig(std::string mapKeyIn);
+
+
+	void writeToConfig(std::string mapKeyIn, std::string value);
 
 	bool readConfigFile(const char * filePath);
 

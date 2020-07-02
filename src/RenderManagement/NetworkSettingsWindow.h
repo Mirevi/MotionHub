@@ -5,6 +5,7 @@
 #include <QtWidgets/QLineEdit>
 
 #include "NetworkManagement/NetworkManager.h"
+#include "MotionHubUtil/ConfigManager.h"
 
 namespace Ui
 {
@@ -16,7 +17,7 @@ class NetworkSettingsWindow : public QDialog
 	Q_OBJECT
 
 public:
-	explicit NetworkSettingsWindow(NetworkManager* networkManager, QWidget *parent = nullptr);
+	explicit NetworkSettingsWindow(NetworkManager* networkManager, ConfigManager* configManager, QWidget *parent = nullptr);
 	~NetworkSettingsWindow();
 
 private slots:
@@ -30,6 +31,8 @@ private:
 	NetworkManager* m_refNetworkManager;
 
 	QLineEdit* m_LineEditIP;
+
+	ConfigManager* m_configManager;
 
 };
 

@@ -1,7 +1,7 @@
 // ClayMore - Immersive Mesh Modelling --- Copyright (c) 2014-2017 Philipp Ladwig, Jannik Fiedler, Jan Beutgen
 #pragma once
 
-#include "ConfigReader.h"
+#include "ConfigManager.h"
 #include <string>
 
 class StringParser

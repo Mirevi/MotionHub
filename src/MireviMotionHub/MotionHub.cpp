@@ -15,15 +15,17 @@ MotionHub::MotionHub(int argc, char** argv)
 	Console::log("MotionHub::MotionHub(): Starting Mirevi MotionHub ...");
 
 	// create new config reader
-	m_configReader = new ConfigReader();
+	m_configManager = new ConfigManager();
 	// load config file
-	m_configReader->readConfigFile(CONFIG_PATH);
+	m_configManager->readConfigFile(CONFIG_PATH);
+
+
 	
 	// create manager
 	m_gestureManager = new GestureManager();
-	m_networkManager = new NetworkManager();
+	m_networkManager = new NetworkManager(m_configManager);
 	m_trackerManager = new TrackerManager(m_networkManager);
-	m_uiManager = new UIManager(m_argc, m_argv, m_trackerManager);
+	m_uiManager = new UIManager(m_argc, m_argv, m_trackerManager, m_configManager);
 
 
 	// start update loop

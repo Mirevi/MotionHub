@@ -4,7 +4,7 @@
 
 
 // default constructor
-MainWindow::MainWindow(TrackerManager* trackerManager, QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
+MainWindow::MainWindow(TrackerManager* trackerManager, ConfigManager* configManager, QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
 
 	// setup base class
@@ -19,6 +19,7 @@ MainWindow::MainWindow(TrackerManager* trackerManager, QWidget *parent) : QMainW
 
 	// assign reference to tracker manager
 	m_refTrackerManager = trackerManager;
+	m_configManager = configManager;
 
 	// disable qt vector warning in console
 	qRegisterMetaType<QVector<int>>();
@@ -578,7 +579,7 @@ void MainWindow::on_actionExit_triggered()
 void MainWindow::slotNetworkSettings()
 {
 
-	m_netwokSettingsWindow = new NetworkSettingsWindow(m_refTrackerManager->m_networkManager);
+	m_netwokSettingsWindow = new NetworkSettingsWindow(m_refTrackerManager->m_networkManager, m_configManager);
 
 	m_netwokSettingsWindow->setModal(true);
 	m_netwokSettingsWindow->exec();
