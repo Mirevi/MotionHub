@@ -9,7 +9,7 @@ Page instfiles
 UninstPage uninstConfirm
 UninstPage instfiles
 
-LicenseData "license.txt"
+LicenseData "..\LICENSE.txt"
 
 Section ""
   SetOutPath $INSTDIR
@@ -22,7 +22,7 @@ Section ""
 SectionEnd
 
 Section "License"
-  File "license.txt"
+  File "..\LICENSE.txt"
 SectionEnd
 
 Section "Shortcuts"
