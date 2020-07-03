@@ -36,6 +36,7 @@ private:
 	tinyxml2::XMLElement const* m_startUpConfigNode;
 
 
+
 public:
 	DebugLevel getDebugLevel();
 	//TODO: Remove Warning for not dll exported stl class ->look here: http://stackoverflow.com/questions/4145605/stdvector-needs-to-have-dll-interface-to-be-used-by-clients-of-class-xt-war
@@ -52,5 +53,8 @@ public:
 	bool readConfigFile(const char * filePath);
 
 	static void printDebugMessage(const char * message);
+
+	void createNewConfigFile();
+
 
 };

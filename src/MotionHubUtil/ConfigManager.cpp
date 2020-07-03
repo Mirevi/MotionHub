@@ -177,3 +177,28 @@ void ConfigManager::writeToConfig(std::string mapKeyIn, std::string value)
 
 }
 
+void ConfigManager::createNewConfigFile()
+{
+
+	//create new Document
+	tinyxml2::XMLDocument newXmlDoc;
+
+	//create root node and add it to Doc
+	tinyxml2::XMLNode* pRoot = newXmlDoc.NewElement("config");
+	newXmlDoc.InsertFirstChild(pRoot);
+
+	//create stratup node and add it to root
+	tinyxml2::XMLNode* pStartup = newXmlDoc.NewElement("startup_config");
+	pRoot->InsertFirstChild(pStartup);
+
+	//create ipAddress Element to startup and set value to LOCALHOST
+	tinyxml2::XMLElement* ipAddress = newXmlDoc.NewElement("ipAddress");
+	ipAddress->SetText("127.0.0.1");
+	pStartup->InsertEndChild(ipAddress);
+
+	newXmlDoc.SaveFile(CONFIG_PATH);
+
+	Console::log("ConfigManager::createNewConfigFile(): Created new config.xml");
+
+
+}
