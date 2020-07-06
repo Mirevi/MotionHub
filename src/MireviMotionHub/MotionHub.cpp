@@ -16,22 +16,6 @@ MotionHub::MotionHub(int argc, char** argv)
 
 	// create new config reader
 	m_configManager = new ConfigManager();
-	// load config file
-	if (!m_configManager->readConfigFile(CONFIG_PATH))
-	{
-
-		Console::log("MotionHub::MotionHub(): no config.xml found");
-
-		m_configManager->createNewConfigFile();
-		if (!m_configManager->readConfigFile(CONFIG_PATH))
-		{
-
-			Console::log("MotionHub::MotionHub(): cannot create config.xml");
-
-		}
-
-	}
-
 
 	
 	// create manager

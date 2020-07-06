@@ -10,6 +10,23 @@
 ConfigManager::ConfigManager()
 {
 
+	// load config file
+	if (!readConfigFile(CONFIG_PATH))
+	{
+
+		Console::logError("MotionHub::MotionHub(): no config.xml found");
+
+		createNewConfigFile();
+
+		if (!readConfigFile(CONFIG_PATH))
+		{
+
+			Console::logError("MotionHub::MotionHub(): cannot create config.xml");
+
+		}
+
+	}
+
 }
 
 ConfigManager::~ConfigManager()
@@ -196,9 +213,21 @@ void ConfigManager::createNewConfigFile()
 	ipAddress->SetText("127.0.0.1");
 	pStartup->InsertEndChild(ipAddress);
 
-	newXmlDoc.SaveFile(CONFIG_PATH);
+	//save file at the CONFIG_PATH directory, throw Error if it fails
+	if (newXmlDoc.SaveFile(CONFIG_PATH) == tinyxml2::XMLError::XML_SUCCESS)
+	{
 
-	Console::log("ConfigManager::createNewConfigFile(): Created new config.xml");
+		Console::log("ConfigManager::createNewConfigFile(): Created new config.xml");
+
+
+	}
+	else
+	{
+
+		Console::logError("ConfigManager::createNewConfigFile(): ERROR saving file");
+
+	}
+
 
 
 }

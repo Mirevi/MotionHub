@@ -125,9 +125,14 @@ file(COPY ${K4A_LIBRARIES_DIR}/../bin/depthengine_2_0.dll 				DESTINATION ${CMAK
 file(COPY ${K4ABT_LIBRARIES_DIR}/../bin/k4abt.dll 						DESTINATION ${CMAKE_BINARY_DIR}/bin)
 file(COPY ${K4ABT_LIBRARIES_DIR}/../bin/onnxruntime.dll 				DESTINATION ${CMAKE_BINARY_DIR}/bin)
 file(COPY ${K4ABT_LIBRARIES_DIR}/../bin/dnn_model_2_0.onnx 				DESTINATION ${CMAKE_BINARY_DIR}/bin)
-#file(COPY deps/azurekinectbodytrackingsdk0101/bin/cublas64_100.dll		DESTINATION ${CMAKE_BINARY_DIR}/bin)
-#file(COPY deps/azurekinectbodytrackingsdk0101/bin/cudart64_100.dll		DESTINATION ${CMAKE_BINARY_DIR}/bin)
+file(COPY ${K4ABT_INCLUDE_DIR}/../../tools/cublas64_100.dll				DESTINATION ${CMAKE_BINARY_DIR}/bin)
+file(COPY ${K4ABT_INCLUDE_DIR}/../../tools/cudart64_100.dll				DESTINATION ${CMAKE_BINARY_DIR}/bin)
 file(COPY deps/cudnn101windows10x64_76224/bin/cudnn64_7.dll 			DESTINATION ${CMAKE_BINARY_DIR}/bin)
+
+file(REMOVE_RECURSE ${K4ABT_INCLUDE_DIR}/../../tools/)
+file(REMOVE_RECURSE ${K4A_INCLUDE_DIR}/../../tools/)
+
+file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/bin/data/)
 
 # platforms dir
 set( EXPECTED_SHA256 e3c37954f82f401333a1a3e20b1e11a48a16010e2a4fb0826c201913702ea24f ) 
