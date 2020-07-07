@@ -29,7 +29,7 @@ public:
 	/*!
 	 * default constructor (empty)
 	 */
-	TrackerManager(NetworkManager* networkManager);
+	TrackerManager(NetworkManager* networkManager, ConfigManager* configManager);
 
 	/*!
 	 * enum for all tracker types 
@@ -153,6 +153,8 @@ private:
 	 * 
 	 */
 	std::mutex m_trackerPoolLock;
+
+	ConfigManager* m_configManager;
 
 
 

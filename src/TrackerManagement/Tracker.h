@@ -186,6 +186,9 @@ public:
 	//virtual void setSendSkeletonDelegate(void (*sendSkeletonDelegate)(std::map<int, Skeleton>* skeletonPool, int trackerID));
 
 
+	virtual std::string getTrackerType();
+
+
 
 protected:
 
@@ -257,5 +260,7 @@ protected:
 
 
 	NetworkManager* m_networkManager;
+
+	ConfigManager* m_configManager;
 
 };

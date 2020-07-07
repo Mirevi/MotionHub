@@ -1,7 +1,7 @@
 #include "AKTracker.h"
 
 // default constructor
-AKTracker::AKTracker(int id, int idCam, NetworkManager* networkManager)
+AKTracker::AKTracker(int id, int idCam, NetworkManager* networkManager, ConfigManager* configManager)
 {
 
 
@@ -33,17 +33,33 @@ AKTracker::AKTracker(int id, int idCam, NetworkManager* networkManager)
 	m_properties->name = "tracker_azureKinect_" + std::to_string(id);
 
 	m_networkManager = networkManager;
+	m_configManager = configManager;
 
 	// assign cam id
 	m_idCam = idCam;
 
 	//tracker is enabled
 	m_properties->isEnabled = true;
+	
+
+	
+	
 
 	//set default values for offsets
-	setPositionOffset(Vector3f(0.0f, 1.175f, 2.2f));
-	setRotationOffset(Vector3f(-5.0f, 0.0f, 0.0f));
-	setScaleOffset(Vector3f(0.0010f, -0.0010f, -0.0010f));
+	setPositionOffset(Vector3f(configManager->getFloatFromStartupConfig("xPosAzure"),
+							   configManager->getFloatFromStartupConfig("yPosAzure"),
+							   configManager->getFloatFromStartupConfig("zPosAzure")
+							  ));
+
+	setRotationOffset(Vector3f(configManager->getFloatFromStartupConfig("xRotAzure"),
+							   configManager->getFloatFromStartupConfig("yRotAzure"),
+							   configManager->getFloatFromStartupConfig("zRotAzure")
+							  ));
+
+	setScaleOffset(Vector3f(configManager->getFloatFromStartupConfig("xSclAzure"),
+							configManager->getFloatFromStartupConfig("ySclAzure"),
+							configManager->getFloatFromStartupConfig("zSclAzure")
+							));
 
 
 
@@ -497,5 +513,12 @@ Quaternionf AKTracker::azureKinectEulerToQuaternion(Vector3f euler)
 	qRotation = Quaternionf(qRotation.w(), qRotation.x(), qRotation.y(), -qRotation.z());
 
 	return qRotation;
+
+}
+
+std::string AKTracker::getTrackerType()
+{
+
+	return "Azure";
 
 }

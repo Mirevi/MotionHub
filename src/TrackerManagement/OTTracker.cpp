@@ -8,7 +8,7 @@ OTTracker::OTTracker()
 
 }
 
-OTTracker::OTTracker(int id, NetworkManager* networkManager)
+OTTracker::OTTracker(int id, NetworkManager* networkManager, ConfigManager* configManager)
 {
 
 
@@ -26,10 +26,21 @@ OTTracker::OTTracker(int id, NetworkManager* networkManager)
 	m_properties->isEnabled = true;
 
 
-	//set the offset values
-	setPositionOffset(Vector3f(0.0f, 0.1f, 0.0f));
-	setRotationOffset(Vector3f(0.0f, 0.0f, 0.0f));
-	setScaleOffset(Vector3f(1.0f, 1.0f, 1.0f));
+	//set default values for offsets
+	setPositionOffset(Vector3f(configManager->getFloatFromStartupConfig("xPosOptiTrack"),
+							   configManager->getFloatFromStartupConfig("yPosOptiTrack"),
+							   configManager->getFloatFromStartupConfig("zPosOptiTrack")
+	));																		 
+																			 
+	setRotationOffset(Vector3f(configManager->getFloatFromStartupConfig("xRotOptiTrack"),
+							   configManager->getFloatFromStartupConfig("yRotOptiTrack"),
+							   configManager->getFloatFromStartupConfig("zRotOptiTrack")
+	));
+
+	setScaleOffset(Vector3f(configManager->getFloatFromStartupConfig("xSclOptiTrack"),
+							configManager->getFloatFromStartupConfig("ySclOptiTrack"),
+							configManager->getFloatFromStartupConfig("zSclOptiTrack")
+	));
 
 	m_idCam = -1;
 
@@ -513,5 +524,12 @@ void MessageHandler(int msgType, char* msg)
 {
 
 	//the NatNet messages are muted. If you need the messages, output msg
+
+}
+
+std::string OTTracker::getTrackerType()
+{
+
+	return "OptiTrack";
 
 }

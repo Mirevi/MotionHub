@@ -1,12 +1,13 @@
 #include "TrackerManager.h"
 
-TrackerManager::TrackerManager(NetworkManager* networkManager)
+TrackerManager::TrackerManager(NetworkManager* networkManager, ConfigManager* configManager)
 {
 	
 	m_nextFreeTrackerID = 0;
 	m_nextFreeAKCamID = 0;
 
 	m_networkManager = networkManager;
+	m_configManager = configManager;
 
 	Console::log("TrackerManager::TrackerManager(): Created tracker manager.");
 
@@ -40,7 +41,7 @@ int TrackerManager::createTracker(TrackerType type)
 			Console::log("TrackerManager::createTracker(): Creating AKtracker with cam ID = " + toString(m_nextFreeAKCamID) + " ...");
 
 			//create new AK Tracker with next free Cam ID
-			tempTracker = new AKTracker(id, m_nextFreeAKCamID, m_networkManager);
+			tempTracker = new AKTracker(id, m_nextFreeAKCamID, m_networkManager, m_configManager);
 
 
 			if (!tempTracker->valid)
@@ -71,7 +72,7 @@ int TrackerManager::createTracker(TrackerType type)
 		{
 
 			//create new Tracker with current ID
-			tempTracker = new OTTracker(id, m_networkManager);
+			tempTracker = new OTTracker(id, m_networkManager, m_configManager);
 
 			//sendSkeletonDelegate() funcPtr pass through
 			//tempTracker->setSendSkeletonDelegate(m_sendSkeletonDelegate);

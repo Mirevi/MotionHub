@@ -87,6 +87,13 @@ void Tracker::cacheSkeletonData()
 
 }
 
+std::string Tracker::getTrackerType()
+{
+
+	return "";
+
+}
+
 #pragma endregion
 
 #pragma region getter/setter

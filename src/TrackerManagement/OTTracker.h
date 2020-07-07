@@ -47,7 +47,7 @@ public:
 	 * 
 	 * \param id Tracker ID
 	 */
-	OTTracker(int id, NetworkManager* networkManager);
+	OTTracker(int id, NetworkManager* networkManager, ConfigManager* configManager);
 	/*!
 	 * default destructor
 	 * 
@@ -69,6 +69,8 @@ public:
 	 * resets the Trackers init data
 	 */
 	void destroy() override;
+
+	std::string getTrackerType() override;
 
 
 private:

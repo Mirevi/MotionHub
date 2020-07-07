@@ -603,6 +603,7 @@ void MainWindow::slotInspectorInputPosX(QString text)
 
 		posX = std::stof(txt);
 
+
 	}
 	catch (const std::exception&)
 	{
@@ -616,6 +617,9 @@ void MainWindow::slotInspectorInputPosX(QString text)
 	Vector3f pos = m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->getProperties()->positionOffset;
 
 	m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->setPositionOffset(Vector3f(posX, pos.y(), pos.z()));
+
+	m_configManager->writeToConfig("xPos", toString(posX), m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->getTrackerType());
+
 
 }
 
@@ -646,6 +650,9 @@ void MainWindow::slotInspectorInputPosY(QString text)
 
 	m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->setPositionOffset(Vector3f(pos.x(), posY, pos.z()));
 
+	m_configManager->writeToConfig("yPos", toString(posY), m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->getTrackerType());
+
+
 }
 
 void MainWindow::slotInspectorInputPosZ(QString text)
@@ -673,6 +680,9 @@ void MainWindow::slotInspectorInputPosZ(QString text)
 
 	m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->setPositionOffset(Vector3f(pos.x(), pos.y(), posZ));
 
+	m_configManager->writeToConfig("zPos", toString(posZ), m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->getTrackerType());
+
+
 }
 
 
@@ -699,6 +709,9 @@ void MainWindow::slotInspectorInputRotX(QString text)
 	Vector3f rot = m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->getProperties()->rotationOffset;
 
 	m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->setRotationOffset(Vector3f(rotX, rot.y(), rot.z()));
+
+	m_configManager->writeToConfig("xRot", toString(rotX), m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->getTrackerType());
+
 
 }
 
@@ -728,6 +741,9 @@ void MainWindow::slotInspectorInputRotY(QString text)
 
 	m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->setRotationOffset(Vector3f(rot.x(), rotY, rot.z()));
 
+	m_configManager->writeToConfig("yRot", toString(rotY), m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->getTrackerType());
+
+
 }
 
 void MainWindow::slotInspectorInputRotZ(QString text)
@@ -755,6 +771,9 @@ void MainWindow::slotInspectorInputRotZ(QString text)
 	Vector3f rot = m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->getProperties()->rotationOffset;
 
 	m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->setRotationOffset(Vector3f(rot.x(), rot.y(), rotZ));
+
+	m_configManager->writeToConfig("zRot", toString(rotZ), m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->getTrackerType());
+
 
 }
 
@@ -785,6 +804,9 @@ void MainWindow::slotInspectorInputScaleX(QString text)
 
 	m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->setScaleOffset(Vector3f(scaleX, scale.y(), scale.z()));
 
+	m_configManager->writeToConfig("xScl", toString(scaleX), m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->getTrackerType());
+
+
 }
 
 void MainWindow::slotInspectorInputScaleY(QString text)
@@ -813,6 +835,9 @@ void MainWindow::slotInspectorInputScaleY(QString text)
 
 	m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->setScaleOffset(Vector3f(scale.x(), scaleY, scale.z()));
 
+	m_configManager->writeToConfig("yScl", toString(scaleY), m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->getTrackerType());
+
+
 }
 
 void MainWindow::slotInspectorInputScaleZ(QString text)
@@ -838,6 +863,8 @@ void MainWindow::slotInspectorInputScaleZ(QString text)
 	Vector3f scale = m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->getProperties()->scaleOffset;
 
 	m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->setScaleOffset(Vector3f(scale.x(), scale.y(), scaleZ));
+
+	m_configManager->writeToConfig("zScl", toString(scaleZ), m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->getTrackerType());
 
 }
 

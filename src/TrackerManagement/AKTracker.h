@@ -38,7 +38,7 @@ public:
 	 * constructor with config
 	 * \param idCam the cameras id number
 	 */
-	AKTracker(int id, int idCam, NetworkManager* networkManager);
+	AKTracker(int id, int idCam, NetworkManager* networkManager, ConfigManager* configManager);
 
 	/*!
 	 * calls the start() method of the base class which sets m_tracking to true 
@@ -52,6 +52,8 @@ public:
 	 * stops and closes tracker and camera
 	 */
 	void destroy() override;
+
+	std::string getTrackerType() override;
 
 private:
 

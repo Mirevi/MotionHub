@@ -167,8 +167,18 @@ bool ConfigManager::readConfigFile(const char * filePath)
 						m_debugLevel = NO_OUTPUT;
 				}
 				else //Other config will be saved in a public static map, so everyone can access the config attribute they need..
-					m_startupConfig.insert(std::pair<std::string, std::string>(secondLevelNodes->Name(), secondLevelNodes->GetText()));
+				{
+
+					if (secondLevelNodes->GetText() != NULL)
+					{
+
+						m_startupConfig.insert(std::pair<std::string, std::string>(secondLevelNodes->Name(), secondLevelNodes->GetText()));
+
+					}
+				}
 			}
+
+
 		}
 	}
 	return true;
@@ -180,13 +190,13 @@ void ConfigManager::printDebugMessage(const char * message)
 }
 
 
-void ConfigManager::writeToConfig(std::string mapKeyIn, std::string value)
+void ConfigManager::writeToConfig(std::string mapKeyIn, std::string value, std::string trackerType)
 {
 
 
-	m_startupConfig[mapKeyIn] = value;
+	m_startupConfig[mapKeyIn + trackerType] = value;
 
-	tinyxml2::XMLElement* currElem = m_xmlFile.RootElement()->FirstChildElement("startup_config")->FirstChildElement(mapKeyIn.c_str())->ToElement();
+	tinyxml2::XMLElement* currElem = m_xmlFile.RootElement()->FirstChildElement("startup_config")->FirstChildElement((mapKeyIn + trackerType).c_str())->ToElement();
 
 
 	currElem->SetText(value.c_str());
@@ -212,6 +222,77 @@ void ConfigManager::createNewConfigFile()
 	tinyxml2::XMLElement* ipAddress = newXmlDoc.NewElement("ipAddress");
 	ipAddress->SetText("127.0.0.1");
 	pStartup->InsertEndChild(ipAddress);
+
+
+
+	//create Azure offset Elements to startup and set value
+	tinyxml2::XMLElement* xPosAzure = newXmlDoc.NewElement("xPosAzure");
+	tinyxml2::XMLElement* yPosAzure = newXmlDoc.NewElement("yPosAzure");
+	tinyxml2::XMLElement* zPosAzure = newXmlDoc.NewElement("zPosAzure");
+	tinyxml2::XMLElement* xRotAzure = newXmlDoc.NewElement("xRotAzure");
+	tinyxml2::XMLElement* yRotAzure = newXmlDoc.NewElement("yRotAzure");
+	tinyxml2::XMLElement* zRotAzure = newXmlDoc.NewElement("zRotAzure");
+	tinyxml2::XMLElement* xSclAzure = newXmlDoc.NewElement("xSclAzure");
+	tinyxml2::XMLElement* ySclAzure = newXmlDoc.NewElement("ySclAzure");
+	tinyxml2::XMLElement* zSclAzure = newXmlDoc.NewElement("zSclAzure"); 
+
+	//create OptiTrack offset Elements to startup
+	tinyxml2::XMLElement* xPosOptiTrack = newXmlDoc.NewElement("xPosOptiTrack");
+	tinyxml2::XMLElement* yPosOptiTrack = newXmlDoc.NewElement("yPosOptiTrack");
+	tinyxml2::XMLElement* zPosOptiTrack = newXmlDoc.NewElement("zPosOptiTrack");													
+	tinyxml2::XMLElement* xRotOptiTrack = newXmlDoc.NewElement("xRotOptiTrack");
+	tinyxml2::XMLElement* yRotOptiTrack = newXmlDoc.NewElement("yRotOptiTrack");
+	tinyxml2::XMLElement* zRotOptiTrack = newXmlDoc.NewElement("zRotOptiTrack");												
+	tinyxml2::XMLElement* xSclOptiTrack = newXmlDoc.NewElement("xSclOptiTrack");
+	tinyxml2::XMLElement* ySclOptiTrack = newXmlDoc.NewElement("ySclOptiTrack");
+	tinyxml2::XMLElement* zSclOptiTrack = newXmlDoc.NewElement("zSclOptiTrack");
+
+	//set Azure values
+	xPosAzure->SetText("0");
+	yPosAzure->SetText("1.175");
+	zPosAzure->SetText("2.2");
+	xRotAzure->SetText("-5.0");
+	yRotAzure->SetText("0");
+	zRotAzure->SetText("0");
+	xSclAzure->SetText("0.0010");
+	ySclAzure->SetText("-0.0010");
+	zSclAzure->SetText("-0.0010");
+
+	//set OT values
+	xPosOptiTrack->SetText("0");
+	yPosOptiTrack->SetText("0.1");
+	zPosOptiTrack->SetText("0");
+	xRotOptiTrack->SetText("0");
+	yRotOptiTrack->SetText("0");
+	zRotOptiTrack->SetText("0");
+	xSclOptiTrack->SetText("1");
+	ySclOptiTrack->SetText("1");
+	zSclOptiTrack->SetText("1");
+
+	//add Azure to node
+	pStartup->InsertEndChild(xPosAzure);
+	pStartup->InsertEndChild(yPosAzure);
+	pStartup->InsertEndChild(zPosAzure);
+	pStartup->InsertEndChild(xRotAzure);
+	pStartup->InsertEndChild(yRotAzure);
+	pStartup->InsertEndChild(zRotAzure);
+	pStartup->InsertEndChild(xSclAzure);
+	pStartup->InsertEndChild(ySclAzure);
+	pStartup->InsertEndChild(zSclAzure);
+
+	//add OT to node
+	pStartup->InsertEndChild(xPosOptiTrack);
+	pStartup->InsertEndChild(yPosOptiTrack);
+	pStartup->InsertEndChild(zPosOptiTrack);
+	pStartup->InsertEndChild(xRotOptiTrack);
+	pStartup->InsertEndChild(yRotOptiTrack);
+	pStartup->InsertEndChild(zRotOptiTrack);
+	pStartup->InsertEndChild(xSclOptiTrack);
+	pStartup->InsertEndChild(ySclOptiTrack);
+	pStartup->InsertEndChild(zSclOptiTrack);
+
+
+
 
 	//save file at the CONFIG_PATH directory, throw Error if it fails
 	if (newXmlDoc.SaveFile(CONFIG_PATH) == tinyxml2::XMLError::XML_SUCCESS)

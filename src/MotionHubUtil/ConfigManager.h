@@ -48,13 +48,20 @@ public:
 	//osg::Vec4f getVec4fFromStartupConfig(std::string mapKeyIn);
 
 
-	void writeToConfig(std::string mapKeyIn, std::string value);
+	void writeToConfig(std::string mapKeyIn, std::string value, std::string trackerType = "");
+
+
+
+
+	void createNewConfigFile();
 
 	bool readConfigFile(const char * filePath);
 
 	static void printDebugMessage(const char * message);
 
-	void createNewConfigFile();
+
+
+
 
 
 };
