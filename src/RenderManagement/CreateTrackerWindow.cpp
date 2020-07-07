@@ -29,7 +29,7 @@ void CreateTrackerWindow::slotCreateTracker()
 	//change curser to wait (Hourglass)
 	QApplication::setOverrideCursor(Qt::WaitCursor);
 
-	int id = -1;
+	int id = -2;
 
 	switch (m_selectedTrackerIdInDropdown)
 	{
@@ -57,6 +57,21 @@ void CreateTrackerWindow::slotCreateTracker()
 		default:
 			Console::logError("CreateTrackerWindow::slotCreateTracker(): Can not create tracker. Tracker type unkown!");
 			break;
+
+	}
+
+	if (id == -1)
+	{
+
+		Console::logError("CreateTrackerWindow::slotCreateTracker(): close dialog!");
+
+		//set the curser to default
+		QApplication::restoreOverrideCursor();
+		close();
+
+		QMessageBox::critical(this, tr("No Camera connected"), tr("Please connect an Azure Kinect Camera to create a corresponding tracker."));
+
+		return;
 
 	}
 

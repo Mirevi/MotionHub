@@ -3,6 +3,28 @@
 // default constructor
 AKTracker::AKTracker(int id, int idCam, NetworkManager* networkManager)
 {
+
+
+	uint32_t device_count = k4a_device_get_installed_count();
+
+	if (device_count > idCam)
+	{
+
+		// initialize azure kinect camera and body tracker
+		init();
+
+	}
+	else
+	{
+
+		Console::logError("No connected Azure Kinect found.");
+
+		valid = false;
+
+		return;
+
+	}
+
 	//create new Properties object
 	m_properties = new Properties();
 
@@ -23,8 +45,11 @@ AKTracker::AKTracker(int id, int idCam, NetworkManager* networkManager)
 	setRotationOffset(Vector3f(-5.0f, 0.0f, 0.0f));
 	setScaleOffset(Vector3f(0.0010f, -0.0010f, -0.0010f));
 
-	// initialize azure kinect camera and body tracker
-	init();
+
+
+
+
+
 
 }
 

@@ -42,6 +42,21 @@ int TrackerManager::createTracker(TrackerType type)
 			//create new AK Tracker with next free Cam ID
 			tempTracker = new AKTracker(id, m_nextFreeAKCamID, m_networkManager);
 
+
+			if (!tempTracker->valid)
+			{
+
+				Console::log("TrackerManager::createTracker(): valid = false");
+
+				delete tempTracker;
+
+				//unlock the tracker pool
+				m_trackerPoolLock.unlock();
+
+				return -1;
+
+			}
+
 			//sendSkeletonDelegate() funcPtr pass through
 			//tempTracker->setSendSkeletonDelegate(m_sendSkeletonDelegate);
 

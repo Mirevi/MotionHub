@@ -73,6 +73,9 @@ public:
 	 */
 	Tracker();
 
+
+	bool valid = true;
+
 	/*!
 	 * starts Tracker in new temporary thread
 	 */

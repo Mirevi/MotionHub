@@ -1,16 +1,23 @@
 #pragma once
 
-#include "ConfigDllExportRenderManagement.h"
-#include <QtWidgets/QDialog>
-#include "MotionHubUtil/Console.h"
+
 #include "QtCore/qstringlistmodel.h"
 #include "QtCore/qstring.h"
 #include "QtWidgets/qlistwidget.h"
 #include "QtWidgets/qtreewidget.h"
+#include "QtWidgets/qmessagebox.h"
+#include <QtWidgets/QDialog>
+
+
+#include "ConfigDllExportRenderManagement.h"
+#include "MotionHubUtil/Console.h"
 #include "TrackerManagement/TrackerManager.h"
 
 
-namespace Ui {
+
+
+namespace Ui
+{
 	class CreateTrackerWindow;
 }
 

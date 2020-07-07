@@ -129,8 +129,8 @@ file(COPY ${K4ABT_INCLUDE_DIR}/../../tools/cublas64_100.dll				DESTINATION ${CMA
 file(COPY ${K4ABT_INCLUDE_DIR}/../../tools/cudart64_100.dll				DESTINATION ${CMAKE_BINARY_DIR}/bin)
 file(COPY deps/cudnn101windows10x64_76224/bin/cudnn64_7.dll 			DESTINATION ${CMAKE_BINARY_DIR}/bin)
 
-file(REMOVE_RECURSE ${K4ABT_INCLUDE_DIR}/../../tools/)
-file(REMOVE_RECURSE ${K4A_INCLUDE_DIR}/../../tools/)
+#file(REMOVE_RECURSE ${K4ABT_INCLUDE_DIR}/../../tools/)
+#file(REMOVE_RECURSE ${K4A_INCLUDE_DIR}/../../tools/)
 
 file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/bin/data/)
 
