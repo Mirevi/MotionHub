@@ -12,7 +12,7 @@ MotionHub is developed at the research lab [MIREVI](https://www.mirevi.de/) from
 
 ### Acknowledgements
 
-The project [HIVE](https://mirevi.de/research/immersive-digital-technologies-for-a-healthy-life-through-exercise-and-well-being-hive-lab) is sponsored by the [German Federal Ministry of Education and Research](https://www.bmbf.de/en/index.html) (BMBF) under the project number **16SV8182**.
+This project is sponsored by: [German Federal Ministry of Education and Research](https://www.bmbf.de/en/index.html) (BMBF) under the project numbers **16SV8182** and **13FH022IX6**. Project names: [HIVE-Lab](https://mirevi.de/research/immersive-digital-technologies-for-a-healthy-life-through-exercise-and-well-being-hive-lab) (Health Immersive Virtual Environment Lab) and [Interactive body-near production technology 4.0](https://www.mirevi.de/research/ikpt4-0) (german: ’Interaktive körpernahe Produktionstechnik 4.0’ (iKPT4.0)).
 
 # Requirements
 
