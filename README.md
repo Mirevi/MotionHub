@@ -25,7 +25,7 @@ Currently MMH is only supported on Microsoft Windows operating systems.
 - Seventh Gen Intel i5 Processor
 - NVidia GeForce GTX 1070
 - 4 GB Memory
-- 4 GB Storage
+- 5 GB Storage
 
 # Documentation
 
@@ -44,15 +44,15 @@ MMH currently supports the listed body tracking systems.
 
 The [CMake](https://cmake.org/) system is used to generate project files and for downloading all required dependencies. Please use the `CMakeLists.txt` file for generating.
 
-- MMH is developed with Microsoft **Visual Studio 2017** and **2019**. *([CMake](https://cmake.org/) has only been tested with this IDE versions.)*
+- MMH is developed with Microsoft **Visual Studio 2017** and **2019**. *([CMake](https://cmake.org/) has only been tested with these IDE versions.)*
 
 1.  Download or clone MMH
 2.  In CMake, set source to the MMH path
 3.  Set binaries to (MMH path)/build
-4.  Click "configure" (click Yes, select your installed VS version and Finish). This will take a few minutes (and is expected to FAIL) so go on with 6 and 7.
+4.  Click "configure" (click Yes, select your installed VS version and Finish). This will take a few minutes (and is expected to FAIL) so go on with 5 and 6.
 
 5.  Download [Azure Kinect Sensor SDK](https://docs.microsoft.com/en-us/azure/kinect-dk/sensor-sdk-download)
-6.  Download [Azure Kinect Body Tracking SDK[ (https://docs.microsoft.com/en-us/azure/kinect-dk/body-sdk-download)
+6.  Download [Azure Kinect Body Tracking SDK](https://docs.microsoft.com/en-us/azure/kinect-dk/body-sdk-download)
 7.  Install both and remember the install paths!
 8.  Meanwhile, the configuration process in CMake should have failed, because it couldn't find Azure Kinect dependencies. 
 
