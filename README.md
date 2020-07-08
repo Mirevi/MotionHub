@@ -44,27 +44,27 @@ MMH currently supports the listed body tracking systems.
 
 The [CMake](https://cmake.org/) system is used to generate project files and for downloading all required dependencies. Please use the `CMakeLists.txt` file for generating.
 
-- MMH is developed with Microsoft **Visual Studio 2017**. *([CMake](https://cmake.org/) has only been tested with this IDE version.)*
+- MMH is developed with Microsoft **Visual Studio 2017** and **2019**. *([CMake](https://cmake.org/) has only been tested with this IDE versions.)*
 
 1.  Download or clone MMH
-2.  Download CMake GUI and start it
-3.  In CMake, set source to the MMH path
-4.  Set binaries to (MMH path)/build
-5.  Click configure. This will take a few minutes so go on with 6 and 7.
+2.  In CMake, set source to the MMH path
+3.  Set binaries to (MMH path)/build
+4.  Click "configure" (click Yes, select your installed VS version and Finish). This will take a few minutes (and is expected to FAIL) so go on with 6 and 7.
 
-6.  Download [Azure Kinect Sensor SDK](https://docs.microsoft.com/en-us/azure/kinect-dk/sensor-sdk-download)
-7.  Download [Azure Kinect Body Tracking SDK](https://docs.microsoft.com/en-us/azure/kinect-dk/body-sdk-download)
-8.  Meanwhile, the configuration process in CMake should have failed.
-9.  Copy the installed Azure Kinect Folders to MMH/deps. You can delete the "tools"-Folder in both, they are very big.
+5.  Download [Azure Kinect Sensor SDK](https://docs.microsoft.com/en-us/azure/kinect-dk/sensor-sdk-download)
+6.  Download [Azure Kinect Body Tracking SDK[ (https://docs.microsoft.com/en-us/azure/kinect-dk/body-sdk-download)
+7.  Install both and remember the install paths!
+8.  Meanwhile, the configuration process in CMake should have failed, because it couldn't find Azure Kinect dependencies. 
 
-10. In CMake, set the flags "advanced" and "grouped", you should see all dependencies listed
-11. Under K4A set the paths to the include (something like this: MMH/deps/Azure Kinect SDK v1.4.0/sdk/include) and lib folder (MMH/deps/Azure Kinect SDK v1.4.0/sdk/windows-desktop/amd64/release/lib)
-12. Repeat for K4ABT (MMH/deps/AzureKinectBodyTrackingSDKv1.0.1/sdk/include) and (MMH/deps/AzureKinectBodyTrackingSDKv1.0.1/sdk/windows-desktop/amd64/release/lib)
+9.  In CMake, set the flags "advanced" and "grouped", you should see all dependencies listed, including K4A (Sensor SDK) and K4ABT (Body Tracking SDK)
+10. Under K4A set K4A_INCLUDE_DIR to the include folders path (something like this in your freshly installed directory: /Azure Kinect SDK v1.4.0/sdk/include)
+11. Repeat for K4A_LIBRARIES_DIR (/Azure Kinect SDK v1.4.0/sdk/windows-desktop/amd64/release/lib).
+12. Repeat both for K4ABT (/AzureKinectBodyTrackingSDKv1.0.1/sdk/include) and (/AzureKinectBodyTrackingSDKv1.0.1/sdk/windows-desktop/amd64/release/lib)
 13. Again, click "Configure" (This should be successful), then click "Generate".
 
-14. You can now click "Open Project" or open the Solution with visual Studio (MMH/build/MireviMotionHub.sln)
-15. In the VS Solution Explorer, right click on the project "MireviMotionHub"->"Set as Startup Project" and "MireviMotionHub"->"build"
-16. After the code is compiled, you can push F5 in VS or start MMH/build/bin/MireviMotionHub.exe to start the MotionHub
+14. You can now click "Open Project" or open the Solution with VS (/MMH/build/MireviMotionHub.sln)
+15. In the VS Solution Explorer, right click on the project "MireviMotionHub"->"Set as StartUp Project" and "MireviMotionHub"->"build"
+16. After the code is compiled, you can push F5 (Local Windows Debugger) in VS or execute /MMH/build/bin/MireviMotionHub.exe to start the MotionHub
 
 Please Note that we use Qt Framework for the UI. To build the project you need the [Qt Visual Studio Tools](https://marketplace.visualstudio.com/items?itemName=TheQtCompany.QtVisualStudioTools-19123) and for editing Qt `.ui` files you need [Qt Designer](https://www.qt.io/download).
 
