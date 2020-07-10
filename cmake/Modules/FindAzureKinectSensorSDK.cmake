@@ -136,9 +136,12 @@ else()
 endif()
 
 # Look for the header file.
-FIND_PATH(K4A_INCLUDE_DIR NAMES k4a/k4a.h HINTS ${CURRENT_DEPS_PATH}/include ) #OSG_INCLUDE_DIR gibt man in der CMAKE GUI an, wo sich die includes von OSG befinden
+FIND_PATH(K4A_INCLUDE_DIR NAMES k4a/k4a.h HINTS ${K4A_ROOT}/sdk/include
+												${K4A_ROOT}/include
+												${CURRENT_DEPS_PATH}/include )
 # Look for the library path
-FIND_PATH(K4A_LIBRARIES_DIR NAMES k4a.lib HINTS ${CURRENT_DEPS_PATH}/lib )
+FIND_PATH(K4A_LIBRARIES_DIR NAMES k4a.lib HINTS ${K4A_ROOT}/sdk/windows-desktop/amd64/release/lib
+												${CURRENT_DEPS_PATH}/lib)
 
 MARK_AS_ADVANCED(K4A_LIBRARIES_DIR K4A_INCLUDE_DIR) 
 # handle the QUIETLY and REQUIRED arguments and set OPENVR_SDK_FOUND to TRUE if

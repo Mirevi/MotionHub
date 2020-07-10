@@ -69,15 +69,6 @@ getsTheDepsNameFromURL("${URL}")
 set(CHECK_IF_DEPS_EXIST "${CURRENT_DEPS_PATH}/Dense")
 FIND_PACKAGE( Eigen REQUIRED )
 
-# AzureKinectBodyTrackingSDK
-#file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/../deps/azurekinectbodytrackingsdk)
-#set( EXPECTED_SHA256 a4205d3c9d54b202327ef5a31673b301981d7ec1fb672db2e85d238ab68fefcc ) 
-#set(CURRENT_DEPS_PATH ${CMAKE_BINARY_DIR}/../deps/azurekinectbodytrackingsdk/)  
-#set( URL https://claymore.mirevi.com/mirevimotionhub/azurekinectbodytrackingsdk0101.zip )
-#getsTheDepsNameFromURL("${URL}")
-#set(CHECK_IF_DEPS_EXIST "${CURRENT_DEPS_PATH}/include/k4abt.h")
-FIND_PACKAGE( AzureKinectBodyTrackingSDK REQUIRED )
-
 # AzureKinectSensorSDK
 #file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/../deps/azurekinectsensorsdk)
 #set( EXPECTED_SHA256 c4936269fcd6fd52b726e504230aa3dff2db3d6eff30dc93227c8edc26bc9987 ) 
@@ -85,7 +76,18 @@ FIND_PACKAGE( AzureKinectBodyTrackingSDK REQUIRED )
 #set( URL https://claymore.mirevi.com/mirevimotionhub/azurekinectsensorsdk0130.zip )
 #getsTheDepsNameFromURL("${URL}")
 #set(CHECK_IF_DEPS_EXIST "${CURRENT_DEPS_PATH}/include/k4a/k4a.h")
+SET(K4A_ROOT "C:/Program Files/Azure Kinect SDK v1.4.0" CACHE PATH "Location of K4A SDK Root Directory")
 FIND_PACKAGE( AzureKinectSensorSDK REQUIRED )
+
+# AzureKinectBodyTrackingSDK
+#file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/../deps/azurekinectbodytrackingsdk)
+#set( EXPECTED_SHA256 a4205d3c9d54b202327ef5a31673b301981d7ec1fb672db2e85d238ab68fefcc ) 
+#set(CURRENT_DEPS_PATH ${CMAKE_BINARY_DIR}/../deps/azurekinectbodytrackingsdk/)  
+#set( URL https://claymore.mirevi.com/mirevimotionhub/azurekinectbodytrackingsdk0101.zip )
+#getsTheDepsNameFromURL("${URL}")
+#set(CHECK_IF_DEPS_EXIST "${CURRENT_DEPS_PATH}/include/k4abt.h")
+SET(K4ABT_ROOT "C:/Program Files/Azure Kinect Body Tracking SDK" CACHE PATH "Location of K4A Body Tracking SDK Root Directory")
+FIND_PACKAGE( AzureKinectBodyTrackingSDK REQUIRED )
 
 # cudnn
 set( EXPECTED_SHA256 0ed5de000420fdd6f4d36418e9ac6202ab3ae8a031712db624739ad4c58df4b3 ) 
@@ -95,7 +97,7 @@ getsTheDepsNameFromURL("${URL}")
 set(CHECK_IF_DEPS_EXIST "${CURRENT_DEPS_PATH}/include/cudnn.h")
 FIND_PACKAGE( Cudnn REQUIRED )
 
-# OSCp
+# OSCpack
 set( EXPECTED_SHA256 a660874bfe1b4edfea96a966d9196b1a5fa9686d4c9500eeb1781ba50650ff38 ) 
 set(CURRENT_DEPS_PATH ${CMAKE_BINARY_DIR}/../deps/oscpack110/) 
 set( URL https://claymore.mirevi.com/mirevimotionhub/oscpack110.zip )
@@ -141,4 +143,8 @@ set( URL https://claymore.mirevi.com/mirevimotionhub/platforms.zip )
 getsTheDepsNameFromURL("${URL}")
 set(CHECK_IF_DEPS_EXIST "${CURRENT_DEPS_PATH}/qwindows.dll")
 FIND_PACKAGE( Platforms REQUIRED )
+
+set_target_properties(MireviMotionHub PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
+set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT MireviMotionHub)
+# set(CMAKE_BUILD_TYPE RelWithDebInfo" CACHE STRING "Build type (default RelWithDepInfo)" FORCE)
 

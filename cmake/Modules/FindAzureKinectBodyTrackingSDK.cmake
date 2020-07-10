@@ -137,11 +137,13 @@ endif()
 
 
 # Look for the header file.
-FIND_PATH(K4ABT_INCLUDE_DIR NAMES k4abt.h HINTS ${CURRENT_DEPS_PATH}/include ) 
+FIND_PATH(K4ABT_INCLUDE_DIR NAMES k4abt.h HINTS ${K4ABT_ROOT}/sdk/include
+												${CURRENT_DEPS_PATH}/include) 
 
 
 # Look for the library path
-FIND_PATH(K4ABT_LIBRARIES_DIR NAMES k4abt.lib HINTS ${CURRENT_DEPS_PATH}/lib )
+FIND_PATH(K4ABT_LIBRARIES_DIR NAMES k4abt.lib HINTS ${K4ABT_ROOT}/sdk/windows-desktop/amd64/release/lib 
+													${CURRENT_DEPS_PATH}/lib )
 
 MARK_AS_ADVANCED(K4ABT_LIBRARIES_DIR K4ABT_INCLUDE_DIR) 
 # handle the QUIETLY and REQUIRED arguments and set OPENVR_SDK_FOUND to TRUE if
