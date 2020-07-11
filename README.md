@@ -47,24 +47,25 @@ The [CMake](https://cmake.org/) system is used to generate project files and for
 - MMH is developed with Microsoft **Visual Studio 2017** and **2019**. *([CMake](https://cmake.org/) has only been tested with these IDE versions.)*
 
 1.  Download or clone MMH
-2.  In CMake, set source to the MMH path
-3.  Set binaries to (MMH path)/build
-4.  Click "configure" (click Yes, select your installed VS version and Finish). This will take a few minutes (and is expected to FAIL) so go on with 5 and 6.
+2.  Download Azure [Kinect Sensor](https://docs.microsoft.com/en-us/azure/kinect-dk/sensor-sdk-download) and [Body Tracking](https://docs.microsoft.com/en-us/azure/kinect-dk/body-sdk-download) SDK
+3.  In CMake, set source to the MMH path
+4.  Set binaries to (MMH path)/build
+5.  Click "configure" (click Yes, select your installed VS version and Finish). This will take a few minutes (and is expected to FAIL) so go on with 5 and 6.
 
-5.  Download [Azure Kinect Sensor SDK](https://docs.microsoft.com/en-us/azure/kinect-dk/sensor-sdk-download)
-6.  Download [Azure Kinect Body Tracking SDK](https://docs.microsoft.com/en-us/azure/kinect-dk/body-sdk-download)
-7.  Install both and remember the install paths!
-8.  Meanwhile, the configuration process in CMake should have failed, because it couldn't find Azure Kinect dependencies. 
+6.  Download [Azure Kinect Sensor SDK](https://docs.microsoft.com/en-us/azure/kinect-dk/sensor-sdk-download)
+7.  Download [Azure Kinect Body Tracking SDK](https://docs.microsoft.com/en-us/azure/kinect-dk/body-sdk-download)
+8.  Install both and remember the install paths!
+9.  Meanwhile, the configuration process in CMake should have failed, because it couldn't find Azure Kinect dependencies.
 
-9.  In CMake, set the flags "advanced" and "grouped", you should see all dependencies listed, including K4A (Sensor SDK) and K4ABT (Body Tracking SDK)
-10. Under K4A set K4A_INCLUDE_DIR to the include folders path (something like this in your freshly installed directory: /Azure Kinect SDK v1.4.0/sdk/include)
-11. Repeat for K4A_LIBRARIES_DIR (/Azure Kinect SDK v1.4.0/sdk/windows-desktop/amd64/release/lib).
-12. Repeat both for K4ABT (/AzureKinectBodyTrackingSDKv1.0.1/sdk/include) and (/AzureKinectBodyTrackingSDKv1.0.1/sdk/windows-desktop/amd64/release/lib)
-13. Again, click "Configure" (This should be successful), then click "Generate".
+10.  In CMake, set the flags "advanced" and "grouped", you should see all dependencies listed, including K4A (Sensor SDK) and K4ABT (Body Tracking SDK)
+11. Under K4A set K4A_INCLUDE_DIR to the include folders path (something like this in your freshly installed directory: /Azure Kinect SDK v1.4.0/sdk/include)
+12. Repeat for K4A_LIBRARIES_DIR (/Azure Kinect SDK v1.4.0/sdk/windows-desktop/amd64/release/lib).
+13. Repeat both for K4ABT (/AzureKinectBodyTrackingSDKv1.0.1/sdk/include) and (/AzureKinectBodyTrackingSDKv1.0.1/sdk/windows-desktop/amd64/release/lib)
+14. Again, click "Configure" (This should be successful), then click "Generate".
 
-14. You can now click "Open Project" or open the Solution with VS (/MMH/build/MireviMotionHub.sln)
-15. In the VS Solution Explorer, right click on the project "MireviMotionHub"->"Set as StartUp Project" and "MireviMotionHub"->"build"
-16. After the code is compiled, you can push F5 (Local Windows Debugger) in VS or execute /MMH/build/bin/MireviMotionHub.exe to start the MotionHub
+15. You can now click "Open Project" or open the Solution with VS (/MMH/build/MireviMotionHub.sln)
+16. In the VS Solution Explorer, right click on the project "MireviMotionHub"->"Set as StartUp Project" and "MireviMotionHub"->"build"
+17. After the code is compiled, you can push F5 (Local Windows Debugger) in VS or execute /MMH/build/bin/MireviMotionHub.exe to start the MotionHub
 
 Please Note that we use Qt Framework for the UI. To build the project you need the [Qt Visual Studio Tools](https://marketplace.visualstudio.com/items?itemName=TheQtCompany.QtVisualStudioTools-19123) and for editing Qt `.ui` files you need [Qt Designer](https://www.qt.io/download).
 
