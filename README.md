@@ -69,6 +69,8 @@ The [CMake](https://cmake.org/) system is used to generate project files and for
 
 Please Note that we use Qt Framework for the UI. To build the project you need the [Qt Visual Studio Tools](https://marketplace.visualstudio.com/items?itemName=TheQtCompany.QtVisualStudioTools-19123) and for editing Qt `.ui` files you need [Qt Designer](https://www.qt.io/download).
 
+We recognized an Error, when using a N version of Windows, in which the .exe wouldn't start, because MF.dll was missing. To fix that, install the [Media Feature Pack for Windows 10 N](https://support.microsoft.com/en-us/help/4516397/media-feature-pack-for-windows-10-n-november-2019) and the Motionhub should work.
+
 # Authors
 
 - **[Philipp Ladwig](https://www.mirevi.de/team/philipp-ladwig)** - Project Manager and Developer
