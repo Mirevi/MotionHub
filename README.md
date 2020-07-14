@@ -48,8 +48,8 @@ The [CMake](https://cmake.org/) system is used to generate project files and for
 
 1.  Download or clone MMH
 2.  Download and install Azure Kinect [Sensor](https://docs.microsoft.com/en-us/azure/kinect-dk/sensor-sdk-download) and [Body Tracking](https://docs.microsoft.com/en-us/azure/kinect-dk/body-sdk-download) SDK
-3.  In CMake, set source to the MMH path
-4.  Set binaries to (MMH path)/build
+3.  In CMake, set source path to the MMH path
+4.  Set binaries path to (MMH path)/build
 
 5.  Click "configure" (click Yes, select your installed VS version and Finish). This will take a few minutes (and might FAIL).
 6.  If CMake fails, because it couldn't find the Azure Kinect dependences (which you installed in step 2), paste the correct paths to K4A_ROOT (e.g. C:/Program Files/Azure Kinect SDK v1.4.0) and K4ABT_ROOT. Then again click "configure".
@@ -85,4 +85,4 @@ You can download the project [here](https://github.com/Mirevi/MotionHub-Unity-Pl
 # License
 
 [License](https://github.com/Mirevi/MotionHub/blob/master/LICENSE.txt)
-Pending
+
