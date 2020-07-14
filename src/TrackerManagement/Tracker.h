@@ -188,6 +188,7 @@ public:
 
 	virtual std::string getTrackerType();
 
+	virtual void resetOffsets();
 
 
 protected:

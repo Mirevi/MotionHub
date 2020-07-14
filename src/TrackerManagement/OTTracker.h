@@ -72,6 +72,8 @@ public:
 
 	std::string getTrackerType() override;
 
+	void resetOffsets() override;
+
 
 private:
 

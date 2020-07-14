@@ -533,3 +533,10 @@ std::string OTTracker::getTrackerType()
 	return "OptiTrack";
 
 }
+
+void OTTracker::resetOffsets()
+{
+	setPositionOffset(Vector3f(0, 0.1, 0));
+	setRotationOffset(Vector3f(0, 0, 0));
+	setScaleOffset(Vector3f(1, 1, 1));
+}

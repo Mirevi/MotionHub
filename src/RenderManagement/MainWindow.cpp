@@ -4,7 +4,8 @@
 
 
 // default constructor
-MainWindow::MainWindow(TrackerManager* trackerManager, ConfigManager* configManager, QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWindow)
+MainWindow::MainWindow(TrackerManager* trackerManager, ConfigManager* configManager, QWidget* parent)
+ : QMainWindow(parent), ui(new Ui::MainWindow)
 {
 
 	// setup base class

@@ -522,3 +522,11 @@ std::string AKTracker::getTrackerType()
 	return "Azure";
 
 }
+
+
+void AKTracker::resetOffsets()
+{
+	setPositionOffset(Vector3f(0, 1.175, 2.2));
+	setRotationOffset(Vector3f(-0.5, 0, 0));
+	setScaleOffset(Vector3f(0.001, -0.001, -0.001));
+}
