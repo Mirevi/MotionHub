@@ -47,25 +47,17 @@ The [CMake](https://cmake.org/) system is used to generate project files and for
 - MMH is developed with Microsoft **Visual Studio 2017** and **2019**. *([CMake](https://cmake.org/) has only been tested with these IDE versions.)*
 
 1.  Download or clone MMH
-2.  Download Azure [Kinect Sensor](https://docs.microsoft.com/en-us/azure/kinect-dk/sensor-sdk-download) and [Body Tracking](https://docs.microsoft.com/en-us/azure/kinect-dk/body-sdk-download) SDK
+2.  Download and install Azure Kinect [Sensor](https://docs.microsoft.com/en-us/azure/kinect-dk/sensor-sdk-download) and [Body Tracking](https://docs.microsoft.com/en-us/azure/kinect-dk/body-sdk-download) SDK
 3.  In CMake, set source to the MMH path
 4.  Set binaries to (MMH path)/build
-5.  Click "configure" (click Yes, select your installed VS version and Finish). This will take a few minutes (and is expected to FAIL) so go on with 5 and 6.
 
-6.  Download [Azure Kinect Sensor SDK](https://docs.microsoft.com/en-us/azure/kinect-dk/sensor-sdk-download)
-7.  Download [Azure Kinect Body Tracking SDK](https://docs.microsoft.com/en-us/azure/kinect-dk/body-sdk-download)
-8.  Install both and remember the install paths!
-9.  Meanwhile, the configuration process in CMake should have failed, because it couldn't find Azure Kinect dependencies.
+5.  Click "configure" (click Yes, select your installed VS version and Finish). This will take a few minutes (and might FAIL).
+6.  If CMake fails, because it couldn't find the Azure Kinect dependences (which you installed in step 2), paste the correct paths to K4A_ROOT (e.g. C:/Program Files/Azure Kinect SDK v1.4.0) and K4ABT_ROOT. Then again click "configure".
+7.  If the configuration was successful, click "generate"
 
-10.  In CMake, set the flags "advanced" and "grouped", you should see all dependencies listed, including K4A (Sensor SDK) and K4ABT (Body Tracking SDK)
-11. Under K4A set K4A_INCLUDE_DIR to the include folders path (something like this in your freshly installed directory: /Azure Kinect SDK v1.4.0/sdk/include)
-12. Repeat for K4A_LIBRARIES_DIR (/Azure Kinect SDK v1.4.0/sdk/windows-desktop/amd64/release/lib).
-13. Repeat both for K4ABT (/AzureKinectBodyTrackingSDKv1.0.1/sdk/include) and (/AzureKinectBodyTrackingSDKv1.0.1/sdk/windows-desktop/amd64/release/lib)
-14. Again, click "Configure" (This should be successful), then click "Generate".
-
-15. You can now click "Open Project" or open the Solution with VS (/MMH/build/MireviMotionHub.sln)
-16. In the VS Solution Explorer, right click on the project "MireviMotionHub"->"Set as StartUp Project" and "MireviMotionHub"->"build"
-17. After the code is compiled, you can push F5 (Local Windows Debugger) in VS or execute /MMH/build/bin/MireviMotionHub.exe to start the MotionHub
+8. You can now click "Open Project" or open the Solution with VS (/MMH/build/MireviMotionHub.sln)
+9. In the VS Solution Explorer, right click on the project "MireviMotionHub"->"Set as StartUp Project" and "MireviMotionHub"->"build"
+10. After the code is compiled, you can push F5 (Local Windows Debugger) in VS or execute /MMH/build/bin/MireviMotionHub.exe to start the MotionHub
 
 Please Note that we use Qt Framework for the UI. To build the project you need the [Qt Visual Studio Tools](https://marketplace.visualstudio.com/items?itemName=TheQtCompany.QtVisualStudioTools-19123) and for editing Qt `.ui` files you need [Qt Designer](https://www.qt.io/download).
 
@@ -85,6 +77,12 @@ We recognized an Error, when using a N version of Windows, in which the .exe wou
 - [OSC Pack](http://www.rossbencina.com/code/oscpack)
 - [TinyXML](http://www.grinninglizard.com/tinyxml/)
 
+# Gameengine plugIns
+
+Currently, we are supporting [Unity](https://unity.com/) with a plugIn, which you can integrate in your project. It receives the tracking data and animates a character.
+You can download the project [here](https://github.com/Mirevi/MotionHub-Unity-Plugin).
+
 # License
 
+[License](https://github.com/Mirevi/MotionHub/blob/master/LICENSE.txt)
 Pending
