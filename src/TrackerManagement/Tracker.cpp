@@ -220,8 +220,10 @@ void Tracker::setScaleOffset(Vector3f scale)
 
 }
 
-void Tracker::resetOffsets()
+std::vector<Vector3f> Tracker::resetOffsets()
 {
+
+	return {};
 
 }
 

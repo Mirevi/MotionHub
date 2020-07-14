@@ -14,6 +14,8 @@
 #include "QtCore/qstring.h"
 
 #include <math.h>
+#include <MotionHubUtil/MMHmath.h>
+
 
 
 #define GET_VARIABLE_NAME(Variable) (#Variable)
@@ -103,6 +105,8 @@ private slots:
 	void slotInspectorInputScaleX(QString text);
 	void slotInspectorInputScaleY(QString text);
 	void slotInspectorInputScaleZ(QString text);
+
+	void slotResetTrackerOffset();
 
 
 private:

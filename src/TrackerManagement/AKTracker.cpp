@@ -524,9 +524,21 @@ std::string AKTracker::getTrackerType()
 }
 
 
-void AKTracker::resetOffsets()
+std::vector<Vector3f> AKTracker::resetOffsets()
 {
-	setPositionOffset(Vector3f(0, 1.175, 2.2));
-	setRotationOffset(Vector3f(-0.5, 0, 0));
-	setScaleOffset(Vector3f(0.001, -0.001, -0.001));
+
+
+
+	Vector3f pos = Vector3f(0, 1.175, 2.2);
+	Vector3f rot = Vector3f(-0.5, 0, 0);
+	Vector3f scl = Vector3f(0.001, -0.001, -0.001);
+
+	setPositionOffset(pos);
+	setRotationOffset(rot);
+	setScaleOffset(scl);
+
+	std::vector<Vector3f> offsets = { pos, rot, scl };
+
+	return offsets;
+
 }

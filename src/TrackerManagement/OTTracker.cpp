@@ -534,9 +534,20 @@ std::string OTTracker::getTrackerType()
 
 }
 
-void OTTracker::resetOffsets()
+std::vector<Vector3f> OTTracker::resetOffsets()
 {
-	setPositionOffset(Vector3f(0, 0.1, 0));
-	setRotationOffset(Vector3f(0, 0, 0));
-	setScaleOffset(Vector3f(1, 1, 1));
+
+	Vector3f pos = Vector3f(0, 0.1, 0);
+	Vector3f rot = Vector3f(0, 0, 0);
+	Vector3f scl = Vector3f(1, 1, 1);
+
+	setPositionOffset(pos);
+	setRotationOffset(rot);
+	setScaleOffset(scl);
+
+	std::vector<Vector3f> offsets = { pos, rot, scl };
+
+	return offsets;
+
+
 }
