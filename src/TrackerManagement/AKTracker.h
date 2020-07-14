@@ -55,6 +55,8 @@ public:
 
 	std::string getTrackerType() override;
 
+	std::vector<Vector3f> resetOffsets() override;
+
 private:
 
 

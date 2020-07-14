@@ -4,7 +4,8 @@
 
 
 // default constructor
-MainWindow::MainWindow(TrackerManager* trackerManager, ConfigManager* configManager, QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWindow)
+MainWindow::MainWindow(TrackerManager* trackerManager, ConfigManager* configManager, QWidget* parent)
+ : QMainWindow(parent), ui(new Ui::MainWindow)
 {
 
 	// setup base class
@@ -319,6 +320,15 @@ void MainWindow::drawInspector()
 	ui->tableWidget_inspector->setCellWidget(13, 1, m_inputFieldPool.at("scaleZ"));
 
 
+
+	//Add reset button
+	QPushButton* resetPushButton = new QPushButton("Reset Offsets");
+	connect(resetPushButton, SIGNAL(pressed()), this, SLOT(slotResetTrackerOffset()));
+	addRowToInspector("Default", "");
+	ui->tableWidget_inspector->setCellWidget(14, 1, resetPushButton);
+
+
+
 	//disable item selection on all table cells
 	for (int i = 5; i < 14; i++)
 	{
@@ -598,12 +608,16 @@ void MainWindow::slotNetworkSettings()
 }
 
 
+
+
+
 #pragma endregion Slots
 
 #pragma region
 
 void MainWindow::slotInspectorInputPosX(QString text)
 {
+	m_inputFieldPool.at("posX")->setText(text);
 
 	std::string txt = text.toLocal8Bit().constData();
 
@@ -636,6 +650,8 @@ void MainWindow::slotInspectorInputPosX(QString text)
 
 void MainWindow::slotInspectorInputPosY(QString text)
 {
+	m_inputFieldPool.at("posY")->setText(text);
+
 
 	std::string txt = text.toLocal8Bit().constData();
 
@@ -669,6 +685,8 @@ void MainWindow::slotInspectorInputPosY(QString text)
 void MainWindow::slotInspectorInputPosZ(QString text)
 {
 
+	m_inputFieldPool.at("posZ")->setText(text);
+
 	std::string txt = text.toLocal8Bit().constData();
 
 	float posZ;
@@ -700,6 +718,8 @@ void MainWindow::slotInspectorInputPosZ(QString text)
 void MainWindow::slotInspectorInputRotX(QString text)
 {
 
+	m_inputFieldPool.at("rotX")->setText(text);
+
 	std::string txt = text.toLocal8Bit().constData();
 
 	float rotX;
@@ -728,6 +748,9 @@ void MainWindow::slotInspectorInputRotX(QString text)
 
 void MainWindow::slotInspectorInputRotY(QString text)
 {
+
+	m_inputFieldPool.at("rotY")->setText(text);
+
 
 	std::string txt = text.toLocal8Bit().constData();
 
@@ -759,6 +782,9 @@ void MainWindow::slotInspectorInputRotY(QString text)
 
 void MainWindow::slotInspectorInputRotZ(QString text)
 {
+
+	m_inputFieldPool.at("rotZ")->setText(text);
+
 
 	std::string txt = text.toLocal8Bit().constData();
 
@@ -792,6 +818,9 @@ void MainWindow::slotInspectorInputRotZ(QString text)
 void MainWindow::slotInspectorInputScaleX(QString text)
 {
 
+	m_inputFieldPool.at("scaleX")->setText(text);
+
+
 	std::string txt = text.toLocal8Bit().constData();
 
 	float scaleX;
@@ -822,6 +851,8 @@ void MainWindow::slotInspectorInputScaleX(QString text)
 
 void MainWindow::slotInspectorInputScaleY(QString text)
 {
+
+	m_inputFieldPool.at("scaleY")->setText(text);
 
 	std::string txt = text.toLocal8Bit().constData();
 
@@ -854,6 +885,8 @@ void MainWindow::slotInspectorInputScaleY(QString text)
 void MainWindow::slotInspectorInputScaleZ(QString text)
 {
 
+	m_inputFieldPool.at("scaleZ")->setText(text);
+
 	std::string txt = text.toLocal8Bit().constData();
 
 	float scaleZ;
@@ -876,6 +909,26 @@ void MainWindow::slotInspectorInputScaleZ(QString text)
 	m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->setScaleOffset(Vector3f(scale.x(), scale.y(), scaleZ));
 
 	m_configManager->writeToConfig("zScl", toString(scaleZ), m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->getTrackerType());
+
+}
+
+
+void MainWindow::slotResetTrackerOffset()
+{
+
+	
+	std::vector<Vector3f> currOffsets = m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->resetOffsets();
+
+	slotInspectorInputPosX(toQString(currOffsets[0].x()));
+	slotInspectorInputPosY(toQString(currOffsets[0].y()));
+	slotInspectorInputPosZ(toQString(currOffsets[0].z()));
+	slotInspectorInputRotX(toQString(currOffsets[1].x()));
+	slotInspectorInputRotY(toQString(currOffsets[1].y()));
+	slotInspectorInputRotZ(toQString(currOffsets[1].z()));
+	slotInspectorInputScaleX(toQString(currOffsets[2].x()));
+	slotInspectorInputScaleY(toQString(currOffsets[2].y()));
+	slotInspectorInputScaleZ(toQString(currOffsets[2].z()));
+
 
 }
 

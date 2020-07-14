@@ -94,6 +94,8 @@ std::string Tracker::getTrackerType()
 
 }
 
+
+
 #pragma endregion
 
 #pragma region getter/setter
@@ -215,6 +217,13 @@ void Tracker::setScaleOffset(Vector3f scale)
 	m_properties->scaleOffset = scale;
 
 	updateMatrix();
+
+}
+
+std::vector<Vector3f> Tracker::resetOffsets()
+{
+
+	return {};
 
 }
 

@@ -3,6 +3,7 @@
 #include <iostream>
 #include <thread>
 #include <mutex>
+#include <vector>
 
 #include "MotionHubUtil/Skeleton.h"
 #include "MotionHubUtil/Console.h"
@@ -188,6 +189,7 @@ public:
 
 	virtual std::string getTrackerType();
 
+	virtual std::vector<Vector3f> resetOffsets();
 
 
 protected:
