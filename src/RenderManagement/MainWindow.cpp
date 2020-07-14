@@ -4,7 +4,7 @@
 
 
 // default constructor
-MainWindow::MainWindow(TrackerManager* trackerManager, ConfigManager* configManager, QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
+MainWindow::MainWindow(TrackerManager* trackerManager, ConfigManager* configManager, QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
 
 	// setup base class
@@ -25,6 +25,16 @@ MainWindow::MainWindow(TrackerManager* trackerManager, ConfigManager* configMana
 	qRegisterMetaType<QVector<int>>();
 	// disable highlighting of cells when hovering over them
 	ui->tableWidget_inspector->setStyleSheet("::item:hover {background-color:rgba(0,0,0,0)}\n");
+	ui->tableWidget_inspector->setRowCount(14);
+	ui->tableWidget_inspector->setColumnCount(2);
+	for(int i = 0; i < 2; i++)
+	{
+		for(int j = 0; j < 14; j++)
+		{
+			ui->tableWidget_inspector->setItem(j, i, new QTableWidgetItem());
+		}
+	}
+
 
 }
 
@@ -47,7 +57,7 @@ void MainWindow::update()
 	updateInspector();
 
 }
-  
+
 #pragma region
 
 void MainWindow::updateHirachy()
@@ -58,7 +68,7 @@ void MainWindow::updateHirachy()
 	m_hirachyItemPool.clear();
 
 	std::vector<Tracker*> trackerPoolTempCopy = m_refTrackerManager->getPoolTracker();
-	 
+
 	// loop throgh all tracker
 	for (auto itTrackerPool = trackerPoolTempCopy.begin(); itTrackerPool != trackerPoolTempCopy.end(); itTrackerPool++)
 	{
@@ -89,10 +99,10 @@ void MainWindow::updateHirachy()
 			m_hirachyItemPool.rbegin()->first->addChild(m_hirachyItemPool.rbegin()->second.back());
 
 		}
-		
+
 		//add top level item to hirachy
 		ui->treeWidget_hirachy->addTopLevelItem(m_hirachyItemPool.rbegin()->first);
-		
+
 
 		//expand all items in hirachy
 		m_hirachyItemPool.rbegin()->first->setExpanded(true);
@@ -128,7 +138,7 @@ void MainWindow::updateInspector()
 	//check if tracker is tracking and set checkbox in inspector
 	if (trackerProperties->isTracking)
 	{
-		
+
 		ui->tableWidget_inspector->item(2, 1)->setCheckState(Qt::Checked);
 
 	}
@@ -158,6 +168,7 @@ void MainWindow::updateInspector()
 
 	//refresh the inspector to show new content
 	ui->tableWidget_inspector->update();
+
 
 }
 
@@ -229,12 +240,12 @@ void MainWindow::drawInspector()
 	if (trackerProperties->isEnabled)
 	{
 		ui->tableWidget_inspector->item(3, 1)->setCheckState(Qt::Checked);
-	}		
+	}
 	else
 	{
 		ui->tableWidget_inspector->item(3, 1)->setCheckState(Qt::Unchecked);
 	}
-	
+
 	//add skeleon count row to inspector
 	addRowToInspector("countDetectedSkeleton", std::to_string(trackerProperties->countDetectedSkeleton));
 	ui->tableWidget_inspector->item(4, 0)->setFlags(Qt::NoItemFlags);
@@ -248,7 +259,7 @@ void MainWindow::drawInspector()
 	m_inputFieldPool.insert({ "posX", new QLineEdit(toQString(trackerProperties->positionOffset.x()), this) });
 	m_inputFieldPool.at("posX")->setValidator(new QDoubleValidator(-1000.0f, 1000.0f, 4, this));
 	//connect its textEdited() signal with the correct slot
-	connect(m_inputFieldPool.at("posX"), SIGNAL(textEdited(const QString &)), this, SLOT(slotInspectorInputPosX(QString)));
+	connect(m_inputFieldPool.at("posX"), SIGNAL(textEdited(const QString&)), this, SLOT(slotInspectorInputPosX(QString)));
 	//add new row to the table widget
 	addRowToInspector("position offset x", "");
 	//add QLineEdit object to cell
@@ -257,13 +268,13 @@ void MainWindow::drawInspector()
 	//repeat for y and z
 	m_inputFieldPool.insert({ "posY", new QLineEdit(toQString(trackerProperties->positionOffset.y()), this) });
 	m_inputFieldPool.at("posY")->setValidator(new QDoubleValidator(-1000.0f, 1000.0f, 4, this));
-	connect(m_inputFieldPool.at("posY"), SIGNAL(textEdited(const QString &)), this, SLOT(slotInspectorInputPosY(QString)));
+	connect(m_inputFieldPool.at("posY"), SIGNAL(textEdited(const QString&)), this, SLOT(slotInspectorInputPosY(QString)));
 	addRowToInspector("position offset y", "");
 	ui->tableWidget_inspector->setCellWidget(6, 1, m_inputFieldPool.at("posY"));
 
 	m_inputFieldPool.insert({ "posZ", new QLineEdit(toQString(trackerProperties->positionOffset.z()), this) });
 	m_inputFieldPool.at("posZ")->setValidator(new QDoubleValidator(-1000.0f, 1000.0f, 4, this));
-	connect(m_inputFieldPool.at("posZ"), SIGNAL(textEdited(const QString &)), this, SLOT(slotInspectorInputPosZ(QString)));
+	connect(m_inputFieldPool.at("posZ"), SIGNAL(textEdited(const QString&)), this, SLOT(slotInspectorInputPosZ(QString)));
 	addRowToInspector("position offset z", "");
 	ui->tableWidget_inspector->setCellWidget(7, 1, m_inputFieldPool.at("posZ"));
 
@@ -271,19 +282,19 @@ void MainWindow::drawInspector()
 	//repeat for rotation
 	m_inputFieldPool.insert({ "rotX", new QLineEdit(toQString(trackerProperties->rotationOffset.x()), this) });
 	m_inputFieldPool.at("rotX")->setValidator(new QDoubleValidator(-1000.0f, 1000.0f, 4, this));
-	connect(m_inputFieldPool.at("rotX"), SIGNAL(textEdited(const QString &)), this, SLOT(slotInspectorInputRotX(QString)));
+	connect(m_inputFieldPool.at("rotX"), SIGNAL(textEdited(const QString&)), this, SLOT(slotInspectorInputRotX(QString)));
 	addRowToInspector("rotation offset x", "");
 	ui->tableWidget_inspector->setCellWidget(8, 1, m_inputFieldPool.at("rotX"));
 
 	m_inputFieldPool.insert({ "rotY", new QLineEdit(toQString(trackerProperties->rotationOffset.y()), this) });
 	m_inputFieldPool.at("rotY")->setValidator(new QDoubleValidator(-1000.0f, 1000.0f, 4, this));
-	connect(m_inputFieldPool.at("rotY"), SIGNAL(textEdited(const QString &)), this, SLOT(slotInspectorInputRotY(QString)));
+	connect(m_inputFieldPool.at("rotY"), SIGNAL(textEdited(const QString&)), this, SLOT(slotInspectorInputRotY(QString)));
 	addRowToInspector("rotation offset y", "");
 	ui->tableWidget_inspector->setCellWidget(9, 1, m_inputFieldPool.at("rotY"));
 
 	m_inputFieldPool.insert({ "rotZ", new QLineEdit(toQString(trackerProperties->rotationOffset.z()), this) });
 	m_inputFieldPool.at("rotZ")->setValidator(new QDoubleValidator(-1000.0f, 1000.0f, 4, this));
-	connect(m_inputFieldPool.at("rotZ"), SIGNAL(textEdited(const QString &)), this, SLOT(slotInspectorInputRotZ(QString)));
+	connect(m_inputFieldPool.at("rotZ"), SIGNAL(textEdited(const QString&)), this, SLOT(slotInspectorInputRotZ(QString)));
 	addRowToInspector("rotation offset z", "");
 	ui->tableWidget_inspector->setCellWidget(10, 1, m_inputFieldPool.at("rotZ"));
 
@@ -291,19 +302,19 @@ void MainWindow::drawInspector()
 	//repeat for scale
 	m_inputFieldPool.insert({ "scaleX", new QLineEdit(toQString(trackerProperties->scaleOffset.x()), this) });
 	m_inputFieldPool.at("scaleX")->setValidator(new QDoubleValidator(-1000.0f, 1000.0f, 4, this));
-	connect(m_inputFieldPool.at("scaleX"), SIGNAL(textEdited(const QString &)), this, SLOT(slotInspectorInputScaleX(QString)));
+	connect(m_inputFieldPool.at("scaleX"), SIGNAL(textEdited(const QString&)), this, SLOT(slotInspectorInputScaleX(QString)));
 	addRowToInspector("scale offset x", "");
 	ui->tableWidget_inspector->setCellWidget(11, 1, m_inputFieldPool.at("scaleX"));
 
 	m_inputFieldPool.insert({ "scaleY", new QLineEdit(toQString(trackerProperties->scaleOffset.y()), this) });
 	m_inputFieldPool.at("scaleY")->setValidator(new QDoubleValidator(-1000.0f, 1000.0f, 4, this));
-	connect(m_inputFieldPool.at("scaleY"), SIGNAL(textEdited(const QString &)), this, SLOT(slotInspectorInputScaleY(QString)));
+	connect(m_inputFieldPool.at("scaleY"), SIGNAL(textEdited(const QString&)), this, SLOT(slotInspectorInputScaleY(QString)));
 	addRowToInspector("scale offset y", "");
 	ui->tableWidget_inspector->setCellWidget(12, 1, m_inputFieldPool.at("scaleY"));
 
 	m_inputFieldPool.insert({ "scaleZ", new QLineEdit(toQString(trackerProperties->scaleOffset.z()), this) });
 	m_inputFieldPool.at("scaleZ")->setValidator(new QDoubleValidator(-1000.0f, 1000.0f, 4, this));
-	connect(m_inputFieldPool.at("scaleZ"), SIGNAL(textEdited(const QString &)), this, SLOT(slotInspectorInputScaleZ(QString)));
+	connect(m_inputFieldPool.at("scaleZ"), SIGNAL(textEdited(const QString&)), this, SLOT(slotInspectorInputScaleZ(QString)));
 	addRowToInspector("scale offset z", "");
 	ui->tableWidget_inspector->setCellWidget(13, 1, m_inputFieldPool.at("scaleZ"));
 
@@ -475,7 +486,7 @@ void MainWindow::slotRemoveTracker()
 // SLOT: get selected tracker index from tracker list
 void MainWindow::slotTrackerSelectionChanged()
 {
-	 
+
 	int previousSelectedTrackerInList = m_selectedTrackerInList;
 
 	QList<QTreeWidgetItem*> selectedList = ui->treeWidget_tracker->selectedItems();
@@ -511,7 +522,7 @@ void MainWindow::slotTrackerSelectionChanged()
 	//else // if other tracker than before was selected - draw the ui with new content
 	//{
 
-		drawInspector();
+	drawInspector();
 
 	//}
 
@@ -524,45 +535,45 @@ void MainWindow::slotInspectorItemChanged(QTableWidgetItem* item)
 
 		switch (item->row())
 		{
-			case 3:
+		case 3:
+		{
+
+			// set the curser to wait circle
+			QApplication::setOverrideCursor(Qt::WaitCursor);
+			//QApplication::processEvents();
+
+			// enabled or disable tracker based on check state
+			if (item->checkState() == Qt::Checked)
 			{
 
-				// set the curser to wait circle
-				QApplication::setOverrideCursor(Qt::WaitCursor);
-				//QApplication::processEvents();
+				m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->enable();
 
-				// enabled or disable tracker based on check state
-				if (item->checkState() == Qt::Checked)
-				{
-
-					m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->enable();
-
-				}
-				else if (item->checkState() == Qt::Unchecked)
-				{
-
-					m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->disable();
-
-				}
-				// update ui
-				update();
-
-				// reset cursor to default arrow
-				QApplication::restoreOverrideCursor();
-				//QApplication::processEvents();
-
-				break;
 			}
-
-			case 5:
+			else if (item->checkState() == Qt::Unchecked)
 			{
 
+				m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->disable();
 
-				break;
 			}
+			// update ui
+			update();
 
-			default:
-				break;
+			// reset cursor to default arrow
+			QApplication::restoreOverrideCursor();
+			//QApplication::processEvents();
+
+			break;
+		}
+
+		case 5:
+		{
+
+
+			break;
+		}
+
+		default:
+			break;
 
 		}
 	}
@@ -944,7 +955,7 @@ void MainWindow::addTrackerToList(int id)
 
 
 			//m_refTreeWidgetTracker->addItem((*itTracker)->getProperties()->name.c_str());
-			QTreeWidgetItem *topLevelItem = new QTreeWidgetItem(ui->treeWidget_tracker);
+			QTreeWidgetItem* topLevelItem = new QTreeWidgetItem(ui->treeWidget_tracker);
 
 			// Set text for item
 			topLevelItem->setText(0, (*itTracker)->getProperties()->name.c_str());

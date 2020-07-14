@@ -51,7 +51,7 @@ void MotionHub::update()
 
 			std::vector<Tracker*> trackerPoolTempCopy = m_trackerManager->getPoolTracker();
 
-			// iterates threw all tracker located in the tracker manager tracker pool 
+			// iterates through all tracker located in the tracker manager tracker pool 
 			for (auto itTracker = trackerPoolTempCopy.begin(); itTracker != trackerPoolTempCopy.end(); itTracker++)
 			{
 

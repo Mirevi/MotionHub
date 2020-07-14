@@ -44,8 +44,8 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 #FIND_PACKAGE( OSCPack REQUIRED )
 #FIND_PACKAGE( Cudnn REQUIRED )
 
-
 #QT5ForMireviMotionHub -> downloads dependency from web
+cmake_policy(SET CMP0020 NEW) #supresses CMake Warnings to CMP2020
 set(EXPECTED_SHA256 60ba1f48a17c9156fbe70d25c1bc65df9cf4a1d93d172d115ac85253e23d9c2d )
 set(CURRENT_DEPS_PATH ${CMAKE_BINARY_DIR}/../deps/qt-5920/)
 set(URL http://claymore.mirevi.com/qt-5920.zip)
