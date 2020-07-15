@@ -6,7 +6,7 @@
 
 [MIREVI](https://www.mirevi.de/) MotionHub (MMH) is a middleware for merging body tracking data from different systems into one coordinate space in real-time in order to combine and use their individual benefits.
 
-MMH offers support for several body tracking systems and encompasses a [game engine plug-in](https://www.mirevi.de/#Game-engine-plug-in) that connects the MMH with Unity by means of a standardized protocol. The plug-in allows for the usage of a single type of skeleton for any body tracking system and, therefore, facilitates the switch between different body tracking systems during app development significantly.
+MMH offers support for several body tracking systems and encompasses a [game engine plug-in](https://github.com/Mirevi/MotionHub/#Game-engine-plug-in) that connects the MMH with Unity by means of a standardized protocol. The plug-in allows for the usage of a single type of skeleton for any body tracking system and, therefore, facilitates the switch between different body tracking systems during app development significantly.
 
 MotionHub is developed at the research lab [MIREVI](https://www.mirevi.de/) from the [University of Applied Sciences Düsseldorf](https://hs-duesseldorf.de/en) within the scope of the project [HIVE](https://mirevi.de/research/immersive-digital-technologies-for-a-healthy-life-through-exercise-and-well-being-hive-lab).
 
@@ -31,20 +31,19 @@ Currently MMH is only supported on Microsoft Windows operating systems.
 
 The developer, API and user documentation including a class collaboration diagram can be found in the `doc` folder.
 
-# Supported Systems
+# Supported Body Tracking Systems
 
-MMH currently supports the listed body tracking systems.
-
-| Supported Systems                                                       |
+| Supported                                                       		  |
 | ----------------------------------------------------------------------- |
 | [Azure Kinect](https://azure.microsoft.com/en-gb/services/kinect-dk/)   |
 | [OptiTrack](https://optitrack.com/)                                     |
 
-| Planned Systems                                                         |
-| ----------------------------------------------------------------------- |
-| [Perception Neuron 2](https://neuronmocap.com/content/product/32-neuron-edition-v2) |
-| [XSens MVN Animate](https://www.xsens.com/products/mvn-animate) |
-| [The Captury](https://thecaptury.com/) |
+| Planned                                                                             							|
+| --------------------------------------------------------------------------------------------------------------|
+| [The Captury (planned for ~October 20)](https://thecaptury.com/)                                				|
+| [Perception Neuron 2 (planned for ~October 20)](https://neuronmocap.com/content/product/32-neuron-edition-v2) |
+| [XSens MVN Animate (planned for ~November 20)](https://www.xsens.com/products/mvn-animate)                    |
+
 
 # Setup and Building
 
