@@ -6,7 +6,7 @@
 
 [MIREVI](https://www.mirevi.de/) MotionHub (MMH) is a middleware for merging body tracking data from different systems into one coordinate space in real-time in order to combine and use their individual benefits.
 
-MMH offers support for several body tracking systems and encompasses a game engine plug-in that connects the MMH with Unity by means of a standardized protocol. The plug-in allows for the usage of a single type of skeleton for any body tracking system and, therefore, facilitates the switch between different body tracking systems during app development significantly.
+MMH offers support for several body tracking systems and encompasses a [game engine plug-in](https://www.mirevi.de/#Game-engine-plug-in) that connects the MMH with Unity by means of a standardized protocol. The plug-in allows for the usage of a single type of skeleton for any body tracking system and, therefore, facilitates the switch between different body tracking systems during app development significantly.
 
 MotionHub is developed at the research lab [MIREVI](https://www.mirevi.de/) from the [University of Applied Sciences Düsseldorf](https://hs-duesseldorf.de/en) within the scope of the project [HIVE](https://mirevi.de/research/immersive-digital-technologies-for-a-healthy-life-through-exercise-and-well-being-hive-lab).
 
@@ -39,6 +39,12 @@ MMH currently supports the listed body tracking systems.
 | ----------------------------------------------------------------------- |
 | [Azure Kinect](https://azure.microsoft.com/en-gb/services/kinect-dk/)   |
 | [OptiTrack](https://optitrack.com/)                                     |
+
+| Planned Systems                                                         |
+| ----------------------------------------------------------------------- |
+| [Perception Neuron 2](https://neuronmocap.com/content/product/32-neuron-edition-v2) |
+| [XSens MVN Animate](https://www.xsens.com/products/mvn-animate) |
+| [The Captury](https://thecaptury.com/) |
 
 # Setup and Building
 
@@ -77,10 +83,11 @@ We recognized an Error, when using a N version of Windows, in which the .exe wou
 - [OSC Pack](http://www.rossbencina.com/code/oscpack)
 - [TinyXML](http://www.grinninglizard.com/tinyxml/)
 
-# Gameengine plugIns
+# Game engine plug-in
 
 Currently, we are supporting [Unity](https://unity.com/) with a plugIn, which you can integrate in your project. It receives the tracking data and animates a character.
 You can download the project [here](https://github.com/Mirevi/MotionHub-Unity-Plugin).
+
 
 # License
 
