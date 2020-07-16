@@ -8,7 +8,7 @@
 
 MMH offers support for several body tracking systems and encompasses a [game engine plug-in](https://github.com/Mirevi/MotionHub/#Game-engine-plug-in) that connects the MMH with Unity by means of a standardized protocol. The plug-in allows for the usage of a single type of skeleton for any body tracking system and, therefore, facilitates the switch between different body tracking systems during app development significantly.
 
-MotionHub is developed at the research lab [MIREVI](https://www.mirevi.de/) from the [University of Applied Sciences Düsseldorf](https://hs-duesseldorf.de/en) within the scope of the project [HIVE](https://mirevi.de/research/immersive-digital-technologies-for-a-healthy-life-through-exercise-and-well-being-hive-lab).
+MotionHub is developed at the research lab [MIREVI](https://www.mirevi.de/) from the [University of Applied Sciences Düsseldorf](https://hs-duesseldorf.de/en) within the scope of the projects [HIVE](https://mirevi.de/research/immersive-digital-technologies-for-a-healthy-life-through-exercise-and-well-being-hive-lab) and [iKPT4.0](https://mirevi.de/research/ikpt4-0).
 
 ### Acknowledgements
 
@@ -44,8 +44,13 @@ The developer, API and user documentation including a class collaboration diagra
 | [Perception Neuron 2 (planned for ~October 20)](https://neuronmocap.com/content/product/32-neuron-edition-v2) |
 | [XSens MVN Animate (planned for ~November 20)](https://www.xsens.com/products/mvn-animate)                    |
 
+# Installer (for users, not for developers)
 
-# Setup and Building
+If you want to install the MotionHub, please download the latest release:
+[https://github.com/Mirevi/MotionHub/releases](https://github.com/Mirevi/MotionHub/releases)
+
+
+# Building from source (for developers, not for users)
 
 The [CMake](https://cmake.org/) system is used to generate project files and for downloading all required dependencies. Please use the `CMakeLists.txt` file for generating.
 
