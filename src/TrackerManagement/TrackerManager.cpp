@@ -74,9 +74,15 @@ int TrackerManager::createTracker(TrackerType type)
 			//create new Tracker with current ID
 			tempTracker = new OTTracker(id, m_networkManager, m_configManager);
 
-			//sendSkeletonDelegate() funcPtr pass through
-			//tempTracker->setSendSkeletonDelegate(m_sendSkeletonDelegate);
+			break;
 
+		}
+
+		case bvh:
+		{
+			
+			//create new BVH-Player with current ID
+			tempTracker = new BVHPlayer(id, m_networkManager, m_configManager);
 
 			break;
 
