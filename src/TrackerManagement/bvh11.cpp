@@ -3,7 +3,7 @@
 #include <cassert>
 #include <fstream>
 
-#define M_PI 3.14159
+//#define M_PI 3.14159
 
 namespace bvh11
 {

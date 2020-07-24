@@ -11,6 +11,8 @@
 #include <Core>
 #include <Geometry>
 
+#include "MotionHubUtil/MMHmath.h"
+
 namespace bvh11
 {
     struct Channel;

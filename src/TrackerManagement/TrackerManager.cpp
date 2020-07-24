@@ -47,8 +47,6 @@ int TrackerManager::createTracker(TrackerType type)
 			if (!tempTracker->valid)
 			{
 
-				Console::log("TrackerManager::createTracker(): valid = false");
-
 				delete tempTracker;
 
 				//unlock the tracker pool
@@ -80,7 +78,9 @@ int TrackerManager::createTracker(TrackerType type)
 
 		case bvh:
 		{
-			
+
+			Console::log("TrackerManager::createTracker(): Creating BVH-Player ...");
+
 			//create new BVH-Player with current ID
 			tempTracker = new BVHPlayer(id, m_networkManager, m_configManager);
 

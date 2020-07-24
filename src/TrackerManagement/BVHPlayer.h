@@ -51,7 +51,17 @@ private:
 	 * \param body_frame
 	 */
 
-	//bvh11::BvhObject m_bvhObject;
+	bvh11::BvhObject* m_bvhObject;
+
+	int m_currFrame;
+	int m_frameCount;
+	double m_frameTime;
+	
+	bool m_firstFrame;
+
+	Skeleton* m_currSkeleton;
+
+	std::map<std::string, Joint::JointNames> m_nameTranslationTable;
 
 
 };

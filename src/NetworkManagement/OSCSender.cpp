@@ -29,8 +29,12 @@ void OSCSender::sendSkeleton(Skeleton* skeleton, const char* uri, int trackerID)
 	if (skeleton != nullptr)
 	{
 
+		int ID = (trackerID * 1000 + skeleton->getSid());
+
+
+
 		//first value in stream is user ID
-		*m_packetStream << osc::BeginBundleImmediate << osc::BeginMessage(uri) << (trackerID * 1000 + skeleton->getSid());
+		*m_packetStream << osc::BeginBundleImmediate << osc::BeginMessage(uri) << ID;
 
 		// create new var's for joint position, rotation and confidence
 		Vector4f currJointPosition;
