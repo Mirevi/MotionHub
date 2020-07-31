@@ -13,7 +13,7 @@ TrackerManager::TrackerManager(NetworkManager* networkManager, ConfigManager* co
 
 }
 
-int TrackerManager::createTracker(TrackerType type)
+int TrackerManager::createTracker(TrackerType type, std::string filePath)
 {
 
 	// get the next tracker id
@@ -82,7 +82,7 @@ int TrackerManager::createTracker(TrackerType type)
 			Console::log("TrackerManager::createTracker(): Creating BVH-Player ...");
 
 			//create new BVH-Player with current ID
-			tempTracker = new BVHPlayer(id, m_networkManager, m_configManager);
+			tempTracker = new BVHPlayer(id, m_networkManager, m_configManager, filePath);
 
 			break;
 

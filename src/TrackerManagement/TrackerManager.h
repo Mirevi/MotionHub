@@ -50,7 +50,7 @@ public:
 	 * 
 	 * \param type type of the tracker (Azure Kinect, XSense, ...)
 	 */
-	int createTracker(TrackerType type);
+	int createTracker(TrackerType type, std::string filePath = "");
 	/*!
 	 * removes a tracker from the pool
 	 * 

@@ -9,7 +9,7 @@ class BVHPlayer : public Tracker
 {
 public:
 
-	BVHPlayer(int id, NetworkManager* networkManager, ConfigManager* configManager);
+	BVHPlayer(int id, NetworkManager* networkManager, ConfigManager* configManager, std::string filePath);
 
 	/*!
 	 * calls the start() method of the base class which sets m_tracking to true
@@ -60,6 +60,10 @@ private:
 	Skeleton* m_currSkeleton;
 
 	std::map<std::string, Joint::JointNames> m_nameTranslationTable;
+
+
+
+	std::string m_filePath;
 
 
 };

@@ -1,10 +1,12 @@
 #include "BVHPlayer.h"
 
-BVHPlayer::BVHPlayer(int id, NetworkManager* networkManager, ConfigManager* configManager)
+BVHPlayer::BVHPlayer(int id, NetworkManager* networkManager, ConfigManager* configManager, std::string filePath)
 {
 	
 	m_networkManager = networkManager;
 	m_configManager = configManager;
+
+	m_filePath = filePath;
 
 	init();
 
@@ -46,10 +48,6 @@ void BVHPlayer::start()
 	m_properties->isTracking = true;
 
 
-
-
-
-
 	//create new skeleton and add it to the pool
 	m_skeletonPool.insert({ 0, Skeleton(0) });
 	m_currSkeleton = &m_skeletonPool[0];
@@ -88,43 +86,38 @@ void BVHPlayer::init()
 {
 	
 	// Instantiate a BVH object
-	m_bvhObject = new bvh11::BvhObject("16_44.bvh");
+	m_bvhObject = new bvh11::BvhObject(m_filePath);
 
+	//store metadata
 	m_currFrame = 0;
 	m_frameCount = m_bvhObject->frames();
 	m_frameTime = m_bvhObject->frame_time();
 
-	std::cout << "#Channels       : " << m_bvhObject->channels().size() << std::endl;
-	std::cout << "#Frames         : " << m_bvhObject->frames() << std::endl;
-	std::cout << "Frame time      : " << m_bvhObject->frame_time() << std::endl;
 
-
-
-
-
+	//create lookup table for Joints
 	m_nameTranslationTable = std::map<std::string, Joint::JointNames>();
 	
-	m_nameTranslationTable["Hips"] = Joint::HIPS;
-	m_nameTranslationTable["LeftUpLeg"] = Joint::UPLEG_L;
-	m_nameTranslationTable["LeftLeg"] = Joint::LEG_L;
-	m_nameTranslationTable["LeftFoot"] = Joint::FOOT_L;
-	m_nameTranslationTable["LeftToeBase"] = Joint::TOE_L;
-	m_nameTranslationTable["RightUpLeg"] = Joint::UPLEG_R;
-	m_nameTranslationTable["RightLeg"] = Joint::LEG_R;
-	m_nameTranslationTable["RightFoot"] = Joint::FOOT_R;
-	m_nameTranslationTable["RightToeBase"] = Joint::TOE_R;
-	m_nameTranslationTable["Spine"] = Joint::SPINE;
-	m_nameTranslationTable["Spine1"] = Joint::CHEST;
-	m_nameTranslationTable["Neck1"] = Joint::NECK;
-	m_nameTranslationTable["Head"] = Joint::HEAD;
-	m_nameTranslationTable["LeftShoulder"] = Joint::SHOULDER_L;
-	m_nameTranslationTable["LeftArm"] = Joint::ARM_L;
-	m_nameTranslationTable["LeftForeArm"] = Joint::FOREARM_L;
-	m_nameTranslationTable["LeftHand"] = Joint::HAND_L;
+	m_nameTranslationTable["Hips"]			= Joint::HIPS;
+	m_nameTranslationTable["LeftUpLeg"]		= Joint::UPLEG_L;
+	m_nameTranslationTable["LeftLeg"]		= Joint::LEG_L;
+	m_nameTranslationTable["LeftFoot"]		= Joint::FOOT_L;
+	m_nameTranslationTable["LeftToeBase"]	= Joint::TOE_L;
+	m_nameTranslationTable["RightUpLeg"]	= Joint::UPLEG_R;
+	m_nameTranslationTable["RightLeg"]		= Joint::LEG_R;
+	m_nameTranslationTable["RightFoot"]		= Joint::FOOT_R;
+	m_nameTranslationTable["RightToeBase"]	= Joint::TOE_R;
+	m_nameTranslationTable["Spine"]			= Joint::SPINE;
+	m_nameTranslationTable["Spine1"]		= Joint::CHEST;
+	m_nameTranslationTable["Neck1"]			= Joint::NECK;
+	m_nameTranslationTable["Head"]			= Joint::HEAD;
+	m_nameTranslationTable["LeftShoulder"]	= Joint::SHOULDER_L;
+	m_nameTranslationTable["LeftArm"]		= Joint::ARM_L;
+	m_nameTranslationTable["LeftForeArm"]	= Joint::FOREARM_L;
+	m_nameTranslationTable["LeftHand"]		= Joint::HAND_L;
 	m_nameTranslationTable["RightShoulder"] = Joint::SHOULDER_R;
-	m_nameTranslationTable["RightArm"] = Joint::ARM_R;
-	m_nameTranslationTable["RightForeArm"] = Joint::FOREARM_R;
-	m_nameTranslationTable["RightHand"] = Joint::HAND_R;
+	m_nameTranslationTable["RightArm"]		= Joint::ARM_R;
+	m_nameTranslationTable["RightForeArm"]	= Joint::FOREARM_R;
+	m_nameTranslationTable["RightHand"]		= Joint::HAND_R;
 
 }
 
@@ -182,7 +175,11 @@ void BVHPlayer::track()
 
 			//get joint position and convert to Vec4
 			auto pos = currJointTransformGlobal.translation().cast<float>();
-			Vector4f position = Vector4f(pos.x(), pos.y(), pos.z(), 1) * 0.1f;
+			Vector4f position = m_offsetMatrix * Vector4f(pos.x(), pos.y(), pos.z(), 1) * 0.1f;
+
+
+
+
 
 
 			//get joint rotation and convert to Quaternion
