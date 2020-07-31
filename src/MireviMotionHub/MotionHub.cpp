@@ -75,6 +75,7 @@ void MotionHub::update()
 						//update UI
 						m_uiManager->getMainWindow()->update();	
 
+
 						m_uiManager->getMainWindow()->getOglRenderer()->updateSkeletonMeshCount();
 
 					}

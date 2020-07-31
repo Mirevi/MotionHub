@@ -32,6 +32,19 @@ static std::string toString(int number)
 }
 
 /*!
+ * converts size_t to string
+ *
+ * \param number input int
+ * \return int as string
+ */
+static std::string toString(size_t number)
+{
+
+	return std::to_string(number);
+
+}
+
+/*!
  * converts float to string
  *
  * \param number input float

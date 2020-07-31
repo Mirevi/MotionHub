@@ -57,8 +57,6 @@ private:
 	int m_frameCount;
 	double m_frameTime;
 	
-	bool m_firstFrame;
-
 	Skeleton* m_currSkeleton;
 
 	std::map<std::string, Joint::JointNames> m_nameTranslationTable;

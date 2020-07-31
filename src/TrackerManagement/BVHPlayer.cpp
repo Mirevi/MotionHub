@@ -45,6 +45,24 @@ void BVHPlayer::start()
 	// set tracking to true
 	m_properties->isTracking = true;
 
+
+
+
+
+
+	//create new skeleton and add it to the pool
+	m_skeletonPool.insert({ 0, Skeleton(0) });
+	m_currSkeleton = &m_skeletonPool[0];
+
+	//there schould only be one skeleton in the file
+	m_properties->countDetectedSkeleton = m_skeletonPool.size();
+	//skeleton was added/removed, so UI updates
+	m_hasSkeletonPoolChanged = true;
+
+	Console::log("skeleton added to pool!");
+
+
+
 	// start tracking thread and detach the thread from method scope runtime
 	m_trackingThread = new std::thread(&BVHPlayer::update, this);
 	m_trackingThread->detach();
@@ -75,8 +93,6 @@ void BVHPlayer::init()
 	m_currFrame = 0;
 	m_frameCount = m_bvhObject->frames();
 	m_frameTime = m_bvhObject->frame_time();
-
-	m_firstFrame = true;
 
 	std::cout << "#Channels       : " << m_bvhObject->channels().size() << std::endl;
 	std::cout << "#Frames         : " << m_bvhObject->frames() << std::endl;
@@ -130,62 +146,51 @@ void BVHPlayer::update()
 
 	//clean skeleton pool after tracking
 	clean();
-	m_firstFrame = true;
+
+	//skeleton was added/removed, so UI updates
+	m_hasSkeletonPoolChanged = true;
 
 }
 
 void BVHPlayer::track()
 {
-	//in the first frame
-	if (m_firstFrame)
-	{
-
-		//create new skeleton and add it to the pool
-
-		m_skeletonPool.insert({ 0, Skeleton(0)});
-		m_currSkeleton = &m_skeletonPool[0];
-
-		//there schould only be one skeleton in the file
-		m_properties->countDetectedSkeleton = m_skeletonPool.size();
-
-		m_firstFrame = false;
-
-	}
-	//else
-	//{
-	//	//get skeleton ref
-	//	m_currSkeleton = &m_skeletonPool[1];
-	//}
 
 	//get joint list and count
 	auto jointList = m_bvhObject->GetJointList();
 	int jointCount = jointList.size();
 
 
-	Console::log("BVHPlayer::track(): JOINTCOUNT " + toString(jointCount) + ", id = " + toString(m_currSkeleton->getSid()));
+	//Console::log("BVHPlayer::track(): JOINTCOUNT " + toString(jointCount) + ", id = " + toString(m_currSkeleton->getSid()));
 
 
 	//loop throuh joints
 	for each (auto currJoint in jointList)
 	{
+
+
+
 		//get current joint type
 		Joint::JointNames currType = m_nameTranslationTable[currJoint->name()];
 
-		if (currType != NULL)
+		//Console::log("joint name: " + currJoint->name() + ", type: " + toString(currType));
+
+		if (currType != NULL || currType == Joint::HIPS)
 		{
 			//get joint pose
 			Affine3d currJointTransform = m_bvhObject->GetTransformationRelativeToParent(currJoint, m_currFrame);
+			Affine3d currJointTransformGlobal = m_bvhObject->GetTransformation(currJoint, m_currFrame);
 
 			//get joint position and convert to Vec4
-			auto pos = currJointTransform.translation().cast<float>();
+			auto pos = currJointTransformGlobal.translation().cast<float>();
 			Vector4f position = Vector4f(pos.x(), pos.y(), pos.z(), 1) * 0.1f;
+
 
 			//get joint rotation and convert to Quaternion
 			auto rot = currJointTransform.rotation().cast<float>();
 			Quaternionf rotation(rot);
 
 
-			Console::log("BVHPlayer::track(): Joint " + std::to_string(currType) + ", position: " + toString(position));
+			//Console::log("BVHPlayer::track(): Joint " + std::to_string(currType) + ", position: " + toString(position));
 
 
 			m_currSkeleton->m_joints[currType] = Joint(position, rotation, Joint::HIGH);
@@ -200,10 +205,7 @@ void BVHPlayer::track()
 	}
 
 
-	//###### important tracking code ######
-	//get joint data and store it in skeleton pool
-
-
+	m_isDataAvailable = true;
 }
 
 std::string BVHPlayer::getTrackerType()

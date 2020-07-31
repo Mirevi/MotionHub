@@ -70,6 +70,7 @@ void MainWindow::updateHirachy()
 
 	std::vector<Tracker*> trackerPoolTempCopy = m_refTrackerManager->getPoolTracker();
 
+
 	// loop throgh all tracker
 	for (auto itTrackerPool = trackerPoolTempCopy.begin(); itTrackerPool != trackerPoolTempCopy.end(); itTrackerPool++)
 	{
@@ -94,6 +95,7 @@ void MainWindow::updateHirachy()
 
 			//get the skeletons id and assign it to the display text
 			std::string skeletonName = "skeleton_" + std::to_string(itSkeletonPool->first);
+
 			m_hirachyItemPool.rbegin()->second.back()->setText(0, QString::fromStdString(skeletonName));
 
 			//add child item to top level item
