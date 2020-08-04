@@ -19,14 +19,14 @@
         <xSclOptiTrack>1</xSclOptiTrack>
         <ySclOptiTrack>1</ySclOptiTrack>
         <zSclOptiTrack>1</zSclOptiTrack>
-        <xPosBVH>1.000000</xPosBVH>
+        <xPosBVH>0.000000</xPosBVH>
         <yPosBVH>0.000000</yPosBVH>
         <zPosBVH>0.000000</zPosBVH>
         <xRotBVH>0.000000</xRotBVH>
         <yRotBVH>0.000000</yRotBVH>
         <zRotBVH>0.000000</zRotBVH>
-        <xSclBVH>0.500000</xSclBVH>
-        <ySclBVH>0.500000</ySclBVH>
-        <zSclBVH>0.500000</zSclBVH>
+        <xSclBVH>0.050000</xSclBVH>
+        <ySclBVH>0.050000</ySclBVH>
+        <zSclBVH>0.050000</zSclBVH>
     </startup_config>
 </config>

@@ -45,7 +45,8 @@ public:
 		LEG_R,
 		FOOT_R,
 		TOE_R,
-		HEAD
+		HEAD,
+		NDEF
 	};
 
 	//enum for confidence level

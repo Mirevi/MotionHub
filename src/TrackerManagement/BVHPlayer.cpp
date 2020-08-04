@@ -97,7 +97,7 @@ void BVHPlayer::init()
 	//create lookup table for Joints
 	m_nameTranslationTable = std::map<std::string, Joint::JointNames>();
 	
-	m_nameTranslationTable["Hips"]			= Joint::HIPS;
+	m_nameTranslationTable["Ndef"]			= Joint::NDEF;
 	m_nameTranslationTable["LeftUpLeg"]		= Joint::UPLEG_L;
 	m_nameTranslationTable["LeftLeg"]		= Joint::LEG_L;
 	m_nameTranslationTable["LeftFoot"]		= Joint::FOOT_L;
@@ -118,6 +118,12 @@ void BVHPlayer::init()
 	m_nameTranslationTable["RightArm"]		= Joint::ARM_R;
 	m_nameTranslationTable["RightForeArm"]	= Joint::FOREARM_R;
 	m_nameTranslationTable["RightHand"]		= Joint::HAND_R;
+	m_nameTranslationTable["Hips"]			= Joint::HIPS;
+
+	
+
+
+
 
 }
 
@@ -153,8 +159,6 @@ void BVHPlayer::track()
 	int jointCount = jointList.size();
 
 
-	//Console::log("BVHPlayer::track(): JOINTCOUNT " + toString(jointCount) + ", id = " + toString(m_currSkeleton->getSid()));
-
 
 	//loop throuh joints
 	for each (auto currJoint in jointList)
@@ -165,20 +169,33 @@ void BVHPlayer::track()
 		//get current joint type
 		Joint::JointNames currType = m_nameTranslationTable[currJoint->name()];
 
-		//Console::log("joint name: " + currJoint->name() + ", type: " + toString(currType));
-
-		if (currType != NULL || currType == Joint::HIPS)
+		if (currType == 0)
 		{
+			currType = Joint::NDEF;
+		}
+
+
+		if (currJoint->name() == "Hips")
+		{
+			currType = Joint::HIPS;
+		}
+
+
+
+		if (currType != Joint::NDEF)
+		{
+
+
 			//get joint pose
 			Affine3d currJointTransform = m_bvhObject->GetTransformationRelativeToParent(currJoint, m_currFrame);
 			Affine3d currJointTransformGlobal = m_bvhObject->GetTransformation(currJoint, m_currFrame);
 
 			//get joint position and convert to Vec4
 			auto pos = currJointTransformGlobal.translation().cast<float>();
-			Vector4f position = m_offsetMatrix * Vector4f(pos.x(), pos.y(), pos.z(), 1) * 0.1f;
+			Vector4f position = m_offsetMatrix * Vector4f(pos.x(), pos.y(), pos.z(), 1);
 
 
-
+			Joint::JointConfidence currConf = Joint::HIGH;
 
 
 
@@ -190,7 +207,7 @@ void BVHPlayer::track()
 			//Console::log("BVHPlayer::track(): Joint " + std::to_string(currType) + ", position: " + toString(position));
 
 
-			m_currSkeleton->m_joints[currType] = Joint(position, rotation, Joint::HIGH);
+			m_currSkeleton->m_joints[currType] = Joint(position, rotation, currConf);
 		}
 	}
 
