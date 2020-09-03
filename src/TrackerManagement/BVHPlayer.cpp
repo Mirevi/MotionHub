@@ -204,6 +204,16 @@ void BVHPlayer::track()
 			Quaternionf rotation(rot);
 
 
+
+			Vector3f euler = rotation.toRotationMatrix().eulerAngles(0, 1, 2);
+
+			rotation = AngleAxisf(-euler.x(), Vector3f::UnitX())
+					 * AngleAxisf(-euler.y(), Vector3f::UnitY())
+					 * AngleAxisf(euler.z(), Vector3f::UnitZ());
+
+
+
+
 			//Console::log("BVHPlayer::track(): Joint " + std::to_string(currType) + ", position: " + toString(position));
 
 
