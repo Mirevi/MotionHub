@@ -191,6 +191,8 @@ public:
 
 	virtual std::vector<Vector3f> resetOffsets();
 
+	virtual int getCurrentFramePercent();
+
 
 protected:
 

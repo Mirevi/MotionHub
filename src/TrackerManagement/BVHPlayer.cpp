@@ -286,5 +286,7 @@ void BVHPlayer::setCurrentFrame(int newValue)
 
 int BVHPlayer::getCurrentFramePercent()
 {
+	
+
 	return (int)round((m_currFrame * 100) / m_frameCount);
 }

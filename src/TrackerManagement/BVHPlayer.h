@@ -34,7 +34,7 @@ public:
 
 	void setCurrentFrame(int newValue);
 
-	int getCurrentFramePercent();
+	int getCurrentFramePercent() override;
 
 private:
 

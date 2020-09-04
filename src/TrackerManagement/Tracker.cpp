@@ -170,6 +170,11 @@ int Tracker::getCamID()
 	return m_idCam;
 
 }
+
+int Tracker::getCurrentFramePercent()
+{
+	return -1;
+}
  
 //void Tracker::setSendSkeletonDelegate(void (*sendSkeletonDelegate)(std::map<int, Skeleton>* skeletonPool, int trackerID))
 //{

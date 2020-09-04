@@ -314,9 +314,10 @@ void TrackerManager::controlTimeline(bool stop)
 
 	for (auto itTracker = m_trackerPool.begin(); itTracker != m_trackerPool.end(); itTracker++)
 	{
-
-		dynamic_cast<BVHPlayer*>(*itTracker)->controlTime(stop);		
-
+		if ((*itTracker)->getTrackerType() == "BVH")
+		{
+			dynamic_cast<BVHPlayer*>(*itTracker)->controlTime(stop);
+		}
 	}
 
 }
@@ -325,9 +326,10 @@ void TrackerManager::timelineValueChange(int newValue)
 {
 	for (auto itTracker = m_trackerPool.begin(); itTracker != m_trackerPool.end(); itTracker++)
 	{
-
-		dynamic_cast<BVHPlayer*>(*itTracker)->setCurrentFrame(newValue);
-
+		if ((*itTracker)->getTrackerType() == "BVH")
+		{
+			dynamic_cast<BVHPlayer*>(*itTracker)->setCurrentFrame(newValue);
+		}
 	}
 }
 
@@ -347,7 +349,25 @@ int TrackerManager::getBvhCurrFrame()
 		return -1;
 	}
 
-	int currFrame = dynamic_cast<BVHPlayer*>(m_trackerPool[0])->getCurrentFramePercent();
+	int currFrame = -1;
+ 
+
+
+	for (auto itTracker = m_trackerPool.begin(); itTracker != m_trackerPool.end(); itTracker++)
+	{
+		
+
+		if ((*itTracker)->getTrackerType() == "BVH")
+		{
+			currFrame = dynamic_cast<BVHPlayer*>(*itTracker)->getCurrentFramePercent();
+			break;
+		}
+
+
+	}
+
+
+
 
 	if (currFrame != NULL)
 	{
