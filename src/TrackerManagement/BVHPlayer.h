@@ -2,6 +2,8 @@
 
 #include "Tracker.h"
 #include "MotionHubUtil/Console.h"
+#include "MotionHubUtil/Timer.h"
+#include <math.h>
 
 #include "bvh11.h"
 
@@ -28,6 +30,12 @@ public:
 
 	std::vector<Vector3f> resetOffsets() override;
 
+	void controlTime(bool stop);
+
+	void setCurrentFrame(int newValue);
+
+	int getCurrentFramePercent();
+
 private:
 
 	/*!
@@ -52,6 +60,8 @@ private:
 	 */
 
 	bvh11::BvhObject* m_bvhObject;
+
+	bool m_timelineDragging;
 
 	int m_currFrame;
 	int m_frameCount;

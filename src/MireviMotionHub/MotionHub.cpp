@@ -100,6 +100,30 @@ void MotionHub::update()
 
 		}
 
+		updateTimeline();
+
 	}
 
 }
+
+void MotionHub::updateTimeline()
+{
+	if (m_uiManager->getMainWindow()->m_timelineActive)
+	{
+
+
+		//get BVH current frame
+		int currFrame = m_trackerManager->getBvhCurrFrame();
+
+		if (currFrame < 0)
+		{
+			return;
+		}
+
+		//and apply it to the timeline slider
+		m_uiManager->getMainWindow()->setTimelineValue(currFrame);
+
+	}
+
+}
+

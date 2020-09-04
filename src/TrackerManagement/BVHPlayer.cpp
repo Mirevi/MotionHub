@@ -84,7 +84,8 @@ void BVHPlayer::destroy()
 
 void BVHPlayer::init()
 {
-	
+	m_timelineDragging = false;
+
 	// Instantiate a BVH object
 	m_bvhObject = new bvh11::BvhObject(m_filePath);
 
@@ -134,12 +135,22 @@ void BVHPlayer::update()
 	while (m_properties->isTracking)
 	{
 
+		Timer::reset();
 
-		// get new data
-		track();
+		if (!m_timelineDragging)
+		{
+			
+			// get new data
+			track();
+
+		}
 
 		//send Skeleton Pool to NetworkManager
 		m_networkManager->sendSkeletonPool(&m_skeletonPool, m_properties->id);
+
+		double elapsed = (double)Timer::getDuration();
+		long long sleepTime = (m_frameTime - elapsed) * 1000;
+		std::this_thread::sleep_for(std::chrono::milliseconds(sleepTime));
 
 	}
 
@@ -159,6 +170,12 @@ void BVHPlayer::track()
 	int jointCount = jointList.size();
 
 
+
+	if (m_currFrame < 0 || m_currFrame >= m_frameCount )
+	{
+		//Console::logError("ERROR: frame numner out of range. m_currFrame: " + toString(m_currFrame));
+		return;
+	}
 
 	//loop throuh joints
 	for each (auto currJoint in jointList)
@@ -250,4 +267,24 @@ std::vector<Vector3f> BVHPlayer::resetOffsets()
 	std::vector<Vector3f> offsets = { pos, rot, scl };
 
 	return offsets;
+}
+
+void BVHPlayer::controlTime(bool stop)
+{
+	m_timelineDragging = stop;
+}
+
+void BVHPlayer::setCurrentFrame(int newValue)
+{
+	m_currFrame = (int)round(m_frameCount * newValue / 100);
+
+	if (m_properties->isTracking)
+	{
+		track();
+	}
+}
+
+int BVHPlayer::getCurrentFramePercent()
+{
+	return (int)round((m_currFrame * 100) / m_frameCount);
 }

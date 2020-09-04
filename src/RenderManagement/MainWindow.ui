@@ -1010,6 +1010,43 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
             <property name="lineWidth">
              <number>1</number>
             </property>
+            <widget class="QSlider" name="slider_timeline">
+             <property name="geometry">
+              <rect>
+               <x>10</x>
+               <y>10</y>
+               <width>921</width>
+               <height>22</height>
+              </rect>
+             </property>
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="styleSheet">
+              <string notr="true"/>
+             </property>
+             <property name="maximum">
+              <number>100</number>
+             </property>
+             <property name="pageStep">
+              <number>1</number>
+             </property>
+             <property name="sliderPosition">
+              <number>0</number>
+             </property>
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="tickPosition">
+              <enum>QSlider::NoTicks</enum>
+             </property>
+             <property name="tickInterval">
+              <number>0</number>
+             </property>
+            </widget>
            </widget>
           </item>
           <item>
@@ -1262,22 +1299,6 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
  </resources>
  <connections>
   <connection>
-   <sender>actionExit</sender>
-   <signal>triggered()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>close()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>639</x>
-     <y>359</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>tableWidget_inspector</sender>
    <signal>itemChanged(QTableWidgetItem*)</signal>
    <receiver>MainWindow</receiver>
@@ -1389,6 +1410,54 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>slider_timeline</sender>
+   <signal>sliderPressed()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>slotTimelinePressed()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>176</x>
+     <y>635</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>752</x>
+     <y>377</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>slider_timeline</sender>
+   <signal>sliderReleased()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>slotTimelineReleased()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>234</x>
+     <y>636</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>777</x>
+     <y>426</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>slider_timeline</sender>
+   <signal>sliderMoved(int)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>slotTimelineValueChanged(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>286</x>
+     <y>634</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>774</x>
+     <y>476</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>slotToggleTracking()</slot>
@@ -1399,5 +1468,8 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
   <slot>slotInspectorItemChanged(QTableWidgetItem*)</slot>
   <slot>slotAddGroup()</slot>
   <slot>slotNetworkSettings()</slot>
+  <slot>slotTimelinePressed()</slot>
+  <slot>slotTimelineReleased()</slot>
+  <slot>slotTimelineValueChanged(int)</slot>
  </slots>
 </ui>

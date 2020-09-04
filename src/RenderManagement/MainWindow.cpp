@@ -11,6 +11,7 @@ MainWindow::MainWindow(TrackerManager* trackerManager, ConfigManager* configMana
 	// setup base class
 	ui->setupUi(this);
 
+
 	m_oglRenderer = new GlWidget(trackerManager);
 	m_oglRenderer->setObjectName(QStringLiteral("render_ogl"));
 	QSizePolicy sizePolicy2(QSizePolicy::Expanding, QSizePolicy::Preferred);
@@ -410,12 +411,15 @@ void MainWindow::slotToggleTracking()
 	{
 
 		m_refTrackerManager->startTracker(); // start tracking if false
+		m_timelineActive = true;
+
 
 	}
 	else
 	{
 
 		m_refTrackerManager->stopTracker(); // stop tracking if true
+		m_timelineActive = false;
 
 	}
 
@@ -609,7 +613,31 @@ void MainWindow::slotNetworkSettings()
 
 }
 
+void MainWindow::slotTimelinePressed()
+{
 
+	m_refTrackerManager->controlTimeline(true);
+	m_timelineActive = false;
+
+
+}
+
+void MainWindow::slotTimelineReleased()
+{
+
+	m_refTrackerManager->controlTimeline(false);
+	m_timelineActive = true;
+
+
+}
+
+void MainWindow::slotTimelineValueChanged(int newValue)
+{
+
+	m_refTrackerManager->timelineValueChange(ui->slider_timeline->value());
+
+	
+}
 
 
 
@@ -1021,5 +1049,12 @@ void MainWindow::addTrackerToList(int id)
 		}
 
 	}
+
+}
+
+void MainWindow::setTimelineValue(int newValue)
+{
+
+	ui->slider_timeline->setValue(newValue);
 
 }

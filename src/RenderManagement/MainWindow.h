@@ -61,6 +61,11 @@ public:
 	void update();
 	void updateConsole();
 
+	void setTimelineValue(int newValue);
+
+	bool m_timelineActive;
+
+
 	GlWidget* getOglRenderer();
 
 private slots:
@@ -107,6 +112,10 @@ private slots:
 	void slotInspectorInputScaleZ(QString text);
 
 	void slotResetTrackerOffset();
+
+	void slotTimelinePressed();
+	void slotTimelineReleased();
+	void slotTimelineValueChanged(int newValue);
 
 
 private:

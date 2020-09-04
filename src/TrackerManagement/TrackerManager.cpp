@@ -309,9 +309,54 @@ std::mutex* TrackerManager::getTrackerPoolLock()
 	return &m_trackerPoolLock;
 }
 
+void TrackerManager::controlTimeline(bool stop)
+{
+
+	for (auto itTracker = m_trackerPool.begin(); itTracker != m_trackerPool.end(); itTracker++)
+	{
+
+		dynamic_cast<BVHPlayer*>(*itTracker)->controlTime(stop);		
+
+	}
+
+}
+
+void TrackerManager::timelineValueChange(int newValue)
+{
+	for (auto itTracker = m_trackerPool.begin(); itTracker != m_trackerPool.end(); itTracker++)
+	{
+
+		dynamic_cast<BVHPlayer*>(*itTracker)->setCurrentFrame(newValue);
+
+	}
+}
+
+
 //void TrackerManager::setSendSkeletonPtr(void (*sendSkeleton)(std::map<int, Skeleton>* skeletonPool, int trackerID))
 //{
 //
 //	m_sendSkeletonDelegate = sendSkeleton;
 //
 //}
+
+int TrackerManager::getBvhCurrFrame()
+{
+
+	if (m_trackerPool.size() <= 0)
+	{
+		return -1;
+	}
+
+	int currFrame = dynamic_cast<BVHPlayer*>(m_trackerPool[0])->getCurrentFramePercent();
+
+	if (currFrame != NULL)
+	{
+		return currFrame;
+	}
+	else
+	{
+		return -1;
+	}
+	
+
+}

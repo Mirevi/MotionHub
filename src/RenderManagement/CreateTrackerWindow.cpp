@@ -66,7 +66,12 @@ void CreateTrackerWindow::slotCreateTracker()
 			//BUG: Curser doesn't set to waiting
 
 			// create new BVHPlayer tracker and add tracker to the tracking manager tracker pool
-			id = m_refTrackerManager->createTracker(TrackerManager::bvh, filePath.toUtf8().constData());
+			if (filePath != NULL)
+			{
+
+				id = m_refTrackerManager->createTracker(TrackerManager::bvh, filePath.toUtf8().constData());
+
+			}
 
 
 

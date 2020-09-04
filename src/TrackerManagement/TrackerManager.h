@@ -108,6 +108,14 @@ public:
 	 */
 	std::mutex* getTrackerPoolLock();
 
+	void controlTimeline(bool stop);
+
+	void timelineValueChange(int newValue);
+
+	int getBvhCurrFrame();
+
+
+
 	/*!
 	 * sets the pointer to sendSkeletonDelegate() in main.cpp
 	 *
@@ -157,6 +165,8 @@ private:
 	std::mutex m_trackerPoolLock;
 
 	ConfigManager* m_configManager;
+
+
 
 
 

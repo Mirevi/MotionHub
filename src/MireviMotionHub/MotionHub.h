@@ -70,5 +70,7 @@ private:
 	 */
 	void update();
 
+	void updateTimeline();
+
 
 };
