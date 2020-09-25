@@ -182,7 +182,6 @@ void BVHPlayer::track()
 	{
 
 
-
 		//get current joint type
 		Joint::JointNames currType = m_nameTranslationTable[currJoint->name()];
 
@@ -199,12 +198,13 @@ void BVHPlayer::track()
 
 
 
+
 		if (currType != Joint::NDEF)
 		{
 
 
 			//get joint pose
-			Affine3d currJointTransform = m_bvhObject->GetTransformationRelativeToParent(currJoint, m_currFrame);
+			Affine3d currJointTransformLocal = m_bvhObject->GetTransformationRelativeToParent(currJoint, m_currFrame);
 			Affine3d currJointTransformGlobal = m_bvhObject->GetTransformation(currJoint, m_currFrame);
 
 			//get joint position and convert to Vec4
@@ -217,17 +217,21 @@ void BVHPlayer::track()
 
 
 			//get joint rotation and convert to Quaternion
-			auto rot = currJointTransform.rotation().cast<float>();
+			auto rot = currJointTransformGlobal.rotation().cast<float>();
 			Quaternionf rotation(rot);
 
 
 
 			Vector3f euler = rotation.toRotationMatrix().eulerAngles(0, 1, 2);
 
-			rotation = AngleAxisf(-euler.x(), Vector3f::UnitX())
-					 * AngleAxisf(-euler.y(), Vector3f::UnitY())
-					 * AngleAxisf(euler.z(), Vector3f::UnitZ());
 
+			//rotation = AngleAxisf(-euler.x(), Vector3f::UnitX())
+			//		 * AngleAxisf(-euler.y(), Vector3f::UnitY())
+			//		 * AngleAxisf( euler.z(), Vector3f::UnitZ());
+
+			rotation = eulerToQuaternion(Vector3f(-euler.x(), -euler.y(), euler.z()), false);
+			
+			rotation = convertJointRotation(rotation, currType);
 
 
 
@@ -289,4 +293,75 @@ int BVHPlayer::getCurrentFramePercent()
 	
 
 	return (int)round((m_currFrame * 100) / m_frameCount);
+}
+
+
+
+Quaternionf BVHPlayer::convertJointRotation(Quaternionf raw, Joint::JointNames type)
+{
+
+	Quaternionf newRot = raw;
+
+	switch (type)
+	{
+	case Joint::HIPS:
+		break;
+	case Joint::SPINE:
+		break;
+	case Joint::CHEST:
+		break;
+	case Joint::NECK:
+		break;
+	case Joint::SHOULDER_L:
+		break;
+	case Joint::ARM_L:
+		//newRot = newRot.inverse();
+		//newRot *= eulerToQuaternion(Vector3f(180, 0, 180));
+		break;
+	case Joint::FOREARM_L:
+		//newRot *= eulerToQuaternion(Vector3f(0, 0, 180));
+		break;
+	case Joint::HAND_L:
+		break;
+	case Joint::SHOULDER_R:
+		break;
+	case Joint::ARM_R:
+		//newRot = newRot.inverse();
+		//newRot *= eulerToQuaternion(Vector3f(180, 0, 180));
+		break;
+	case Joint::FOREARM_R:
+		//newRot *= eulerToQuaternion(Vector3f(0, 0, 180));
+		break;
+	case Joint::HAND_R:
+		break;
+	case Joint::UPLEG_L:
+		//newRot = newRot.inverse();
+		break;
+	case Joint::LEG_L:
+		break;
+	case Joint::FOOT_L:
+		break;
+	case Joint::TOE_L:
+		break;
+	case Joint::UPLEG_R:
+		//newRot = newRot.inverse();
+		break;
+	case Joint::LEG_R:
+		break;
+	case Joint::FOOT_R:
+		break;
+	case Joint::TOE_R:
+		break;
+	case Joint::HEAD:
+		break;
+	case Joint::NDEF:
+		break;
+	default:
+		break;
+	}
+
+
+
+	return newRot;
+
 }

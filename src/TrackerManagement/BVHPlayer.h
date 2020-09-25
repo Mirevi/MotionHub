@@ -75,5 +75,7 @@ private:
 
 	std::string m_filePath;
 
+	Quaternionf convertJointRotation(Quaternionf raw, Joint::JointNames type);
+
 
 };
