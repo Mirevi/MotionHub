@@ -3,8 +3,7 @@
 #include "ConfigDllExportMotionHubUtil.h"
 
 #include <iostream>
-//#include "Vector3.h"
-//#include "Vector4.h"
+#include "Console.h"
 
 #include <MotionHubUtil/MMHmath.h>
 
@@ -71,7 +70,9 @@ public:
 	 * \param rotation
 	 * \param confidence
 	 */
-	Joint(Vector4f position, Quaternionf rotation, Joint::JointConfidence confidence);
+	Joint(Vector4f position, Quaternionf rotation, Joint::JointConfidence confidence = HIGH);
+
+	void setTransform(Vector4f position, Quaternionf rotation, Joint::JointConfidence confidence = HIGH);
 
 	/*!
 	 * getter for Joints Position Vector
@@ -94,10 +95,19 @@ public:
 	 */
 	JointConfidence getJointConfidence();
 
+	void setModifier(Vector3f modifier);
+
+	void setInverted(bool x, bool y, bool z);
+
 private:
 
 	Vector4f m_position;
 	Quaternionf m_rotation;
+	Vector3f m_modifier;
+	bool m_invertX;
+	bool m_invertY;
+	bool m_invertZ;
+
 	JointConfidence m_confidence = NONE;
 
 };

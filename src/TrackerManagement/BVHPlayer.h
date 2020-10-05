@@ -36,6 +36,8 @@ public:
 
 	int getCurrentFramePercent() override;
 
+	void applyModChange(Joint::JointNames type, Vector3f mod, bool inverted);
+
 private:
 
 	/*!

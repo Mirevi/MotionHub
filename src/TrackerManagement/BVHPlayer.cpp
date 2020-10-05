@@ -171,7 +171,7 @@ void BVHPlayer::track()
 
 
 
-	if (m_currFrame < 0 || m_currFrame >= m_frameCount )
+	if (m_currFrame < 0 || m_currFrame >= m_frameCount)
 	{
 		//Console::logError("ERROR: frame numner out of range. m_currFrame: " + toString(m_currFrame));
 		return;
@@ -212,7 +212,7 @@ void BVHPlayer::track()
 			Vector4f position = m_offsetMatrix * Vector4f(pos.x(), pos.y(), pos.z(), 1);
 
 
-			Joint::JointConfidence currConf = Joint::HIGH;
+
 
 
 
@@ -230,15 +230,15 @@ void BVHPlayer::track()
 			//		 * AngleAxisf( euler.z(), Vector3f::UnitZ());
 
 			rotation = eulerToQuaternion(Vector3f(-euler.x(), -euler.y(), euler.z()), false);
-			
-			rotation = convertJointRotation(rotation, currType);
+
+			//rotation = convertJointRotation(rotation, currType);
 
 
 
 			//Console::log("BVHPlayer::track(): Joint " + std::to_string(currType) + ", position: " + toString(position));
 
 
-			m_currSkeleton->m_joints[currType] = Joint(position, rotation, currConf);
+			m_currSkeleton->m_joints[currType] = Joint(position, rotation);
 		}
 	}
 
@@ -252,7 +252,6 @@ void BVHPlayer::track()
 
 	m_isDataAvailable = true;
 }
-
 std::string BVHPlayer::getTrackerType()
 {
 	return "BVH";
@@ -294,6 +293,9 @@ int BVHPlayer::getCurrentFramePercent()
 
 	return (int)round((m_currFrame * 100) / m_frameCount);
 }
+
+void BVHPlayer::applyModChange(Joint::JointNames type, Vector3f mod, bool inverted);
+
 
 
 
@@ -359,6 +361,11 @@ Quaternionf BVHPlayer::convertJointRotation(Quaternionf raw, Joint::JointNames t
 	default:
 		break;
 	}
+
+
+
+
+
 
 
 

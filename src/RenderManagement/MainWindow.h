@@ -5,6 +5,7 @@
 #include "GlWidget.h"
 #include "MotionHubUtil/Console.h"
 #include "NetworkSettingsWindow.h"
+#include "trackermodwindow.h"
 
 #include <QtWidgets/QMainWindow>
 #include "QtWidgets/qtreewidget.h"
@@ -113,6 +114,8 @@ private slots:
 
 	void slotResetTrackerOffset();
 
+	void slotModifyTrackerRotations();
+
 	void slotTimelinePressed();
 	void slotTimelineReleased();
 	void slotTimelineValueChanged(int newValue);
@@ -133,6 +136,9 @@ private:
 	ConfigManager* m_configManager;
 
 	NetworkSettingsWindow* m_netwokSettingsWindow;
+
+	TrackerModWindow* m_trackerModWindow;
+	
 
 	/*!
 	 * reference to the tracker manager 

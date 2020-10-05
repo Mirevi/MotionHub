@@ -326,9 +326,18 @@ void MainWindow::drawInspector()
 
 	//Add reset button
 	QPushButton* resetPushButton = new QPushButton("Reset Offsets");
+	//connect button wit reset slot
 	connect(resetPushButton, SIGNAL(pressed()), this, SLOT(slotResetTrackerOffset()));
 	addRowToInspector("Default", "");
 	ui->tableWidget_inspector->setCellWidget(14, 1, resetPushButton);
+
+	//Add reset button
+	QPushButton* modPushButton = new QPushButton("Modify Tracker");
+	//connect button wit reset slot
+	connect(modPushButton, SIGNAL(pressed()), this, SLOT(slotModifyTrackerRotations()));
+	addRowToInspector("Rotations", "");
+	ui->tableWidget_inspector->setCellWidget(15, 1, modPushButton);
+
 
 
 
@@ -961,6 +970,18 @@ void MainWindow::slotResetTrackerOffset()
 
 
 }
+
+void MainWindow::slotModifyTrackerRotations()
+{
+
+	m_trackerModWindow = new TrackerModWindow();
+
+	m_trackerModWindow->setModal(true);
+	m_trackerModWindow->exec();
+
+
+}
+
 
 #pragma endregion InspectorInputSlots
 
