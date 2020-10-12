@@ -31,6 +31,7 @@ ${Cudnn_INCLUDE_DIR}
 ${NATNET_SDK_INCLUDE_DIR}
 ${EIGEN_INCLUDE_DIR}
 ${OSCp_INCLUDE_DIR}
+${OpenCV_INCLUDE_DIRS}
 )
 
 
@@ -62,4 +63,5 @@ target_link_libraries(TrackerManagement
 	
 	debug NetworkManagement${CMAKE_DEBUG_POSTFIX} optimized NetworkManagement
 	debug MotionHubUtil${CMAKE_DEBUG_POSTFIX} optimized MotionHubUtil
+	${OpenCV_LIBS}
 )

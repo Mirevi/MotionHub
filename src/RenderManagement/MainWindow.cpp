@@ -607,7 +607,16 @@ void MainWindow::slotNetworkSettings()
 
 }
 
+void MainWindow::slotOpenGANCapture()
+{
 
+	m_RGBDCaptureForGANWindow = new RGBDCaptureForGANWindow(m_configManager);
+
+	m_RGBDCaptureForGANWindow->setModal(true);
+	m_RGBDCaptureForGANWindow->exec();
+	std::cout << "LKjhkljkslbd" << std::endl;
+
+}
 
 
 

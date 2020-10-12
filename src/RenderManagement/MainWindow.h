@@ -5,6 +5,7 @@
 #include "GlWidget.h"
 #include "MotionHubUtil/Console.h"
 #include "NetworkSettingsWindow.h"
+#include "RGBDCaptureForGANWindow.h"
 
 #include <QtWidgets/QMainWindow>
 #include "QtWidgets/qtreewidget.h"
@@ -96,6 +97,8 @@ private slots:
 
 	void slotNetworkSettings();
 
+	void slotOpenGANCapture();
+
 	void slotInspectorInputPosX(QString text);
 	void slotInspectorInputPosY(QString text);
 	void slotInspectorInputPosZ(QString text);
@@ -124,6 +127,8 @@ private:
 	ConfigManager* m_configManager;
 
 	NetworkSettingsWindow* m_netwokSettingsWindow;
+	
+	RGBDCaptureForGANWindow* m_RGBDCaptureForGANWindow;
 
 	/*!
 	 * reference to the tracker manager 

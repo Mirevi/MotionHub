@@ -18,6 +18,8 @@ link_directories(${CMAKE_BINARY_DIR}/lib "${CMAKE_BINARY_DIR}/lib" ${Qt5ForMirev
 #NatNetSDK
 include_directories(${CMAKE_BINARY_DIR}/src ${NATNET_SDK_INCLUDE_DIR})
 link_directories(${CMAKE_BINARY_DIR}/lib "${CMAKE_BINARY_DIR}/lib" ${NATNET_SDK_LIBRARIES_DIR})
+#OpenCV
+include_directories(${CMAKE_BINARY_DIR}/src ${OpenCV_INCLUDE_DIRS})
 
 #eigen
 include_directories(${CMAKE_BINARY_DIR}/src ${EIGEN_INCLUDE_DIR})
@@ -51,6 +53,7 @@ target_link_libraries(MireviMotionHub
 	debug GestureManagement${CMAKE_DEBUG_POSTFIX} optimized GestureManagement
 	debug RenderManagement${CMAKE_DEBUG_POSTFIX} optimized RenderManagement
 	debug NetworkManagement${CMAKE_DEBUG_POSTFIX} optimized NetworkManagement
+	${OpenCV_LIBS}
 
 )
 
