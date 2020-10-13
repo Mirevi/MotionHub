@@ -33,6 +33,8 @@ include_directories(${CMAKE_BINARY_DIR}/src/3DRenderManagement)
 include_directories(${CMAKE_BINARY_DIR}/src/GestureManagement)
 link_directories(${CMAKE_BINARY_DIR}/lib)
 
+add_compile_definitions(NOMINMAX)
+
 file(GLOB_RECURSE MotionHub_HEADER "${CMAKE_CURRENT_SRC_DIR}" *.h)
 file(GLOB_RECURSE MotionHub_SRC "${CMAKE_CURRENT_SRC_DIR}" *.cpp)
 add_executable(MireviMotionHub ${MotionHub_HEADER} ${MotionHub_SRC})
@@ -56,5 +58,5 @@ target_link_libraries(MireviMotionHub
 	${OpenCV_LIBS}
 
 )
-
+add_compile_definitions(NOMINMAX)
 set_target_properties(MireviMotionHub PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/bin")

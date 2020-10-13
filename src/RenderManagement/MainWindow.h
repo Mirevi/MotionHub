@@ -1,11 +1,11 @@
 #pragma once
-
+#include "RGBDCaptureForGANWindow.h"
 #include "ConfigDllExportRenderManagement.h"
 #include "CreateTrackerWindow.h"
 #include "GlWidget.h"
 #include "MotionHubUtil/Console.h"
 #include "NetworkSettingsWindow.h"
-#include "RGBDCaptureForGANWindow.h"
+
 
 #include <QtWidgets/QMainWindow>
 #include "QtWidgets/qtreewidget.h"

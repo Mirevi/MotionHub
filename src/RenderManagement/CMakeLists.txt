@@ -8,6 +8,7 @@ ${Cudnn_INCLUDE_DIR}
 ${NATNET_SDK_INCLUDE_DIR}
 ${OSCp_INCLUDE_DIR}
 ${EIGEN_INCLUDE_DIR}
+${OpenCV_INCLUDE_DIRS}
 )
 
 
@@ -42,6 +43,8 @@ set(CMAKE_AUTOUIC ON)
 include_directories(${CMAKE_BINARY_DIR}/src/MotionHubUtil ${Qt5ForMireviMotionHub_INCLUDE_DIR})
 link_directories(${CMAKE_BINARY_DIR}/lib ${Qt5ForMireviMotionHub_LIBRARIES_DIR})
 
+add_compile_definitions(NOMINMAX)
+
 file(GLOB_RECURSE RenderManagement_HEADER "${CMAKE_CURRENT_SRC_DIR}" *.h)
 file(GLOB_RECURSE RenderManagement_SRC "${CMAKE_CURRENT_SRC_DIR}" *.cpp)
 file(GLOB_RECURSE RenderManagement_QRC "${CMAKE_CURRENT_SRC_DIR}" *.qrc)
@@ -61,4 +64,5 @@ target_link_libraries(RenderManagement
 	debug NatNetLibStatic optimized NatNetLibStatic
 	#debug Qt5Core${CMAKE_DEBUG_POSTFIX} optimized Qt5Core
 	#debug Qt5Widgets${CMAKE_DEBUG_POSTFIX} optimized Qt5Widgets
+	${OpenCV_LIBS}
 )

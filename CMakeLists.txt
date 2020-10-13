@@ -157,5 +157,6 @@ FIND_PACKAGE( Platforms REQUIRED )
 
 set_target_properties(MireviMotionHub PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT MireviMotionHub)
+add_compile_definitions(NOMINMAX)
 # set(CMAKE_BUILD_TYPE RelWithDebInfo" CACHE STRING "Build type (default RelWithDepInfo)" FORCE)
 

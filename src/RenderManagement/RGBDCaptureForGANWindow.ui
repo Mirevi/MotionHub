@@ -478,24 +478,73 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
     border: 1px solid #444;
 }</string>
   </property>
-  <widget class="QPushButton" name="pushButton">
+  <widget class="QPushButton" name="btn_start_capture">
    <property name="geometry">
     <rect>
-     <x>220</x>
-     <y>200</y>
-     <width>75</width>
+     <x>284</x>
+     <y>220</y>
+     <width>91</width>
      <height>23</height>
     </rect>
    </property>
    <property name="text">
-    <string>Start</string>
+    <string>Start Capture</string>
+   </property>
+   <property name="flat">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="btn_initiate_kinect">
+   <property name="geometry">
+    <rect>
+     <x>114</x>
+     <y>220</y>
+     <width>91</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Initiate Kinect</string>
    </property>
   </widget>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>btn_start_capture</sender>
+   <signal>clicked()</signal>
+   <receiver>RGBDCaptureForGANWindow</receiver>
+   <slot>startCapture()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>257</x>
+     <y>211</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>489</x>
+     <y>323</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btn_initiate_kinect</sender>
+   <signal>clicked()</signal>
+   <receiver>RGBDCaptureForGANWindow</receiver>
+   <slot>initiateAzureKinect()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>159</x>
+     <y>231</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>489</x>
+     <y>323</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
  <slots>
-  <slot>setBroadcast()</slot>
-  <slot>setLocalhost()</slot>
+  <slot>startCapture()</slot>
+  <slot>startAzureKinect()</slot>
  </slots>
 </ui>

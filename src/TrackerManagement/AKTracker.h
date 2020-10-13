@@ -1,13 +1,10 @@
 #pragma once
 
-#include <opencv2/opencv.hpp>
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
 
 #include "k4a/k4a.h"
-#include <k4a/k4a.hpp>
 #include "k4abt.h"
 
 #include "Tracker.h"
