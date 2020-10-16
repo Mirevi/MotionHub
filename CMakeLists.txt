@@ -111,7 +111,7 @@ set(CURRENT_DEPS_PATH ${CMAKE_BINARY_DIR}/../deps/opencv-4.20/)
 set(URL https://claymore.mirevi.com/opencv-4.20.zip)
 getsTheDepsNameFromURL("${URL}")
 set(CHECK_IF_DEPS_EXIST "${CURRENT_DEPS_PATH}/include/opencv2/core.hpp")
-FIND_PACKAGE( OpenCV REQUIRED)
+FIND_PACKAGE( OpenCVForMotionHub REQUIRED)
 file(COPY ${CURRENT_DEPS_PATH}x64/vc15/bin/opencv_world420.dll DESTINATION ${CMAKE_BINARY_DIR}/bin)
 file(COPY ${CURRENT_DEPS_PATH}x64/vc15/bin/opencv_world420d.dll DESTINATION ${CMAKE_BINARY_DIR}/bin)
 
