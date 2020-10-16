@@ -126,11 +126,11 @@ void AKTracker::init()
 
 	m_tracker = NULL;
 	// setup tracker config
-	m_configTracker = K4ABT_TRACKER_CONFIG_DEFAULT;
+	m_trackerConfig = K4ABT_TRACKER_CONFIG_DEFAULT;
 
 
 	// create tracker
-	VERIFY_K4A_FUNCTION(k4abt_tracker_create(&m_calibrationCam, m_configTracker, &m_tracker), "[cam id = " + std::to_string(m_idCam) + "] + Body tracker initialization failed!");
+	VERIFY_K4A_FUNCTION(k4abt_tracker_create(&m_calibrationCam, m_trackerConfig, &m_tracker), "[cam id = " + std::to_string(m_idCam) + "] + Body tracker initialization failed!");
 
 }
 
@@ -196,7 +196,7 @@ void AKTracker::track()
 		{
 
 			// extract skeletons from body frame and parse them into default skeleton pool
-			extractSkeleton(&body_frame);
+			extractImageLandmarks(&body_frame);
 
 
 
@@ -243,7 +243,7 @@ void AKTracker::track()
 }
 
 // extract skeletons from body frame and parse them into default skeleton pool
-void AKTracker::extractSkeleton(k4abt_frame_t* body_frame)
+void AKTracker::extractImageLandmarks(k4abt_frame_t* body_frame)
 {
 
 	// set number of detected bodies in frame

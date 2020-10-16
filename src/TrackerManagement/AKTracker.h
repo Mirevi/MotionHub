@@ -80,7 +80,7 @@ private:
 	/*!
 	 * k4a tracker configuration parameters
 	 */
-	k4abt_tracker_configuration_t m_configTracker;
+	k4abt_tracker_configuration_t m_trackerConfig;
 
 	
 	/*!
@@ -103,7 +103,7 @@ private:
 	 * pushes new skeleton into the pool or updates existing one
 	 * \param body_frame
 	 */
-	void extractSkeleton(k4abt_frame_t* body_frame);
+	void extractImageLandmarks(k4abt_frame_t* body_frame);
 	/*!
 	 *convertes k4a skeleton to default skeleton
 	*\param skeleton the k4a skeleton to convert

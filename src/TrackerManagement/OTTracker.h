@@ -143,7 +143,7 @@ private:
 	 * gets skeleton data from frame and inserts that data into the skeleton pool
 	 * 
 	 */
-	void extractSkeleton();
+	void extractImageLandmarks();
 
 	/*!
 	 * converts OptiTrack skeleton to default skeleton type

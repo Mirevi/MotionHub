@@ -1,11 +1,6 @@
 
 #include "RGBDCaptureForGANWindow.h"
 
-#include "ui_RGBDCaptureForGANWindow.h"
-
-#include <opencv2/opencv.hpp>
-
-
 
 RGBDCaptureForGANWindow::RGBDCaptureForGANWindow(ConfigManager* configManager, QWidget* parent) : QDialog(parent), ui(new Ui::RGBDCaptureForGANWindow)
 {
@@ -18,9 +13,10 @@ RGBDCaptureForGANWindow::RGBDCaptureForGANWindow(ConfigManager* configManager, Q
 	m_config = K4A_DEVICE_CONFIG_INIT_DISABLE_ALL;
 	m_clippingDistance = 2048; //behind this value (millimeters) the points will be rejected
 
+	m_landmarkImageSize = 256;
+	m_landmarkImagePadding = 2;
+
 }
-
-
 
 RGBDCaptureForGANWindow::~RGBDCaptureForGANWindow()
 {
@@ -43,6 +39,14 @@ void RGBDCaptureForGANWindow::initiateAzureKinect()
 	m_config.synchronized_images_only = true; // ensures that depth and color images are both available in the capture
 	m_azureKinectSensor.start_cameras(&m_config);
 	std::cout << "Initiate Azure Kinect done" << std::endl;
+
+	//Initiate tracker
+	m_tracker = NULL;
+	m_trackerConfig = K4ABT_TRACKER_CONFIG_DEFAULT;
+	m_calibration = m_azureKinectSensor.get_calibration(m_config.depth_mode, m_config.color_resolution);
+	m_tracker = m_tracker.create(m_calibration, m_trackerConfig);
+	std::cout << "Initiate Body Tracking Component done" << std::endl;
+
 }
 
 void RGBDCaptureForGANWindow::startCapture()
@@ -243,11 +247,161 @@ void RGBDCaptureForGANWindow::startCapture()
 			threadColorImage->join();
 			threadIrImage->join();
 
+			//SAVE LANDMARK IMAGE #######################################################
 
-			//@Rene: Hier Code für Skeleton extraction und Schwarz-weiß Bild mit OpenCV erstellen und speichern.
+			//if something is wrong, check out the timeout parameter of the following method calls
+			m_tracker.enqueue_capture(*m_kinectCapture); 
+			k4abt::frame bodyFrame = m_tracker.pop_result();
+
+			extractImageLandmarks(&bodyFrame);
+
+			//create cv matrix and set black
+
+			m_landmarkMat = cv::Mat::zeros(m_landmarkImageSize, m_landmarkImageSize, CV_8UC3);
+
+			//color landmark pixels
+
+			//draw lines, see https://docs.microsoft.com/en-us/azure/kinect-dk/body-joints for landmark index types			
+			continuousLineDrawingBetweenLandmarks(0, 3);
+			drawSingleLineBetweenLandmarks(3, 26);
+			continuousLineDrawingBetweenLandmarks(26, 29);
+			drawSingleLineBetweenLandmarks(27, 30);
+			drawSingleLineBetweenLandmarks(30, 31);
+
+			drawSingleLineBetweenLandmarks(2, 4);
+			continuousLineDrawingBetweenLandmarks(4, 9);
+			drawSingleLineBetweenLandmarks(7, 10);
+
+			drawSingleLineBetweenLandmarks(2, 11);
+			continuousLineDrawingBetweenLandmarks(11, 16);
+			drawSingleLineBetweenLandmarks(14, 17);
+
+			drawSingleLineBetweenLandmarks(0, 18);
+			continuousLineDrawingBetweenLandmarks(18, 21);
+
+			drawSingleLineBetweenLandmarks(0, 22);
+			continuousLineDrawingBetweenLandmarks(22, 25);
+
+			std::string landmarkFileName;
+			landmarkFileName.append(dirSavePath.str());
+			landmarkFileName.append("_landmark_");
+			landmarkFileName.append(std::to_string(j));
+			landmarkFileName.append(".png");
+			std::thread* threadLandmarkImage;
+			threadLandmarkImage = new std::thread(&cv::imwrite, landmarkFileName, m_landmarkMat, std::vector<int>());
+			threadLandmarkImage->join();
+
 		}
+
 	}
 
 	m_azureKinectSensor.close();
 	std::cout << "End RGBD Capture for GAN" << std::endl;
+}
+
+void RGBDCaptureForGANWindow::continuousLineDrawingBetweenLandmarks(int start, int end)
+{
+	for (int i = start + 1; i < end; i++)
+	{
+		drawSingleLineBetweenLandmarks(i - 1, i);
+	}
+}
+
+void RGBDCaptureForGANWindow::drawSingleLineBetweenLandmarks(int landmarkIndexStart, int landmarkIndexEnd)
+{
+	uchar x1 = static_cast<int>(m_imageLandmarks[landmarkIndexStart].x);
+	uchar y1 = static_cast<int>(m_imageLandmarks[landmarkIndexStart].y);
+
+	uchar x2 = static_cast<int>(m_imageLandmarks[landmarkIndexEnd].x);
+	uchar y2 = static_cast<int>(m_imageLandmarks[landmarkIndexEnd].y);
+
+	line(m_landmarkMat, cv::Point(x1, y1), cv::Point(x2, y2), cv::Scalar(255), 4);
+}
+
+// extract skeletons from a body frame
+void RGBDCaptureForGANWindow::extractImageLandmarks(k4abt::frame* bodyFrame) {
+	uint32_t bodyCount = bodyFrame->get_num_bodies();
+
+	//only one body is allowed
+	if (bodyCount == 1) {
+		k4abt_skeleton_t skeleton = bodyFrame->get_body_skeleton(0);
+		k4abt_joint_t* joints = skeleton.joints;
+
+		//first joint position
+		k4a_float3_t jointPosition = joints[0].position;
+		
+		//get min and max values of joint positions for normalization and landmark extraction
+
+		Vector3 minPositionAxisValues = Vector3(jointPosition.xyz.x, jointPosition.xyz.y, jointPosition.xyz.z);
+		Vector3 maxPositionAxisValues = Vector3(jointPosition.xyz.x, jointPosition.xyz.y, jointPosition.xyz.z);
+
+		for (int i = 1; i < K4ABT_JOINT_COUNT; i++) {
+			jointPosition = joints[i].position;
+
+			//x
+			if (jointPosition.xyz.x < minPositionAxisValues.m_xyz.x)
+				minPositionAxisValues.m_xyz.x = jointPosition.xyz.x;
+			else if (jointPosition.xyz.x > maxPositionAxisValues.m_xyz.x)
+				maxPositionAxisValues.m_xyz.x = jointPosition.xyz.x;
+
+			//y
+			if (jointPosition.xyz.y < minPositionAxisValues.m_xyz.y)
+				minPositionAxisValues.m_xyz.y = jointPosition.xyz.y;
+			else if (jointPosition.xyz.y > maxPositionAxisValues.m_xyz.y)
+				maxPositionAxisValues.m_xyz.y = jointPosition.xyz.y;
+
+			//z
+			if (jointPosition.xyz.z < minPositionAxisValues.m_xyz.z)
+				minPositionAxisValues.m_xyz.z = jointPosition.xyz.z;
+			else if (jointPosition.xyz.z > maxPositionAxisValues.m_xyz.z)
+				maxPositionAxisValues.m_xyz.z = jointPosition.xyz.z;
+		}
+
+		//normalize joint positions without loosing the proportion between x and y to get normalized landmarks
+
+		Vector3 jointPositionSpaceSize = maxPositionAxisValues - minPositionAxisValues;
+
+		float xOffset = 0;
+		float yOffset = 0;
+		float maxSpaceSize; //value for normalization
+
+		//check which axis space is bigger than the other and which has to be filled to obtain the proportions
+		if (jointPositionSpaceSize.m_xyz.x > jointPositionSpaceSize.m_xyz.y) {
+			maxSpaceSize = jointPositionSpaceSize.m_xyz.x;
+			//x space is bigger than y space so the missing space of y has to be filled (* 0.5 for center alignment)
+			yOffset = abs(jointPositionSpaceSize.m_xyz.x - jointPositionSpaceSize.m_xyz.y) * 0.5f;
+		}
+		else 
+		{
+			maxSpaceSize = jointPositionSpaceSize.m_xyz.y;
+			//y space is bigger or the same as x space so the eventually missing space of x has to be filled * 0.5 for center alignment)
+			xOffset = abs(jointPositionSpaceSize.m_xyz.x - jointPositionSpaceSize.m_xyz.y) * 0.5f;
+		}
+
+		//Calculate and save normalized landmarks
+
+		for (int i = 0; i < K4ABT_JOINT_COUNT; i++) {
+			jointPosition = joints[i].position;
+
+			Landmark current;
+			current.x = (jointPosition.xyz.x - minPositionAxisValues.m_xyz.x + xOffset) / maxSpaceSize;
+			current.y = (jointPosition.xyz.y - minPositionAxisValues.m_xyz.y + yOffset) / maxSpaceSize;
+			current.depth = 0; //TODO calculate a value you can proceed with
+
+			m_normalizedLanmarks[i] = current;
+		}
+
+		//Calculate image landmarks
+
+		float landmarkSpaceOnImage = m_landmarkImageSize - 2 * m_landmarkImagePadding;
+
+		for (int i = 0; i < K4ABT_JOINT_COUNT; i++) {
+			Landmark current;
+			current.x = m_normalizedLanmarks[i].x * landmarkSpaceOnImage + m_landmarkImagePadding;
+			current.y = m_normalizedLanmarks[i].y * landmarkSpaceOnImage + m_landmarkImagePadding;
+			current.depth = m_normalizedLanmarks[i].depth;
+
+			m_imageLandmarks[i] = current;
+		}
+	}
 }

@@ -223,7 +223,7 @@ void OTTracker::track()
 	}
 
 	//get skeleton data from frame data
-	extractSkeleton();
+	extractImageLandmarks();
 
 	cleanSkeletonPool();
 
@@ -237,7 +237,7 @@ void OTTracker::track()
 
 
 
-void OTTracker::extractSkeleton()
+void OTTracker::extractImageLandmarks()
 {
 
 	//when new data isn't available, skip this method run
