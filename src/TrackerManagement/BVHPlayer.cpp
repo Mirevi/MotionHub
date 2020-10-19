@@ -148,9 +148,13 @@ void BVHPlayer::update()
 		//send Skeleton Pool to NetworkManager
 		m_networkManager->sendSkeletonPool(&m_skeletonPool, m_properties->id);
 
+		Recorder::instance().addSkeletonsToFrame(&m_skeletonPool);
+
+
 		double elapsed = (double)Timer::getDuration();
 		long long sleepTime = (m_frameTime - elapsed) * 1000;
 		std::this_thread::sleep_for(std::chrono::milliseconds(sleepTime));
+
 
 	}
 
@@ -294,7 +298,10 @@ int BVHPlayer::getCurrentFramePercent()
 	return (int)round((m_currFrame * 100) / m_frameCount);
 }
 
-void BVHPlayer::applyModChange(Joint::JointNames type, Vector3f mod, bool inverted);
+void BVHPlayer::applyModChange(Joint::JointNames type, Vector3f mod, bool inverted)
+{
+
+}
 
 
 

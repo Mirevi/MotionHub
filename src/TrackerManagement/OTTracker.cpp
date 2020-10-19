@@ -22,6 +22,7 @@ OTTracker::OTTracker(int id, NetworkManager* networkManager, ConfigManager* conf
 
 	m_networkManager = networkManager;
 
+
 	//default is enabled
 	m_properties->isEnabled = true;
 

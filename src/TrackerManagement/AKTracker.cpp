@@ -134,27 +134,27 @@ void AKTracker::init()
 
 }
 
-// tracking loop
-void AKTracker::update()
-{
-
-	// track while tracking is true
-	while (m_properties->isTracking)
-	{
-
-
-		// get new data
-		track();
-
-		//send Skeleton Pool to NetworkManager
-		m_networkManager->sendSkeletonPool(&m_skeletonPool, m_properties->id);
-
-	}
-
-	//clean skeleton pool after tracking
-	clean();
-
-}
+//// tracking loop
+//void AKTracker::update()
+//{
+//
+//	// track while tracking is true
+//	while (m_properties->isTracking)
+//	{
+//
+//
+//		// get new data
+//		track();
+//
+//		//send Skeleton Pool to NetworkManager
+//		m_networkManager->sendSkeletonPool(&m_skeletonPool, m_properties->id);
+//
+//	}
+//
+//	//clean skeleton pool after tracking
+//	clean();
+//
+//}
 
 // get new skeleton data and parse it into the default skeleton
 void AKTracker::track()

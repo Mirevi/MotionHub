@@ -1,10 +1,11 @@
 <RCC>
-  <qresource prefix="/">
-    <file>ressources/images/tex_uvChecker_01.png</file>
-    <file>ressources/images/tex_grid_10x10.png</file>
-    <file>ressources/images/tex_checker_01.png</file>
-    <file>ressources/icons/icons8-play-32_converted.png</file>
-    <file>ressources/icons/icons8-stop-32_converted.png</file>
-    <file>ressources/icons/mmh-icon.png</file>
-  </qresource>
+    <qresource prefix="/">
+        <file>ressources/images/tex_uvChecker_01.png</file>
+        <file>ressources/images/tex_grid_10x10.png</file>
+        <file>ressources/images/tex_checker_01.png</file>
+        <file>ressources/icons/icons8-play-32_converted.png</file>
+        <file>ressources/icons/icons8-stop-32_converted.png</file>
+        <file>ressources/icons/mmh-icon.png</file>
+        <file>ressources/icons/64px-Location_dot_red.svg.png</file>
+    </qresource>
 </RCC>

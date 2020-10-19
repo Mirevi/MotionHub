@@ -9,6 +9,7 @@
 #include "MotionHubUtil/Console.h"
 #include "MotionHubUtil/MMHmath.h"
 #include "NetworkManagement/NetworkManager.h"
+#include "Recorder.h"
 
 
 /*!
@@ -235,7 +236,7 @@ protected:
 	/*!
 	 * updade method used for tracker thread 
 	 */
-	virtual void update() = 0;
+	virtual void update();
 
 	/*!
 	 * main tracking method

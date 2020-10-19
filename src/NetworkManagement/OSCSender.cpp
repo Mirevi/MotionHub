@@ -9,6 +9,7 @@ OSCSender::OSCSender()
 	// create new osc outbound packet stream
 	m_packetStream = new osc::OutboundPacketStream(buffer, OUTPUT_BUFFER_SIZE);
 
+
 }
 
 OSCSender::OSCSender(std::string address, int port) : NetworkSender(address, port)
@@ -18,6 +19,8 @@ OSCSender::OSCSender(std::string address, int port) : NetworkSender(address, por
 	m_transmitSocket = new UdpTransmitSocket(IpEndpointName(m_address.c_str(), m_port));
 	// create new osc outbound packet stream
 	m_packetStream = new osc::OutboundPacketStream(buffer, OUTPUT_BUFFER_SIZE);
+
+
 
 }
 

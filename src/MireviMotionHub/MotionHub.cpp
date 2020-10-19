@@ -22,7 +22,9 @@ MotionHub::MotionHub(int argc, char** argv)
 	m_gestureManager = new GestureManager();
 	m_networkManager = new NetworkManager(m_configManager);
 	m_trackerManager = new TrackerManager(m_networkManager, m_configManager);
-	m_uiManager = new UIManager(m_argc, m_argv, m_trackerManager, m_configManager);
+
+	m_uiManager		 = new UIManager(m_argc, m_argv, m_trackerManager, m_configManager);
+
 
 
 	// start update loop
@@ -89,6 +91,10 @@ void MotionHub::update()
 
 			}
 
+
+			Recorder::instance().nextFrame();
+
+
 		}	//check if tracker is added or removed
 		else if(m_trackerManager->hasTrackerPoolChanged())
 		{
@@ -101,6 +107,7 @@ void MotionHub::update()
 		}
 
 		updateTimeline();
+
 
 	}
 

@@ -65,6 +65,7 @@ private:
 	 */
 	UIManager* m_uiManager;
 
+
 	/*!
 	 * contains the main loop, loops as long as the UI Window exists 
 	 */

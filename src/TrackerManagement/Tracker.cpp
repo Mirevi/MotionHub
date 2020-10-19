@@ -17,7 +17,6 @@ void Tracker::start()
 
 	//isTracking is true, so update loop will continue tracking
 	m_properties->isTracking = true;
-
 	//start new thread for update loop
 	m_trackingThread = new std::thread(&Tracker::update, this);
 	m_trackingThread->detach();
@@ -248,18 +247,26 @@ void Tracker::init()
 void Tracker::update()
 {
 
-	Console::log("Tracker::update()");
 
-
+	// track while tracking is true
 	while (m_properties->isTracking)
 	{
 
-		Console::log("Tracker::update()");
 
-		if (!m_isDataAvailable)
-			track();
+		// get new data
+		track();
+
+		//send Skeleton Pool to NetworkManager
+		m_networkManager->sendSkeletonPool(&m_skeletonPool, m_properties->id);
+		Recorder::instance().addSkeletonsToFrame(&m_skeletonPool);
+
 
 	}
+
+	//clean skeleton pool after tracking
+	clean();
+
+
 }
 
 void Tracker::track()

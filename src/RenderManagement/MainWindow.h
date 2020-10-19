@@ -120,6 +120,8 @@ private slots:
 	void slotTimelineReleased();
 	void slotTimelineValueChanged(int newValue);
 
+	void slotRecord();
+
 
 private:
 	/*!

@@ -648,6 +648,15 @@ void MainWindow::slotTimelineValueChanged(int newValue)
 	
 }
 
+void MainWindow::slotRecord()
+{
+	if (m_refTrackerManager->isTracking())
+	{		
+		Recorder::instance().toggleRecording();
+	}
+
+}
+
 
 
 #pragma endregion Slots
