@@ -507,6 +507,22 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
     <string>Initiate Kinect</string>
    </property>
   </widget>
+  <widget class="QPushButton" name="btn_generate_feature_images">
+   <property name="geometry">
+    <rect>
+     <x>450</x>
+     <y>220</y>
+     <width>151</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Generate Feature Images</string>
+   </property>
+   <property name="flat">
+    <bool>false</bool>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections>
@@ -542,9 +558,26 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>btn_generate_feature_images</sender>
+   <signal>clicked()</signal>
+   <receiver>RGBDCaptureForGANWindow</receiver>
+   <slot>extractAndSaveFeatureImages()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>514</x>
+     <y>224</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>737</x>
+     <y>77</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>startCapture()</slot>
   <slot>startAzureKinect()</slot>
+  <slot>extractAndSaveFeatureImages()</slot>
  </slots>
 </ui>
