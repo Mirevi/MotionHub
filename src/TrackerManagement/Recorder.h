@@ -3,42 +3,17 @@
 #include <vector>
 #include <atomic>
 
-#include "MotionHubUtil/Skeleton.h"
 #include "ConfigDllExportTrackingManagement.h"
-#include "MotionHubUtil/tinyxml2.h"
-
-static const char* RECORD_PATH = "./data/";
+#include "MotionHubUtil/RecordingSession.h"
 
 
 
 
-class RecordingFrame
-{
 
-public:
-	void addSkeleton(Skeleton currSkeleton);
-	std::vector<Skeleton> m_skeletons;
-
-
-private:
-
-
-};
-
-class RecordingSession
-{
-public:
-	RecordingSession();
-	void addFrame(RecordingFrame frame);
-	void save();
-
-private:
-	std::vector<RecordingFrame> m_frames;
-	tinyxml2::XMLDocument* m_doc;	//####LINKER ERROR without pointer####
-};
 
 
 class __declspec(dllexport) Recorder
+//class /*TrackingManagement_DLL_import_export*/ Recorder
 {
 
 public:
