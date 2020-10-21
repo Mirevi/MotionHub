@@ -21,29 +21,42 @@ void Recorder::toggleRecording()
 
 void Recorder::addSkeletonsToFrame(std::map<int, Skeleton>* currSkeletons)
 {
-	Console::log("Recorder::addSkeletonsToFrame(): ");
 
-	if (isRecording())
+	//std::stringstream ss;
+	//ss << static_cast<const void*>(this);
+	//Console::log("Recorder::addSkeletonsToFrame(): this = " + ss.str());
+
+
+	if (m_isRecording.load())
 	{
+		//Console::log(" Recorder::addSkeletonsToFrame()");
 
-		//for (auto itSkeleton = currSkeletons->begin(); itSkeleton != currSkeletons->end(); itSkeleton++)
-		//{
+		for (auto itSkeleton = currSkeletons->begin(); itSkeleton != currSkeletons->end(); itSkeleton++)
+		{
 
-		//	m_currFrame.addSkeleton(itSkeleton->second);
+			m_currFrame.addSkeleton(itSkeleton->second);
+			//Console::log(" Recorder::addSkeletonsToFrame(): added akeleton");
 
-		//}
+		}
 	}
+	//else
+	//{
+	//	Console::log(" Recorder::addSkeletonsToFrame(): FALSE");
+
+	//}
 }
 
 void Recorder::nextFrame()
 {
-	Console::log("Recorder::nextFrame()");
 
-	if (isRecording())
+	if (m_isRecording.load())
 	{
 
+		//Console::log("Recorder::nextFrame(): next Frame!");
 
-		m_frames.push_back(m_currFrame);
+		
+
+		m_currSession->addFrame(m_currFrame);
 		m_currFrame = RecordingFrame();
 	}
 }
@@ -51,9 +64,18 @@ void Recorder::nextFrame()
 
 void Recorder::startRecording()
 {
-	m_frames.clear();
+
+	//std::stringstream ss;
+	//ss << static_cast<const void*>(this);
+	//Console::log("Recorder::startRecording(): this = " + ss.str());
+
+
 	m_currFrame = RecordingFrame();
 	m_isRecording.store(true);
+
+
+
+	m_currSession = new RecordingSession();
 
 	Console::log("Recorder::startRecording()");
 }
@@ -61,35 +83,89 @@ void Recorder::startRecording()
 void Recorder::stopRecording()
 {
 	m_isRecording.store(false);
+
+	m_currSession->save();
+
 	Console::log("Recorder::stopRecording()");
-
 }
 
 
-bool Recorder::isRecording()
+Recorder& Recorder::instance()
 {
-
-
-	return m_isRecording.load();
+	static Recorder _instance;
+	return _instance;
 }
 
 
 
-void Recorder::xyz(int i)
-{
 
-	m_lock.lock();
-
-	std::cout << "Recorder::xyz(): " << std::to_string(i) << std::endl;
-
-	m_lock.unlock();
-}
 
 #pragma endregion
 
 
 
 
+#pragma region Session
+
+RecordingSession::RecordingSession()
+{
+
+}
+
+void RecordingSession::addFrame(RecordingFrame frame)
+{
+	m_frames.push_back(frame);
+}
+
+void RecordingSession::save()
+{
+
+
+	std::string filename = "MMH_" + Timer::getCurrTime() + ".xml";
+
+
+	//m_doc = new tinyxml2::XMLDocument();
+
+	//tinyxml2::XMLDocument doc;
+
+	//tinyxml2::XMLNode* pRoot = doc.NewElement("Frames");
+	//
+	//doc.InsertFirstChild(pRoot);
+
+
+	//int iF = 0;
+
+	//loop through all frames
+	//for (auto itFrames = m_frames.begin(); itFrames != m_frames.end(); itFrames++)
+	//{
+
+	//	tinyxml2::XMLNode* pFrame = doc.NewElement("Frame_" + iF++);
+	//	pRoot->InsertEndChild(pFrame);
+
+	//	int iS = 0;
+
+	//	loop through all skeletons of a frame
+	//	for (auto itSkeleton = itFrames->m_skeletons.begin(); itSkeleton < itFrames->m_skeletons.end(); itSkeleton++)
+	//	{
+
+	//		tinyxml2::XMLElement* pSkeleton = doc.NewElement("Skeleton_" + iS++);
+	//		pSkeleton->SetText("Skeleton_" + iS++);
+	//		pFrame->InsertEndChild(pSkeleton);
+
+	//	}
+	//}
+
+	//filename += RECORD_PATH;
+
+	//doc.SaveFile(filename.c_str());
+
+	Console::log("RecordingSession::save(): Session saved as: " + filename);
+
+}
+
+
+
+#pragma endregion
 
 
 
@@ -98,7 +174,7 @@ void Recorder::xyz(int i)
 void RecordingFrame::addSkeleton(Skeleton currSkeleton)
 {
 
-	skeletons.push_back(currSkeleton);
+	m_skeletons.push_back(currSkeleton);
 }
 
 

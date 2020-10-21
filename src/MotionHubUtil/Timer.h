@@ -4,6 +4,8 @@
 
 
 #include <chrono>
+#include <string>
+#include <ctime>
 
 
 class MotionHubUtil_DLL_import_export Timer
@@ -18,5 +20,7 @@ public:
 	static void reset();
 
 	static float getDuration();
+
+	static std::string getCurrTime();
 
 };
