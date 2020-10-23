@@ -56,3 +56,20 @@ static std::string toString(float number)
 	return std::to_string(number);
 
 }
+
+/*!
+* removes all instances of the given char from the string
+* 
+* \param _str input string
+* \param _char the char that should be removed
+* 
+* \return final string without the char
+* 
+*/
+static std::string removeChar(std::string _str, const char _char)
+{
+	std::string::iterator end_pos = std::remove(_str.begin(), _str.end(), _char);
+	_str.erase(end_pos, _str.end());
+
+	return _str;
+}
