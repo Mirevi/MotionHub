@@ -97,3 +97,17 @@ You can download the project [here](https://github.com/Mirevi/MotionHub-Unity-Pl
 
 [License](https://github.com/Mirevi/MotionHub/blob/master/LICENSE.txt)
 
+
+# Referencing the Model
+When using SMPL please reference:
+
+```
+@inproceedings{MotionHub:2020,
+author = {Ladwig, Philipp and Evers, Kester and Jansen, Eric J. and Fischer, Ben and Nowottnik, David and Geiger, Christian},
+title = {MotionHub: Middleware for Unification of Multiple Body Tracking Systems},
+year = {2020},
+publisher = {ACM},
+url = {https://doi.org/10.1145/3401956.3404185},
+booktitle = {Proceedings of the 7th International Conference on Movement and Computing},
+}
+```
