@@ -51,10 +51,11 @@ void Recorder::nextFrame()
 	{
 
 		//Console::log("Recorder::nextFrame(): next Frame!");
-				
+		float duration = Timer::getDuration();
 
-		m_currSession->addFrame(m_currFrame);
+		m_currSession->addFrame(m_currFrame, duration);
 		m_currFrame = RecordingFrame();
+		Timer::reset();
 
 	}
 }

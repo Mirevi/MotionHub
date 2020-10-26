@@ -18,7 +18,7 @@ public:
 	void addSkeleton(Skeleton currSkeleton);
 	std::vector<Skeleton> m_skeletons;
 
-
+	float m_duration;
 private:
 
 
@@ -28,7 +28,7 @@ class MotionHubUtil_DLL_import_export RecordingSession
 {
 public:
 	RecordingSession();
-	void addFrame(RecordingFrame frame);
+	void addFrame(RecordingFrame frame, float duration);
 	void save();
 
 private:

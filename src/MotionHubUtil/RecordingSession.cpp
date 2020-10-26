@@ -10,8 +10,14 @@ RecordingSession::RecordingSession()
 
 }
 
-void RecordingSession::addFrame(RecordingFrame frame)
+void RecordingSession::addFrame(RecordingFrame frame, float duration)
 {
+	if (m_frames.size() > 0)
+	{
+		m_frames.back().m_duration = duration;
+	}
+
+
 	m_frames.push_back(frame);
 }
 
@@ -97,6 +103,8 @@ void RecordingSession::save()
 
 				pJoint->InsertEndChild(pRotation);
 
+
+
 				//insert Confidence
 				tinyxml2::XMLElement* pConfidence = doc.NewElement("confidence");
 				pConfidence->SetText(std::to_string(itJoint->second.getJointConfidence()).c_str());
@@ -115,6 +123,10 @@ void RecordingSession::save()
 
 		}
 
+		//insert frameTime
+		tinyxml2::XMLElement* pFrameTime = doc.NewElement("frametime");
+		pFrameTime->SetText(std::to_string(itFrames->m_duration).c_str());
+		pFrame->InsertEndChild(pFrameTime);
 
 		pRoot->InsertEndChild(pFrame);
 
@@ -124,7 +136,7 @@ void RecordingSession::save()
 
 
 
-	std::string filename = "MMH_" + Timer::getCurrTime() + ".xml";
+	std::string filename = "MMH_" + Timer::getCurrTime() + ".mmh";
 	std::string pathStr = RECORD_PATH;
 	filename = pathStr + filename;
 
