@@ -18,9 +18,11 @@ link_directories(${CMAKE_BINARY_DIR}/lib "${CMAKE_BINARY_DIR}/lib" ${Qt5ForMirev
 #NatNetSDK
 include_directories(${CMAKE_BINARY_DIR}/src ${NATNET_SDK_INCLUDE_DIR})
 link_directories(${CMAKE_BINARY_DIR}/lib "${CMAKE_BINARY_DIR}/lib" ${NATNET_SDK_LIBRARIES_DIR})
-
 #eigen
 include_directories(${CMAKE_BINARY_DIR}/src ${EIGEN_INCLUDE_DIR})
+#XsensMVNSDK
+include_directories(${CMAKE_BINARY_DIR}/src ${XsensMVNSDK_INCLUDE_DIR})
+link_directories(${CMAKE_BINARY_DIR}/lib "${CMAKE_BINARY_DIR}/lib" ${XsensMVNSDK_LIBRARIES_DIR})
 
 #include internal source files
 include_directories(${CMAKE_BINARY_DIR}/src/MotionHubUtil)
@@ -45,6 +47,7 @@ target_link_libraries(MireviMotionHub
 	debug Qt5Core${CMAKE_DEBUG_POSTFIX} optimized Qt5Core
 	debug Qt5Widgets${CMAKE_DEBUG_POSTFIX} optimized Qt5Widgets
     debug NatNetLibStatic optimized NatNetLibStatic
+	debug xstypes64 optimized xstypes64
 	
 	debug MotionHubUtil${CMAKE_DEBUG_POSTFIX} optimized MotionHubUtil
 	debug TrackerManagement${CMAKE_DEBUG_POSTFIX} optimized TrackerManagement

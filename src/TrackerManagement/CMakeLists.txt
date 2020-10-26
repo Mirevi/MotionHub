@@ -31,6 +31,7 @@ ${Cudnn_INCLUDE_DIR}
 ${NATNET_SDK_INCLUDE_DIR}
 ${EIGEN_INCLUDE_DIR}
 ${OSCp_INCLUDE_DIR}
+${XsensMVNSDK_INCLUDE_DIR}
 )
 
 
@@ -43,8 +44,8 @@ ${K4ABT_LIBRARIES_DIR}
 ${Cudnn_LIBRARIES_DIR}
 ${NATNET_SDK_LIBRARIES_DIR}
 ${OSCp_LIBRARIES_DIR}
+${XsensMVNSDK_LIBRARIES_DIR}
 )
-
 
 file(GLOB_RECURSE TrackerManagement_HEADER "${CMAKE_CURRENT_SRC_DIR}" *.h)
 file(GLOB_RECURSE TrackerManagement_SRC "${CMAKE_CURRENT_SRC_DIR}" *.cpp)
@@ -59,7 +60,9 @@ target_link_libraries(TrackerManagement
     debug NatNetLibStatic optimized NatNetLibStatic
     debug legacy_stdio_definitions optimized legacy_stdio_definitions
 	debug oscpack${CMAKE_DEBUG_POSTFIX} optimized oscpack
+	debug xstypes64 optimized xstypes64
 	
 	debug NetworkManagement${CMAKE_DEBUG_POSTFIX} optimized NetworkManagement
 	debug MotionHubUtil${CMAKE_DEBUG_POSTFIX} optimized MotionHubUtil
+	
 )

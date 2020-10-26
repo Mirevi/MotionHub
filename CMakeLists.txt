@@ -106,6 +106,14 @@ getsTheDepsNameFromURL("${URL}")
 set(CHECK_IF_DEPS_EXIST "${CURRENT_DEPS_PATH}/include/OscTypes.h")
 FIND_PACKAGE( OSCPack REQUIRED )
 
+# xSens MVN development pack
+set( EXPECTED_SHA256 16c8f756a41f7ed92243f0892350f725e5d0f7263724e997e59310e85669b413 ) 
+set(CURRENT_DEPS_PATH ${CMAKE_BINARY_DIR}/../deps/xsens-mvn-1.0.6/) 
+set( URL https://claymore.mirevi.com/mirevimotionhub/xsens-mvn-1.0.6.zip )
+getsTheDepsNameFromURL("${URL}")
+set(CHECK_IF_DEPS_EXIST "${CURRENT_DEPS_PATH}/include/xstypes.h")
+FIND_PACKAGE( XsensMVNSDK REQUIRED )
+
 # Add subdir with additional CMakeLists.txt and files
 add_subdirectory("${CMAKE_SOURCE_DIR}/src/MireviMotionHub") # CMake look for further CMakeLists.txt in that directory
 add_subdirectory("${CMAKE_SOURCE_DIR}/src/TrackerManagement")
