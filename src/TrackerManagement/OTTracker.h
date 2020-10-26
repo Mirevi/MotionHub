@@ -12,8 +12,6 @@
 #include <algorithm>
 
 
-
-
 /*!
  * receives NatNet error mesages
  * 
