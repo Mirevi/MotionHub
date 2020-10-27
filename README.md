@@ -40,8 +40,8 @@ The developer, API and user documentation including a class collaboration diagra
 
 | Planned                                                                             							|
 | --------------------------------------------------------------------------------------------------------------|
-| [The Captury (planned for ~October 20)](https://thecaptury.com/)                                				|
-| [Perception Neuron 2 (planned for ~October 20)](https://neuronmocap.com/content/product/32-neuron-edition-v2) |
+| [The Captury (planned for ~November 20)](https://thecaptury.com/)                                				|
+| [Perception Neuron 2 (planned for ~November 20)](https://neuronmocap.com/content/product/32-neuron-edition-v2) |
 | [XSens MVN Animate (planned for ~November 20)](https://www.xsens.com/products/mvn-animate)                    |
 
 # Installer (for users, not for developers)
@@ -98,8 +98,8 @@ You can download the project [here](https://github.com/Mirevi/MotionHub-Unity-Pl
 [License](https://github.com/Mirevi/MotionHub/blob/master/LICENSE.txt)
 
 
-# Referencing the Model
-When using SMPL please reference:
+# Referencing MotionHub
+When using MotionHub please reference:
 
 ```
 @inproceedings{MotionHub:2020,
