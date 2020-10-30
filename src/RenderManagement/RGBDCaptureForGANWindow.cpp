@@ -332,7 +332,7 @@ void RGBDCaptureForGANWindow::extractAndSaveFeatureImages()
 	calculateNormalizationRatios();
 
 	//process data from file
-	processLandmarkFileData(startTime);
+	processLandmarkFileData(startTime, Mode::SAVE);
 
 	m_jointLandmarkReader.close();
 
@@ -377,6 +377,35 @@ void RGBDCaptureForGANWindow::startLandmarkTransmission()
 
 	float endTime = clock();
 	std::cout << "End Landmark Transmission for GAN after " << differenceInSeconds(startTime, endTime) << " seconds." << std::endl;
+}
+
+void RGBDCaptureForGANWindow::startLandmarkTransmissionWithCapturedData()
+{
+	std::cout << "Start Landmark Transission with captured Data" << std::endl;
+
+	//time for console logging
+	float startTime = clock();
+	m_totalSubtaskTime = 0;
+
+	m_jointLandmarkReader.open(m_dirSavePath + "jointLandmarks.txt");
+
+	//get min and max boundaries for normalization
+	extractLandmarkFileMetadata();
+
+	//reset reader
+	m_jointLandmarkReader.clear();
+	m_jointLandmarkReader.seekg(0);
+
+	//calculate necessary values for normalization
+	calculateNormalizationRatios();
+
+	//process data from file
+	processLandmarkFileData(startTime, Mode::TRANSMISSION);
+
+	m_jointLandmarkReader.close();
+
+	float endTime = clock();
+	std::cout << "End Landmark Transission with captured Data after " << differenceInSeconds(startTime, endTime) << " seconds." << std::endl;
 }
 
 void RGBDCaptureForGANWindow::extractLandmarkFileMetadata()
@@ -520,7 +549,7 @@ void RGBDCaptureForGANWindow::calculateNormalizationRatios()
 	}
 }
 
-void RGBDCaptureForGANWindow::processLandmarkFileData(float startTime)
+void RGBDCaptureForGANWindow::processLandmarkFileData(float startTime, Mode mode)
 {
 	float lastSaveEnd = clock();
 	m_frameCounter = 1;
@@ -554,7 +583,16 @@ void RGBDCaptureForGANWindow::processLandmarkFileData(float startTime)
 			//process current Landmarks
 			calculateNormalizedLandmarks();
 			mapNormalizedToImageLandmarks();
-			saveFeatureImage();
+
+			switch (mode) {
+			case Mode::SAVE:
+				saveFeatureImage();
+				break;
+			case Mode::TRANSMISSION:
+				sendImageLandmarksOverNetwork();
+				std::this_thread::sleep_for(std::chrono::milliseconds(100));
+				break;
+			}
 
 			printCaptureConsoleInfos(startTime, lastSaveEnd, m_frameCounter, m_dataSetCount);
 			m_frameCounter++;

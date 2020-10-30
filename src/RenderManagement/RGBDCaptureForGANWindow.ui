@@ -566,9 +566,19 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
      </widget>
     </item>
     <item row="3" column="1">
-     <widget class="QPushButton" name="btn_start_capture_2">
+     <widget class="QPushButton" name="btn_start_transmission">
       <property name="text">
        <string>Start Transmission</string>
+      </property>
+      <property name="flat">
+       <bool>false</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="2">
+     <widget class="QPushButton" name="btn_start_capture_3">
+      <property name="text">
+       <string>Start Transmission with captured data</string>
       </property>
       <property name="flat">
        <bool>false</bool>
@@ -672,7 +682,7 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
   <tabstop>btn_initiate_kinect</tabstop>
   <tabstop>btn_start_capture</tabstop>
   <tabstop>btn_generate_feature_images</tabstop>
-  <tabstop>btn_start_capture_2</tabstop>
+  <tabstop>btn_start_transmission</tabstop>
   <tabstop>cb_visualizeColor</tabstop>
   <tabstop>cb_visualizeDepth</tabstop>
   <tabstop>cb_visualizeLandmarks</tabstop>
@@ -712,7 +722,7 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
    </hints>
   </connection>
   <connection>
-   <sender>btn_start_capture_2</sender>
+   <sender>btn_start_transmission</sender>
    <signal>clicked()</signal>
    <receiver>RGBDCaptureForGANWindow</receiver>
    <slot>startLandmarkTransmission()</slot>
@@ -743,6 +753,22 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>btn_start_capture_3</sender>
+   <signal>clicked()</signal>
+   <receiver>RGBDCaptureForGANWindow</receiver>
+   <slot>startLandmarkTransmissionWithCapturedData()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>855</x>
+     <y>123</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>956</x>
+     <y>124</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>startCapture()</slot>
@@ -750,5 +776,6 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
   <slot>extractAndSaveFeatureImages()</slot>
   <slot>startLandmarkTransmission()</slot>
   <slot>initiateAzureKinect()</slot>
+  <slot>startLandmarkTransmissionWithCapturedData()</slot>
  </slots>
 </ui>

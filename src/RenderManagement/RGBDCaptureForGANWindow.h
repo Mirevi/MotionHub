@@ -38,6 +38,7 @@ private slots:
 	void startCapture();
 	void extractAndSaveFeatureImages();
 	void startLandmarkTransmission();
+	void startLandmarkTransmissionWithCapturedData();
 
 private:
 
@@ -46,6 +47,11 @@ private:
 		DEPTH_IMAGE,
 		INFRARED_IMAGE,
 		FEATURE_IMAGE
+	};
+
+	enum class Mode {
+		SAVE,
+		TRANSMISSION
 	};
 
 	boolean currentCaptureIsValid(k4a::capture* capture);
@@ -65,7 +71,7 @@ private:
 	void saveMinMaxAxisValues();
 	void readMinMaxAxisValues();
 	void calculateNormalizationRatios();
-	void processLandmarkFileData(float startTime);
+	void processLandmarkFileData(float startTime, Mode mode);
 	bool stringStartsWith(std::string* string, std::string startsWith);
 	void splitDataString(std::string fullString, std::string* splittedString);
 	void calculateNormalizedLandmarks();
