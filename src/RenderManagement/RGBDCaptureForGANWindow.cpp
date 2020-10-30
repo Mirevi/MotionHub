@@ -4,11 +4,15 @@
 #include "ui_RGBDCaptureForGANWindow.h"
 
 
-RGBDCaptureForGANWindow::RGBDCaptureForGANWindow(ConfigManager* configManager, QWidget* parent) : QDialog(parent), ui(new Ui::RGBDCaptureForGANWindow)
+RGBDCaptureForGANWindow::RGBDCaptureForGANWindow(ConfigManager* configManager, NetworkManager* networkManager, QWidget* parent) : QDialog(parent), ui(new Ui::RGBDCaptureForGANWindow)
 {
 	ui->setupUi(this);
 
 	m_configManager = configManager; 
+	m_networkManager = networkManager;
+
+	m_senderId = 10000;
+	m_networkManager->createOSCSender(m_senderId);
 
 	m_framesToCapture = 1000;
 	m_azureKinectSensor = NULL;
@@ -17,9 +21,13 @@ RGBDCaptureForGANWindow::RGBDCaptureForGANWindow(ConfigManager* configManager, Q
 
 	m_landmarkImageSize = 256;
 	m_landmarkImagePadding = 5;
-	m_saveIdPrefix = "f";
+	m_saveIdPrefix = "g";
 
 	m_dirSavePath = "data\\RGBD-GAN\\";
+
+	m_cropRegionFilePath = m_dirSavePath + "crop_region.txt";
+	m_minMaxAxisValuesWriterPath = m_dirSavePath + "min_max_axis_values.txt";
+	m_minMaxAxisValuesReaderPath = m_dirSavePath + "transmission\\min_max_axis_values.txt";
 
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 4; j++) {
@@ -96,7 +104,7 @@ void RGBDCaptureForGANWindow::startCapture()
 			saveDepthImage();
 			saveIrImage();
 			extractJointLandmarks();
-			saveJointLandmarks();
+			saveJointLandmarks(); 
 
 			printCaptureConsoleInfos(startTime, lastCaptureEnd, m_currentCaptureCount, m_framesToCapture);
 		}
@@ -140,11 +148,17 @@ void RGBDCaptureForGANWindow::saveColorImage()
 	int colorHeight = color_image.get_height_pixels();
 
 	//convert to cv:Mat
-	cv::Mat colorMat(colorHeight, colorWidth, CV_8UC4, (void*)color_buffer, cv::Mat::AUTO_STEP);
+	m_colorMat = cv::Mat(colorHeight, colorWidth, CV_8UC4, (void*)color_buffer, cv::Mat::AUTO_STEP);
+
+	if (ui->cb_visualizeLandmarks->isChecked()) {
+		QImage colorImage = QImage(m_colorMat.data, m_colorMat.cols, m_colorMat.rows, m_colorMat.step, QImage::Format_ARGB32);
+		colorImage = colorImage.scaled(256, 256, Qt::AspectRatioMode::KeepAspectRatio);
+		ui->color_Image->setPixmap(QPixmap::fromImage(colorImage));
+	}
 
 	//save
 	std::string colorFileName = imageFilePath(ImageType::COLOR_IMAGE);
-	m_colorImageSavingThread = new std::thread(&cv::imwrite, colorFileName, colorMat, std::vector<int>());
+	m_colorImageSavingThread = new std::thread(&cv::imwrite, colorFileName, m_colorMat, std::vector<int>());
 	m_colorImageSavingThread->join();
 	delete m_colorImageSavingThread;
 }
@@ -182,11 +196,24 @@ void RGBDCaptureForGANWindow::saveDepthImage()
 	int transformedDepthWidth = transformedDepthImage.get_width_pixels();
 	int transformedDepthHeight = transformedDepthImage.get_height_pixels();
 
-	cv::Mat depthMat(transformedDepthHeight, transformedDepthWidth, CV_16UC1, (void*)transformed_depth_buffer, cv::Mat::AUTO_STEP);
+	m_depthMat = cv::Mat(transformedDepthHeight, transformedDepthWidth, CV_16UC1, (void*)transformed_depth_buffer, cv::Mat::AUTO_STEP);
+
+	if (ui->cb_visualizeLandmarks->isChecked()) {
+		m_depthMat.convertTo(m_depthMat8, CV_8UC1, 255.0 / m_clippingDistance);
+		QImage image = QImage(
+			m_depthMat8.data,
+			m_depthMat8.cols,
+			m_depthMat8.rows,
+			m_depthMat8.step,
+			QImage::Format_Grayscale8
+		);
+		image = image.scaled(256, 256, Qt::AspectRatioMode::KeepAspectRatio);
+		ui->depth_image->setPixmap(QPixmap::fromImage(image));
+	}
 
 	//Create a file name
 	std::string depthFileName = imageFilePath(ImageType::DEPTH_IMAGE);
-	m_depthImageSavingThread = new std::thread(&cv::imwrite, depthFileName, depthMat, std::vector<int>());
+	m_depthImageSavingThread = new std::thread(&cv::imwrite, depthFileName, m_depthMat, std::vector<int>());
 	m_depthImageSavingThread->join();
 	delete m_depthImageSavingThread;
 }
@@ -224,13 +251,33 @@ void RGBDCaptureForGANWindow::saveIrImage()
 	int irImageHeight = images.second.get_height_pixels();
 
 	//convert to cv:Mat
-	cv::Mat irMat(irImageHeight, irImageWidth, CV_16UC1, (void*)images.second.get_buffer(), cv::Mat::AUTO_STEP);
+	m_irMat = cv::Mat(irImageHeight, irImageWidth, CV_16UC1, (void*)images.second.get_buffer(), cv::Mat::AUTO_STEP);
 
 	//save
 	std::string irFileName = imageFilePath(ImageType::INFRARED_IMAGE);
-	m_infraredImageSavingThread = new std::thread(&cv::imwrite, irFileName, irMat, std::vector<int>());
+	m_infraredImageSavingThread = new std::thread(&cv::imwrite, irFileName, m_irMat, std::vector<int>());
 	m_infraredImageSavingThread->join();
 	delete m_infraredImageSavingThread;
+}
+
+void RGBDCaptureForGANWindow::extractJointLandmarks()
+{
+	k4abt_skeleton_t skeleton = m_bodyFrame.get_body_skeleton(0);
+	k4abt_joint_t* joints = skeleton.joints;
+
+	//first joint position
+	k4a_float3_t jointPosition;
+
+	for (int i = 0; i < K4ABT_JOINT_COUNT; i++) {
+		jointPosition = joints[i].position;
+
+		Landmark current;
+		current.x = jointPosition.xyz.x;
+		current.y = jointPosition.xyz.y;
+		current.depth = jointPosition.xyz.z;
+
+		m_jointLandmarks[i] = current;
+	}
 }
 
 void RGBDCaptureForGANWindow::saveJointLandmarks()
@@ -259,26 +306,6 @@ void RGBDCaptureForGANWindow::saveJointLandmarks()
 	m_jointLandmarkWriter << "END" << std::endl;
 }
 
-void RGBDCaptureForGANWindow::extractJointLandmarks()
-{
-	k4abt_skeleton_t skeleton = m_bodyFrame.get_body_skeleton(0);
-	k4abt_joint_t* joints = skeleton.joints;
-
-	//first joint position
-	k4a_float3_t jointPosition;
-
-	for (int i = 0; i < K4ABT_JOINT_COUNT; i++) {
-		jointPosition = joints[i].position;
-
-		Landmark current;
-		current.x = jointPosition.xyz.x;
-		current.y = jointPosition.xyz.y;
-		current.depth = jointPosition.xyz.z;
-
-		m_jointLandmarks[i] = current;
-	}
-}
-
 void RGBDCaptureForGANWindow::extractAndSaveFeatureImages()
 {
 	std::cout << "Start Extract And Save Feature Image" << std::endl;
@@ -295,6 +322,7 @@ void RGBDCaptureForGANWindow::extractAndSaveFeatureImages()
 
 	//export crop boundaries for GAN training
 	saveCropRegion();
+	saveMinMaxAxisValues();
 
 	//reset reader
 	m_jointLandmarkReader.clear();
@@ -312,12 +340,58 @@ void RGBDCaptureForGANWindow::extractAndSaveFeatureImages()
 	std::cout << "Start Extract And Save Feature Image after " << differenceInSeconds(startTime, endTime) << " seconds." << std::endl;
 }
 
+void RGBDCaptureForGANWindow::startLandmarkTransmission()
+{
+	std::cout << "Start Landmark Transmission for GAN" << std::endl;
+
+	float startTime = clock();
+	m_totalSubtaskTime = 0;
+	float lastCaptureEnd = startTime;
+	m_skippedFrames = 0;
+
+	//initiation
+	m_currentCapture = new k4a::capture();
+	readMinMaxAxisValues();
+	calculateNormalizationRatios();
+
+	for (int i = 0; i < m_framesToCapture; i++){ //TODO exchange with while loop (which is in async thread so you can stop the loop via gui)
+		m_azureKinectSensor.get_capture(m_currentCapture);
+		m_tracker.enqueue_capture(*m_currentCapture, std::chrono::milliseconds(-1));
+		m_bodyFrame = m_tracker.pop_result(std::chrono::milliseconds(-1));
+
+		if (currentCaptureIsValid(m_currentCapture)) {
+
+			if (m_skippedFrames > 0)
+				printSkipFramesToConsole(startTime);
+
+			extractJointLandmarks();
+			calculateNormalizedLandmarks();
+			mapNormalizedToImageLandmarks();
+
+			sendImageLandmarksOverNetwork();
+		}
+
+	}
+
+	m_azureKinectSensor.close();
+
+	float endTime = clock();
+	std::cout << "End Landmark Transmission for GAN after " << differenceInSeconds(startTime, endTime) << " seconds." << std::endl;
+}
+
 void RGBDCaptureForGANWindow::extractLandmarkFileMetadata()
 {
 	m_dataSetCount = 0;
 
 	std::string line;
 	std::string splitted[K4ABT_JOINT_COUNT];
+	m_minPositionAxisValues.m_xyz.x = std::numeric_limits<float>::max();
+	m_minPositionAxisValues.m_xyz.y = std::numeric_limits<float>::max();
+	m_minPositionAxisValues.m_xyz.z = std::numeric_limits<float>::max();
+
+	m_maxPositionAxisValues.m_xyz.x = std::numeric_limits<float>::min();
+	m_maxPositionAxisValues.m_xyz.y = std::numeric_limits<float>::min();
+	m_maxPositionAxisValues.m_xyz.z = std::numeric_limits<float>::min();
 
 	while (std::getline(m_jointLandmarkReader, line)) {
 		//x
@@ -367,12 +441,60 @@ void RGBDCaptureForGANWindow::extractLandmarkFileMetadata()
 
 void RGBDCaptureForGANWindow::saveCropRegion()
 {
-	m_cropBoundariesWriter.open(m_dirSavePath + "crop_region.txt");
-	m_cropBoundariesWriter << std::to_string(m_minPositionAxisValues.m_xyz.x) << std::endl;
-	m_cropBoundariesWriter << std::to_string(m_maxPositionAxisValues.m_xyz.x) << std::endl;
-	m_cropBoundariesWriter << std::to_string(m_minPositionAxisValues.m_xyz.y) << std::endl;
-	m_cropBoundariesWriter << std::to_string(m_maxPositionAxisValues.m_xyz.y) << std::endl;
-	m_cropBoundariesWriter.close();
+	std::ofstream cropBoundariesWriter;
+	cropBoundariesWriter.open(m_cropRegionFilePath);
+	cropBoundariesWriter << std::to_string(m_minPositionAxisValues.m_xyz.x) << std::endl;
+	cropBoundariesWriter << std::to_string(m_maxPositionAxisValues.m_xyz.x) << std::endl;
+	cropBoundariesWriter << std::to_string(m_minPositionAxisValues.m_xyz.y) << std::endl;
+	cropBoundariesWriter << std::to_string(m_maxPositionAxisValues.m_xyz.y) << std::endl;
+	cropBoundariesWriter.close();
+}
+
+void RGBDCaptureForGANWindow::saveMinMaxAxisValues()
+{
+	std::ofstream minMaxAxisValuesWriter;
+	minMaxAxisValuesWriter.open(m_minMaxAxisValuesWriterPath);
+	minMaxAxisValuesWriter << std::to_string(m_minPositionAxisValues.m_xyz.x) << std::endl;
+	minMaxAxisValuesWriter << std::to_string(m_minPositionAxisValues.m_xyz.y) << std::endl;
+	minMaxAxisValuesWriter << std::to_string(m_minPositionAxisValues.m_xyz.z) << std::endl;
+
+	minMaxAxisValuesWriter << std::to_string(m_maxPositionAxisValues.m_xyz.x) << std::endl;
+	minMaxAxisValuesWriter << std::to_string(m_maxPositionAxisValues.m_xyz.y) << std::endl;
+	minMaxAxisValuesWriter << std::to_string(m_maxPositionAxisValues.m_xyz.z) << std::endl;
+	minMaxAxisValuesWriter.close();
+}
+
+void RGBDCaptureForGANWindow::readMinMaxAxisValues()
+{
+	std::ifstream minMaxAxisValuesReader;
+	minMaxAxisValuesReader.open(m_minMaxAxisValuesReaderPath);
+	std::string line;
+	int lineCounter = 0;
+	while (std::getline(minMaxAxisValuesReader, line) && lineCounter < 6) {
+		switch (lineCounter) {
+		case 0:
+			m_minPositionAxisValues.m_xyz.x = std::stof(line);
+			break;
+		case 1:
+			m_minPositionAxisValues.m_xyz.y = std::stof(line);
+			break;
+		case 2:
+			m_minPositionAxisValues.m_xyz.z = std::stof(line);
+			break;
+		case 3:
+			m_maxPositionAxisValues.m_xyz.x = std::stof(line);
+			break;
+		case 4:
+			m_maxPositionAxisValues.m_xyz.y = std::stof(line);
+			break;
+		case 5:
+			m_maxPositionAxisValues.m_xyz.z = std::stof(line);
+			break;
+		}
+		lineCounter++;
+	}
+
+	minMaxAxisValuesReader.close();
 }
 
 void RGBDCaptureForGANWindow::calculateNormalizationRatios()
@@ -430,7 +552,8 @@ void RGBDCaptureForGANWindow::processLandmarkFileData(float startTime)
 		}
 		else if (stringStartsWith(&line, "END")) {
 			//process current Landmarks
-			extractImageLandmarks();
+			calculateNormalizedLandmarks();
+			mapNormalizedToImageLandmarks();
 			saveFeatureImage();
 
 			printCaptureConsoleInfos(startTime, lastSaveEnd, m_frameCounter, m_dataSetCount);
@@ -471,13 +594,6 @@ void RGBDCaptureForGANWindow::splitDataString(std::string fullString, std::strin
 	}
 }
 
-void RGBDCaptureForGANWindow::extractImageLandmarks() {
-
-	calculateNormalizedLandmarks();
-	mapNormalizedToImageLandmarks();
-
-}
-
 void RGBDCaptureForGANWindow::calculateNormalizedLandmarks()
 {
 	//normalize joint positions without loosing the proportion between x and y to get normalized landmarks 
@@ -492,6 +608,7 @@ void RGBDCaptureForGANWindow::calculateNormalizedLandmarks()
 		m_normalizedLanmarks[i].depth =
 			1 - ((currentJointLandmark->depth - m_minPositionAxisValues.m_xyz.z)
 			/ (m_maxPositionAxisValues.m_xyz.z - m_minPositionAxisValues.m_xyz.z));
+
 	}
 }
 
@@ -509,6 +626,20 @@ void RGBDCaptureForGANWindow::mapNormalizedToImageLandmarks()
 
 		m_imageLandmarks[i] = current;
 	}
+}
+
+void RGBDCaptureForGANWindow::sendImageLandmarksOverNetwork()
+{
+	//convert to std::vector
+	std::vector<Landmark> imageLandmarks;
+	imageLandmarks.resize(K4ABT_JOINT_COUNT);
+
+	for (int i = 0; i < K4ABT_JOINT_COUNT; i++) {
+		imageLandmarks[i] = m_imageLandmarks[i];
+	}
+
+	//send
+	m_networkManager->sendImageLandmarks(&imageLandmarks, m_senderId);
 }
 
 void RGBDCaptureForGANWindow::saveFeatureImage()
@@ -551,7 +682,7 @@ void RGBDCaptureForGANWindow::drawFeaturesToMatrix()
 	drawSingleLineBetweenLandmarks(0, 22);
 	continuousLineDrawingBetweenLandmarks(22, 25);
 
-	//draw landmarks
+	//draw landmark points
 	/*for (int i = 0; i < K4ABT_JOINT_COUNT; i++) {
 		uchar x1 = static_cast<int>(m_imageLandmarks[i].x);
 		uchar y1 = static_cast<int>(m_imageLandmarks[i].y);

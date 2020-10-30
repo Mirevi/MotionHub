@@ -50,7 +50,7 @@ public:
 	/*!
 	 * default constructor  
 	 */
-	explicit MainWindow(TrackerManager* trackerManager, ConfigManager* configManager, QWidget *parent = 0);
+	explicit MainWindow(TrackerManager* trackerManager, NetworkManager* networkManager, ConfigManager* configManager, QWidget *parent = 0);
 	/*!
 	 * default destructor 
 	 */
@@ -125,6 +125,8 @@ private:
 	CreateTrackerWindow* m_createTrackerWindow;
 
 	ConfigManager* m_configManager;
+
+	NetworkManager* m_networkManager;
 
 	NetworkSettingsWindow* m_netwokSettingsWindow;
 	

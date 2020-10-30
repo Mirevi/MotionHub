@@ -81,3 +81,30 @@ void OSCSender::sendSkeleton(Skeleton* skeleton, const char* uri, int trackerID)
 
 	}
 }
+
+void OSCSender::sendImageLandmarks(std::vector<Landmark>* imageLandmarks, const char* uri)
+{
+	if (imageLandmarks == nullptr)
+		return;
+
+	//begin bundle
+	*m_packetStream << osc::BeginBundleImmediate << osc::BeginMessage(uri);
+
+	for (int i = 0; i < imageLandmarks->size(); i++) {
+		Landmark* current = &imageLandmarks->at(i);
+		
+		*m_packetStream
+			<< current->x
+			<< current->y
+			<< current->depth;
+	}
+
+	// end bundle
+	*m_packetStream << osc::EndMessage << osc::EndBundle;
+
+	// send packet with data
+	m_transmitSocket->Send(m_packetStream->Data(), m_packetStream->Size());
+
+	// clear packet stream to prevent buffer overflow
+	m_packetStream->Clear();
+}

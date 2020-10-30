@@ -13,7 +13,7 @@ NetworkManager::NetworkManager(ConfigManager* configManager)
 }
 
 // send skeleton pool with all active sender
-void NetworkManager::sendSkeletonPool(std::map<int, Skeleton>* skeletonPool, int trackerID)
+void NetworkManager::sendSkeletonPool(std::map<int, Skeleton>* skeletonPool, int trackerId)
 {
 
 	// check if skeleton pool exists
@@ -25,18 +25,25 @@ void NetworkManager::sendSkeletonPool(std::map<int, Skeleton>* skeletonPool, int
 		{
 		
 			// check if current sender is active
-			if (m_poolSender[trackerID]->isActive())
+			if (m_poolSender[trackerId]->isActive())
 			{
 
 				// send skeleton pool
-				m_poolSender[trackerID]->sendSkeleton(&(itSkeletonPool->second), DEFAULT_URI, trackerID);
+				m_poolSender[trackerId]->sendSkeleton(&(itSkeletonPool->second), DEFAULT_SKELETON_URI, trackerId);
 
 			}
 		}
 	}
 }
 
+void NetworkManager::sendImageLandmarks(std::vector<Landmark>* imageLandmarks, int senderId)
+{
+	if (imageLandmarks != nullptr && m_poolSender[senderId]->isActive()) {
+		
+		m_poolSender[senderId]->sendImageLandmarks(imageLandmarks, DEFAULT_LANDMARK_URI);
 
+	}
+}
 
 void NetworkManager::createOSCSender(int ID)
 {

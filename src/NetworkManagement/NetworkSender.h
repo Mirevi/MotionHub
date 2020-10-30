@@ -1,7 +1,9 @@
 #pragma once
 
 #include <iostream>
+#include <vector>
 #include "MotionHubUtil/Skeleton.h"
+#include "MotionHubUtil/Landmark.h"
 
 /*!
  * \class NetworkSender
@@ -48,11 +50,18 @@ public:
 	void setActive(bool active);
 	/*!
 	 * sends skeleton data
-	 * 
+	 *
 	 * \param skeleton input skeleton data
 	 * \param uri messages title
 	 */
 	virtual void sendSkeleton(Skeleton* skeleton, const char* uri, int trackerID) = 0;
+	/*!
+	 * sends image landmarks data
+	 *
+	 * \param imageLandmarks input image landmarks data
+	 * \param uri messages title
+	 */
+	virtual void sendImageLandmarks(std::vector<Landmark>* imageLandmarks, const char* uri) = 0;
 
 	
 protected:

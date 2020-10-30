@@ -7,13 +7,18 @@
 #include <cmath>
 #include <time.h>
 #include <string>
+#include <limits>
 #include <fstream>
+#include <QLabel>
 #include <QtWidgets/QDialog>
 #include <QtWidgets/QLineEdit>
 #include <opencv2/core/mat.hpp>
 
 #include "MotionHubUtil/ConfigManager.h"
 #include "MotionHubUtil/Vector3.h"
+#include "MotionHubUtil/Landmark.h"
+
+#include "NetworkManagement/NetworkManager.h"
 
 namespace Ui
 {
@@ -25,20 +30,16 @@ class RGBDCaptureForGANWindow : public QDialog
 	Q_OBJECT
 
 public:
-	explicit RGBDCaptureForGANWindow(ConfigManager* configManager, QWidget *parent = nullptr);
+	explicit RGBDCaptureForGANWindow(ConfigManager* configManager, NetworkManager* networkManager, QWidget *parent = nullptr);
 	~RGBDCaptureForGANWindow();
 
 private slots:
 	void initiateAzureKinect();
 	void startCapture();
 	void extractAndSaveFeatureImages();
+	void startLandmarkTransmission();
 
 private:
-	struct Landmark {
-		float x;
-		float y;
-		float depth;
-	};
 
 	enum class ImageType {
 		COLOR_IMAGE,
@@ -52,18 +53,24 @@ private:
 	void saveColorImage();
 	void saveDepthImage();
 	void saveIrImage();
-	void saveJointLandmarks();
 	void extractJointLandmarks();
+	void saveJointLandmarks();
 
+	//capture
+	//feature image generation
+	//transmission
+	//general
 	void extractLandmarkFileMetadata();
 	void saveCropRegion();
+	void saveMinMaxAxisValues();
+	void readMinMaxAxisValues();
 	void calculateNormalizationRatios();
 	void processLandmarkFileData(float startTime);
 	bool stringStartsWith(std::string* string, std::string startsWith);
 	void splitDataString(std::string fullString, std::string* splittedString);
-	void extractImageLandmarks();
 	void calculateNormalizedLandmarks();
 	void mapNormalizedToImageLandmarks();
+	void sendImageLandmarksOverNetwork();
 	void saveFeatureImage();
 	void drawFeaturesToMatrix();
 	void continuousLineDrawingBetweenLandmarks(int start, int end);
@@ -79,6 +86,8 @@ private:
 
 	//config
 	ConfigManager* m_configManager;
+	NetworkManager* m_networkManager;
+	int m_senderId;
 	int m_framesToCapture;
 	int m_clippingDistance;
 	int m_landmarkImageSize;
@@ -86,6 +95,12 @@ private:
 	std::string m_saveIdPrefix;
 	std::string m_dirSavePath;
 	cv::Vec4b m_featureLineColors[31];
+
+	//cv mats
+	cv::Mat m_colorMat;
+	cv::Mat m_depthMat;
+	cv::Mat m_depthMat8;
+	cv::Mat m_irMat;
 
 	//azure kinect
 	k4a::device m_azureKinectSensor;
@@ -112,7 +127,9 @@ private:
 	std::thread* m_featureImageSavingThread;
 
 	//feature map calculation
-	std::ofstream m_cropBoundariesWriter;
+	std::string m_cropRegionFilePath;
+	std::string m_minMaxAxisValuesWriterPath;
+	std::string m_minMaxAxisValuesReaderPath;
 	std::ofstream m_jointLandmarkWriter;
 	std::ifstream m_jointLandmarkReader;
 	Landmark m_jointLandmarks[K4ABT_JOINT_COUNT];

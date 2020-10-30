@@ -478,67 +478,220 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
     border: 1px solid #444;
 }</string>
   </property>
-  <widget class="QPushButton" name="btn_start_capture">
+  <widget class="QWidget" name="gridLayoutWidget">
    <property name="geometry">
     <rect>
-     <x>284</x>
-     <y>220</y>
-     <width>91</width>
-     <height>23</height>
+     <x>40</x>
+     <y>30</y>
+     <width>901</width>
+     <height>111</height>
+    </rect>
+   </property>
+   <layout class="QGridLayout" name="gridLayout">
+    <property name="sizeConstraint">
+     <enum>QLayout::SetFixedSize</enum>
+    </property>
+    <property name="horizontalSpacing">
+     <number>35</number>
+    </property>
+    <property name="verticalSpacing">
+     <number>16</number>
+    </property>
+    <item row="0" column="0">
+     <widget class="QLabel" name="l_initialization">
+      <property name="font">
+       <font>
+        <pointsize>14</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Initialization</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="1">
+     <widget class="QPushButton" name="btn_start_capture">
+      <property name="text">
+       <string>Start Capture</string>
+      </property>
+      <property name="flat">
+       <bool>false</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="0">
+     <widget class="QLabel" name="l_dataset">
+      <property name="font">
+       <font>
+        <pointsize>14</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Dataset Generation:</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="2">
+     <widget class="QPushButton" name="btn_generate_feature_images">
+      <property name="text">
+       <string>Generate Feature Images</string>
+      </property>
+      <property name="flat">
+       <bool>false</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="0">
+     <widget class="QLabel" name="l_landmark">
+      <property name="font">
+       <font>
+        <pointsize>14</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Landmark Transmission</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1">
+     <widget class="QPushButton" name="btn_initiate_kinect">
+      <property name="font">
+       <font>
+        <pointsize>-1</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Initiate Kinect</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="1">
+     <widget class="QPushButton" name="btn_start_capture_2">
+      <property name="text">
+       <string>Start Transmission</string>
+      </property>
+      <property name="flat">
+       <bool>false</bool>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QLabel" name="color_Image">
+   <property name="geometry">
+    <rect>
+     <x>40</x>
+     <y>260</y>
+     <width>256</width>
+     <height>256</height>
     </rect>
    </property>
    <property name="text">
-    <string>Start Capture</string>
+    <string/>
    </property>
-   <property name="flat">
+  </widget>
+  <widget class="QLabel" name="depth_image">
+   <property name="geometry">
+    <rect>
+     <x>360</x>
+     <y>260</y>
+     <width>256</width>
+     <height>256</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QLabel" name="feature_image">
+   <property name="geometry">
+    <rect>
+     <x>680</x>
+     <y>260</y>
+     <width>256</width>
+     <height>256</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="cb_visualizeLandmarks">
+   <property name="geometry">
+    <rect>
+     <x>680</x>
+     <y>230</y>
+     <width>131</width>
+     <height>18</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Visualize Landmarks</string>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="tristate">
     <bool>false</bool>
    </property>
   </widget>
-  <widget class="QPushButton" name="btn_initiate_kinect">
+  <widget class="QCheckBox" name="cb_visualizeDepth">
    <property name="geometry">
     <rect>
-     <x>114</x>
-     <y>220</y>
-     <width>91</width>
-     <height>23</height>
+     <x>360</x>
+     <y>230</y>
+     <width>131</width>
+     <height>18</height>
     </rect>
    </property>
    <property name="text">
-    <string>Initiate Kinect</string>
+    <string>Visualize Depth Image</string>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
    </property>
   </widget>
-  <widget class="QPushButton" name="btn_generate_feature_images">
+  <widget class="QCheckBox" name="cb_visualizeColor">
    <property name="geometry">
     <rect>
-     <x>450</x>
-     <y>220</y>
-     <width>151</width>
-     <height>23</height>
+     <x>40</x>
+     <y>230</y>
+     <width>141</width>
+     <height>18</height>
     </rect>
    </property>
    <property name="text">
-    <string>Generate Feature Images</string>
+    <string>Visualize Color Image</string>
    </property>
-   <property name="flat">
-    <bool>false</bool>
+   <property name="checked">
+    <bool>true</bool>
    </property>
   </widget>
  </widget>
+ <tabstops>
+  <tabstop>btn_initiate_kinect</tabstop>
+  <tabstop>btn_start_capture</tabstop>
+  <tabstop>btn_generate_feature_images</tabstop>
+  <tabstop>btn_start_capture_2</tabstop>
+  <tabstop>cb_visualizeColor</tabstop>
+  <tabstop>cb_visualizeDepth</tabstop>
+  <tabstop>cb_visualizeLandmarks</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>
-   <sender>btn_start_capture</sender>
+   <sender>btn_generate_feature_images</sender>
    <signal>clicked()</signal>
    <receiver>RGBDCaptureForGANWindow</receiver>
-   <slot>startCapture()</slot>
+   <slot>extractAndSaveFeatureImages()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>257</x>
-     <y>211</y>
+     <x>939</x>
+     <y>96</y>
     </hint>
     <hint type="destinationlabel">
-     <x>489</x>
-     <y>323</y>
+     <x>955</x>
+     <y>83</y>
     </hint>
    </hints>
   </connection>
@@ -549,28 +702,44 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
    <slot>initiateAzureKinect()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>159</x>
-     <y>231</y>
+     <x>533</x>
+     <y>41</y>
     </hint>
     <hint type="destinationlabel">
-     <x>489</x>
-     <y>323</y>
+     <x>641</x>
+     <y>37</y>
     </hint>
    </hints>
   </connection>
   <connection>
-   <sender>btn_generate_feature_images</sender>
+   <sender>btn_start_capture_2</sender>
    <signal>clicked()</signal>
    <receiver>RGBDCaptureForGANWindow</receiver>
-   <slot>extractAndSaveFeatureImages()</slot>
+   <slot>startLandmarkTransmission()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>514</x>
-     <y>224</y>
+     <x>512</x>
+     <y>132</y>
     </hint>
     <hint type="destinationlabel">
-     <x>737</x>
-     <y>77</y>
+     <x>641</x>
+     <y>123</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btn_start_capture</sender>
+   <signal>clicked()</signal>
+   <receiver>RGBDCaptureForGANWindow</receiver>
+   <slot>startCapture()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>617</x>
+     <y>87</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>642</x>
+     <y>76</y>
     </hint>
    </hints>
   </connection>
@@ -579,5 +748,7 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
   <slot>startCapture()</slot>
   <slot>startAzureKinect()</slot>
   <slot>extractAndSaveFeatureImages()</slot>
+  <slot>startLandmarkTransmission()</slot>
+  <slot>initiateAzureKinect()</slot>
  </slots>
 </ui>

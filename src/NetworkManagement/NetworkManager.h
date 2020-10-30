@@ -5,6 +5,7 @@
 #include "MotionHubUtil/Skeleton.h"
 #include "MotionHubUtil/Console.h"
 #include "MotionHubUtil/ConfigManager.h"
+#include "MotionHubUtil/Landmark.h"
 
 #include "defines.h"
 
@@ -32,10 +33,17 @@ public:
 	 */
 	NetworkManager(ConfigManager* configManager);
 	/*!
-	 * sends skeleton pool to all network sender
+	 * sends skeleton pool with a specified sender
 	 * \param skeletonPool skeleton pool to send
 	 */
-	void sendSkeletonPool(std::map<int, Skeleton>* skeletonPool, int trackerID);
+	void sendSkeletonPool(std::map<int, Skeleton>* skeletonPool, int trackerId);
+
+	/*!
+	 * sends the imgage landmarks with a specified sender
+	 * \param imgageLandmarks imgage landmarks to send
+	 * \param senderId the id of the sender
+	 */
+	void sendImageLandmarks(std::vector<Landmark>* imgageLandmarks, int senderId);
 
 	void createOSCSender(int ID);
 

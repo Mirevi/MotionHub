@@ -29,7 +29,7 @@ public:
 	 * \param argv
 	 * \param inputManager reference to the InputManager
 	 */
-	UIManager(int argc, char** argv, TrackerManager* trackerManager, ConfigManager* configManager);
+	UIManager(int argc, char** argv, TrackerManager* trackerManager, NetworkManager* networkManager, ConfigManager* configManager);
 
 	/*!
 	 * getter for MainWindow pointer 

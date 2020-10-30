@@ -10,6 +10,9 @@
 #include "MotionHubUtil/Vector4.h"
 #include "MotionHubUtil/Skeleton.h"
 #include "MotionHubUtil/Console.h"
+#include "MotionHubUtil/Landmark.h"
+
+#include <vector>
 
 /*!
  * \class OSCSender
@@ -50,5 +53,12 @@ public:
 	 * \param uri messages title
 	 */
 	void sendSkeleton(Skeleton* skeleton, const char* uri, int trackerID) override;
+	/*!
+	 * sends image landmarks data via OSC protocol
+	 *
+	 * \param imageLandmarks input image landmarks data
+	 * \param uri messages title
+	 */
+	void sendImageLandmarks(std::vector<Landmark>* imageLandmarks, const char* uri) override;
 
 };

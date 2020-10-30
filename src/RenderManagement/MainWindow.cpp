@@ -4,7 +4,7 @@
 
 
 // default constructor
-MainWindow::MainWindow(TrackerManager* trackerManager, ConfigManager* configManager, QWidget* parent)
+MainWindow::MainWindow(TrackerManager* trackerManager, NetworkManager* networkManager, ConfigManager* configManager, QWidget* parent)
  : QMainWindow(parent), ui(new Ui::MainWindow)
 {
 
@@ -21,6 +21,7 @@ MainWindow::MainWindow(TrackerManager* trackerManager, ConfigManager* configMana
 	// assign reference to tracker manager
 	m_refTrackerManager = trackerManager;
 	m_configManager = configManager;
+	m_networkManager = networkManager;
 
 	// disable qt vector warning in console
 	qRegisterMetaType<QVector<int>>();
@@ -610,7 +611,7 @@ void MainWindow::slotNetworkSettings()
 void MainWindow::slotOpenGANCapture()
 {
 
-	m_RGBDCaptureForGANWindow = new RGBDCaptureForGANWindow(m_configManager);
+	m_RGBDCaptureForGANWindow = new RGBDCaptureForGANWindow(m_configManager, m_networkManager);
 
 	m_RGBDCaptureForGANWindow->setModal(true);
 	m_RGBDCaptureForGANWindow->exec();
