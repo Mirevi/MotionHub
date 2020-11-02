@@ -330,6 +330,10 @@ void TrackerManager::controlTimeline(bool stop)
 		{
 			dynamic_cast<BVHPlayer*>(*itTracker)->controlTime(stop);
 		}
+		else if((*itTracker)->getTrackerType() == "MMH")
+		{
+			dynamic_cast<mmhPlayer*>(*itTracker)->controlTime(stop);
+		}
 	}
 
 }
@@ -341,6 +345,10 @@ void TrackerManager::timelineValueChange(int newValue)
 		if ((*itTracker)->getTrackerType() == "BVH")
 		{
 			dynamic_cast<BVHPlayer*>(*itTracker)->setCurrentFrame(newValue);
+		}
+		else if ((*itTracker)->getTrackerType() == "MMH")
+		{
+			dynamic_cast<mmhPlayer*>(*itTracker)->setCurrentFrame(newValue);
 		}
 	}
 }
@@ -372,6 +380,11 @@ int TrackerManager::getBvhCurrFrame()
 		if ((*itTracker)->getTrackerType() == "BVH")
 		{
 			currFrame = dynamic_cast<BVHPlayer*>(*itTracker)->getCurrentFramePercent();
+			break;
+		}
+		else if ((*itTracker)->getTrackerType() == "MMH")
+		{
+			currFrame = dynamic_cast<mmhPlayer*>(*itTracker)->getCurrentFramePercent();
 			break;
 		}
 

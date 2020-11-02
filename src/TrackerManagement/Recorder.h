@@ -2,12 +2,13 @@
 
 #include <vector>
 #include <atomic>
+#include <thread>
 
 #include "ConfigDllExportTrackingManagement.h"
 #include "MotionHubUtil/RecordingSession.h"
 
-
-
+//recording frametime in milliseconds
+static int FRAMETIME = 16;
 
 
 
@@ -54,7 +55,10 @@ private:
 	void startRecording();
 	void stopRecording();
 
+	void update();
 
+
+	std::thread* m_recordingThread;
 
 };
 

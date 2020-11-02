@@ -176,7 +176,6 @@ void mmhPlayer::track()
 		m_currFrameIdx = 0;
 	}
 
-	Console::log("mmhPlayer::track(): " + toString(m_session.getFrame(m_currFrameIdx)->m_skeletons[0].m_joints[Joint::HIPS].getJointPosition()));
 
 	m_currFrame = m_session.getFrame(m_currFrameIdx++);
 
@@ -209,13 +208,12 @@ void mmhPlayer::track()
 
 		m_skeletonPool[skelIdx++] = *itSkeleton;
 
-		Console::log(toString(m_skeletonPool[0].m_joints[Joint::HIPS].getJointPosition()));
+		//Console::log(toString(m_skeletonPool[0].m_joints[Joint::HIPS].getJointPosition()));
 
 	}
 
 
 	//Console::log("mmhPlayer::track(): skeleton count = " + toString(m_skeletonPool.size()));
-
 
 
 

@@ -64,17 +64,15 @@ void Recorder::nextFrame()
 void Recorder::startRecording()
 {
 
-	//std::stringstream ss;
-	//ss << static_cast<const void*>(this);
-	//Console::log("Recorder::startRecording(): this = " + ss.str());
-
-
 	m_currFrame = RecordingFrame();
 	m_isRecording.store(true);
 
 
 
 	m_currSession = new RecordingSession();
+
+	m_recordingThread = new std::thread(&Recorder::update, this);
+	m_recordingThread->detach();
 
 	Console::log("Recorder::startRecording()");
 }
@@ -88,6 +86,19 @@ void Recorder::stopRecording()
 	Console::log("Recorder::stopRecording()");
 }
 
+void Recorder::update()
+{
+
+	while (m_isRecording)
+	{
+
+		std::this_thread::sleep_for(std::chrono::milliseconds(FRAMETIME));
+
+		nextFrame();
+
+	}
+
+}
 
 Recorder& Recorder::instance()
 {

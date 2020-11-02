@@ -329,7 +329,6 @@ void RecordingSession::load(std::string filePath)
 		
 		addFrame(currFrameObj, duration);
 	
-		Console::log("RecordingSession::load(): " + toString(getFrame(0)->m_skeletons[0].m_joints[Joint::HIPS].getJointPosition()));
 		//Console::log("RecordingSession::load(): " + std::string(itFrame->Name()) + ", skeleton count = " + toString(currFrameObj.m_skeletons.size()));
 	}
 

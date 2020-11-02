@@ -66,16 +66,12 @@ void MotionHub::update()
 
 					// send skeleton pool reference to gesture manager in order to update all postures
 					//m_gestureManager->updateAllSkeletonPostures(&((*itTracker)->getSkeletonPoolCache())									  );
-					// send skeleton pool 
-					//m_networkManager->sendSkeletonPool(			&((*itTracker)->getSkeletonPoolCache()), (*itTracker)->getProperties()->id);
 
 
 
 					// update ui if skeleton was added or removed from pool
 					if ((*itTracker)->hasSkeletonPoolChanged())
 					{
-
-						Console::log("MotionHub::update(): skeleton pool has changed");
 
 						//update UI
 						m_uiManager->getMainWindow()->update();	
@@ -95,7 +91,7 @@ void MotionHub::update()
 			}
 
 
-			Recorder::instance().nextFrame();
+			//Recorder::instance().nextFrame();
 
 
 		}	//check if tracker is added or removed

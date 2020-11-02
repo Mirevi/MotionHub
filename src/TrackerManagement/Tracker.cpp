@@ -155,8 +155,10 @@ std::map<int, Skeleton> Tracker::getSkeletonPoolCache()
 	//copy cache to local copy, so we can unlock the skeleton pool befor return
 	std::map<int, Skeleton> skeletonPoolCacheCopy = m_skeletonPoolCache;
 
+
 	m_skeletonPoolLock.unlock();
 
+	//Console::log("Tracker::getSkeletonPoolCache(): pool size= " + toString(skeletonPoolCacheCopy.size()));
 
 
 	return skeletonPoolCacheCopy;

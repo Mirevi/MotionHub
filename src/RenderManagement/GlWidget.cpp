@@ -182,6 +182,8 @@ void GlWidget::updateSkeletonMeshPoolSize()
 			if (m_skeletonMeshPool.find((*itTracker)->getProperties()->id) == m_skeletonMeshPool.end())
 			{
 
+				Console::log("GlWidget::updateSkeletonMeshPoolSize(): insert");
+				
 				m_skeletonMeshPool.insert(std::make_pair((*itTracker)->getProperties()->id, std::vector<SkeletonMesh>()));
 
 			}
