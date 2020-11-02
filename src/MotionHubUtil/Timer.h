@@ -17,10 +17,19 @@ class MotionHubUtil_DLL_import_export Timer
 
 public:
 
+	/*!
+	* resets the Timer
+	*/
 	static void reset();
 
+	/*!
+	* gets the duration from the last time reset() was called
+	*/
 	static float getDuration();
 
+	/*!
+	* gets the current Date and Time
+	*/
 	static std::string getCurrTime();
 
 };

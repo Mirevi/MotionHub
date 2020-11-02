@@ -30,6 +30,9 @@ public:
 	RecordingSession();
 	void addFrame(RecordingFrame frame, float duration);
 	void save();
+	void load(std::string filePath);
+	int getFrameCount();
+	RecordingFrame* getFrame(int i);
 
 private:
 	std::vector<RecordingFrame> m_frames;

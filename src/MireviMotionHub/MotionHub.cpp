@@ -36,12 +36,12 @@ MotionHub::MotionHub(int argc, char** argv)
 void MotionHub::update()
 {
 
-
 	int framesElapsed = 0;
 
 	// main loop
 	while (m_uiManager->getMainWindow()->isVisible())
 	{
+		//Timer::reset();
 
 		// process ui input
 		m_uiManager->processInput();
@@ -74,6 +74,9 @@ void MotionHub::update()
 					// update ui if skeleton was added or removed from pool
 					if ((*itTracker)->hasSkeletonPoolChanged())
 					{
+
+						Console::log("MotionHub::update(): skeleton pool has changed");
+
 						//update UI
 						m_uiManager->getMainWindow()->update();	
 
@@ -82,7 +85,7 @@ void MotionHub::update()
 
 					}
 
-					m_uiManager->getMainWindow()->getOglRenderer()->updateSkeletonMeshTransform();
+					m_uiManager->getMainWindow()->getOglRenderer()->updateSkeletonMeshTransform(); //ERROR
 
 					// reset bool and start new tracking cycle
 					(*itTracker)->resetIsDataAvailable();
@@ -108,8 +111,10 @@ void MotionHub::update()
 
 		updateTimeline();
 
-
+		//Console::log("duration: " + toString(Timer::getDuration()));
 	}
+
+
 
 }
 

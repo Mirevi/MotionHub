@@ -11,6 +11,7 @@
 #include "AKTracker.h"
 #include "OTTracker.h"
 #include "BVHPlayer.h"
+#include "mmhPlayer.h"
 #include "TrackerGroup.h"
 
 /*!
@@ -41,6 +42,7 @@ public:
 		azureKinect,	// Azure Kinect Tracker
 		optiTrack,		// OptiTrack	Tracker
 		bvh,			//BVH-Player
+		mmh,
 		group
 
 	};

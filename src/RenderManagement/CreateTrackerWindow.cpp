@@ -31,6 +31,8 @@ void CreateTrackerWindow::slotCreateTracker()
 
 	int id = -2;
 
+	Console::log("CreateTrackerWindow::slotCreateTracker(): m_selectedTrackerIdInDropdown = " + toString(m_selectedTrackerIdInDropdown));
+
 	switch (m_selectedTrackerIdInDropdown)
 	{
 
@@ -60,7 +62,7 @@ void CreateTrackerWindow::slotCreateTracker()
 
 
 			//open file dialog
-			QString filePath = QFileDialog::getOpenFileName(this, "choose Mocap file.", "C://");
+			QString filePath = QFileDialog::getOpenFileName(this, "choose Mocap file.", "C://", tr("BVH files (*.bvh)"));
 
 
 			//BUG: Curser doesn't set to waiting
@@ -73,13 +75,28 @@ void CreateTrackerWindow::slotCreateTracker()
 
 			}
 
-
-
-
 			break;
 
+		}
+
+		case 4:
+		{
+
+			//open file dialog
+			QString filePath = QFileDialog::getOpenFileName(this, "choose MMH-Recorded file.", "C://", tr("MMH files (*.mmh)"));
+
+			//BUG: Curser doesn't set to waiting
 
 
+			// create new BVHPlayer tracker and add tracker to the tracking manager tracker pool
+			if (filePath != NULL)
+			{
+
+				id = m_refTrackerManager->createTracker(TrackerManager::mmh, filePath.toUtf8().constData());
+
+			}
+
+			break;
 		}
 
 		default:

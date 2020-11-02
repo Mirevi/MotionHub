@@ -48,10 +48,14 @@ void OSCSender::sendSkeleton(Skeleton* skeleton, const char* uri, int trackerID)
 		for (int jointsIndex = 0; jointsIndex < skeleton->m_joints.size(); jointsIndex++)
 		{
 
+			Joint::JointNames currType = (Joint::JointNames)jointsIndex;
+
+			//Console::log("OSCSender::sendSkeleton(): type = " + Joint::toString(currType));
+
 			// get and assign joint position, rotation and confidence
-			currJointPosition	= skeleton->m_joints[(Joint::JointNames)jointsIndex].getJointPosition();
-			currJointRotation	= skeleton->m_joints[(Joint::JointNames)jointsIndex].getJointRotation();
-			currJointConfidence	= skeleton->m_joints[(Joint::JointNames)jointsIndex].getJointConfidence();
+			currJointPosition	= skeleton->m_joints[currType].getJointPosition();
+			currJointRotation	= skeleton->m_joints[currType].getJointRotation();
+			currJointConfidence	= skeleton->m_joints[currType].getJointConfidence();
 
 
 			// ADD DATA TO OSC PACKET STREAM:

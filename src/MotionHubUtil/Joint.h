@@ -57,6 +57,11 @@ public:
 		HIGH
 	};
 
+	static std::string toString(JointNames type);
+
+	static JointNames toJointNames(std::string name);
+
+
 	/*!
 	 * default constructor
 	 * 

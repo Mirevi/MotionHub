@@ -17,6 +17,7 @@
 
 #include "MotionHubUtil/Vector3.h"
 #include "TrackerManagement/TrackerManager.h"
+#include "MotionHubUtil/defines.h"
 
 #include "Mesh.h"
 #include "Plane.h"
