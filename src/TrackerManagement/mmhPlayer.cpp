@@ -183,20 +183,7 @@ void mmhPlayer::track()
 
 	//Console::log("mmhPlayer::track(): skeleton count = " + toString(m_currFrame->m_skeletons.size()));
 
-	//check if skeleton count has changed
-	//while (m_skeletonPool.size() != m_currFrame->m_skeletons.size())
-	//{
-	//	if (m_skeletonPool.size() < m_currFrame->m_skeletons.size())
-	//	{
-	//		//add skeleton
-	//		m_skeletonPool.insert({skelIdx, m_currFrame->m_skeletons[skelIdx++]});
-	//	}
-	//	else
-	//	{
-	//		//remove skeleton
-	//		m_skeletonPool.erase(prev(m_skeletonPool.end()));
-	//	}
-	//}
+
 
 	//skelIdx = 0;
 		
@@ -209,6 +196,7 @@ void mmhPlayer::track()
 		m_skeletonPool[skelIdx++] = *itSkeleton;
 
 		//Console::log(toString(m_skeletonPool[0].m_joints[Joint::HIPS].getJointPosition()));
+		m_isDataAvailable = true;
 
 	}
 
@@ -218,7 +206,6 @@ void mmhPlayer::track()
 
 
 
-	m_isDataAvailable = true;
 }
 std::string mmhPlayer::getTrackerType()
 {
