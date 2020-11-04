@@ -256,6 +256,7 @@ void BVHPlayer::track()
 
 	m_isDataAvailable = true;
 }
+
 std::string BVHPlayer::getTrackerType()
 {
 	return "BVH";

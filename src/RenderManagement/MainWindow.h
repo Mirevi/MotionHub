@@ -157,6 +157,11 @@ private:
 	 *  tracking state for changing icon
 	 */
 	bool m_isTracking = false;
+
+	/*!
+	 *  recording state for changing icon
+	 */
+	bool m_isRecording = false;
 	/*!
 	 * true when tracker is selected and inspector isn't empty
 	 */
@@ -196,6 +201,9 @@ private:
 	 *  switches icon of the start/stop button to the opposite icon
 	 */
 	void toggleTrackingButtons();
+
+	void toggleRecButtons();
+
 
 	std::map<std::string, QLineEdit*> m_inputFieldPool;
 

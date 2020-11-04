@@ -7,5 +7,6 @@
         <file>ressources/icons/icons8-stop-32_converted.png</file>
         <file>ressources/icons/mmh-icon.png</file>
         <file>ressources/icons/64px-Location_dot_red.svg.png</file>
+        <file>ressources/icons/circle-xxl.png</file>
     </qresource>
 </RCC>

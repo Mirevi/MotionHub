@@ -653,6 +653,9 @@ void MainWindow::slotRecord()
 	if (m_refTrackerManager->isTracking())
 	{		
 		Recorder::instance().toggleRecording();
+
+		m_isRecording = !m_isRecording;
+		toggleRecButtons();
 	}
 
 }
@@ -1029,6 +1032,43 @@ void MainWindow::toggleTrackingButtons()
 
 	// set icon
 	ui->btn_startTracker->setIcon(icon);
+
+}
+
+// toogle icon of start / stop tracking button
+void MainWindow::toggleRecButtons()
+{
+
+	QIcon icon;
+
+	// if tracking is false set icon to start arrow and enbable add / remove tracker buttons
+	if (m_isRecording)
+	{
+		//load stop button
+		icon.addFile(QStringLiteral(":/ressources/icons/circle-xxl.png"), QSize(), QIcon::Normal, QIcon::Off);
+
+		////disable add/remove buttons
+		//ui->btn_addTracker->setDisabled(true);
+		//ui->btn_removeTracker->setDisabled(true);
+		//ui->btn_addGroup->setDisabled(true);
+
+
+	}
+	else
+	{
+		//load start button
+		icon.addFile(QStringLiteral(":/ressources/icons/64px-Location_dot_red.svg.png"), QSize(), QIcon::Normal, QIcon::Off);
+
+		////enable add/remove buttons
+		//ui->btn_addTracker->setDisabled(false);
+		//ui->btn_removeTracker->setDisabled(false);
+		//ui->btn_addGroup->setDisabled(false);
+
+	}
+
+	// set icon
+	//ui->btn_Record->setIcon(icon);
+	ui->btn_Record->setIcon(icon);
 
 }
 

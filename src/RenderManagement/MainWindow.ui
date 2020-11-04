@@ -762,7 +762,7 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
               <string>Add group</string>
              </property>
             </widget>
-            <widget class="QPushButton" name="btn_startTracker_2">
+            <widget class="QPushButton" name="btn_Record">
              <property name="geometry">
               <rect>
                <x>250</x>
@@ -1500,7 +1500,7 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
    </hints>
   </connection>
   <connection>
-   <sender>btn_startTracker_2</sender>
+   <sender>btn_Record</sender>
    <signal>pressed()</signal>
    <receiver>MainWindow</receiver>
    <slot>slotRecord()</slot>

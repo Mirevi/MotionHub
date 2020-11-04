@@ -72,6 +72,7 @@ void MotionHub::update()
 					// update ui if skeleton was added or removed from pool
 					if ((*itTracker)->hasSkeletonPoolChanged())
 					{
+						//Console::log("skeleton pool has changed!");
 
 						//update UI
 						m_uiManager->getMainWindow()->update();	
@@ -81,7 +82,9 @@ void MotionHub::update()
 
 					}
 
-					m_uiManager->getMainWindow()->getOglRenderer()->updateSkeletonMeshTransform(); //ERROR
+					//Console::log("MotionHub::update(): number of skeletons = " + toString(m_trackerManager->getTrackerRefAt(0)->getProperties()->countDetectedSkeleton));
+
+					m_uiManager->getMainWindow()->getOglRenderer()->updateSkeletonMeshTransform();
 
 					// reset bool and start new tracking cycle
 					(*itTracker)->resetIsDataAvailable();

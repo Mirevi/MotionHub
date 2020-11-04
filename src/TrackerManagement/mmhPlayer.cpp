@@ -48,16 +48,14 @@ void mmhPlayer::start()
 	m_properties->isTracking = true;
 
 
-	//create new skeleton and add it to the pool
-	m_skeletonPool.insert({ 0, Skeleton(0) });
-	m_currSkeleton = &m_skeletonPool[0];
+	////create new skeleton and add it to the pool
+	//m_skeletonPool.insert({ 0, Skeleton(0) });
+	//m_currSkeleton = &m_skeletonPool[0];
 
 	//there schould only be one skeleton in the file
 	m_properties->countDetectedSkeleton = m_skeletonPool.size();
 	//skeleton was added/removed, so UI updates
 	m_hasSkeletonPoolChanged = true;
-
-	Console::log("skeleton added to pool!");
 
 
 
@@ -171,10 +169,12 @@ void mmhPlayer::update()
 
 void mmhPlayer::track()
 {
+
 	if (m_currFrameIdx >= m_frameCount)
 	{
 		m_currFrameIdx = 0;
 	}
+
 
 
 	m_currFrame = m_session.getFrame(m_currFrameIdx++);
@@ -183,11 +183,21 @@ void mmhPlayer::track()
 
 	//Console::log("mmhPlayer::track(): skeleton count = " + toString(m_currFrame->m_skeletons.size()));
 
+	//get the current number of skeletons
+	m_properties->countDetectedSkeleton = m_currFrame->m_skeletons.size();
 
+	if (m_properties->countDetectedSkeleton != m_skeletonPool.size())
+	{
+		m_hasSkeletonPoolChanged = true;
+		m_isDataAvailable = true;
 
-	//skelIdx = 0;
-		
+		//Console::log("mmhPlayer::track(): countDetectedSkeleton = " + toString(m_properties->countDetectedSkeleton));
+	}
+
+	//clear the old skeletons from pool
 	m_skeletonPool.clear();
+
+
 
 	//loop over skeletons and add them to pool
 	for (auto itSkeleton = m_currFrame->m_skeletons.begin(); itSkeleton != m_currFrame->m_skeletons.end(); itSkeleton++)
@@ -200,13 +210,10 @@ void mmhPlayer::track()
 
 	}
 
-
 	//Console::log("mmhPlayer::track(): skeleton count = " + toString(m_skeletonPool.size()));
 
-
-
-
 }
+
 std::string mmhPlayer::getTrackerType()
 {
 	return "MMH";

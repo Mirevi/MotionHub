@@ -232,7 +232,6 @@ void GlWidget::updateSkeletonMeshCount()
 	std::vector<Tracker*> trackerTempCopy = m_refTrackerManager->getPoolTracker();
 	m_refTrackerManager->getTrackerPoolLock()->lock();
 
-	Console::log("GlWidget::updateSkeletonMeshCount(): trackerTempCopy.size() = " + toString(trackerTempCopy.size()));
 
 
 	for (auto itTracker = trackerTempCopy.begin(); itTracker != trackerTempCopy.end(); itTracker++)
@@ -246,16 +245,13 @@ void GlWidget::updateSkeletonMeshCount()
 			int skeletonPoolSize = skeletonPoolTempCopy.size();
 			int skeletonMeshPoolSize = m_skeletonMeshPool.find((*itTracker)->getProperties()->id)->second.size();
 
-			Console::log("GlWidget::updateSkeletonMeshCount(): skeletonMeshPoolSize = " + toString(skeletonMeshPoolSize) + ", skeletonPoolSize = " + toString(skeletonPoolSize));
 
 			// add skeleton mesh to skeleton mesh pool
 			if (skeletonMeshPoolSize < skeletonPoolSize)
 			{
-				Console::log("GlWidget::updateSkeletonMeshCount(): before while");
 
 				while (m_skeletonMeshPool.find((*itTracker)->getProperties()->id)->second.size() < skeletonPoolTempCopy.size())
 				{
-					Console::log("GlWidget::updateSkeletonMeshCount(): push_back()");
 					m_skeletonMeshPool.find((*itTracker)->getProperties()->id)->second.push_back(SkeletonMesh());
 
 				}
@@ -306,7 +302,16 @@ void GlWidget::updateSkeletonMeshTransform()
 
 					// get current joint mesh 
 					//###ERROR### -> m_skeletonMeshPool.second is empty
-					Cube* currJoint = m_skeletonMeshPool.find((*itTracker)->getProperties()->id)->second.at(indexSkeleton).m_joints[indexJoint];
+
+					auto currMeshTracker = m_skeletonMeshPool.find((*itTracker)->getProperties()->id);
+
+
+					if (currMeshTracker->second.size() == 0)
+					{
+						return;
+					}
+
+					Cube* currJoint = currMeshTracker->second.at(indexSkeleton).m_joints[indexJoint];
 
 					// set joint position and rotation
 					currJoint->setPosition(itJoint->second.getJointPosition());
