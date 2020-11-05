@@ -247,6 +247,19 @@ void ConfigManager::createNewConfigFile()
 	tinyxml2::XMLElement* ySclOptiTrack = newXmlDoc.NewElement("ySclOptiTrack");
 	tinyxml2::XMLElement* zSclOptiTrack = newXmlDoc.NewElement("zSclOptiTrack");
 
+	//create Xsens offset Elements to startup
+	tinyxml2::XMLElement* xPosXsens = newXmlDoc.NewElement("xPosXsens");
+	tinyxml2::XMLElement* yPosXsens = newXmlDoc.NewElement("yPosXsens");
+	tinyxml2::XMLElement* zPosXsens = newXmlDoc.NewElement("zPosXsens");
+
+	tinyxml2::XMLElement* xRotXsens = newXmlDoc.NewElement("xRotXsens");
+	tinyxml2::XMLElement* yRotXsens = newXmlDoc.NewElement("yRotXsens");
+	tinyxml2::XMLElement* zRotXsens = newXmlDoc.NewElement("zRotXsens");
+	
+	tinyxml2::XMLElement* xSclXsens = newXmlDoc.NewElement("xSclXsens");
+	tinyxml2::XMLElement* ySclXsens = newXmlDoc.NewElement("ySclXsens");
+	tinyxml2::XMLElement* zSclXsens = newXmlDoc.NewElement("zSclXsens");
+
 	//set Azure values
 	xPosAzure->SetText("0");
 	yPosAzure->SetText("1.175");
@@ -269,6 +282,17 @@ void ConfigManager::createNewConfigFile()
 	ySclOptiTrack->SetText("1");
 	zSclOptiTrack->SetText("1");
 
+	//set Xsens values -- TO DO!!
+	xPosXsens->SetText("0");
+	yPosXsens->SetText("0");
+	zPosXsens->SetText("0");
+	xRotXsens->SetText("0");
+	yRotXsens->SetText("0");
+	zRotXsens->SetText("0");
+	xSclXsens->SetText("0");
+	ySclXsens->SetText("0");
+	zSclXsens->SetText("0");
+
 	//add Azure to node
 	pStartup->InsertEndChild(xPosAzure);
 	pStartup->InsertEndChild(yPosAzure);
@@ -290,6 +314,17 @@ void ConfigManager::createNewConfigFile()
 	pStartup->InsertEndChild(xSclOptiTrack);
 	pStartup->InsertEndChild(ySclOptiTrack);
 	pStartup->InsertEndChild(zSclOptiTrack);
+
+	//add Xsens to node
+	pStartup->InsertEndChild(xPosXsens);
+	pStartup->InsertEndChild(yPosXsens);
+	pStartup->InsertEndChild(zPosXsens);
+	pStartup->InsertEndChild(xRotXsens);
+	pStartup->InsertEndChild(yRotXsens);
+	pStartup->InsertEndChild(zRotXsens);
+	pStartup->InsertEndChild(xSclXsens);
+	pStartup->InsertEndChild(ySclXsens);
+	pStartup->InsertEndChild(zSclXsens);
 
 
 

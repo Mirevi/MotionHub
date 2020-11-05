@@ -82,6 +82,20 @@ int TrackerManager::createTracker(TrackerType type)
 
 		}
 
+		case xsens:
+		{
+
+			//create new Tracker with current ID
+			tempTracker = new XSTracker(id, m_networkManager, m_configManager);
+
+			//sendSkeletonDelegate() funcPtr pass through
+			//tempTracker->setSendSkeletonDelegate(m_sendSkeletonDelegate);
+
+
+			break;
+
+		}
+
 		case group:
 		{
 
