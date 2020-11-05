@@ -29,6 +29,7 @@ int TrackerManager::createTracker(TrackerType type)
 	//lock the tracker pool
 	m_trackerPoolLock.lock();
 
+	Console::log("Switch Type TrackerType:    " + type);
 
 	// create new tracker based on the tracker type
 	switch (type)
