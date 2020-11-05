@@ -105,7 +105,7 @@ getsTheDepsNameFromURL("${URL}")
 set(CHECK_IF_DEPS_EXIST "${CURRENT_DEPS_PATH}/include/OscTypes.h")
 FIND_PACKAGE( OSCPack REQUIRED )
 
-# xSens MVN development pack
+# xSens MVN development pack -> If package is updated, update of copying the binaries below is necessary
 set( EXPECTED_SHA256 16c8f756a41f7ed92243f0892350f725e5d0f7263724e997e59310e85669b413 ) 
 set(CURRENT_DEPS_PATH ${CMAKE_BINARY_DIR}/../deps/xsens-mvn-1.0.6/) 
 set( URL https://claymore.mirevi.com/mirevimotionhub/xsens-mvn-1.0.6.zip )
@@ -138,6 +138,7 @@ file(COPY ${K4ABT_LIBRARIES_DIR}/../bin/dnn_model_2_0.onnx 				DESTINATION ${CMA
 file(COPY ${K4ABT_INCLUDE_DIR}/../../tools/cublas64_100.dll				DESTINATION ${CMAKE_BINARY_DIR}/bin)
 file(COPY ${K4ABT_INCLUDE_DIR}/../../tools/cudart64_100.dll				DESTINATION ${CMAKE_BINARY_DIR}/bin)
 file(COPY deps/cudnn101windows10x64_76224/bin/cudnn64_7.dll 			DESTINATION ${CMAKE_BINARY_DIR}/bin)
+file(COPY deps/xsens-mvn-1.0.6/bin/xstypes64.dll						DESTINATION ${CMAKE_BINARY_DIR}/bin)
 
 #file(REMOVE_RECURSE ${K4ABT_INCLUDE_DIR}/../../tools/)
 #file(REMOVE_RECURSE ${K4A_INCLUDE_DIR}/../../tools/)
