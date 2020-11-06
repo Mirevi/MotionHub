@@ -59,9 +59,10 @@ public:
 	 * sends image landmarks data
 	 *
 	 * \param imageLandmarks input image landmarks data
+	 * \param tranmissionId The transmission id to identify the sender at the destination
 	 * \param uri messages title
 	 */
-	virtual void sendImageLandmarks(std::vector<Landmark>* imageLandmarks, const char* uri) = 0;
+	virtual void sendImageLandmarks(std::vector<Landmark>* imageLandmarks, int tranmissionId, const char* uri) = 0;
 
 	
 protected:

@@ -36,11 +36,11 @@ void NetworkManager::sendSkeletonPool(std::map<int, Skeleton>* skeletonPool, int
 	}
 }
 
-void NetworkManager::sendImageLandmarks(std::vector<Landmark>* imageLandmarks, int senderId)
+void NetworkManager::sendImageLandmarks(std::vector<Landmark>* imageLandmarks, int tranmissionId, int senderId)
 {
 	if (imageLandmarks != nullptr && m_poolSender[senderId]->isActive()) {
 		
-		m_poolSender[senderId]->sendImageLandmarks(imageLandmarks, DEFAULT_LANDMARK_URI);
+		m_poolSender[senderId]->sendImageLandmarks(imageLandmarks, tranmissionId, DEFAULT_LANDMARK_URI);
 
 	}
 }

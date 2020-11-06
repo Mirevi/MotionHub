@@ -41,9 +41,10 @@ public:
 	/*!
 	 * sends the imgage landmarks with a specified sender
 	 * \param imgageLandmarks imgage landmarks to send
+	 * \param tranmissionId The transmission id to identify the sender at the destination
 	 * \param senderId the id of the sender
 	 */
-	void sendImageLandmarks(std::vector<Landmark>* imgageLandmarks, int senderId);
+	void sendImageLandmarks(std::vector<Landmark>* imgageLandmarks, int tranmissionId, int senderId);
 
 	void createOSCSender(int ID);
 

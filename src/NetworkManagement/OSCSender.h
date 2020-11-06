@@ -57,8 +57,9 @@ public:
 	 * sends image landmarks data via OSC protocol
 	 *
 	 * \param imageLandmarks input image landmarks data
+	 * \param tranmissionId The transmission id to identify the sender at the destination
 	 * \param uri messages title
 	 */
-	void sendImageLandmarks(std::vector<Landmark>* imageLandmarks, const char* uri) override;
+	void sendImageLandmarks(std::vector<Landmark>* imageLandmarks, int tranmissionId, const char* uri) override;
 
 };

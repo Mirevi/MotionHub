@@ -615,7 +615,6 @@ void MainWindow::slotOpenGANCapture()
 
 	m_RGBDCaptureForGANWindow->setModal(true);
 	m_RGBDCaptureForGANWindow->exec();
-	std::cout << "LKjhkljkslbd" << std::endl;
 
 }
 

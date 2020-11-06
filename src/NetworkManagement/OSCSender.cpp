@@ -82,13 +82,15 @@ void OSCSender::sendSkeleton(Skeleton* skeleton, const char* uri, int trackerID)
 	}
 }
 
-void OSCSender::sendImageLandmarks(std::vector<Landmark>* imageLandmarks, const char* uri)
+void OSCSender::sendImageLandmarks(std::vector<Landmark>* imageLandmarks, int tranmissionId, const char* uri)
 {
 	if (imageLandmarks == nullptr)
 		return;
 
 	//begin bundle
 	*m_packetStream << osc::BeginBundleImmediate << osc::BeginMessage(uri);
+
+	*m_packetStream << tranmissionId;
 
 	for (int i = 0; i < imageLandmarks->size(); i++) {
 		Landmark* current = &imageLandmarks->at(i);

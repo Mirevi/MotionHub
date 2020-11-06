@@ -9,7 +9,7 @@
 #include <string>
 #include <limits>
 #include <fstream>
-#include <QLabel>
+#include <filesystem>
 #include <QtWidgets/QDialog>
 #include <QtWidgets/QLineEdit>
 #include <opencv2/core/mat.hpp>
@@ -34,13 +34,25 @@ public:
 	~RGBDCaptureForGANWindow();
 
 private slots:
-	void initiateAzureKinect();
-	void startCapture();
-	void extractAndSaveFeatureImages();
-	void startLandmarkTransmission();
-	void startLandmarkTransmissionWithCapturedData();
+	void reject();
+	void onGuiValueChanged();
+	void onInitializeAzureKinectTriggered();
+	void onStopTaskAndCloseDevice();
+	void onStartCaptureTriggered();
+	void onStartLandmarkTransissionTriggered();
+	void onStartLandmarkTransissionWithCapturedDataTriggered();
 
 private:
+
+	enum class State {
+		UNINITIALIZED,
+		IS_INITIALIZING,
+		INITIALIZED,
+		CAPTURING,
+		TRANSMITTING,
+		TRANSMITTING_FILE,
+		ENDING,
+	};
 
 	enum class ImageType {
 		COLOR_IMAGE,
@@ -49,43 +61,61 @@ private:
 		FEATURE_IMAGE
 	};
 
-	enum class Mode {
-		SAVE,
-		TRANSMISSION
-	};
+	void updateGui();
+	void initializeFeatureLineColor();
 
+	//threads
+	std::shared_ptr<std::thread> m_taskThread;
+	State m_state;
+
+	void taskThreadMethod();
+	void initiateAzureKinect();
+	void updateUiLineEditBoundaries();
+
+	//preview
+	void showAzurePreview();
+
+	//capture
+	void startCapture();
+	void prepareSaveDirLocation();
 	boolean currentCaptureIsValid(k4a::capture* capture);
-
+	void processColorImage();
+	void processDepthImage();
+	void processInfraredImage();
+	void processFeatureImage();
+	void cropAndResizeMat(std::shared_ptr<cv::Mat>* mat);
+	void saveProcessedCapturedData();
 	void saveColorImage();
 	void saveDepthImage();
 	void saveIrImage();
+	void saveFeatureImage();
+
+	//feature image generation
 	void extractJointLandmarks();
 	void saveJointLandmarks();
-
-	//capture
-	//feature image generation
-	//transmission
-	//general
-	void extractLandmarkFileMetadata();
-	void saveCropRegion();
-	void saveMinMaxAxisValues();
-	void readMinMaxAxisValues();
-	void calculateNormalizationRatios();
-	void processLandmarkFileData(float startTime, Mode mode);
-	bool stringStartsWith(std::string* string, std::string startsWith);
-	void splitDataString(std::string fullString, std::string* splittedString);
-	void calculateNormalizedLandmarks();
-	void mapNormalizedToImageLandmarks();
-	void sendImageLandmarksOverNetwork();
-	void saveFeatureImage();
 	void drawFeaturesToMatrix();
 	void continuousLineDrawingBetweenLandmarks(int start, int end);
 	void drawSingleLineBetweenLandmarks(int landmarkIndexStart, int landmarkIndexEnd);
 	void drawPixelWithDepthTest(int x, int y, cv::Vec4b& color);
 
+	//transmission
+	void startLandmarkTransmission();
+	void startLandmarkTransmissionWithCapturedData();
+	void countFramesInLandmarkFile();
+	void processLandmarkFileData();
+	bool stringStartsWith(std::string* string, std::string startsWith);
+	void splitDataString(std::string fullString, std::string* splittedString);
+	void sendImageLandmarksOverNetwork();
+
+	//general
+	boolean convertJointLandmarksToColorImageLandmarks();
+	void mapColorLandmarksToFeatureImageLandmarks();
 	std::string imageFilePath(ImageType type);
-	void printCaptureConsoleInfos(float startTime, float& lastEndTime, int currentFrame, int frameCount);
-	void printSkipFramesToConsole(float startTime);
+
+	//console + show message in gui
+	void printTaskConsoleInfos(int currentFrame = -1, int frameCount = -1);
+	void printSkipFramesToConsole();
+	void printAndShowMessage(std::string message);
 	float differenceInSeconds(float startTime, float endTime);
 
 	Ui::RGBDCaptureForGANWindow*ui;
@@ -94,60 +124,58 @@ private:
 	ConfigManager* m_configManager;
 	NetworkManager* m_networkManager;
 	int m_senderId;
+	int m_transmissionId;
 	int m_framesToCapture;
 	int m_clippingDistance;
-	int m_landmarkImageSize;
-	int m_landmarkImagePadding;
+	cv::Size m_imageSize;
+	cv::Rect m_cropRegion;
 	std::string m_saveIdPrefix;
-	std::string m_dirSavePath;
+	std::string m_dataDirPath;
+	std::string m_saveDirPath;
 	cv::Vec4b m_featureLineColors[31];
-
-	//cv mats
-	cv::Mat m_colorMat;
-	cv::Mat m_depthMat;
-	cv::Mat m_depthMat8;
-	cv::Mat m_irMat;
+	bool m_showColorImagePreview;
+	bool m_showDepthImagePreview;
+	bool m_showFeatureImagePreview;
 
 	//azure kinect
 	k4a::device m_azureKinectSensor;
 	k4a_device_configuration_t m_config;
 	k4a::calibration m_calibration;
 	k4a::transformation m_transformation;
+	cv::Size m_colorResolution;
 	//azure body tracker
 	k4abt::tracker m_tracker;
 	k4abt_tracker_configuration_t m_trackerConfig;
 	k4abt::frame m_bodyFrame;
 
-	//console
-	float m_totalSubtaskTime;
-	int m_skippedFrames;
+	//cv mats
+	std::shared_ptr<cv::Mat> m_colorMat;
+	std::shared_ptr<cv::Mat> m_depthMat;
+	std::shared_ptr<cv::Mat> m_irMat;
+	std::shared_ptr<cv::Mat> m_featureMatrix;
 
 	//capture
-	int m_currentCaptureCount;
 	k4a::capture* m_currentCapture;
-
-	//saving
-	std::thread* m_colorImageSavingThread;
-	std::thread* m_depthImageSavingThread;
-	std::thread* m_infraredImageSavingThread;
-	std::thread* m_featureImageSavingThread;
-
-	//feature map calculation
-	std::string m_cropRegionFilePath;
-	std::string m_minMaxAxisValuesWriterPath;
-	std::string m_minMaxAxisValuesReaderPath;
+	k4a::image m_transformedDepthImage;
+	std::pair<k4a::image, k4a::image> m_depthAndIrImagePair;
 	std::ofstream m_jointLandmarkWriter;
 	std::ifstream m_jointLandmarkReader;
-	Landmark m_jointLandmarks[K4ABT_JOINT_COUNT];
-	Landmark m_normalizedLanmarks[K4ABT_JOINT_COUNT];
-	Landmark m_imageLandmarks[K4ABT_JOINT_COUNT];
-	Vector3 m_minPositionAxisValues;
-	Vector3 m_maxPositionAxisValues;
-	float m_xNormalizationOffset;
-	float m_yNormalizationOffset;
-	float m_normalizationMaxSpaceSize;
-	int m_dataSetCount;
+
+	//transmission
+	int m_landmarkFileFrameCount;
 	std::string m_id;
+
+	//general
+	Landmark m_jointLandmarks[K4ABT_JOINT_COUNT];
+	Landmark m_colorImageLandmarks[K4ABT_JOINT_COUNT];
+	Landmark m_featureImageLandmarks[K4ABT_JOINT_COUNT];
 	int m_frameCounter;
-	cv::Mat m_featureMatrix;
+
+	//console
+	float m_startTime;
+	float m_endTime;
+	float m_subtaskStartTime;
+	float m_subtaskEndTime;
+	float m_totalSubtaskTime;
+	int m_skippedFrames;
 };
