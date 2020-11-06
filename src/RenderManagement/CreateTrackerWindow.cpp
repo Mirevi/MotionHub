@@ -47,9 +47,18 @@ void CreateTrackerWindow::slotCreateTracker()
 
 		case 1:
 		{
-			// create new azure kinect tracker and add tracker to the tracking manager tracker pool
+			// create new optitrack tracker and add tracker to the tracking manager tracker pool
 			id = m_refTrackerManager->createTracker(TrackerManager::optiTrack);
 						
+			break;
+
+		}
+
+		case 2:
+		{
+			// create new xsens tracker and add tracker to the tracking manager tracker pool
+			id = m_refTrackerManager->createTracker(TrackerManager::xsens);
+
 			break;
 
 		}
