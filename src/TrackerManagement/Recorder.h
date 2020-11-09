@@ -25,7 +25,7 @@ public:
 
 	void toggleRecording();
 	void addSkeletonsToFrame(std::map<int, Skeleton>* currSkeletons);
-	void nextFrame();
+	void nextFrame(float duration);
 
 
 

@@ -4,6 +4,7 @@
 
 #include "Skeleton.h"
 #include "tinyxml2.h"
+#include "TrackerManagement/bvh11.h"
 
 
 static const char* RECORD_PATH = "./data/";
@@ -30,7 +31,10 @@ public:
 	RecordingSession();
 	void addFrame(RecordingFrame frame, float duration);
 	void save();
+	void saveBVH();
 	void load(std::string filePath);
+	void loadBVH(std::string filePath);
+
 	int getFrameCount();
 	RecordingFrame* getFrame(int i);
 

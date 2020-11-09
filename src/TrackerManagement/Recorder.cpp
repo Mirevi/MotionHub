@@ -44,18 +44,17 @@ void Recorder::addSkeletonsToFrame(std::map<int, Skeleton>* currSkeletons)
 	//}
 }
 
-void Recorder::nextFrame()
+void Recorder::nextFrame(float duration)
 {
 
 	if (m_isRecording.load())
 	{
 
 		//Console::log("Recorder::nextFrame(): next Frame!");
-		float duration = Timer::getDuration();
+
 
 		m_currSession->addFrame(m_currFrame, duration);
-		m_currFrame = RecordingFrame();
-		Timer::reset();
+
 
 	}
 }
@@ -91,10 +90,15 @@ void Recorder::update()
 
 	while (m_isRecording)
 	{
-
+		
+		Timer::reset();
 		std::this_thread::sleep_for(std::chrono::milliseconds(FRAMETIME));
+		float duration = Timer::getDuration();
 
-		nextFrame();
+		nextFrame(duration);
+
+		m_currFrame = RecordingFrame();
+
 
 	}
 

@@ -162,6 +162,16 @@ void RecordingSession::save()
 
 }
 
+void RecordingSession::saveBVH()
+{
+
+	//bvh11::BvhObject* bvhObject = new bvh11::BvhObject("");
+
+
+
+}
+
+
 void RecordingSession::load(std::string filePath)
 {
 	tinyxml2::XMLDocument doc;
