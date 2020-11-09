@@ -67,15 +67,15 @@ void RGBDCaptureForGANWindow::updateGui()
 
 	ui->cb_visualizeDepth->setChecked(m_showDepthImagePreview);
 	if (m_showDepthImagePreview)
-		ui->cb_visualizeDepth->setText("Do Not Visualize Color");
+		ui->cb_visualizeDepth->setText("Do Not Visualize Depth");
 	else
-		ui->cb_visualizeDepth->setText("Visualize Color");
+		ui->cb_visualizeDepth->setText("Visualize Depth");
 
 	ui->cb_visualizeLandmarks->setChecked(m_showFeatureImagePreview);
 	if (m_showFeatureImagePreview)
-		ui->cb_visualizeLandmarks->setText("Do Not Visualize Color");
+		ui->cb_visualizeLandmarks->setText("Do Not Visualize Feature");
 	else
-		ui->cb_visualizeLandmarks->setText("Visualize Color");
+		ui->cb_visualizeLandmarks->setText("Visualize Feature");
 
 	//enable/disable
 	if (m_state == State::UNINITIALIZED) {
@@ -793,7 +793,7 @@ void RGBDCaptureForGANWindow::startLandmarkTransmission()
 			processColorImage();
 		if (m_showDepthImagePreview)
 			processDepthImage();
-		if (m_showDepthImagePreview) 
+		if (m_showFeatureImagePreview) 
 			processFeatureImage();
 	}
 
@@ -879,7 +879,7 @@ void RGBDCaptureForGANWindow::processLandmarkFileData()
 			mapColorLandmarksToFeatureImageLandmarks();
 			sendImageLandmarksOverNetwork();
 
-			if (m_showDepthImagePreview) {
+			if (m_showFeatureImagePreview) {
 				processFeatureImage(); 
 			}
 
