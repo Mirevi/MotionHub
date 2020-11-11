@@ -8,6 +8,7 @@ ${Cudnn_INCLUDE_DIR}
 ${NATNET_SDK_INCLUDE_DIR}
 ${OSCp_INCLUDE_DIR}
 ${EIGEN_INCLUDE_DIR}
+${XsensMVNSDK_INCLUDE_DIR}
 )
 
 
@@ -27,6 +28,7 @@ ${K4ABT_LIBRARIES_DIR}
 ${Cudnn_LIBRARIES_DIR}
 ${NATNET_SDK_LIBRARIES_DIR}
 ${OSCp_LIBRARIES_DIR}
+${XsensMVNSDK_LIBRARIES_DIR}
 )
 
 # Find includes in corresponding build directories
@@ -61,4 +63,5 @@ target_link_libraries(RenderManagement
 	debug NatNetLibStatic optimized NatNetLibStatic
 	#debug Qt5Core${CMAKE_DEBUG_POSTFIX} optimized Qt5Core
 	#debug Qt5Widgets${CMAKE_DEBUG_POSTFIX} optimized Qt5Widgets
+	debug xstypes64 optimized xstypes64
 )
