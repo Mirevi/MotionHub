@@ -8,7 +8,7 @@
 #include "MotionHubUtil/RecordingSession.h"
 
 //recording frametime in milliseconds
-static int FRAMETIME = 16;
+static int FRAMETIME = 10;
 
 
 
@@ -24,9 +24,9 @@ public:
 
 
 	void toggleRecording();
-	void addSkeletonsToFrame(std::map<int, Skeleton>* currSkeletons);
-	void nextFrame(float duration);
-
+	void addSkeletonsToFrame(std::map<int, Skeleton> currSkeletons);
+	void nextFrame();
+	bool isRecording();
 
 
 
@@ -56,6 +56,8 @@ private:
 	void stopRecording();
 
 	void update();
+
+	void recodFrame();
 
 
 	std::thread* m_recordingThread;

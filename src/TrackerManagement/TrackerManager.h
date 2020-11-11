@@ -13,6 +13,7 @@
 #include "BVHPlayer.h"
 #include "mmhPlayer.h"
 #include "TrackerGroup.h"
+#include "Recorder.h"
 
 /*!
  * \class TrackerManager
@@ -116,7 +117,7 @@ public:
 
 	int getBvhCurrFrame();
 
-
+	void writeSkeletonsToRecorder();
 
 	/*!
 	 * sets the pointer to sendSkeletonDelegate() in main.cpp

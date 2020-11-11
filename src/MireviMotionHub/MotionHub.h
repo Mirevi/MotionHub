@@ -73,5 +73,10 @@ private:
 
 	void updateTimeline();
 
+	void updateRecorderThread();
+
+	std::thread* m_recordingThread;
+
+
 
 };

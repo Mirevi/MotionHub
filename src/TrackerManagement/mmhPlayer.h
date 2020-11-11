@@ -4,6 +4,7 @@
 #include "MotionHubUtil/Console.h"
 #include "MotionHubUtil/Timer.h"
 #include <math.h>
+#include "Recorder.h"
 
 
 class mmhPlayer : public Tracker

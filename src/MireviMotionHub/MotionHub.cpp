@@ -25,7 +25,8 @@ MotionHub::MotionHub(int argc, char** argv)
 
 	m_uiManager		 = new UIManager(m_argc, m_argv, m_trackerManager, m_configManager);
 
-
+	m_recordingThread = new std::thread(&MotionHub::updateRecorderThread, this);
+	m_recordingThread->detach();
 
 	// start update loop
 	update();
@@ -138,3 +139,22 @@ void MotionHub::updateTimeline()
 
 }
 
+void MotionHub::updateRecorderThread()
+{
+	//wait frametime
+
+	while (true)
+	{
+
+		//record skeletons
+		if (Recorder::instance().isRecording())
+		{
+			//tell TrackerManager to record all active tracker
+			m_trackerManager->writeSkeletonsToRecorder();
+
+		}
+
+		//wait frametime - elapsed time
+		std::this_thread::sleep_for(std::chrono::milliseconds(FRAMETIME));
+	}
+}

@@ -260,7 +260,7 @@ void Tracker::update()
 
 		//send Skeleton Pool to NetworkManager
 		m_networkManager->sendSkeletonPool(&m_skeletonPool, m_properties->id);
-		Recorder::instance().addSkeletonsToFrame(&m_skeletonPool);
+		//Recorder::instance().addSkeletonsToFrame(&m_skeletonPool);
 
 
 	}

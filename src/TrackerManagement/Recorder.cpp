@@ -17,7 +17,7 @@ void Recorder::toggleRecording()
 
 
 
-void Recorder::addSkeletonsToFrame(std::map<int, Skeleton>* currSkeletons)
+void Recorder::addSkeletonsToFrame(std::map<int, Skeleton> currSkeletons)
 {
 
 	//std::stringstream ss;
@@ -29,7 +29,7 @@ void Recorder::addSkeletonsToFrame(std::map<int, Skeleton>* currSkeletons)
 	{
 		//Console::log(" Recorder::addSkeletonsToFrame()");
 
-		for (auto itSkeleton = currSkeletons->begin(); itSkeleton != currSkeletons->end(); itSkeleton++)
+		for (auto itSkeleton = currSkeletons.begin(); itSkeleton != currSkeletons.end(); itSkeleton++)
 		{
 
 			m_currFrame.addSkeleton(itSkeleton->second);
@@ -44,7 +44,7 @@ void Recorder::addSkeletonsToFrame(std::map<int, Skeleton>* currSkeletons)
 	//}
 }
 
-void Recorder::nextFrame(float duration)
+void Recorder::nextFrame()
 {
 
 	if (m_isRecording.load())
@@ -52,28 +52,41 @@ void Recorder::nextFrame(float duration)
 
 		//Console::log("Recorder::nextFrame(): next Frame!");
 
+		float duration = Timer::getDuration();
+		Timer::reset();
 
 		m_currSession->addFrame(m_currFrame, duration);
 
-
+		m_currFrame = RecordingFrame();
 	}
 }
 
 
 void Recorder::startRecording()
 {
+	if (!m_isRecording.load())
+	{
 
-	m_currFrame = RecordingFrame();
-	m_isRecording.store(true);
+	
+		m_currFrame = RecordingFrame();
+		m_isRecording.store(true);
+		
 
 
 
-	m_currSession = new RecordingSession();
+		m_currSession = new RecordingSession();
 
-	m_recordingThread = new std::thread(&Recorder::update, this);
-	m_recordingThread->detach();
+		//m_recordingThread+ = new std::thread(&Recorder::update, this);
+		//m_recordingThread->detach();
 
-	Console::log("Recorder::startRecording()");
+		Console::log("Recorder::startRecording()");
+		Timer::reset();
+	}
+	else
+	{
+		Console::logError("Recorder::startRecording(): Recorder is already running");
+	}
+
 }
 
 void Recorder::stopRecording()
@@ -88,19 +101,21 @@ void Recorder::stopRecording()
 void Recorder::update()
 {
 
-	while (m_isRecording)
-	{
-		
-		Timer::reset();
-		std::this_thread::sleep_for(std::chrono::milliseconds(FRAMETIME));
-		float duration = Timer::getDuration();
+	//while (m_isRecording)
+	//{
+	//	
+	//	Timer::reset();
+	//	std::this_thread::sleep_for(std::chrono::milliseconds(FRAMETIME));
+	//	float duration = Timer::getDuration();
 
-		nextFrame(duration);
+	//	//Console::log("duration: " + toString(duration));
 
-		m_currFrame = RecordingFrame();
+	//	nextFrame(duration);
+
+	//	m_currFrame = RecordingFrame();
 
 
-	}
+	//}
 
 }
 
@@ -110,5 +125,12 @@ Recorder& Recorder::instance()
 	return _instance;
 }
 
+void Recorder::recodFrame()
+{
 
+}
 
+bool Recorder::isRecording()
+{
+	return m_isRecording.load();
+}
