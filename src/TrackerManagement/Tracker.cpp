@@ -165,6 +165,25 @@ std::map<int, Skeleton> Tracker::getSkeletonPoolCache()
 
 }
 
+std::map<int, Skeleton> Tracker::getSkeletonPool()
+{
+
+	//lock skeleton pool for the case, that cacheSkeletonData() is called while this method reads from the cache
+	m_skeletonPoolLock.lock();
+
+	//copy cache to local copy, so we can unlock the skeleton pool befor return
+	std::map<int, Skeleton> skeletonPoolCacheCopy = m_skeletonPool;
+
+
+	m_skeletonPoolLock.unlock();
+
+	//Console::log("Tracker::getSkeletonPoolCache(): pool size= " + toString(skeletonPoolCacheCopy.size()));
+
+
+	return skeletonPoolCacheCopy;
+
+}
+
 int Tracker::getCamID()
 {
 

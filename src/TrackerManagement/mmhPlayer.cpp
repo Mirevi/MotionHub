@@ -135,6 +135,7 @@ void mmhPlayer::update()
 
 		Timer::reset();
 
+
 		if (!m_timelineDragging)
 		{
 			

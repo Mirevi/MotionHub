@@ -421,12 +421,7 @@ void TrackerManager::writeSkeletonsToRecorder()
 			//add skeletons to Recording Frame, use cache because thread issues
 			Recorder::instance().addSkeletonsToFrame((*itTracker)->getSkeletonPoolCache());
 
-			////loop over skeletons and send data to Recorder
-			//for (auto itSkeleton = (*itTracker)->getSkeletonPoolCache().begin(); itSkeleton != (*itTracker)->getSkeletonPoolCache().end(); itSkeleton++)
-			//{
-			//	//send skeleton to Recorder
-			//	itSkeleton->second;
-			//}
+
 
 		}
 

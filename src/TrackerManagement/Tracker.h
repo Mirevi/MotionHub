@@ -135,10 +135,12 @@ public:
 	 */
 
 	/*!
-	 * getter for the trackers skeleton pool
-	 * \return the trackers skeleton pool
+	 * getter for the trackers skeleton pool cache
+	 * \return the trackers skeleton pool cache by value
 	 */
 	virtual std::map<int, Skeleton> getSkeletonPoolCache();
+
+	virtual std::map<int, Skeleton> getSkeletonPool();
 
 	/*!
 	 * recalculates the update matrix
