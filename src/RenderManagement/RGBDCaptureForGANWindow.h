@@ -90,7 +90,7 @@ private:
 	void saveIrImage();
 	void saveFeatureImage();
 
-	//feature image generation
+	//feature image generation 
 	void extractJointLandmarks();
 	void saveJointLandmarks();
 	void drawFeaturesToMatrix();
