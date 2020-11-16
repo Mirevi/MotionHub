@@ -71,12 +71,12 @@ void XSTracker::start()
 	createClient(iConnectionType);
 
 
-	//get reference to the frame data
-	m_refData = m_dataHandlerManager->getData();
+	////get reference to the frame data
+	//m_refData = m_dataHandlerManager->getData();
 
-	// start tracking thread and detach the thread from method scope runtime
-	m_trackingThread = new std::thread(&XSTracker::update, this);
-	m_trackingThread->detach();
+	//// start tracking thread and detach the thread from method scope runtime
+	//m_trackingThread = new std::thread(&XSTracker::update, this);
+	//m_trackingThread->detach();
 
 }
 
@@ -104,6 +104,27 @@ void XSTracker::init()
 }
 
 
+void printDatagram(const std::vector<QuaternionDatagram::Kinematics>& m_data)
+{
+	//here the data pelase
+
+	for (int i = 0; i < m_data.size(); i++)
+	{
+		// Position
+		std::cout << "Segment Position: " << i << " :  (";
+		std::cout << "x: " << m_data.at(i).position[0] << ", ";
+		std::cout << "y: " << m_data.at(i).position[1] << ", ";
+		std::cout << "z: " << m_data.at(i).position[2] << ")" << std::endl;
+
+		// Quaternion Orientation
+		std::cout << "Quaternion Orientation: " << i << " :  (";
+		std::cout << "re: " << m_data.at(i).orientation[0] << ", ";
+		std::cout << "i: " << m_data.at(i).orientation[1] << ", ";
+		std::cout << "j: " << m_data.at(i).orientation[2] << ", ";
+		std::cout << "k: " << m_data.at(i).orientation[3] << ")" << std::endl << std::endl;
+	}
+}
+
 int XSTracker::createClient(int iConnectionType)
 {
 
@@ -114,75 +135,72 @@ int XSTracker::createClient(int iConnectionType)
 
 	std::cout << "Das ist der erste Build-Versuch: \nWaiting to receive packets from the client on port " << port << " ..." << std::endl << std::endl;
 
-	//UdpServer udpServer(hostDestinationAddress, (uint16_t)port);
+	UdpServer udpServer(hostDestinationAddress, (uint16_t)port, &printDatagram);
 
-	////m_UdpServer = new UdpServer(hostDestinationAddress, (uint16_t)port);
-	//m_UdpServer(hostDestinationAddress, (uint16_t)port);
-	
+	while (!_kbhit())
+		XsTime::msleep(10);
 
-	//while (!_kbhit())
-	//	XsTime::msleep(10);
 
 	// create NatNet client
-	m_client = new NatNetClient(iConnectionType);
+	//m_client = new NatNetClient(iConnectionType);
 
-	// set the callback handlers
-	m_client->SetVerbosityLevel(Verbosity_Warning);
-	m_client->SetMessageCallback(MessageHandler);
-
-
-
-	//create dummy object for MessageHandler
-	m_dataHandlerManager = new DataHandlerManager(m_properties);
-
-	//set callback with dummy object
-	m_client->SetDataCallback(m_dataHandlerManager->DataHandler, m_client);	// this function will receive data from the server
+	//// set the callback handlers
+	//m_client->SetVerbosityLevel(Verbosity_Warning);
+	//m_client->SetMessageCallback(MessageHandler);
 
 
 
-	// print version info
-	unsigned char ver[4];
-	m_client->NatNetVersion(ver);
+	////create dummy object for MessageHandler
+	//m_dataHandlerManager = new DataHandlerManager(m_properties);
 
-	Console::log("XSTracker::createClient(): Created NatNet Client (NatNet ver. " + std::to_string(ver[0]) + "." + std::to_string(ver[1]) + "." + std::to_string(ver[2]) + "." + std::to_string(ver[3]) + ")");
+	////set callback with dummy object
+	//m_client->SetDataCallback(m_dataHandlerManager->DataHandler, m_client);	// this function will receive data from the server
 
-	// Init Client and connect to NatNet server
-	// to use NatNet default port assignments
-	int retCode = m_client->Initialize(szMyIPAddress, szServerIPAddress);
 
-	// to use a different port for commands and/or data:
-	if (retCode != ErrorCode_OK)
-	{
 
-		Console::log("OTTracker::createClient(): Unable to connect to server. Error code: " + std::to_string(retCode) + ". Exiting");
-		return ErrorCode_Internal;
+	//// print version info
+	//unsigned char ver[4];
+	//m_client->NatNetVersion(ver);
 
-	}
-	else
-	{
-		// get # of analog samples per mocap frame of data
-		void* pResult;
-		int ret = 0;
-		int nBytes = 0;
-		ret = m_client->SendMessageAndWait("AnalogSamplesPerMocapFrame", &pResult, &nBytes);
+	//Console::log("XSTracker::createClient(): Created NatNet Client (NatNet ver. " + std::to_string(ver[0]) + "." + std::to_string(ver[1]) + "." + std::to_string(ver[2]) + "." + std::to_string(ver[3]) + ")");
 
-		if (ret == ErrorCode_OK)
-		{
-			analogSamplesPerMocapFrame = *((int*)pResult);
-			Console::log("OTTracker::createClient(): Analog Samples Per Mocap Frame : " + std::to_string(analogSamplesPerMocapFrame) + ".");
-		}
+	//// Init Client and connect to NatNet server
+	//// to use NatNet default port assignments
+	//int retCode = m_client->Initialize(szMyIPAddress, szServerIPAddress);
 
-		// print server info
-		sServerDescription ServerDescription;
-		memset(&ServerDescription, 0, sizeof(ServerDescription));
-		m_client->GetServerDescription(&ServerDescription);
-		if (!ServerDescription.HostPresent)
-		{
-			Console::log("OTTracker::createClient(): Unable to connect to server. Host not present. Exiting.");
-			return 1;
-		}
+	//// to use a different port for commands and/or data:
+	//if (retCode != ErrorCode_OK)
+	//{
 
-	}
+	//	Console::log("OTTracker::createClient(): Unable to connect to server. Error code: " + std::to_string(retCode) + ". Exiting");
+	//	return ErrorCode_Internal;
+
+	//}
+	//else
+	//{
+	//	// get # of analog samples per mocap frame of data
+	//	void* pResult;
+	//	int ret = 0;
+	//	int nBytes = 0;
+	//	ret = m_client->SendMessageAndWait("AnalogSamplesPerMocapFrame", &pResult, &nBytes);
+
+	//	if (ret == ErrorCode_OK)
+	//	{
+	//		analogSamplesPerMocapFrame = *((int*)pResult);
+	//		Console::log("OTTracker::createClient(): Analog Samples Per Mocap Frame : " + std::to_string(analogSamplesPerMocapFrame) + ".");
+	//	}
+
+	//	// print server info
+	//	sServerDescription ServerDescription;
+	//	memset(&ServerDescription, 0, sizeof(ServerDescription));
+	//	m_client->GetServerDescription(&ServerDescription);
+	//	if (!ServerDescription.HostPresent)
+	//	{
+	//		Console::log("OTTracker::createClient(): Unable to connect to server. Host not present. Exiting.");
+	//		return 1;
+	//	}
+
+	//}
 
 	return ErrorCode_OK;
 

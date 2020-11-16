@@ -34,18 +34,21 @@ public:
 	QuaternionDatagram();
 	virtual ~QuaternionDatagram();
 	virtual void printData() const override;
-
-protected:
-	virtual void deserializeData(Streamer &inputStreamer) override;
-
-private:
 	struct Kinematics {
 		int segmentId;
 		float position[3];		// position relative to global origin
 		float orientation[4];	// orientation (quaternion) relative to global space
 	};
-
 	std::vector<Kinematics> m_data;
+	virtual std::vector<Kinematics> const& getData() const;
+
+
+
+protected:
+	virtual void deserializeData(Streamer& inputStreamer) override;
+
+
 };
+
 
 #endif

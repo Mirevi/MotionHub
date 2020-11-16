@@ -31,26 +31,28 @@
 #include "xs_parsermanager.h"
 #include <xstypes/xssocket.h>
 #include <xstypes/xsthread.h>
+#include "xs_quaterniondatagram.h"
+
 #include <atomic>
 
 class UdpServer
 {
 public:
-	UdpServer(XsString address = "localhost", uint16_t port = 9763);
+	UdpServer(XsString address = "localhost", uint16_t port = 9763, void (*func)(const std::vector<QuaternionDatagram::Kinematics>& data) = {});
 	~UdpServer();
 
 	void readMessages();
 	void startThread();
 	void stopThread();
+	volatile std::atomic_bool m_started, m_stopping;
+
 
 private:
 	std::unique_ptr<XsSocket> m_socket;
 	uint16_t m_port;
 	XsString m_hostName;
-
+	void(*m_func)(const std::vector<QuaternionDatagram::Kinematics>& data);
 	std::unique_ptr<ParserManager> m_parserManager;
-
-	volatile std::atomic_bool m_started, m_stopping;
 
 };
 

@@ -28,13 +28,15 @@
 #define PARSERMANAGER_H
 
 #include "xs_datagram.h"
+#include "xs_quaterniondatagram.h"
 
 class ParserManager
 {
 public:
 	ParserManager();
 	~ParserManager();
-	void readDatagram(const XsByteArray &data);
+	virtual void readDatagram(const XsByteArray& data);
+	virtual std::vector<QuaternionDatagram::Kinematics> const& getDatagram(const XsByteArray& data) const;
 
 private:
 	Datagram* createDgram(StreamingProtocol proto);

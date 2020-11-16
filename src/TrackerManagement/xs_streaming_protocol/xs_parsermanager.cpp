@@ -69,10 +69,12 @@ Datagram* ParserManager::createDgram(StreamingProtocol proto)
 }
 
 /*! Read single datagram from the incoming stream */
-void ParserManager::readDatagram(const XsByteArray &data)
+void ParserManager::readDatagram(const XsByteArray& data)
 {
 	StreamingProtocol type = static_cast<StreamingProtocol>(Datagram::messageType(data));
-	Datagram *datagram = createDgram(type);
+
+	//	Datagram *datagram = createDgram(type);
+	QuaternionDatagram* datagram = new QuaternionDatagram();
 
 	if (datagram != nullptr)
 	{
@@ -80,10 +82,39 @@ void ParserManager::readDatagram(const XsByteArray &data)
 		// note that this can cause a lot of console spam
 		datagram->printHeader();
 		datagram->printData();
+
+
 	}
 	else
 	{
 		XsString str(data.size(), (const char*)data.data());
 		std::cout << "Unhandled datagram: " << str.c_str() << std::endl;
+
 	}
+
+}
+
+/*! Get single datagram from the incoming stream */
+std::vector<QuaternionDatagram::Kinematics> const& ParserManager::getDatagram(const XsByteArray& data) const
+{
+	StreamingProtocol type = static_cast<StreamingProtocol>(Datagram::messageType(data));
+
+	QuaternionDatagram* datagram = new QuaternionDatagram();
+
+	if (datagram != nullptr)
+	{
+		datagram->deserialize(data);
+		// note that this can cause a lot of console spam
+		//datagram->printHeader();
+		//datagram->printData();
+	}
+	else
+	{
+		XsString str(data.size(), (const char*)data.data());
+		std::cout << "Unhandled datagram: " << str.c_str() << std::endl;
+
+	}
+	return datagram->getData();
+
+
 }

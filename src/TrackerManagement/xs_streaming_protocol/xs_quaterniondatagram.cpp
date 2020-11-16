@@ -46,11 +46,14 @@
   The coordinates use a Z-Up, right-handed coordinate system.
  */
 
-/*! Constructor */
+
+
+ /*! Constructor */
 QuaternionDatagram::QuaternionDatagram()
 	: Datagram()
 {
 	setType(SPPoseQuaternion);
+
 }
 
 /*! Destructor */
@@ -62,7 +65,7 @@ QuaternionDatagram::~QuaternionDatagram()
 /*! Deserialize the data from \a arr
 	\sa serializeData
 */
-void QuaternionDatagram::deserializeData(Streamer &inputStreamer)
+void QuaternionDatagram::deserializeData(Streamer& inputStreamer)
 {
 	Streamer* streamer = &inputStreamer;
 
@@ -96,7 +99,7 @@ void QuaternionDatagram::printData() const
 {
 	const int bodySegmentMax = bodySegmentCount();
 	const int propSegmentMax = bodySegmentMax + propCount();
-	const int leftHandSegmentMax = propSegmentMax + fingerTrackingSegmentCount()/2;
+	const int leftHandSegmentMax = propSegmentMax + fingerTrackingSegmentCount() / 2;
 	//const int rightHandSegmentMax = leftHandSegmentMax + fingerTrackingSegmentCount()/2;
 
 	for (int i = 0; i < m_data.size(); i++)
@@ -114,13 +117,21 @@ void QuaternionDatagram::printData() const
 		std::cout << "Segment Position: " << "(";
 		std::cout << "x: " << m_data.at(i).position[0] << ", ";
 		std::cout << "y: " << m_data.at(i).position[1] << ", ";
-		std::cout << "z: " << m_data.at(i).position[2] << ")"<< std::endl;
+		std::cout << "z: " << m_data.at(i).position[2] << ")" << std::endl;
 
 		// Quaternion Orientation
 		std::cout << "Quaternion Orientation: " << "(";
 		std::cout << "re: " << m_data.at(i).orientation[0] << ", ";
 		std::cout << "i: " << m_data.at(i).orientation[1] << ", ";
 		std::cout << "j: " << m_data.at(i).orientation[2] << ", ";
-		std::cout << "k: " << m_data.at(i).orientation[3] << ")"<< std::endl << std::endl;
+		std::cout << "k: " << m_data.at(i).orientation[3] << ")" << std::endl << std::endl;
 	}
+
+}
+
+/*! Get Data datagram in a formatted way
+*/
+std::vector<QuaternionDatagram::Kinematics> const& QuaternionDatagram::getData() const
+{
+	return m_data;
 }
