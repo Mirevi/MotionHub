@@ -49,7 +49,7 @@ void CreateTrackerWindow::slotCreateTracker()
 
 		case 1:
 		{
-			// create new azure kinect tracker and add tracker to the tracking manager tracker pool
+			// create new optiTrack tracker and add tracker to the tracking manager tracker pool
 			id = m_refTrackerManager->createTracker(TrackerManager::optiTrack);
 						
 			break;
@@ -83,7 +83,7 @@ void CreateTrackerWindow::slotCreateTracker()
 		{
 
 			//open file dialog
-			QString filePath = QFileDialog::getOpenFileName(this, "choose MMH-Recorded file.", "C://", tr("MMH files (*.mmh)"));
+			QString filePath = QFileDialog::getOpenFileName(this, "choose MMH-Recorded file.", "./data", tr("MMH files (*.mmh)"));
 
 			//BUG: Curser doesn't set to waiting
 
