@@ -69,8 +69,11 @@ void Tracker::clean()
 	//reset number of skeletons
 	m_properties->countDetectedSkeleton = 0;
 
+	m_skeletonPoolLock.lock();
 	//clear skeleton pool
 	m_skeletonPool.clear();
+
+	m_skeletonPoolLock.unlock();
 
 }
 
@@ -277,10 +280,13 @@ void Tracker::update()
 		// get new data
 		track();
 
+		m_skeletonPoolLock.lock();
+
 		//send Skeleton Pool to NetworkManager
 		m_networkManager->sendSkeletonPool(&m_skeletonPool, m_properties->id);
 		//Recorder::instance().addSkeletonsToFrame(&m_skeletonPool);
 
+		m_skeletonPoolLock.unlock();
 
 	}
 

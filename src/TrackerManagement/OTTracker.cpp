@@ -195,9 +195,9 @@ void OTTracker::update()
 
 			// get new data
 			track();
-
+			m_skeletonPoolLock.lock();
 			m_networkManager->sendSkeletonPool(&m_skeletonPool, m_properties->id);
-
+			m_skeletonPoolLock.unlock();
 
 		}
 

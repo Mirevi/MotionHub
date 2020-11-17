@@ -144,8 +144,12 @@ void mmhPlayer::update()
 
 		}
 
+		m_skeletonPoolLock.lock();
+
 		//send Skeleton Pool to NetworkManager
 		m_networkManager->sendSkeletonPool(&m_skeletonPool, m_properties->id);
+
+		m_skeletonPoolLock.unlock();
 
 		//Recorder::instance().addSkeletonsToFrame(&m_skeletonPool);
 
@@ -187,6 +191,8 @@ void mmhPlayer::track()
 	//get the current number of skeletons
 	m_properties->countDetectedSkeleton = m_currFrame->m_skeletons.size();
 
+	m_skeletonPoolLock.lock();
+
 	if (m_properties->countDetectedSkeleton != m_skeletonPool.size())
 	{
 		m_hasSkeletonPoolChanged = true;
@@ -210,6 +216,8 @@ void mmhPlayer::track()
 		m_isDataAvailable = true;
 
 	}
+
+	m_skeletonPoolLock.unlock();
 
 	//Console::log("mmhPlayer::track(): skeleton count = " + toString(m_skeletonPool.size()));
 

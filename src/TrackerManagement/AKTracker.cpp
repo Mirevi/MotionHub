@@ -262,6 +262,8 @@ void AKTracker::extractSkeleton(k4abt_frame_t* body_frame)
 
 		bool createNewSkeleton = true;
 
+		m_skeletonPoolLock.lock();
+
 		// update existing skeleton
 		for (auto itPoolSkeletons = m_skeletonPool.begin(); itPoolSkeletons != m_skeletonPool.end(); itPoolSkeletons++)
 		{
@@ -292,6 +294,8 @@ void AKTracker::extractSkeleton(k4abt_frame_t* body_frame)
 			Console::log("AkTracker::updateSkeleton(): [cam id = " + std::to_string(m_idCam) + "] Created new skeleton with id = " + std::to_string(id) + ".");
 
 		}
+
+		m_skeletonPoolLock.unlock();
 	}
 }
 
