@@ -4,7 +4,7 @@
 #pragma warning(disable : 4996)
 
 //redeclaration
-std::list<std::string> Console::messagePool;
+std::vector<std::string> Console::messagePool;
 
 //outputs a string in console as info text
 void Console::log(std::string _message)
@@ -36,11 +36,12 @@ void Console::log(std::string _message)
 		time[strlen(time) - 1] = '\0';
 	}
 
-	std::string str(time);
+	std::string timeString(time);
+	std::string textString(timeString + " [INFO]: " + _message);
 
-	Console::writeToLogfile(str + " [INFO]: " + _message);
+	Console::writeToLogfile(textString);
 
-	messagePool.push_back(str + " [INFO]: " + _message);
+	messagePool.push_back(textString);
 
 	SetConsoleTextAttribute(handle_console, 8);
 	std::cout << time;
@@ -191,4 +192,15 @@ void Console::writeToLogfile(std::string message)
 	stream.open(LOGFILE, std::ofstream::app);
 
 	stream << message << std::endl;
+}
+
+std::vector<std::string> Console::getMessages()
+{
+
+	std::vector<std::string> tempPool = messagePool;
+
+	messagePool.clear();
+
+	return tempPool;
+
 }

@@ -60,6 +60,10 @@ public:
 	 * updates Inspector and hirachy 
 	 */
 	void update();
+
+	/*!
+	* gets new logs from the Console and displays them in the list item
+	*/
 	void updateConsole();
 
 	void setTimelineValue(float time, int frameNum, int numFrames);
@@ -68,6 +72,7 @@ public:
 
 
 	GlWidget* getOglRenderer();
+
 
 private slots:
 	/*!
@@ -220,5 +225,6 @@ private:
 	};
 
 	TimelineLableMode m_timelineLableState;
+
 
 };

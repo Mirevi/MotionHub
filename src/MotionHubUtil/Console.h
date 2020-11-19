@@ -8,6 +8,7 @@
 
 #include <thread>
 #include <list>
+#include <vector>
 
 
 #include "Timer.h"
@@ -60,6 +61,10 @@ public:
 	 * temporary list of messages, which are pulled by the Console Widget in MainWindow
 	 * 
 	 */
-	static std::list<std::string> messagePool;
+	static std::vector<std::string> messagePool;
+
+	static std::vector<std::string> getMessages();
+
+
 	
 };

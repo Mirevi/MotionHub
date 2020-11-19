@@ -61,6 +61,9 @@ void MainWindow::update()
 	// update the inspector
 	updateInspector();
 
+	//update Console
+	updateConsole();
+
 }
 
 #pragma region
@@ -182,18 +185,23 @@ void MainWindow::updateInspector()
 void MainWindow::updateConsole()
 {
 
-	//if (Console::messagePool.size() > 0)
-	//{
+	std::vector<std::string> newLogs = Console::getMessages();
 
-	//	QListWidgetItem* item = new QListWidgetItem(ui->listWidget_console);
-	//	item->setText(QString::fromStdString(Console::messagePool.front()));
-	//	item->setTextAlignment(Qt::AlignRight);
+	for (int i = 0; i < newLogs.size(); i++)
+	{
 
-	//	ui->listWidget_console->scrollToBottom();
+		QListWidgetItem* currItem = new QListWidgetItem(QString::fromStdString(newLogs[i]));
+		currItem->setTextAlignment(Qt::AlignRight); //aligning is inverted, this is actually left aligned
 
-	//	Console::messagePool.pop_front();
-	//	
-	//}
+		ui->listWidget_console->addItem(currItem);
+
+		//std::cout << "MainWindow::updateConsole(): log: " << currItem->text().toLocal8Bit().constData() << std::endl;
+
+
+		ui->listWidget_console->scrollToBottom();
+
+	}
+
 }
 
 void MainWindow::drawInspector()
