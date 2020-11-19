@@ -256,11 +256,30 @@ void mmhPlayer::setCurrentFrame(int newValue)
 	}
 }
 
-int mmhPlayer::getCurrentFramePercent()
+float mmhPlayer::getElapsedTime()
 {
-	
+	if (m_currFrame != NULL)
+	{
 
-	return (int)round((m_currFrameIdx * 100) / m_frameCount);
+		float currTime = m_currFrame->m_duration;
+		return currTime * m_currFrameIdx;
+	}
+	else
+	{
+		return 0.0;
+	}
+
+
+}
+
+int mmhPlayer::getCurrFrameIdx()
+{
+	return m_currFrameIdx;
+}
+
+int mmhPlayer::getFrameCount()
+{
+	return m_frameCount;
 }
 
 void mmhPlayer::applyModChange(Joint::JointNames type, Vector3f mod, bool inverted)

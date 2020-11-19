@@ -15,6 +15,21 @@
 #include "TrackerGroup.h"
 #include "Recorder.h"
 
+
+
+/*!
+*a container struct for frame meta data
+*/
+struct __declspec(dllexport) FrameData
+{
+public:
+	int currFrameIdx = 0;
+	float elapsedTime = 0.0;
+	int frameCount = 0;
+};
+
+
+
 /*!
  * \class TrackerManager
  *
@@ -47,6 +62,8 @@ public:
 		group
 
 	};
+
+
 
 	/*!
 	 * creates a new tracker and adds it to the pool
@@ -115,7 +132,7 @@ public:
 
 	void timelineValueChange(int newValue);
 
-	int getBvhCurrFrame();
+	FrameData getRecCurrFrameData();
 
 	void writeSkeletonsToRecorder();
 

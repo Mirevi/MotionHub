@@ -97,7 +97,7 @@ void MotionHub::update()
 
 			//Recorder::instance().nextFrame();
 
-
+			updateTimeline();
 		}	//check if tracker is added or removed
 		else if(m_trackerManager->hasTrackerPoolChanged())
 		{
@@ -109,7 +109,7 @@ void MotionHub::update()
 
 		}
 
-		updateTimeline();
+
 
 		//Console::log("duration: " + toString(Timer::getDuration()));
 	}
@@ -124,16 +124,16 @@ void MotionHub::updateTimeline()
 	{
 
 
-		//get BVH current frame
-		int currFrame = m_trackerManager->getBvhCurrFrame();
+		//get BVH/MMH current frame
+		/*TrackerManager::*/FrameData currFrameData = m_trackerManager->getRecCurrFrameData();
 
-		if (currFrame < 0)
+		if (currFrameData.currFrameIdx < 0)
 		{
 			return;
 		}
 
 		//and apply it to the timeline slider
-		m_uiManager->getMainWindow()->setTimelineValue(currFrame);
+		m_uiManager->getMainWindow()->setTimelineValue(currFrameData.elapsedTime, currFrameData.currFrameIdx, currFrameData.frameCount);
 
 	}
 

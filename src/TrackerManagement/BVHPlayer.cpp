@@ -293,11 +293,19 @@ void BVHPlayer::setCurrentFrame(int newValue)
 	}
 }
 
-int BVHPlayer::getCurrentFramePercent()
+float BVHPlayer::getElapsedTime()
 {
-	
+	return m_frameTime * m_currFrame;
+}
 
-	return (int)round((m_currFrame * 100) / m_frameCount);
+int BVHPlayer::getCurrFrameIdx()
+{
+	return m_currFrame;
+}
+
+int BVHPlayer::getFrameCount()
+{
+	return m_frameCount;
 }
 
 void BVHPlayer::applyModChange(Joint::JointNames type, Vector3f mod, bool inverted)

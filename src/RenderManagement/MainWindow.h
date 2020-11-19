@@ -62,7 +62,7 @@ public:
 	void update();
 	void updateConsole();
 
-	void setTimelineValue(int newValue);
+	void setTimelineValue(float time, int frameNum, int numFrames);
 
 	bool m_timelineActive;
 
@@ -122,6 +122,7 @@ private slots:
 
 	void slotRecord();
 
+	void slotTimelineLableModeChanged(int idx);
 
 private:
 	/*!
@@ -211,5 +212,13 @@ private:
 
 	void addTrackerToList(int id);
 
+	enum TimelineLableMode
+	{
+		percentage,
+		elTime,
+		frame
+	};
+
+	TimelineLableMode m_timelineLableState;
 
 };

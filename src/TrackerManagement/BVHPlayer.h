@@ -34,7 +34,11 @@ public:
 
 	void setCurrentFrame(int newValue);
 
-	int getCurrentFramePercent() override;
+	float getElapsedTime() override;
+
+	int getCurrFrameIdx() override;
+
+	int getFrameCount() override;
 
 	void applyModChange(Joint::JointNames type, Vector3f mod, bool inverted);
 
@@ -65,8 +69,19 @@ private:
 
 	bool m_timelineDragging;
 
+	/*!
+	* Index of the current Frame
+	*/
 	int m_currFrame;
+
+	/*!
+	* Total number of frames in this recording
+	*/
 	int m_frameCount;
+
+	/*!
+	* time of the current frame
+	*/
 	double m_frameTime;
 	
 	Skeleton* m_currSkeleton;

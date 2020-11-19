@@ -1020,6 +1020,65 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
         <item>
          <layout class="QVBoxLayout" name="layout_left_bottom">
           <item>
+           <widget class="QFrame" name="frame">
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>20</height>
+             </size>
+            </property>
+            <property name="frameShape">
+             <enum>QFrame::StyledPanel</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
+            </property>
+            <widget class="QComboBox" name="comboBox">
+             <property name="geometry">
+              <rect>
+               <x>0</x>
+               <y>0</y>
+               <width>81</width>
+               <height>22</height>
+              </rect>
+             </property>
+             <item>
+              <property name="text">
+               <string>Percentage</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Time</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Frame</string>
+              </property>
+             </item>
+            </widget>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_timeline">
+            <property name="maximumSize">
+             <size>
+              <width>100</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>16</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item>
            <widget class="QFrame" name="frame_timeline">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -1055,7 +1114,7 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
               </rect>
              </property>
              <property name="sizePolicy">
-              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
@@ -1107,7 +1166,7 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
             <property name="maximumSize">
              <size>
               <width>999999</width>
-              <height>256</height>
+              <height>369</height>
              </size>
             </property>
             <property name="sizeIncrement">
@@ -1515,6 +1574,22 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>comboBox</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>slotTimelineLableModeChanged(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>68</x>
+     <y>564</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>742</x>
+     <y>271</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>slotToggleTracking()</slot>
@@ -1529,5 +1604,6 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
   <slot>slotTimelineReleased()</slot>
   <slot>slotTimelineValueChanged(int)</slot>
   <slot>slotRecord()</slot>
+  <slot>slotTimelineLableModeChanged(int)</slot>
  </slots>
 </ui>

@@ -34,7 +34,12 @@ public:
 
 	void setCurrentFrame(int newValue);
 
-	int getCurrentFramePercent() override;
+	float getElapsedTime() override;
+
+	int getCurrFrameIdx() override;
+
+	int getFrameCount() override;
+
 
 	void applyModChange(Joint::JointNames type, Vector3f mod, bool inverted);
 

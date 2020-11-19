@@ -23,6 +23,9 @@ MainWindow::MainWindow(TrackerManager* trackerManager, ConfigManager* configMana
 	m_refTrackerManager = trackerManager;
 	m_configManager = configManager;
 
+	m_timelineLableState = percentage;
+
+
 	// disable qt vector warning in console
 	qRegisterMetaType<QVector<int>>();
 	// disable highlighting of cells when hovering over them
@@ -660,6 +663,30 @@ void MainWindow::slotRecord()
 
 }
 
+void MainWindow::slotTimelineLableModeChanged(int idx)
+{
+
+
+	switch (idx)
+	{
+	case 0:
+		m_timelineLableState = percentage;
+		break;
+
+
+	case 1:
+		m_timelineLableState = elTime;
+		break;
+
+	case 2:
+		m_timelineLableState = frame;
+		break;
+
+
+	default:
+		break;
+	}
+}
 
 
 #pragma endregion Slots
@@ -1122,9 +1149,38 @@ void MainWindow::addTrackerToList(int id)
 
 }
 
-void MainWindow::setTimelineValue(int newValue)
+void MainWindow::setTimelineValue(float time, int frameIdx, int numFrames)
 {
 
-	ui->slider_timeline->setValue(newValue);
+	int percent = (int)round((frameIdx * 100) / numFrames);
+
+	ui->slider_timeline->setValue(percent);
+
+	//also set lable
+
+	std::string currStr;
+
+	Console::log("MainWindow::setTimelineValue(): m_timelineLableState = " + toString(m_timelineLableState));
+
+
+	switch (m_timelineLableState)
+	{
+	case percentage:
+		currStr = toString(percent) + "%";
+		break;
+
+	case elTime:
+		currStr = toString(time);
+		break;
+
+	case frame:
+		currStr = toString(frameIdx) + "/" + toString(numFrames);
+		break;
+
+	default:
+		break;
+	}
+
+	ui->label_timeline->setText(QString(currStr.c_str()));
 
 }

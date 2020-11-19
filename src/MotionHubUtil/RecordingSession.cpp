@@ -7,7 +7,7 @@
 
 RecordingSession::RecordingSession()
 {
-
+	
 }
 
 void RecordingSession::addFrame(RecordingFrame frame, float duration)
@@ -368,7 +368,7 @@ RecordingFrame* RecordingSession::getFrame(int i)
 RecordingFrame::RecordingFrame()
 {
 
-
+	m_duration = 0.0;
 
 }
 

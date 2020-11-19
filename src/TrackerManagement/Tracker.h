@@ -193,7 +193,11 @@ public:
 
 	virtual std::vector<Vector3f> resetOffsets();
 
-	virtual int getCurrentFramePercent();
+	virtual float getElapsedTime();
+
+	virtual int getCurrFrameIdx();
+
+	virtual int getFrameCount();
 
 
 protected:

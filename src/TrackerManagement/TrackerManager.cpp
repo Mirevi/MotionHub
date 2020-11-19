@@ -361,49 +361,63 @@ void TrackerManager::timelineValueChange(int newValue)
 //
 //}
 
-int TrackerManager::getBvhCurrFrame()
+FrameData TrackerManager::getRecCurrFrameData()
 {
 
-	if (m_trackerPool.size() <= 0)
-	{
-		return -1;
-	}
+	FrameData currFrameData;
 
-	int currFrame = -1;
- 
+	//if (m_trackerPool.size() <= 0)
+	//{
+	//	return currFrameData;
+	//}
+
+	int currFrameIdx = -1;
+	float elapsedTime = -1.0;
+	int frameCount = -1;
 
 
 	for (auto itTracker = m_trackerPool.begin(); itTracker != m_trackerPool.end(); itTracker++)
 	{
 		
-
 		if ((*itTracker)->getTrackerType() == "BVH")
 		{
-			currFrame = dynamic_cast<BVHPlayer*>(*itTracker)->getCurrentFramePercent();
+
+			BVHPlayer* currBvhPlayer = dynamic_cast<BVHPlayer*>(*itTracker);
+
+			elapsedTime = currBvhPlayer->getElapsedTime();
+			currFrameIdx = currBvhPlayer->getCurrFrameIdx();
+			frameCount = currBvhPlayer->getFrameCount();
+
 			break;
 		}
 		else if ((*itTracker)->getTrackerType() == "MMH")
 		{
-			currFrame = dynamic_cast<mmhPlayer*>(*itTracker)->getCurrentFramePercent();
+
+			mmhPlayer* currMmhPlayer = dynamic_cast<mmhPlayer*>(*itTracker);
+
+			elapsedTime = currMmhPlayer->getElapsedTime();
+			currFrameIdx = currMmhPlayer->getCurrFrameIdx();
+			frameCount = currMmhPlayer->getFrameCount();
+
 			break;
 		}
 
-
 	}
 
-
-
-
-	if (currFrame != NULL)
+	if (currFrameIdx != NULL)
 	{
-		return currFrame;
+
+		currFrameData.currFrameIdx = currFrameIdx;
+		currFrameData.frameCount = frameCount;
+		currFrameData.elapsedTime = elapsedTime;
+
+		return currFrameData;
 	}
-	else
-	{
-		return -1;
-	}
+	//else
+	//{
+	//	return currFrameData;
+	//}
 	
-
 }
 
 void TrackerManager::writeSkeletonsToRecorder()
