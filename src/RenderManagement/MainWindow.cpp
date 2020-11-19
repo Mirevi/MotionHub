@@ -11,6 +11,7 @@ MainWindow::MainWindow(TrackerManager* trackerManager, ConfigManager* configMana
 	// setup base class
 	ui->setupUi(this);
 
+
 	m_oglRenderer = new GlWidget(trackerManager);
 	m_oglRenderer->setObjectName(QStringLiteral("render_ogl"));
 	QSizePolicy sizePolicy2(QSizePolicy::Expanding, QSizePolicy::Preferred);
@@ -21,6 +22,9 @@ MainWindow::MainWindow(TrackerManager* trackerManager, ConfigManager* configMana
 	// assign reference to tracker manager
 	m_refTrackerManager = trackerManager;
 	m_configManager = configManager;
+
+	m_timelineLableState = percentage;
+
 
 	// disable qt vector warning in console
 	qRegisterMetaType<QVector<int>>();
@@ -70,6 +74,7 @@ void MainWindow::updateHirachy()
 
 	std::vector<Tracker*> trackerPoolTempCopy = m_refTrackerManager->getPoolTracker();
 
+
 	// loop throgh all tracker
 	for (auto itTrackerPool = trackerPoolTempCopy.begin(); itTrackerPool != trackerPoolTempCopy.end(); itTrackerPool++)
 	{
@@ -94,6 +99,7 @@ void MainWindow::updateHirachy()
 
 			//get the skeletons id and assign it to the display text
 			std::string skeletonName = "skeleton_" + std::to_string(itSkeletonPool->first);
+
 			m_hirachyItemPool.rbegin()->second.back()->setText(0, QString::fromStdString(skeletonName));
 
 			//add child item to top level item
@@ -323,9 +329,18 @@ void MainWindow::drawInspector()
 
 	//Add reset button
 	QPushButton* resetPushButton = new QPushButton("Reset Offsets");
+	//connect button wit reset slot
 	connect(resetPushButton, SIGNAL(pressed()), this, SLOT(slotResetTrackerOffset()));
 	addRowToInspector("Default", "");
 	ui->tableWidget_inspector->setCellWidget(14, 1, resetPushButton);
+
+	//Add reset button
+	QPushButton* modPushButton = new QPushButton("Modify Tracker");
+	//connect button wit reset slot
+	connect(modPushButton, SIGNAL(pressed()), this, SLOT(slotModifyTrackerRotations()));
+	addRowToInspector("Rotations", "");
+	ui->tableWidget_inspector->setCellWidget(15, 1, modPushButton);
+
 
 
 
@@ -408,12 +423,15 @@ void MainWindow::slotToggleTracking()
 	{
 
 		m_refTrackerManager->startTracker(); // start tracking if false
+		//m_timelineActive = true;
+
 
 	}
 	else
 	{
 
 		m_refTrackerManager->stopTracker(); // stop tracking if true
+		//m_timelineActive = false;
 
 	}
 
@@ -607,8 +625,68 @@ void MainWindow::slotNetworkSettings()
 
 }
 
+void MainWindow::slotTimelinePressed()
+{
+
+	m_refTrackerManager->controlTimeline(true);
+	m_timelineActive = false;
 
 
+}
+
+void MainWindow::slotTimelineReleased()
+{
+
+	m_refTrackerManager->controlTimeline(false);
+	m_timelineActive = true;
+
+
+}
+
+void MainWindow::slotTimelineValueChanged(int newValue)
+{
+
+	m_refTrackerManager->timelineValueChange(ui->slider_timeline->value());
+
+	
+}
+
+void MainWindow::slotRecord()
+{
+	if (m_refTrackerManager->isTracking())
+	{		
+		Recorder::instance().toggleRecording();
+
+		m_isRecording = !m_isRecording;
+		toggleRecButtons();
+	}
+
+}
+
+void MainWindow::slotTimelineLableModeChanged(int idx)
+{
+
+
+	switch (idx)
+	{
+	case 0:
+		m_timelineLableState = percentage;
+		break;
+
+
+	case 1:
+		m_timelineLableState = elTime;
+		break;
+
+	case 2:
+		m_timelineLableState = frame;
+		break;
+
+
+	default:
+		break;
+	}
+}
 
 
 #pragma endregion Slots
@@ -932,6 +1010,18 @@ void MainWindow::slotResetTrackerOffset()
 
 }
 
+void MainWindow::slotModifyTrackerRotations()
+{
+
+	m_trackerModWindow = new TrackerModWindow();
+
+	m_trackerModWindow->setModal(true);
+	m_trackerModWindow->exec();
+
+
+}
+
+
 #pragma endregion InspectorInputSlots
 
 #pragma region
@@ -969,6 +1059,43 @@ void MainWindow::toggleTrackingButtons()
 
 	// set icon
 	ui->btn_startTracker->setIcon(icon);
+
+}
+
+// toogle icon of start / stop tracking button
+void MainWindow::toggleRecButtons()
+{
+
+	QIcon icon;
+
+	// if tracking is false set icon to start arrow and enbable add / remove tracker buttons
+	if (m_isRecording)
+	{
+		//load stop button
+		icon.addFile(QStringLiteral(":/ressources/icons/circle-xxl.png"), QSize(), QIcon::Normal, QIcon::Off);
+
+		////disable add/remove buttons
+		//ui->btn_addTracker->setDisabled(true);
+		//ui->btn_removeTracker->setDisabled(true);
+		//ui->btn_addGroup->setDisabled(true);
+
+
+	}
+	else
+	{
+		//load start button
+		icon.addFile(QStringLiteral(":/ressources/icons/64px-Location_dot_red.svg.png"), QSize(), QIcon::Normal, QIcon::Off);
+
+		////enable add/remove buttons
+		//ui->btn_addTracker->setDisabled(false);
+		//ui->btn_removeTracker->setDisabled(false);
+		//ui->btn_addGroup->setDisabled(false);
+
+	}
+
+	// set icon
+	//ui->btn_Record->setIcon(icon);
+	ui->btn_Record->setIcon(icon);
 
 }
 
@@ -1019,5 +1146,48 @@ void MainWindow::addTrackerToList(int id)
 		}
 
 	}
+
+}
+
+void MainWindow::setTimelineValue(float totalTime, int frameIdx, int numFrames)
+{
+
+	int percent = (int)round((frameIdx * 100) / numFrames);
+
+	if (m_timelineActive)
+	{
+		ui->slider_timeline->setValue(percent);
+	}
+
+	//also set lable
+
+	std::string currStr;
+
+	//Console::log("MainWindow::setTimelineValue(): totalTime = " + toString(totalTime));
+
+
+	switch (m_timelineLableState)
+	{
+	case percentage:
+		currStr = toString(percent) + "%";
+		break;
+
+	case elTime:
+		//currStr = toString((roundf(totalTime * (float)percent) / 100));
+		char chr[10];
+		sprintf(chr, "%.2f", totalTime * (float)percent / 100);
+		currStr = chr;
+		currStr += "s";
+		break;
+
+	case frame:
+		currStr = toString(frameIdx) + "/" + toString(numFrames);
+		break;
+
+	default:
+		break;
+	}
+
+	ui->label_timeline->setText(QString(currStr.c_str()));
 
 }

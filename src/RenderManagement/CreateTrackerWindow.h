@@ -7,6 +7,8 @@
 #include "QtWidgets/qtreewidget.h"
 #include "QtWidgets/qmessagebox.h"
 #include <QtWidgets/QDialog>
+#include <QtWidgets/qfiledialog.h>
+
 
 
 #include "ConfigDllExportRenderManagement.h"

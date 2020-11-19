@@ -13,7 +13,7 @@ TrackerManager::TrackerManager(NetworkManager* networkManager, ConfigManager* co
 
 }
 
-int TrackerManager::createTracker(TrackerType type)
+int TrackerManager::createTracker(TrackerType type, std::string filePath)
 {
 
 	// get the next tracker id
@@ -47,8 +47,6 @@ int TrackerManager::createTracker(TrackerType type)
 			if (!tempTracker->valid)
 			{
 
-				Console::log("TrackerManager::createTracker(): valid = false");
-
 				delete tempTracker;
 
 				//unlock the tracker pool
@@ -74,9 +72,29 @@ int TrackerManager::createTracker(TrackerType type)
 			//create new Tracker with current ID
 			tempTracker = new OTTracker(id, m_networkManager, m_configManager);
 
-			//sendSkeletonDelegate() funcPtr pass through
-			//tempTracker->setSendSkeletonDelegate(m_sendSkeletonDelegate);
+			break;
 
+		}
+
+		case bvh:
+		{
+
+			Console::log("TrackerManager::createTracker(): Creating BVH-Player ...");
+
+			//create new BVH-Player with current ID
+			tempTracker = new BVHPlayer(id, m_networkManager, m_configManager, filePath);
+
+			break;
+
+		}
+
+		case mmh:
+		{
+
+			Console::log("TrackerManager::createTracker(): Creating mmh-Player ...");
+
+			//create new BVH-Player with current ID
+			tempTracker = new mmhPlayer(id, m_networkManager, m_configManager, filePath);
 
 			break;
 
@@ -303,9 +321,121 @@ std::mutex* TrackerManager::getTrackerPoolLock()
 	return &m_trackerPoolLock;
 }
 
+void TrackerManager::controlTimeline(bool stop)
+{
+
+	for (auto itTracker = m_trackerPool.begin(); itTracker != m_trackerPool.end(); itTracker++)
+	{
+		if ((*itTracker)->getTrackerType() == "BVH")
+		{
+			dynamic_cast<BVHPlayer*>(*itTracker)->controlTime(stop);
+		}
+		else if((*itTracker)->getTrackerType() == "MMH")
+		{
+			dynamic_cast<mmhPlayer*>(*itTracker)->controlTime(stop);
+		}
+	}
+
+}
+
+void TrackerManager::timelineValueChange(int newValue)
+{
+	for (auto itTracker = m_trackerPool.begin(); itTracker != m_trackerPool.end(); itTracker++)
+	{
+		if ((*itTracker)->getTrackerType() == "BVH")
+		{
+			dynamic_cast<BVHPlayer*>(*itTracker)->setCurrentFrame(newValue);
+		}
+		else if ((*itTracker)->getTrackerType() == "MMH")
+		{
+			dynamic_cast<mmhPlayer*>(*itTracker)->setCurrentFrame(newValue);
+		}
+	}
+}
+
+
 //void TrackerManager::setSendSkeletonPtr(void (*sendSkeleton)(std::map<int, Skeleton>* skeletonPool, int trackerID))
 //{
 //
 //	m_sendSkeletonDelegate = sendSkeleton;
 //
 //}
+
+FrameData TrackerManager::getRecCurrFrameData()
+{
+
+	FrameData currFrameData;
+
+
+
+	int currFrameIdx = -1;
+	float totalTime = -1.0;
+	int frameCount = -1;
+
+
+	for (auto itTracker = m_trackerPool.begin(); itTracker != m_trackerPool.end(); itTracker++)
+	{
+		
+		if ((*itTracker)->getTrackerType() == "BVH")
+		{
+
+			BVHPlayer* currBvhPlayer = dynamic_cast<BVHPlayer*>(*itTracker);
+
+			totalTime = currBvhPlayer->getTotalTime();
+			currFrameIdx = currBvhPlayer->getCurrFrameIdx();
+			frameCount = currBvhPlayer->getFrameCount();
+
+			break;
+		}
+		else if ((*itTracker)->getTrackerType() == "MMH")
+		{
+
+			mmhPlayer* currMmhPlayer = dynamic_cast<mmhPlayer*>(*itTracker);
+
+			totalTime = currMmhPlayer->getTotalTime();
+			currFrameIdx = currMmhPlayer->getCurrFrameIdx();
+			frameCount = currMmhPlayer->getFrameCount();
+
+			break;
+		}
+
+	}
+
+	//Console::log("TrackerManager::getRecCurrFrameData(): currFrameIdx = " + toString(currFrameIdx));
+
+
+
+	currFrameData.currFrameIdx = currFrameIdx;
+	currFrameData.frameCount = frameCount;
+	currFrameData.totalTime = totalTime;
+
+	return currFrameData;
+
+
+}
+
+void TrackerManager::writeSkeletonsToRecorder()
+{
+	//record all active tracker
+
+	//loop over all tracker
+	for (auto itTracker = m_trackerPool.begin(); itTracker != m_trackerPool.end(); itTracker++)
+	{
+
+		//check if Tracker is enabled
+		if ((*itTracker)->getProperties()->isEnabled)
+		{
+			
+			//add skeletons to Recording Frame, use cache because thread issues
+			Recorder::instance().addSkeletonsToFrame((*itTracker)->getSkeletonPoolCache());
+
+
+
+		}
+
+
+	}
+
+	Recorder::instance().nextFrame();
+
+}

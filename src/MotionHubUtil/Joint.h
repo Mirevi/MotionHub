@@ -3,8 +3,7 @@
 #include "ConfigDllExportMotionHubUtil.h"
 
 #include <iostream>
-//#include "Vector3.h"
-//#include "Vector4.h"
+#include "Console.h"
 
 #include <MotionHubUtil/MMHmath.h>
 
@@ -45,7 +44,8 @@ public:
 		LEG_R,
 		FOOT_R,
 		TOE_R,
-		HEAD
+		HEAD,
+		NDEF
 	};
 
 	//enum for confidence level
@@ -56,6 +56,11 @@ public:
 		MEDIUM,
 		HIGH
 	};
+
+	static std::string toString(JointNames type);
+
+	static JointNames toJointNames(std::string name);
+
 
 	/*!
 	 * default constructor
@@ -70,7 +75,9 @@ public:
 	 * \param rotation
 	 * \param confidence
 	 */
-	Joint(Vector4f position, Quaternionf rotation, Joint::JointConfidence confidence);
+	Joint(Vector4f position, Quaternionf rotation, Joint::JointConfidence confidence = HIGH);
+
+	void setTransform(Vector4f position, Quaternionf rotation, Joint::JointConfidence confidence = HIGH);
 
 	/*!
 	 * getter for Joints Position Vector
@@ -93,10 +100,19 @@ public:
 	 */
 	JointConfidence getJointConfidence();
 
+	void setModifier(Vector3f modifier);
+
+	void setInverted(bool x, bool y, bool z);
+
 private:
 
 	Vector4f m_position;
 	Quaternionf m_rotation;
+	Vector3f m_modifier;
+	bool m_invertX;
+	bool m_invertY;
+	bool m_invertZ;
+
 	JointConfidence m_confidence = NONE;
 
 };

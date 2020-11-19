@@ -134,27 +134,27 @@ void AKTracker::init()
 
 }
 
-// tracking loop
-void AKTracker::update()
-{
-
-	// track while tracking is true
-	while (m_properties->isTracking)
-	{
-
-
-		// get new data
-		track();
-
-		//send Skeleton Pool to NetworkManager
-		m_networkManager->sendSkeletonPool(&m_skeletonPool, m_properties->id);
-
-	}
-
-	//clean skeleton pool after tracking
-	clean();
-
-}
+//// tracking loop
+//void AKTracker::update()
+//{
+//
+//	// track while tracking is true
+//	while (m_properties->isTracking)
+//	{
+//
+//
+//		// get new data
+//		track();
+//
+//		//send Skeleton Pool to NetworkManager
+//		m_networkManager->sendSkeletonPool(&m_skeletonPool, m_properties->id);
+//
+//	}
+//
+//	//clean skeleton pool after tracking
+//	clean();
+//
+//}
 
 // get new skeleton data and parse it into the default skeleton
 void AKTracker::track()
@@ -262,6 +262,8 @@ void AKTracker::extractSkeleton(k4abt_frame_t* body_frame)
 
 		bool createNewSkeleton = true;
 
+		m_skeletonPoolLock.lock();
+
 		// update existing skeleton
 		for (auto itPoolSkeletons = m_skeletonPool.begin(); itPoolSkeletons != m_skeletonPool.end(); itPoolSkeletons++)
 		{
@@ -286,12 +288,14 @@ void AKTracker::extractSkeleton(k4abt_frame_t* body_frame)
 			// create new skeleton and add it to the skeleton pool
 			m_skeletonPool.insert({ id, *parseSkeleton(&skeleton, id) });
 			
-			//skeleton was added/removed, so UI updates
+			//skeleton was added, so UI updates
 			m_hasSkeletonPoolChanged = true;
 
 			Console::log("AkTracker::updateSkeleton(): [cam id = " + std::to_string(m_idCam) + "] Created new skeleton with id = " + std::to_string(id) + ".");
 
 		}
+
+		m_skeletonPoolLock.unlock();
 	}
 }
 
@@ -484,7 +488,7 @@ void AKTracker::cleanSkeletonPool(k4abt_frame_t* bodyFrame)
 		// erase skeleton with id
 		m_skeletonPool.erase(*itIndexIdSkeletonsToErase);
 
-		//skeleton was added/removed, so UI updates
+		//skeleton was removed, so UI updates
 		m_hasSkeletonPoolChanged = true;
 
 		Console::log("AkTracker::cleanSkeletonList(): [cam id = " + std::to_string(m_idCam) + "] Removed skeleton with id = " + std::to_string(*itIndexIdSkeletonsToErase) + " from pool!");

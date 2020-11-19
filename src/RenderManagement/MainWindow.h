@@ -5,6 +5,7 @@
 #include "GlWidget.h"
 #include "MotionHubUtil/Console.h"
 #include "NetworkSettingsWindow.h"
+#include "trackermodwindow.h"
 
 #include <QtWidgets/QMainWindow>
 #include "QtWidgets/qtreewidget.h"
@@ -61,6 +62,11 @@ public:
 	void update();
 	void updateConsole();
 
+	void setTimelineValue(float time, int frameNum, int numFrames);
+
+	bool m_timelineActive;
+
+
 	GlWidget* getOglRenderer();
 
 private slots:
@@ -108,6 +114,15 @@ private slots:
 
 	void slotResetTrackerOffset();
 
+	void slotModifyTrackerRotations();
+
+	void slotTimelinePressed();
+	void slotTimelineReleased();
+	void slotTimelineValueChanged(int newValue);
+
+	void slotRecord();
+
+	void slotTimelineLableModeChanged(int idx);
 
 private:
 	/*!
@@ -125,6 +140,9 @@ private:
 
 	NetworkSettingsWindow* m_netwokSettingsWindow;
 
+	TrackerModWindow* m_trackerModWindow;
+	
+
 	/*!
 	 * reference to the tracker manager 
 	 */
@@ -140,6 +158,11 @@ private:
 	 *  tracking state for changing icon
 	 */
 	bool m_isTracking = false;
+
+	/*!
+	 *  recording state for changing icon
+	 */
+	bool m_isRecording = false;
 	/*!
 	 * true when tracker is selected and inspector isn't empty
 	 */
@@ -180,11 +203,22 @@ private:
 	 */
 	void toggleTrackingButtons();
 
+	void toggleRecButtons();
+
+
 	std::map<std::string, QLineEdit*> m_inputFieldPool;
 
 	QString toQString(float _float);
 
 	void addTrackerToList(int id);
 
+	enum TimelineLableMode
+	{
+		percentage,
+		elTime,
+		frame
+	};
+
+	TimelineLableMode m_timelineLableState;
 
 };
