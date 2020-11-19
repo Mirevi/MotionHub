@@ -193,7 +193,7 @@ public:
 
 	virtual std::vector<Vector3f> resetOffsets();
 
-	virtual float getElapsedTime();
+	virtual float getTotalTime();
 
 	virtual int getCurrFrameIdx();
 

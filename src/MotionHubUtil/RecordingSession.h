@@ -38,8 +38,12 @@ public:
 	int getFrameCount();
 	RecordingFrame* getFrame(int i);
 
+
+	float getTotalTime();
+
 private:
 	std::vector<RecordingFrame> m_frames;
+	float m_totalTime;
 
 
 

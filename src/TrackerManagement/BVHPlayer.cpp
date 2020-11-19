@@ -293,7 +293,7 @@ void BVHPlayer::setCurrentFrame(int newValue)
 	}
 }
 
-float BVHPlayer::getElapsedTime()
+float BVHPlayer::getTotalTime()
 {
 	return m_frameTime * m_currFrame;
 }

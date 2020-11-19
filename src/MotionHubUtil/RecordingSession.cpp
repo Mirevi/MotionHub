@@ -7,7 +7,7 @@
 
 RecordingSession::RecordingSession()
 {
-	
+	m_totalTime = 0.0;
 }
 
 void RecordingSession::addFrame(RecordingFrame frame, float duration)
@@ -338,7 +338,14 @@ void RecordingSession::load(std::string filePath)
 		}
 		
 		addFrame(currFrameObj, duration);
-	
+		
+		if (duration > 0)
+		{
+			m_totalTime += duration;
+		}
+
+
+		//Console::log("RecordingSession::load(): frame: " + toString(duration) + ", total: " + toString(m_totalTime));
 		//Console::log("RecordingSession::load(): " + std::string(itFrame->Name()) + ", skeleton count = " + toString(currFrameObj.m_skeletons.size()));
 	}
 
@@ -357,7 +364,10 @@ RecordingFrame* RecordingSession::getFrame(int i)
 	return &m_frames[i];
 }
 
-
+float RecordingSession::getTotalTime()
+{
+	return m_totalTime;
+}
 
 #pragma endregion
 

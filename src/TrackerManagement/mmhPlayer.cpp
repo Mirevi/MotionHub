@@ -86,7 +86,7 @@ void mmhPlayer::init()
 	m_session = RecordingSession();
 	m_session.load(m_filePath);
 
-
+	//Console::log("mmhPlayer::init(): totalTime = " + toString(m_session.getTotalTime()));
 
 	//store metadata
 	m_currFrameIdx = 0;
@@ -256,19 +256,10 @@ void mmhPlayer::setCurrentFrame(int newValue)
 	}
 }
 
-float mmhPlayer::getElapsedTime()
+float mmhPlayer::getTotalTime()
 {
-	if (m_currFrame != NULL)
-	{
 
-		float currTime = m_currFrame->m_duration;
-		return currTime * m_currFrameIdx;
-	}
-	else
-	{
-		return 0.0;
-	}
-
+	return m_session.getTotalTime();
 
 }
 

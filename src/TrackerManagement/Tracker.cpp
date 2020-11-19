@@ -194,7 +194,7 @@ int Tracker::getCamID()
 
 }
 
-float Tracker::getElapsedTime()
+float Tracker::getTotalTime()
 {
 	return -1.0;
 }

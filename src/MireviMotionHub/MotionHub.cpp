@@ -120,22 +120,20 @@ void MotionHub::update()
 
 void MotionHub::updateTimeline()
 {
-	if (m_uiManager->getMainWindow()->m_timelineActive)
+
+
+	//get BVH/MMH current frame
+	FrameData currFrameData = m_trackerManager->getRecCurrFrameData();
+
+	if (currFrameData.currFrameIdx < 0)
 	{
-
-
-		//get BVH/MMH current frame
-		/*TrackerManager::*/FrameData currFrameData = m_trackerManager->getRecCurrFrameData();
-
-		if (currFrameData.currFrameIdx < 0)
-		{
-			return;
-		}
-
-		//and apply it to the timeline slider
-		m_uiManager->getMainWindow()->setTimelineValue(currFrameData.elapsedTime, currFrameData.currFrameIdx, currFrameData.frameCount);
-
+		return;
 	}
+
+	//and apply it to the timeline slider
+	m_uiManager->getMainWindow()->setTimelineValue(currFrameData.totalTime, currFrameData.currFrameIdx, currFrameData.frameCount);
+
+
 
 }
 

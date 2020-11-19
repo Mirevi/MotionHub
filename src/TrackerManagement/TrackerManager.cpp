@@ -366,13 +366,10 @@ FrameData TrackerManager::getRecCurrFrameData()
 
 	FrameData currFrameData;
 
-	//if (m_trackerPool.size() <= 0)
-	//{
-	//	return currFrameData;
-	//}
+
 
 	int currFrameIdx = -1;
-	float elapsedTime = -1.0;
+	float totalTime = -1.0;
 	int frameCount = -1;
 
 
@@ -384,7 +381,7 @@ FrameData TrackerManager::getRecCurrFrameData()
 
 			BVHPlayer* currBvhPlayer = dynamic_cast<BVHPlayer*>(*itTracker);
 
-			elapsedTime = currBvhPlayer->getElapsedTime();
+			totalTime = currBvhPlayer->getTotalTime();
 			currFrameIdx = currBvhPlayer->getCurrFrameIdx();
 			frameCount = currBvhPlayer->getFrameCount();
 
@@ -395,7 +392,7 @@ FrameData TrackerManager::getRecCurrFrameData()
 
 			mmhPlayer* currMmhPlayer = dynamic_cast<mmhPlayer*>(*itTracker);
 
-			elapsedTime = currMmhPlayer->getElapsedTime();
+			totalTime = currMmhPlayer->getTotalTime();
 			currFrameIdx = currMmhPlayer->getCurrFrameIdx();
 			frameCount = currMmhPlayer->getFrameCount();
 
@@ -404,20 +401,17 @@ FrameData TrackerManager::getRecCurrFrameData()
 
 	}
 
-	if (currFrameIdx != NULL)
-	{
+	//Console::log("TrackerManager::getRecCurrFrameData(): currFrameIdx = " + toString(currFrameIdx));
 
-		currFrameData.currFrameIdx = currFrameIdx;
-		currFrameData.frameCount = frameCount;
-		currFrameData.elapsedTime = elapsedTime;
 
-		return currFrameData;
-	}
-	//else
-	//{
-	//	return currFrameData;
-	//}
-	
+
+	currFrameData.currFrameIdx = currFrameIdx;
+	currFrameData.frameCount = frameCount;
+	currFrameData.totalTime = totalTime;
+
+	return currFrameData;
+
+
 }
 
 void TrackerManager::writeSkeletonsToRecorder()

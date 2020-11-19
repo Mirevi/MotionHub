@@ -34,7 +34,7 @@ public:
 
 	void setCurrentFrame(int newValue);
 
-	float getElapsedTime() override;
+	float getTotalTime() override;
 
 	int getCurrFrameIdx() override;
 

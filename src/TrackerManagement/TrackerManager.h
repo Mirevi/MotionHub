@@ -24,7 +24,7 @@ struct __declspec(dllexport) FrameData
 {
 public:
 	int currFrameIdx = 0;
-	float elapsedTime = 0.0;
+	float totalTime = 0.0;
 	int frameCount = 0;
 };
 

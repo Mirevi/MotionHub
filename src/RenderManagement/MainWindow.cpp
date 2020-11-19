@@ -423,7 +423,7 @@ void MainWindow::slotToggleTracking()
 	{
 
 		m_refTrackerManager->startTracker(); // start tracking if false
-		m_timelineActive = true;
+		//m_timelineActive = true;
 
 
 	}
@@ -431,7 +431,7 @@ void MainWindow::slotToggleTracking()
 	{
 
 		m_refTrackerManager->stopTracker(); // stop tracking if true
-		m_timelineActive = false;
+		//m_timelineActive = false;
 
 	}
 
@@ -1149,18 +1149,21 @@ void MainWindow::addTrackerToList(int id)
 
 }
 
-void MainWindow::setTimelineValue(float time, int frameIdx, int numFrames)
+void MainWindow::setTimelineValue(float totalTime, int frameIdx, int numFrames)
 {
 
 	int percent = (int)round((frameIdx * 100) / numFrames);
 
-	ui->slider_timeline->setValue(percent);
+	if (m_timelineActive)
+	{
+		ui->slider_timeline->setValue(percent);
+	}
 
 	//also set lable
 
 	std::string currStr;
 
-	Console::log("MainWindow::setTimelineValue(): m_timelineLableState = " + toString(m_timelineLableState));
+	//Console::log("MainWindow::setTimelineValue(): totalTime = " + toString(totalTime));
 
 
 	switch (m_timelineLableState)
@@ -1170,7 +1173,11 @@ void MainWindow::setTimelineValue(float time, int frameIdx, int numFrames)
 		break;
 
 	case elTime:
-		currStr = toString(time);
+		//currStr = toString((roundf(totalTime * (float)percent) / 100));
+		char chr[10];
+		sprintf(chr, "%.2f", totalTime * (float)percent / 100);
+		currStr = chr;
+		currStr += "s";
 		break;
 
 	case frame:
