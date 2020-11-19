@@ -1,15 +1,15 @@
 <config>
     <startup_config>
         <ipAddress>127.0.0.1</ipAddress>
-        <xPosAzure>0.000000</xPosAzure>
-        <yPosAzure>1.175000</yPosAzure>
-        <zPosAzure>2.200000</zPosAzure>
-        <xRotAzure>-0.500000</xRotAzure>
-        <yRotAzure>0.000000</yRotAzure>
-        <zRotAzure>0.000000</zRotAzure>
-        <xSclAzure>0.001000</xSclAzure>
-        <ySclAzure>-0.001000</ySclAzure>
-        <zSclAzure>-0.001000</zSclAzure>
+        <xPosAzure>0</xPosAzure>
+        <yPosAzure>1.175</yPosAzure>
+        <zPosAzure>2.2</zPosAzure>
+        <xRotAzure>-5.0</xRotAzure>
+        <yRotAzure>0</yRotAzure>
+        <zRotAzure>0</zRotAzure>
+        <xSclAzure>0.0010</xSclAzure>
+        <ySclAzure>-0.0010</ySclAzure>
+        <zSclAzure>-0.0010</zSclAzure>
         <xPosOptiTrack>0</xPosOptiTrack>
         <yPosOptiTrack>0.1</yPosOptiTrack>
         <zPosOptiTrack>0</zPosOptiTrack>
@@ -19,14 +19,5 @@
         <xSclOptiTrack>1</xSclOptiTrack>
         <ySclOptiTrack>1</ySclOptiTrack>
         <zSclOptiTrack>1</zSclOptiTrack>
-        <xPosBVH>0.000000</xPosBVH>
-        <yPosBVH>0.000000</yPosBVH>
-        <zPosBVH>0.000000</zPosBVH>
-        <xRotBVH>0.000000</xRotBVH>
-        <yRotBVH>0.000000</yRotBVH>
-        <zRotBVH>0.000000</zRotBVH>
-        <xSclBVH>0.050000</xSclBVH>
-        <ySclBVH>0.050000</ySclBVH>
-        <zSclBVH>0.050000</zSclBVH>
     </startup_config>
 </config>

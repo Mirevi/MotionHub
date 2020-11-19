@@ -1024,154 +1024,104 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
             <property name="maximumSize">
              <size>
               <width>16777215</width>
-              <height>118</height>
+              <height>142</height>
              </size>
             </property>
             <property name="title">
              <string>Timeline</string>
             </property>
-            <widget class="QFrame" name="frame">
+            <widget class="QLabel" name="label_timeline">
              <property name="geometry">
               <rect>
-               <x>13</x>
-               <y>20</y>
-               <width>921</width>
+               <x>10</x>
+               <y>50</y>
+               <width>100</width>
                <height>30</height>
               </rect>
              </property>
              <property name="maximumSize">
               <size>
-               <width>16777215</width>
+               <width>100</width>
                <height>30</height>
               </size>
              </property>
-             <property name="frameShape">
-              <enum>QFrame::StyledPanel</enum>
+             <property name="font">
+              <font>
+               <pointsize>16</pointsize>
+              </font>
              </property>
-             <property name="frameShadow">
-              <enum>QFrame::Raised</enum>
+             <property name="text">
+              <string/>
              </property>
-             <widget class="QComboBox" name="comboBox">
-              <property name="geometry">
-               <rect>
-                <x>0</x>
-                <y>0</y>
-                <width>81</width>
-                <height>22</height>
-               </rect>
-              </property>
-              <item>
-               <property name="text">
-                <string>Percentage</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Time</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Frame</string>
-               </property>
-              </item>
-             </widget>
             </widget>
-            <widget class="QFrame" name="frame_timeline">
+            <widget class="QSlider" name="slider_timeline">
              <property name="geometry">
               <rect>
                <x>10</x>
-               <y>60</y>
-               <width>931</width>
-               <height>40</height>
+               <y>90</y>
+               <width>921</width>
+               <height>22</height>
               </rect>
              </property>
              <property name="sizePolicy">
-              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+              <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
-             <property name="maximumSize">
-              <size>
-               <width>999999</width>
-               <height>40</height>
-              </size>
+             <property name="styleSheet">
+              <string notr="true"/>
              </property>
-             <property name="autoFillBackground">
-              <bool>false</bool>
+             <property name="maximum">
+              <number>100</number>
              </property>
-             <property name="frameShape">
-              <enum>QFrame::StyledPanel</enum>
-             </property>
-             <property name="frameShadow">
-              <enum>QFrame::Plain</enum>
-             </property>
-             <property name="lineWidth">
+             <property name="pageStep">
               <number>1</number>
              </property>
-             <widget class="QSlider" name="slider_timeline">
-              <property name="geometry">
-               <rect>
-                <x>10</x>
-                <y>10</y>
-                <width>921</width>
-                <height>22</height>
-               </rect>
-              </property>
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="styleSheet">
-               <string notr="true"/>
-              </property>
-              <property name="maximum">
-               <number>100</number>
-              </property>
-              <property name="pageStep">
-               <number>1</number>
-              </property>
-              <property name="value">
-               <number>0</number>
-              </property>
-              <property name="sliderPosition">
-               <number>0</number>
-              </property>
-              <property name="tracking">
-               <bool>true</bool>
-              </property>
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="tickPosition">
-               <enum>QSlider::NoTicks</enum>
-              </property>
-              <property name="tickInterval">
-               <number>0</number>
-              </property>
-             </widget>
+             <property name="value">
+              <number>0</number>
+             </property>
+             <property name="sliderPosition">
+              <number>0</number>
+             </property>
+             <property name="tracking">
+              <bool>true</bool>
+             </property>
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="tickPosition">
+              <enum>QSlider::NoTicks</enum>
+             </property>
+             <property name="tickInterval">
+              <number>0</number>
+             </property>
             </widget>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="label_timeline">
-            <property name="maximumSize">
-             <size>
-              <width>100</width>
-              <height>30</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>16</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
+            <widget class="QComboBox" name="comboBox">
+             <property name="geometry">
+              <rect>
+               <x>10</x>
+               <y>20</y>
+               <width>81</width>
+               <height>22</height>
+              </rect>
+             </property>
+             <item>
+              <property name="text">
+               <string>Percentage</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Time</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Frame</string>
+              </property>
+             </item>
+            </widget>
            </widget>
           </item>
           <item>
