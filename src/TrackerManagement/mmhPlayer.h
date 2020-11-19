@@ -4,14 +4,14 @@
 #include "MotionHubUtil/Console.h"
 #include "MotionHubUtil/Timer.h"
 #include <math.h>
+#include "Recorder.h"
 
-#include "bvh11.h"
 
-class BVHPlayer : public Tracker
+class mmhPlayer : public Tracker
 {
 public:
 
-	BVHPlayer(int id, NetworkManager* networkManager, ConfigManager* configManager, std::string filePath);
+	mmhPlayer(int id, NetworkManager* networkManager, ConfigManager* configManager, std::string filePath);
 
 	/*!
 	 * calls the start() method of the base class which sets m_tracking to true
@@ -40,6 +40,7 @@ public:
 
 	int getFrameCount() override;
 
+
 	void applyModChange(Joint::JointNames type, Vector3f mod, bool inverted);
 
 private:
@@ -65,24 +66,14 @@ private:
 	 * \param body_frame
 	 */
 
-	bvh11::BvhObject* m_bvhObject;
+	//bvh11::BvhObject* m_bvhObject;
+	RecordingSession m_session;
+	RecordingFrame* m_currFrame;
 
 	bool m_timelineDragging;
 
-	/*!
-	* Index of the current Frame
-	*/
-	int m_currFrame;
-
-	/*!
-	* Total number of frames in this recording
-	*/
+	int m_currFrameIdx;
 	int m_frameCount;
-
-	/*!
-	* time of the current frame
-	*/
-	double m_frameTime;
 	
 	Skeleton* m_currSkeleton;
 

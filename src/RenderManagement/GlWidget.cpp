@@ -182,6 +182,8 @@ void GlWidget::updateSkeletonMeshPoolSize()
 			if (m_skeletonMeshPool.find((*itTracker)->getProperties()->id) == m_skeletonMeshPool.end())
 			{
 
+				Console::log("GlWidget::updateSkeletonMeshPoolSize(): insert");
+				
 				m_skeletonMeshPool.insert(std::make_pair((*itTracker)->getProperties()->id, std::vector<SkeletonMesh>()));
 
 			}
@@ -229,6 +231,9 @@ void GlWidget::updateSkeletonMeshCount()
 
 	std::vector<Tracker*> trackerTempCopy = m_refTrackerManager->getPoolTracker();
 	m_refTrackerManager->getTrackerPoolLock()->lock();
+
+
+
 	for (auto itTracker = trackerTempCopy.begin(); itTracker != trackerTempCopy.end(); itTracker++)
 	{
 
@@ -240,13 +245,13 @@ void GlWidget::updateSkeletonMeshCount()
 			int skeletonPoolSize = skeletonPoolTempCopy.size();
 			int skeletonMeshPoolSize = m_skeletonMeshPool.find((*itTracker)->getProperties()->id)->second.size();
 
+
 			// add skeleton mesh to skeleton mesh pool
 			if (skeletonMeshPoolSize < skeletonPoolSize)
 			{
 
 				while (m_skeletonMeshPool.find((*itTracker)->getProperties()->id)->second.size() < skeletonPoolTempCopy.size())
 				{
-
 					m_skeletonMeshPool.find((*itTracker)->getProperties()->id)->second.push_back(SkeletonMesh());
 
 				}
@@ -293,8 +298,20 @@ void GlWidget::updateSkeletonMeshTransform()
 				for (auto itJoint = itSkeleton->second.m_joints.begin(); itJoint != itSkeleton->second.m_joints.end(); itJoint++)
 				{
 
-					// get current joint mesh
-					Cube* currJoint = m_skeletonMeshPool.find((*itTracker)->getProperties()->id)->second.at(indexSkeleton).m_joints[indexJoint];
+					//Console::log("GlWidget::updateSkeletonMeshTransform(): pool size = " + toString(m_skeletonMeshPool.size()));
+
+					// get current joint mesh 
+					//###ERROR### -> m_skeletonMeshPool.second is empty
+
+					auto currMeshTracker = m_skeletonMeshPool.find((*itTracker)->getProperties()->id);
+
+
+					if (currMeshTracker->second.size() == 0)
+					{
+						return;
+					}
+
+					Cube* currJoint = currMeshTracker->second.at(indexSkeleton).m_joints[indexJoint];
 
 					// set joint position and rotation
 					currJoint->setPosition(itJoint->second.getJointPosition());

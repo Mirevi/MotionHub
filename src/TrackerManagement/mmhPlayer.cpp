@@ -1,6 +1,6 @@
-#include "BVHPlayer.h"
+#include "mmhPlayer.h"
 
-BVHPlayer::BVHPlayer(int id, NetworkManager* networkManager, ConfigManager* configManager, std::string filePath)
+mmhPlayer::mmhPlayer(int id, NetworkManager* networkManager, ConfigManager* configManager, std::string filePath)
 {
 	
 	m_networkManager = networkManager;
@@ -16,7 +16,7 @@ BVHPlayer::BVHPlayer(int id, NetworkManager* networkManager, ConfigManager* conf
 
 	//assign id and name to properties
 	m_properties->id = id;
-	m_properties->name = "tracker_bvhPlayer_" + toString(id);
+	m_properties->name = "tracker_mmhPlayer_" + toString(id);
 
 	//tracker is enabled
 	m_properties->isEnabled = true;
@@ -41,58 +41,56 @@ BVHPlayer::BVHPlayer(int id, NetworkManager* networkManager, ConfigManager* conf
 
 }
 
-void BVHPlayer::start()
+void mmhPlayer::start()
 {
 
 	// set tracking to true
 	m_properties->isTracking = true;
 
 
-	//create new skeleton and add it to the pool
-	m_skeletonPool.insert({ 0, Skeleton(0) });
-	m_currSkeleton = &m_skeletonPool[0];
+	////create new skeleton and add it to the pool
+	//m_skeletonPool.insert({ 0, Skeleton(0) });
+	//m_currSkeleton = &m_skeletonPool[0];
 
 	//there schould only be one skeleton in the file
 	m_properties->countDetectedSkeleton = m_skeletonPool.size();
 	//skeleton was added/removed, so UI updates
 	m_hasSkeletonPoolChanged = true;
 
-	Console::log("skeleton added to pool!");
-
 
 
 	// start tracking thread and detach the thread from method scope runtime
-	m_trackingThread = new std::thread(&BVHPlayer::update, this);
+	m_trackingThread = new std::thread(&mmhPlayer::update, this);
 	m_trackingThread->detach();
 
 }
 
-void BVHPlayer::stop()
+void mmhPlayer::stop()
 {
 	//is not tracking, so the update loop exits after current loop
 	m_properties->isTracking = false;
 }
 
-void BVHPlayer::destroy()
+void mmhPlayer::destroy()
 {
 
-	delete m_bvhObject;
 
 	// delete this object
 	delete this;
 }
 
-void BVHPlayer::init()
+void mmhPlayer::init()
 {
 	m_timelineDragging = false;
 
-	// Instantiate a BVH object
-	m_bvhObject = new bvh11::BvhObject(m_filePath);
+	m_session = RecordingSession();
+	m_session.load(m_filePath);
+
+	//Console::log("mmhPlayer::init(): totalTime = " + toString(m_session.getTotalTime()));
 
 	//store metadata
-	m_currFrame = 0;
-	m_frameCount = m_bvhObject->frames();
-	m_frameTime = m_bvhObject->frame_time();
+	m_currFrameIdx = 0;
+	m_frameCount = m_session.getFrameCount();
 
 
 	//create lookup table for Joints
@@ -128,7 +126,7 @@ void BVHPlayer::init()
 
 }
 
-void BVHPlayer::update()
+void mmhPlayer::update()
 {
 
 	// track while tracking is true
@@ -136,6 +134,7 @@ void BVHPlayer::update()
 	{
 
 		Timer::reset();
+
 
 		if (!m_timelineDragging)
 		{
@@ -145,6 +144,7 @@ void BVHPlayer::update()
 
 		}
 
+
 		//send Skeleton Pool to NetworkManager
 		m_networkManager->sendSkeletonPool(&getSkeletonPoolCache(), m_properties->id);
 
@@ -153,8 +153,11 @@ void BVHPlayer::update()
 
 
 		double elapsed = (double)Timer::getDuration();
-		long long sleepTime = (m_frameTime - elapsed) * 1000;
+		long long sleepTime = (m_currFrame->m_duration - elapsed) * 1000;
 		std::this_thread::sleep_for(std::chrono::milliseconds(sleepTime));
+
+
+		
 
 
 	}
@@ -167,103 +170,63 @@ void BVHPlayer::update()
 
 }
 
-void BVHPlayer::track()
+void mmhPlayer::track()
 {
 
-	//get joint list and count
-	auto jointList = m_bvhObject->GetJointList();
-	int jointCount = jointList.size();
-
-
-
-	if (m_currFrame < 0 || m_currFrame >= m_frameCount)
+	if (m_currFrameIdx >= m_frameCount)
 	{
-		//Console::logError("ERROR: frame numner out of range. m_currFrame: " + toString(m_currFrame));
-		return;
-	}
-
-	//loop throuh joints
-	for each (auto currJoint in jointList)
-	{
-
-
-		//get current joint type
-		Joint::JointNames currType = m_nameTranslationTable[currJoint->name()];
-
-		if (currType == 0)
-		{
-			currType = Joint::NDEF;
-		}
-
-
-		if (currJoint->name() == "Hips")
-		{
-			currType = Joint::HIPS;
-		}
-
-
-
-
-		if (currType != Joint::NDEF)
-		{
-
-
-			//get joint pose
-			Affine3d currJointTransformLocal = m_bvhObject->GetTransformationRelativeToParent(currJoint, m_currFrame);
-			Affine3d currJointTransformGlobal = m_bvhObject->GetTransformation(currJoint, m_currFrame);
-
-			//get joint position and convert to Vec4
-			auto pos = currJointTransformGlobal.translation().cast<float>();
-			Vector4f position = m_offsetMatrix * Vector4f(pos.x(), pos.y(), pos.z(), 1);
-
-
-
-
-
-
-			//get joint rotation and convert to Quaternion
-			auto rot = currJointTransformGlobal.rotation().cast<float>();
-			Quaternionf rotation(rot);
-
-
-
-			Vector3f euler = rotation.toRotationMatrix().eulerAngles(0, 1, 2);
-
-
-			//rotation = AngleAxisf(-euler.x(), Vector3f::UnitX())
-			//		 * AngleAxisf(-euler.y(), Vector3f::UnitY())
-			//		 * AngleAxisf( euler.z(), Vector3f::UnitZ());
-
-			rotation = eulerToQuaternion(Vector3f(-euler.x(), -euler.y(), euler.z()), false);
-
-			//rotation = convertJointRotation(rotation, currType);
-
-
-
-			//Console::log("BVHPlayer::track(): Joint " + std::to_string(currType) + ", position: " + toString(position));
-
-
-			m_currSkeleton->m_joints[currType] = Joint(position, rotation);
-		}
-	}
-
-	m_currFrame++;
-
-	if (m_currFrame >= m_frameCount)
-	{
-		m_currFrame = 0;
+		m_currFrameIdx = 0;
 	}
 
 
-	m_isDataAvailable = true;
+
+	m_currFrame = m_session.getFrame(m_currFrameIdx++);
+
+	int skelIdx = 0;
+
+	//Console::log("mmhPlayer::track(): skeleton count = " + toString(m_currFrame->m_skeletons.size()));
+
+	//get the current number of skeletons
+	m_properties->countDetectedSkeleton = m_currFrame->m_skeletons.size();
+
+	m_skeletonPoolLock.lock();
+
+	if (m_properties->countDetectedSkeleton != m_skeletonPool.size())
+	{
+		m_hasSkeletonPoolChanged = true;
+		m_isDataAvailable = true;
+
+		//Console::log("mmhPlayer::track(): countDetectedSkeleton = " + toString(m_properties->countDetectedSkeleton));
+	}
+
+	//clear the old skeletons from pool
+	m_skeletonPool.clear();
+
+
+
+	//loop over skeletons and add them to pool
+	for (auto itSkeleton = m_currFrame->m_skeletons.begin(); itSkeleton != m_currFrame->m_skeletons.end(); itSkeleton++)
+	{
+
+		m_skeletonPool[skelIdx++] = *itSkeleton;
+
+		//Console::log(toString(m_skeletonPool[0].m_joints[Joint::HIPS].getJointPosition()));
+		m_isDataAvailable = true;
+
+	}
+
+	m_skeletonPoolLock.unlock();
+
+	//Console::log("mmhPlayer::track(): skeleton count = " + toString(m_skeletonPool.size()));
+
 }
 
-std::string BVHPlayer::getTrackerType()
+std::string mmhPlayer::getTrackerType()
 {
-	return "BVH";
+	return "MMH";
 }
 
-std::vector<Vector3f> BVHPlayer::resetOffsets()
+std::vector<Vector3f> mmhPlayer::resetOffsets()
 {
 	Vector3f pos = Vector3f(0, 0, 0);
 	Vector3f rot = Vector3f(0, 0, 0);
@@ -278,14 +241,14 @@ std::vector<Vector3f> BVHPlayer::resetOffsets()
 	return offsets;
 }
 
-void BVHPlayer::controlTime(bool stop)
+void mmhPlayer::controlTime(bool stop)
 {
 	m_timelineDragging = stop;
 }
 
-void BVHPlayer::setCurrentFrame(int newValue)
+void mmhPlayer::setCurrentFrame(int newValue)
 {
-	m_currFrame = (int)round(m_frameCount * newValue / 100);
+	m_currFrameIdx = (int)round(m_frameCount * newValue / 100);
 
 	if (m_properties->isTracking)
 	{
@@ -293,30 +256,30 @@ void BVHPlayer::setCurrentFrame(int newValue)
 	}
 }
 
-float BVHPlayer::getTotalTime()
+float mmhPlayer::getTotalTime()
 {
-	return m_frameTime * m_currFrame;
+
+	return m_session.getTotalTime();
+
 }
 
-int BVHPlayer::getCurrFrameIdx()
+int mmhPlayer::getCurrFrameIdx()
 {
-	return m_currFrame;
+	return m_currFrameIdx;
 }
 
-int BVHPlayer::getFrameCount()
+int mmhPlayer::getFrameCount()
 {
 	return m_frameCount;
 }
 
-void BVHPlayer::applyModChange(Joint::JointNames type, Vector3f mod, bool inverted)
+void mmhPlayer::applyModChange(Joint::JointNames type, Vector3f mod, bool inverted)
 {
 
 }
 
 
-
-
-Quaternionf BVHPlayer::convertJointRotation(Quaternionf raw, Joint::JointNames type)
+Quaternionf mmhPlayer::convertJointRotation(Quaternionf raw, Joint::JointNames type)
 {
 
 	Quaternionf newRot = raw;

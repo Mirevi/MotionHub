@@ -637,6 +637,12 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
               <verstretch>1</verstretch>
              </sizepolicy>
             </property>
+            <property name="minimumSize">
+             <size>
+              <width>300</width>
+              <height>0</height>
+             </size>
+            </property>
             <property name="maximumSize">
              <size>
               <width>16777215</width>
@@ -754,6 +760,35 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
              </property>
              <property name="text">
               <string>Add group</string>
+             </property>
+            </widget>
+            <widget class="QPushButton" name="btn_Record">
+             <property name="geometry">
+              <rect>
+               <x>250</x>
+               <y>12</y>
+               <width>30</width>
+               <height>30</height>
+              </rect>
+             </property>
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="cursor">
+              <cursorShape>PointingHandCursor</cursorShape>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+             <property name="icon">
+              <iconset resource="MainWindow.qrc">
+               <normaloff>:/ressources/icons/64px-Location_dot_red.svg.png</normaloff>:/ressources/icons/64px-Location_dot_red.svg.png</iconset>
+             </property>
+             <property name="flat">
+              <bool>false</bool>
              </property>
             </widget>
            </widget>
@@ -985,6 +1020,65 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
         <item>
          <layout class="QVBoxLayout" name="layout_left_bottom">
           <item>
+           <widget class="QFrame" name="frame">
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="frameShape">
+             <enum>QFrame::StyledPanel</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
+            </property>
+            <widget class="QComboBox" name="comboBox">
+             <property name="geometry">
+              <rect>
+               <x>0</x>
+               <y>0</y>
+               <width>81</width>
+               <height>22</height>
+              </rect>
+             </property>
+             <item>
+              <property name="text">
+               <string>Percentage</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Time</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Frame</string>
+              </property>
+             </item>
+            </widget>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_timeline">
+            <property name="maximumSize">
+             <size>
+              <width>100</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>16</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item>
            <widget class="QFrame" name="frame_timeline">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -1020,7 +1114,7 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
               </rect>
              </property>
              <property name="sizePolicy">
-              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
@@ -1072,7 +1166,7 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
             <property name="maximumSize">
              <size>
               <width>999999</width>
-              <height>256</height>
+              <height>369</height>
              </size>
             </property>
             <property name="sizeIncrement">
@@ -1464,6 +1558,38 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>btn_Record</sender>
+   <signal>pressed()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>slotRecord()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1546</x>
+     <y>59</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1217</x>
+     <y>40</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>comboBox</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>slotTimelineLableModeChanged(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>68</x>
+     <y>564</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>742</x>
+     <y>271</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>slotToggleTracking()</slot>
@@ -1477,5 +1603,7 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
   <slot>slotTimelinePressed()</slot>
   <slot>slotTimelineReleased()</slot>
   <slot>slotTimelineValueChanged(int)</slot>
+  <slot>slotRecord()</slot>
+  <slot>slotTimelineLableModeChanged(int)</slot>
  </slots>
 </ui>

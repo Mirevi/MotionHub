@@ -62,7 +62,7 @@ public:
 	void update();
 	void updateConsole();
 
-	void setTimelineValue(int newValue);
+	void setTimelineValue(float time, int frameNum, int numFrames);
 
 	bool m_timelineActive;
 
@@ -120,6 +120,9 @@ private slots:
 	void slotTimelineReleased();
 	void slotTimelineValueChanged(int newValue);
 
+	void slotRecord();
+
+	void slotTimelineLableModeChanged(int idx);
 
 private:
 	/*!
@@ -155,6 +158,11 @@ private:
 	 *  tracking state for changing icon
 	 */
 	bool m_isTracking = false;
+
+	/*!
+	 *  recording state for changing icon
+	 */
+	bool m_isRecording = false;
 	/*!
 	 * true when tracker is selected and inspector isn't empty
 	 */
@@ -195,11 +203,22 @@ private:
 	 */
 	void toggleTrackingButtons();
 
+	void toggleRecButtons();
+
+
 	std::map<std::string, QLineEdit*> m_inputFieldPool;
 
 	QString toQString(float _float);
 
 	void addTrackerToList(int id);
 
+	enum TimelineLableMode
+	{
+		percentage,
+		elTime,
+		frame
+	};
+
+	TimelineLableMode m_timelineLableState;
 
 };

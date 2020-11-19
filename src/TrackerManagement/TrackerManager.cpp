@@ -88,6 +88,18 @@ int TrackerManager::createTracker(TrackerType type, std::string filePath)
 
 		}
 
+		case mmh:
+		{
+
+			Console::log("TrackerManager::createTracker(): Creating mmh-Player ...");
+
+			//create new BVH-Player with current ID
+			tempTracker = new mmhPlayer(id, m_networkManager, m_configManager, filePath);
+
+			break;
+
+		}
+
 		case group:
 		{
 
@@ -318,6 +330,10 @@ void TrackerManager::controlTimeline(bool stop)
 		{
 			dynamic_cast<BVHPlayer*>(*itTracker)->controlTime(stop);
 		}
+		else if((*itTracker)->getTrackerType() == "MMH")
+		{
+			dynamic_cast<mmhPlayer*>(*itTracker)->controlTime(stop);
+		}
 	}
 
 }
@@ -330,6 +346,10 @@ void TrackerManager::timelineValueChange(int newValue)
 		{
 			dynamic_cast<BVHPlayer*>(*itTracker)->setCurrentFrame(newValue);
 		}
+		else if ((*itTracker)->getTrackerType() == "MMH")
+		{
+			dynamic_cast<mmhPlayer*>(*itTracker)->setCurrentFrame(newValue);
+		}
 	}
 }
 
@@ -341,42 +361,81 @@ void TrackerManager::timelineValueChange(int newValue)
 //
 //}
 
-int TrackerManager::getBvhCurrFrame()
+FrameData TrackerManager::getRecCurrFrameData()
 {
 
-	if (m_trackerPool.size() <= 0)
-	{
-		return -1;
-	}
+	FrameData currFrameData;
 
-	int currFrame = -1;
- 
+
+
+	int currFrameIdx = -1;
+	float totalTime = -1.0;
+	int frameCount = -1;
 
 
 	for (auto itTracker = m_trackerPool.begin(); itTracker != m_trackerPool.end(); itTracker++)
 	{
 		
-
 		if ((*itTracker)->getTrackerType() == "BVH")
 		{
-			currFrame = dynamic_cast<BVHPlayer*>(*itTracker)->getCurrentFramePercent();
+
+			BVHPlayer* currBvhPlayer = dynamic_cast<BVHPlayer*>(*itTracker);
+
+			totalTime = currBvhPlayer->getTotalTime();
+			currFrameIdx = currBvhPlayer->getCurrFrameIdx();
+			frameCount = currBvhPlayer->getFrameCount();
+
 			break;
+		}
+		else if ((*itTracker)->getTrackerType() == "MMH")
+		{
+
+			mmhPlayer* currMmhPlayer = dynamic_cast<mmhPlayer*>(*itTracker);
+
+			totalTime = currMmhPlayer->getTotalTime();
+			currFrameIdx = currMmhPlayer->getCurrFrameIdx();
+			frameCount = currMmhPlayer->getFrameCount();
+
+			break;
+		}
+
+	}
+
+	//Console::log("TrackerManager::getRecCurrFrameData(): currFrameIdx = " + toString(currFrameIdx));
+
+
+
+	currFrameData.currFrameIdx = currFrameIdx;
+	currFrameData.frameCount = frameCount;
+	currFrameData.totalTime = totalTime;
+
+	return currFrameData;
+
+
+}
+
+void TrackerManager::writeSkeletonsToRecorder()
+{
+	//record all active tracker
+
+	//loop over all tracker
+	for (auto itTracker = m_trackerPool.begin(); itTracker != m_trackerPool.end(); itTracker++)
+	{
+
+		//check if Tracker is enabled
+		if ((*itTracker)->getProperties()->isEnabled)
+		{
+			
+			//add skeletons to Recording Frame, use cache because thread issues
+			Recorder::instance().addSkeletonsToFrame((*itTracker)->getSkeletonPoolCache());
+
+
+
 		}
 
 
 	}
 
-
-
-
-	if (currFrame != NULL)
-	{
-		return currFrame;
-	}
-	else
-	{
-		return -1;
-	}
-	
+	Recorder::instance().nextFrame();
 
 }

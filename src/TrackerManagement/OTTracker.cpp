@@ -22,6 +22,7 @@ OTTracker::OTTracker(int id, NetworkManager* networkManager, ConfigManager* conf
 
 	m_networkManager = networkManager;
 
+
 	//default is enabled
 	m_properties->isEnabled = true;
 
@@ -195,8 +196,7 @@ void OTTracker::update()
 			// get new data
 			track();
 
-			m_networkManager->sendSkeletonPool(&m_skeletonPool, m_properties->id);
-
+			m_networkManager->sendSkeletonPool(&getSkeletonPoolCache(), m_properties->id);
 
 		}
 

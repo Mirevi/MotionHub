@@ -11,7 +11,24 @@
 #include "AKTracker.h"
 #include "OTTracker.h"
 #include "BVHPlayer.h"
+#include "mmhPlayer.h"
 #include "TrackerGroup.h"
+#include "Recorder.h"
+
+
+
+/*!
+*a container struct for frame meta data
+*/
+struct __declspec(dllexport) FrameData
+{
+public:
+	int currFrameIdx = 0;
+	float totalTime = 0.0;
+	int frameCount = 0;
+};
+
+
 
 /*!
  * \class TrackerManager
@@ -41,9 +58,12 @@ public:
 		azureKinect,	// Azure Kinect Tracker
 		optiTrack,		// OptiTrack	Tracker
 		bvh,			//BVH-Player
+		mmh,
 		group
 
 	};
+
+
 
 	/*!
 	 * creates a new tracker and adds it to the pool
@@ -112,9 +132,9 @@ public:
 
 	void timelineValueChange(int newValue);
 
-	int getBvhCurrFrame();
+	FrameData getRecCurrFrameData();
 
-
+	void writeSkeletonsToRecorder();
 
 	/*!
 	 * sets the pointer to sendSkeletonDelegate() in main.cpp

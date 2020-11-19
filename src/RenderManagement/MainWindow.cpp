@@ -23,6 +23,9 @@ MainWindow::MainWindow(TrackerManager* trackerManager, ConfigManager* configMana
 	m_refTrackerManager = trackerManager;
 	m_configManager = configManager;
 
+	m_timelineLableState = percentage;
+
+
 	// disable qt vector warning in console
 	qRegisterMetaType<QVector<int>>();
 	// disable highlighting of cells when hovering over them
@@ -420,7 +423,7 @@ void MainWindow::slotToggleTracking()
 	{
 
 		m_refTrackerManager->startTracker(); // start tracking if false
-		m_timelineActive = true;
+		//m_timelineActive = true;
 
 
 	}
@@ -428,7 +431,7 @@ void MainWindow::slotToggleTracking()
 	{
 
 		m_refTrackerManager->stopTracker(); // stop tracking if true
-		m_timelineActive = false;
+		//m_timelineActive = false;
 
 	}
 
@@ -648,6 +651,42 @@ void MainWindow::slotTimelineValueChanged(int newValue)
 	
 }
 
+void MainWindow::slotRecord()
+{
+	if (m_refTrackerManager->isTracking())
+	{		
+		Recorder::instance().toggleRecording();
+
+		m_isRecording = !m_isRecording;
+		toggleRecButtons();
+	}
+
+}
+
+void MainWindow::slotTimelineLableModeChanged(int idx)
+{
+
+
+	switch (idx)
+	{
+	case 0:
+		m_timelineLableState = percentage;
+		break;
+
+
+	case 1:
+		m_timelineLableState = elTime;
+		break;
+
+	case 2:
+		m_timelineLableState = frame;
+		break;
+
+
+	default:
+		break;
+	}
+}
 
 
 #pragma endregion Slots
@@ -1023,6 +1062,43 @@ void MainWindow::toggleTrackingButtons()
 
 }
 
+// toogle icon of start / stop tracking button
+void MainWindow::toggleRecButtons()
+{
+
+	QIcon icon;
+
+	// if tracking is false set icon to start arrow and enbable add / remove tracker buttons
+	if (m_isRecording)
+	{
+		//load stop button
+		icon.addFile(QStringLiteral(":/ressources/icons/circle-xxl.png"), QSize(), QIcon::Normal, QIcon::Off);
+
+		////disable add/remove buttons
+		//ui->btn_addTracker->setDisabled(true);
+		//ui->btn_removeTracker->setDisabled(true);
+		//ui->btn_addGroup->setDisabled(true);
+
+
+	}
+	else
+	{
+		//load start button
+		icon.addFile(QStringLiteral(":/ressources/icons/64px-Location_dot_red.svg.png"), QSize(), QIcon::Normal, QIcon::Off);
+
+		////enable add/remove buttons
+		//ui->btn_addTracker->setDisabled(false);
+		//ui->btn_removeTracker->setDisabled(false);
+		//ui->btn_addGroup->setDisabled(false);
+
+	}
+
+	// set icon
+	//ui->btn_Record->setIcon(icon);
+	ui->btn_Record->setIcon(icon);
+
+}
+
 #pragma endregion Utils
 
 QString MainWindow::toQString(float value)
@@ -1073,9 +1149,45 @@ void MainWindow::addTrackerToList(int id)
 
 }
 
-void MainWindow::setTimelineValue(int newValue)
+void MainWindow::setTimelineValue(float totalTime, int frameIdx, int numFrames)
 {
 
-	ui->slider_timeline->setValue(newValue);
+	int percent = (int)round((frameIdx * 100) / numFrames);
+
+	if (m_timelineActive)
+	{
+		ui->slider_timeline->setValue(percent);
+	}
+
+	//also set lable
+
+	std::string currStr;
+
+	//Console::log("MainWindow::setTimelineValue(): totalTime = " + toString(totalTime));
+
+
+	switch (m_timelineLableState)
+	{
+	case percentage:
+		currStr = toString(percent) + "%";
+		break;
+
+	case elTime:
+		//currStr = toString((roundf(totalTime * (float)percent) / 100));
+		char chr[10];
+		sprintf(chr, "%.2f", totalTime * (float)percent / 100);
+		currStr = chr;
+		currStr += "s";
+		break;
+
+	case frame:
+		currStr = toString(frameIdx) + "/" + toString(numFrames);
+		break;
+
+	default:
+		break;
+	}
+
+	ui->label_timeline->setText(QString(currStr.c_str()));
 
 }
