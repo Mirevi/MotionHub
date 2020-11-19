@@ -32,26 +32,32 @@
 #include <xstypes/xssocket.h>
 #include <xstypes/xsthread.h>
 #include "xs_quaterniondatagram.h"
+#include "functional"
+
 
 #include <atomic>
+
+
+//class XSTracker;
 
 class UdpServer
 {
 public:
-	UdpServer(XsString address = "localhost", uint16_t port = 9763, void (*func)(const std::vector<QuaternionDatagram::Kinematics>& data) = {});
+	UdpServer(XsString address = "localhost", uint16_t port = 9763, std::function<void(const std::vector<QuaternionDatagram::Kinematics>& data)> func = {});
 	~UdpServer();
 
 	void readMessages();
 	void startThread();
 	void stopThread();
 	volatile std::atomic_bool m_started, m_stopping;
+	std::function<void(const std::vector<QuaternionDatagram::Kinematics>& data)> m_func;
+
 
 
 private:
 	std::unique_ptr<XsSocket> m_socket;
 	uint16_t m_port;
 	XsString m_hostName;
-	void(*m_func)(const std::vector<QuaternionDatagram::Kinematics>& data);
 	std::unique_ptr<ParserManager> m_parserManager;
 
 };

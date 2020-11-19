@@ -25,7 +25,6 @@
 */
 
 #include "xs_udpserver.h"
-#include "xs_quaterniondatagram.h"
 
 
 
@@ -36,7 +35,7 @@ DWORD WINAPI udpThreadFunc(LPVOID param)
 	return 0;
 }
 
-UdpServer::UdpServer(XsString address, uint16_t port, void (*func)(const std::vector<QuaternionDatagram::Kinematics>& data))
+UdpServer::UdpServer(XsString address, uint16_t port, std::function<void(const std::vector<QuaternionDatagram::Kinematics>& data)> func)
 	: m_started(false)
 	, m_stopping(false)
 
@@ -74,6 +73,7 @@ void UdpServer::readMessages()
 
 			if (!m_parserManager->getDatagram(buffer).empty()) {
 				m_func(m_parserManager->getDatagram(buffer));
+				//m_func();
 			}
 			//m_parserManager->readDatagram(buffer);
 		}

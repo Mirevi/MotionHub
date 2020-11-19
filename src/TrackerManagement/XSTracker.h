@@ -12,6 +12,8 @@
 #include <map>
 #include <chrono>
 #include <algorithm>
+#include "functional"
+
 
 
 /*!
@@ -63,6 +65,8 @@ public:
 
 	std::string getTrackerType() override;
 
+
+
 private:
 
 	/*!
@@ -109,6 +113,12 @@ private:
 	 */
 	int createClient(int iConnectionType);
 
+
+	/*!
+	xsens datagram
+	*/
+	std::vector<QuaternionDatagram::Kinematics> m_data;
+
 	/*!
 	 * empty override method for Tracker::init()
 	 * this tracker does initialization in  createClient()
@@ -143,6 +153,17 @@ private:
 	 * \param bodyFrame the k4a frame with all skeleton data
 	 */
 	void cleanSkeletonPool();
+
+
+	/*!
+	test update2
+	*/
+	void update2(const std::vector<QuaternionDatagram::Kinematics>& m_data);
+
+	/*
+	prints Datagram
+	*/
+	void XSTracker::printDatagram(const std::vector<QuaternionDatagram::Kinematics>& data);
 
 	/*!
 	 * rotates the input quaternion at the y-axis with 180 degree

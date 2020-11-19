@@ -75,8 +75,8 @@ void XSTracker::start()
 	//m_refData = m_dataHandlerManager->getData();
 
 	//// start tracking thread and detach the thread from method scope runtime
-	//m_trackingThread = new std::thread(&XSTracker::update, this);
-	//m_trackingThread->detach();
+	m_trackingThread = new std::thread(&XSTracker::update, this);
+	m_trackingThread->detach();
 
 }
 
@@ -104,9 +104,12 @@ void XSTracker::init()
 }
 
 
-void printDatagram(const std::vector<QuaternionDatagram::Kinematics>& m_data)
+
+void XSTracker::printDatagram(const std::vector<QuaternionDatagram::Kinematics>& data)
 {
-	//here the data pelase
+	////here the data pelase
+
+	m_data = data;
 
 	for (int i = 0; i < m_data.size(); i++)
 	{
@@ -123,7 +126,14 @@ void printDatagram(const std::vector<QuaternionDatagram::Kinematics>& m_data)
 		std::cout << "j: " << m_data.at(i).orientation[2] << ", ";
 		std::cout << "k: " << m_data.at(i).orientation[3] << ")" << std::endl << std::endl;
 	}
+
+	update2(m_data);
 }
+
+void XSTracker::update2(const std::vector<QuaternionDatagram::Kinematics>& m_data) {
+
+}
+
 
 int XSTracker::createClient(int iConnectionType)
 {
@@ -135,9 +145,13 @@ int XSTracker::createClient(int iConnectionType)
 
 	std::cout << "Das ist der erste Build-Versuch: \nWaiting to receive packets from the client on port " << port << " ..." << std::endl << std::endl;
 
-	UdpServer udpServer(hostDestinationAddress, (uint16_t)port, &printDatagram);
+	auto callPrint = [this](const std::vector<QuaternionDatagram::Kinematics>& data) {
+		printDatagram(data);
+	};
 
-	while (!_kbhit())
+	UdpServer udpServer(hostDestinationAddress, (uint16_t)port, callPrint);
+
+	while (!_kbhit())	
 		XsTime::msleep(10);
 
 
@@ -151,7 +165,7 @@ int XSTracker::createClient(int iConnectionType)
 
 
 	////create dummy object for MessageHandler
-	//m_dataHandlerManager = new DataHandlerManager(m_properties);
+	m_dataHandlerManager = new DataHandlerManager(m_properties);
 
 	////set callback with dummy object
 	//m_client->SetDataCallback(m_dataHandlerManager->DataHandler, m_client);	// this function will receive data from the server
@@ -219,7 +233,7 @@ void XSTracker::update()
 		track();
 
 		//send Skeleton Pool to NetworkManager
-		m_networkManager->sendSkeletonPool(&m_skeletonPool, m_properties->id);
+		//m_networkManager->sendSkeletonPool(&m_skeletonPool, m_properties->id);
 
 	}
 
@@ -246,7 +260,7 @@ void XSTracker::track()
 	//get skeleton data from frame data
 	extractSkeleton();
 
-	cleanSkeletonPool();
+	//cleanSkeletonPool();
 
 	//increase tracking cycle counter
 	m_trackingCycles++;
@@ -260,19 +274,23 @@ void XSTracker::extractSkeleton()
 {
 
 	//when new data isn't available, skip this method run
-	if (!m_dataHandlerManager->isDataAvailable())
-	{
+	//if (!m_dataHandlerManager->isDataAvailable())
+	//{
+	//	std::cout << "XSTracker::extractSkeleton() nodata";
 
-		return;
+	//	return;
 
-	}
+	//}
 
 
 	//get current skeleton number
-	m_properties->countDetectedSkeleton = m_refData->nSkeletons;
+	//m_properties->countDetectedSkeleton = m_refData->nSkeletons;
 
-	//loop through all Xsens skeletons
-	for (int i = 0; i < m_refData->nSkeletons; i++)
+
+
+	////loop through all Xsens skeletons
+	//for (int i = 0; i < m_refData->nSkeletons; i++)
+	for (int i = 0; i < 1; i++)
 	{
 		//get current skeleton data
 		sSkeletonData skData = m_refData->Skeletons[i];
@@ -312,19 +330,19 @@ void XSTracker::extractSkeleton()
 
 
 
-		// create new skeleton
-		if (createNewSkeleton)
-		{
+	//	// create new skeleton
+	//	if (createNewSkeleton)
+	//	{
 
-			// create new skeleton and add it to the skeleton pool
-			m_skeletonPool.insert({ skData.skeletonID, *parseSkeleton(skData, skData.skeletonID, new Skeleton()) });
+	//		// create new skeleton and add it to the skeleton pool
+	//		m_skeletonPool.insert({ skData.skeletonID, *parseSkeleton(skData, skData.skeletonID, new Skeleton()) });
 
-			//skeleton was added/removed, so UI updates
-			m_hasSkeletonPoolChanged = true;
+	//		//skeleton was added/removed, so UI updates
+	//		m_hasSkeletonPoolChanged = true;
 
-			Console::log("DataHandlerManager::extractSkeleton(): Created new skeleton with id = " + std::to_string(skData.skeletonID) + ".");
+	//		Console::log("DataHandlerManager::extractSkeleton(): Created new skeleton with id = " + std::to_string(skData.skeletonID) + ".");
 
-		}
+	//	}
 
 	}
 
