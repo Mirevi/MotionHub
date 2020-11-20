@@ -349,7 +349,7 @@ void RecordingSession::load(std::string filePath)
 		//Console::log("RecordingSession::load(): " + std::string(itFrame->Name()) + ", skeleton count = " + toString(currFrameObj.m_skeletons.size()));
 	}
 
-	Console::log("RecordingSession::load(): done loading data.");
+	Console::log("RecordingSession::load(): done loading data");
 	//Console::log("RecordingSession::load(): frame 0, skeleton 0, Hips rotation: " + toString(m_frames[0].m_skeletons[0].m_joints[Joint::HIPS].getJointRotation()));
 
 }

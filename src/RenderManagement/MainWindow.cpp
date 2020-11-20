@@ -197,7 +197,6 @@ void MainWindow::updateConsole()
 
 		//std::cout << "MainWindow::updateConsole(): log: " << currItem->text().toLocal8Bit().constData() << std::endl;
 
-
 		ui->listWidget_console->scrollToBottom();
 
 	}

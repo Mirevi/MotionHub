@@ -9,7 +9,7 @@ TrackerManager::TrackerManager(NetworkManager* networkManager, ConfigManager* co
 	m_networkManager = networkManager;
 	m_configManager = configManager;
 
-	Console::log("TrackerManager::TrackerManager(): Created tracker manager.");
+	Console::log("TrackerManager::TrackerManager(): Created tracker manager");
 
 }
 
@@ -38,7 +38,7 @@ int TrackerManager::createTracker(TrackerType type, std::string filePath)
 		case azureKinect:
 		{
 
-			Console::log("TrackerManager::createTracker(): Creating AKtracker with cam ID = " + toString(m_nextFreeAKCamID) + " ...");
+			Console::log("TrackerManager::createTracker(): Creating AKtracker with cam ID = " + toString(m_nextFreeAKCamID));
 
 			//create new AK Tracker with next free Cam ID
 			tempTracker = new AKTracker(id, m_nextFreeAKCamID, m_networkManager, m_configManager);
@@ -79,7 +79,7 @@ int TrackerManager::createTracker(TrackerType type, std::string filePath)
 		case bvh:
 		{
 
-			Console::log("TrackerManager::createTracker(): Creating BVH-Player ...");
+			Console::log("TrackerManager::createTracker(): Creating BVH-Player");
 
 			//create new BVH-Player with current ID
 			tempTracker = new BVHPlayer(id, m_networkManager, m_configManager, filePath);
@@ -91,7 +91,7 @@ int TrackerManager::createTracker(TrackerType type, std::string filePath)
 		case mmh:
 		{
 
-			Console::log("TrackerManager::createTracker(): Creating mmh-Player ...");
+			Console::log("TrackerManager::createTracker(): Creating mmh-Player");
 
 			//create new BVH-Player with current ID
 			tempTracker = new mmhPlayer(id, m_networkManager, m_configManager, filePath);
@@ -112,7 +112,7 @@ int TrackerManager::createTracker(TrackerType type, std::string filePath)
 		default:
 		{
 
-			Console::log("TrackerManager::createTracker(): Can not create tracker. Unknown tracker type!");
+			Console::log("TrackerManager::createTracker(): Can not create tracker. Unknown tracker type");
 
 			//unlock the tracker pool
 			m_trackerPoolLock.unlock();
@@ -134,7 +134,7 @@ int TrackerManager::createTracker(TrackerType type, std::string filePath)
 	//a tracker has been added, so the tracker pool has changed
 	m_hasTrackerPoolChanged = true;
 
-	Console::log("TrackerManager::createTracker(): Created tracker with ID = " + toString(id) + ".");
+	Console::log("TrackerManager::createTracker(): Created tracker with ID = " + toString(id));
 
 	return id;
 
@@ -179,7 +179,7 @@ void TrackerManager::removeTrackerAt(int positionInList)
 			//a tracker has been removed, so the tracker pool has changed
 			m_hasTrackerPoolChanged = true;
 
-			Console::log("TrackerManager::removeTracker(): Removed tracker with id = " + std::to_string(i) + ".");
+			Console::log("TrackerManager::removeTracker(): Removed tracker with id = " + std::to_string(i));
 
 			break;
 		}
@@ -198,7 +198,7 @@ void TrackerManager::removeTrackerAt(int positionInList)
 void TrackerManager::startTracker()
 {
 
-	Console::log("TrackerManager::startTracker(): Starting all tracker ...");
+	Console::log("TrackerManager::startTracker(): Starting all tracker");
 
 	//lock the tracker pool
 	m_trackerPoolLock.lock();
@@ -218,7 +218,7 @@ void TrackerManager::startTracker()
 	//we are now in playMode
 	m_isTracking = true;
 
-	Console::log("TrackerManager::startTracker(): Started all tracker.");
+	Console::log("TrackerManager::startTracker(): Started all tracker");
 
 }
 
@@ -242,7 +242,7 @@ void TrackerManager::stopTracker()
 	//unlock the tracker pool
 	m_trackerPoolLock.unlock();
 
-	Console::log("TrackerManager::stopTracker(): Stopped all tracker.");
+	Console::log("TrackerManager::stopTracker(): Stopped all tracker");
 
 }
 

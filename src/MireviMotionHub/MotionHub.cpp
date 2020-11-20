@@ -12,7 +12,7 @@ MotionHub::MotionHub(int argc, char** argv)
 
 
 
-	Console::log("MotionHub::MotionHub(): Starting Mirevi MotionHub ...");
+	Console::log("MotionHub::MotionHub(): Starting Mirevi MotionHub");
 
 	// create new config reader
 	m_configManager = new ConfigManager();

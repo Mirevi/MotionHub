@@ -8,7 +8,7 @@ NetworkManager::NetworkManager(ConfigManager* configManager)
 
 	m_ipAddress = m_configManager->getStringFromStartupConfig("ipAddress");
 
-	Console::log("NetworkManager::NetworkManager(): Created network manager.");
+	Console::log("NetworkManager::NetworkManager(): Created network manager");
 
 }
 

@@ -79,7 +79,7 @@ void Recorder::startRecording()
 		//m_recordingThread+ = new std::thread(&Recorder::update, this);
 		//m_recordingThread->detach();
 
-		Console::log("Recorder::startRecording()");
+		Console::log("Recorder::startRecording(): started recording");
 		Timer::reset();
 	}
 	else
@@ -95,7 +95,7 @@ void Recorder::stopRecording()
 
 	m_currSession->save();
 
-	Console::log("Recorder::stopRecording()");
+	Console::log("Recorder::stopRecording(): stopped recording");
 }
 
 void Recorder::update()

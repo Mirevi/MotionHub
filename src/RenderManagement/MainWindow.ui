@@ -1024,7 +1024,7 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
             <property name="maximumSize">
              <size>
               <width>16777215</width>
-              <height>142</height>
+              <height>147</height>
              </size>
             </property>
             <property name="title">
@@ -1054,17 +1054,48 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
               <string/>
              </property>
             </widget>
+            <widget class="QComboBox" name="comboBox_timelineLable">
+             <property name="geometry">
+              <rect>
+               <x>20</x>
+               <y>20</y>
+               <width>100</width>
+               <height>21</height>
+              </rect>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>100</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <item>
+              <property name="text">
+               <string>Percentage</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Time</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Frame</string>
+              </property>
+             </item>
+            </widget>
             <widget class="QSlider" name="slider_timeline">
              <property name="geometry">
               <rect>
                <x>10</x>
                <y>90</y>
-               <width>921</width>
+               <width>901</width>
                <height>22</height>
               </rect>
              </property>
              <property name="sizePolicy">
-              <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
@@ -1097,32 +1128,79 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
               <number>0</number>
              </property>
             </widget>
-            <widget class="QComboBox" name="comboBox_timelineLable">
+            <widget class="QWidget" name="">
              <property name="geometry">
               <rect>
                <x>10</x>
-               <y>20</y>
-               <width>81</width>
-               <height>22</height>
+               <y>120</y>
+               <width>917</width>
+               <height>16</height>
               </rect>
              </property>
-             <item>
-              <property name="text">
-               <string>Percentage</string>
+             <layout class="QHBoxLayout" name="horizontalLayout">
+              <property name="spacing">
+               <number>200</number>
               </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Time</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Frame</string>
-              </property>
-             </item>
+              <item>
+               <widget class="QLabel" name="label_2">
+                <property name="text">
+                 <string>0%</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="label_4">
+                <property name="text">
+                 <string>25%</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="label_3">
+                <property name="text">
+                 <string>50%</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="label">
+                <property name="text">
+                 <string>75%</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="label_5">
+                <property name="text">
+                 <string>100%</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+             </layout>
             </widget>
            </widget>
+          </item>
+          <item>
+           <layout class="QVBoxLayout" name="verticalLayout_2">
+            <property name="bottomMargin">
+             <number>23</number>
+            </property>
+           </layout>
           </item>
           <item>
            <widget class="QWidget" name="widget_timeline" native="true">
@@ -1158,118 +1236,86 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
          </layout>
         </item>
         <item>
-         <layout class="QVBoxLayout" name="layout_right_bottom" stretch="0">
+         <widget class="QListWidget" name="listWidget_console">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>1024</width>
+            <height>1024</height>
+           </size>
+          </property>
+          <property name="focusPolicy">
+           <enum>Qt::NoFocus</enum>
+          </property>
+          <property name="layoutDirection">
+           <enum>Qt::RightToLeft</enum>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::NoFrame</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Plain</enum>
+          </property>
+          <property name="lineWidth">
+           <number>1</number>
+          </property>
+          <property name="verticalScrollBarPolicy">
+           <enum>Qt::ScrollBarAlwaysOn</enum>
+          </property>
+          <property name="horizontalScrollBarPolicy">
+           <enum>Qt::ScrollBarAlwaysOn</enum>
+          </property>
+          <property name="sizeAdjustPolicy">
+           <enum>QAbstractScrollArea::AdjustToContents</enum>
+          </property>
+          <property name="autoScroll">
+           <bool>true</bool>
+          </property>
+          <property name="editTriggers">
+           <set>QAbstractItemView::NoEditTriggers</set>
+          </property>
+          <property name="showDropIndicator" stdset="0">
+           <bool>false</bool>
+          </property>
+          <property name="alternatingRowColors">
+           <bool>false</bool>
+          </property>
+          <property name="selectionMode">
+           <enum>QAbstractItemView::NoSelection</enum>
+          </property>
+          <property name="selectionBehavior">
+           <enum>QAbstractItemView::SelectRows</enum>
+          </property>
+          <property name="textElideMode">
+           <enum>Qt::ElideLeft</enum>
+          </property>
+          <property name="flow">
+           <enum>QListView::TopToBottom</enum>
+          </property>
+          <property name="resizeMode">
+           <enum>QListView::Fixed</enum>
+          </property>
           <property name="spacing">
-           <number>6</number>
-          </property>
-          <property name="sizeConstraint">
-           <enum>QLayout::SetDefaultConstraint</enum>
-          </property>
-          <property name="leftMargin">
            <number>0</number>
           </property>
-          <property name="rightMargin">
-           <number>0</number>
+          <property name="batchSize">
+           <number>512</number>
           </property>
-          <property name="bottomMargin">
-           <number>0</number>
-          </property>
-          <item>
-           <widget class="QGroupBox" name="groupBox_console">
-            <property name="title">
-             <string>GroupBox</string>
-            </property>
-            <widget class="QListWidget" name="listWidget_console">
-             <property name="enabled">
-              <bool>true</bool>
-             </property>
-             <property name="geometry">
-              <rect>
-               <x>20</x>
-               <y>40</y>
-               <width>911</width>
-               <height>441</height>
-              </rect>
-             </property>
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="minimumSize">
-              <size>
-               <width>0</width>
-               <height>0</height>
-              </size>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>1024</width>
-               <height>1024</height>
-              </size>
-             </property>
-             <property name="focusPolicy">
-              <enum>Qt::NoFocus</enum>
-             </property>
-             <property name="layoutDirection">
-              <enum>Qt::RightToLeft</enum>
-             </property>
-             <property name="frameShape">
-              <enum>QFrame::NoFrame</enum>
-             </property>
-             <property name="frameShadow">
-              <enum>QFrame::Plain</enum>
-             </property>
-             <property name="lineWidth">
-              <number>1</number>
-             </property>
-             <property name="verticalScrollBarPolicy">
-              <enum>Qt::ScrollBarAlwaysOn</enum>
-             </property>
-             <property name="horizontalScrollBarPolicy">
-              <enum>Qt::ScrollBarAlwaysOn</enum>
-             </property>
-             <property name="sizeAdjustPolicy">
-              <enum>QAbstractScrollArea::AdjustToContents</enum>
-             </property>
-             <property name="autoScroll">
-              <bool>true</bool>
-             </property>
-             <property name="editTriggers">
-              <set>QAbstractItemView::NoEditTriggers</set>
-             </property>
-             <property name="showDropIndicator" stdset="0">
-              <bool>false</bool>
-             </property>
-             <property name="alternatingRowColors">
-              <bool>false</bool>
-             </property>
-             <property name="selectionMode">
-              <enum>QAbstractItemView::NoSelection</enum>
-             </property>
-             <property name="selectionBehavior">
-              <enum>QAbstractItemView::SelectRows</enum>
-             </property>
-             <property name="textElideMode">
-              <enum>Qt::ElideLeft</enum>
-             </property>
-             <property name="flow">
-              <enum>QListView::TopToBottom</enum>
-             </property>
-             <property name="resizeMode">
-              <enum>QListView::Fixed</enum>
-             </property>
-             <property name="spacing">
-              <number>0</number>
-             </property>
-             <property name="batchSize">
-              <number>512</number>
-             </property>
-            </widget>
-           </widget>
-          </item>
-         </layout>
+         </widget>
         </item>
        </layout>
       </item>
