@@ -40,6 +40,7 @@ MainWindow::MainWindow(TrackerManager* trackerManager, ConfigManager* configMana
 		}
 	}
 
+	ui->tableWidget_console->setColumnWidth(1, 70);
 
 }
 
@@ -185,19 +186,35 @@ void MainWindow::updateInspector()
 void MainWindow::updateConsole()
 {
 
-	std::vector<std::string> newLogs = Console::getMessages();
+	std::vector<Console::Message> newLogs = Console::getMessages();
 
 	for (int i = 0; i < newLogs.size(); i++)
 	{
+		//get time, type and message
+		QTableWidgetItem* currItemTime		= new QTableWidgetItem(QString::fromStdString(newLogs[i].time));
+		QTableWidgetItem* currItemType		= new QTableWidgetItem(QString::fromStdString(newLogs[i].type));
+		QTableWidgetItem* currItemMessage	= new QTableWidgetItem(QString::fromStdString(newLogs[i].message));
+		
+		//align the columns left
+		currItemTime->setTextAlignment(Qt::AlignLeft); //aligning is inverted, this is actually left aligned
+		currItemType->setTextAlignment(Qt::AlignLeft);
+		currItemMessage->setTextAlignment(Qt::AlignLeft);
 
-		QListWidgetItem* currItem = new QListWidgetItem(QString::fromStdString(newLogs[i]));
-		currItem->setTextAlignment(Qt::AlignRight); //aligning is inverted, this is actually left aligned
 
-		ui->listWidget_console->addItem(currItem);
+
+		//insert new row
+		ui->tableWidget_console->insertRow(ui->tableWidget_console->rowCount());
+	
+		//insert time
+		ui->tableWidget_console->setItem(ui->tableWidget_console->rowCount() - 1, 0, currItemTime);
+		//insert type
+		ui->tableWidget_console->setItem(ui->tableWidget_console->rowCount() - 1, 1, currItemType);
+		//insert message
+		ui->tableWidget_console->setItem(ui->tableWidget_console->rowCount() - 1, 2, currItemMessage);
 
 		//std::cout << "MainWindow::updateConsole(): log: " << currItem->text().toLocal8Bit().constData() << std::endl;
 
-		ui->listWidget_console->scrollToBottom();
+		ui->tableWidget_console->scrollToBottom();
 
 	}
 
