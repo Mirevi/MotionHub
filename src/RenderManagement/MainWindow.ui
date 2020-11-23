@@ -1021,6 +1021,12 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
          <layout class="QVBoxLayout" name="layout_left_bottom">
           <item>
            <widget class="QGroupBox" name="groupBox_timeline">
+            <property name="minimumSize">
+             <size>
+              <width>1000</width>
+              <height>147</height>
+             </size>
+            </property>
             <property name="maximumSize">
              <size>
               <width>16777215</width>
@@ -1128,7 +1134,7 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
               <number>0</number>
              </property>
             </widget>
-            <widget class="QWidget" name="">
+            <widget class="QWidget" name="layoutWidget">
              <property name="geometry">
               <rect>
                <x>10</x>
@@ -1254,7 +1260,7 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
           </property>
           <property name="maximumSize">
            <size>
-            <width>1024</width>
+            <width>700</width>
             <height>1024</height>
            </size>
           </property>
