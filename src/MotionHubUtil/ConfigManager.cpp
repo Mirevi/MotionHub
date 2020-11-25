@@ -224,6 +224,11 @@ void ConfigManager::createNewConfigFile()
 	ipAddress->SetText("127.0.0.1");
 	pStartup->InsertEndChild(ipAddress);
 
+	//create recordPath Element to startup and set value to /data/
+	tinyxml2::XMLElement* recordPath = newXmlDoc.NewElement("recordPath");
+	recordPath->SetText("./data/");
+	pStartup->InsertEndChild(recordPath);
+
 
 
 	//create Azure offset Elements to startup and set value

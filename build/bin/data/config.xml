@@ -1,6 +1,7 @@
 <config>
     <startup_config>
         <ipAddress>127.0.0.1</ipAddress>
+        <recordPath>./data</recordPath>
         <xPosAzure>0</xPosAzure>
         <yPosAzure>1.175</yPosAzure>
         <zPosAzure>2.2</zPosAzure>

@@ -37,9 +37,10 @@ void SettingsWindow::accept()
 
 	m_refNetworkManager->m_ipAddress = newAddress;
 	m_configManager->writeToConfig("ipAddress", newAddress);
-	RecordingSession::RECORD_PATH = std::string(ui->lineEdit_recorder_path->text().toLocal8Bit().data());
 
-	Console::log("NetworkSettingsWindow::accept(): " + RecordingSession::RECORD_PATH);
+	RecordingSession::RECORD_PATH = std::string(ui->lineEdit_recorder_path->text().toLocal8Bit().data());
+	m_configManager->writeToConfig("recordPath", RecordingSession::RECORD_PATH);
+
 
 	delete this;
 
