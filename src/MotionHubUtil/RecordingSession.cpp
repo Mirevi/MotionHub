@@ -5,6 +5,8 @@
 
 #pragma region Session
 
+std::string RecordingSession::RECORD_PATH;
+
 RecordingSession::RecordingSession()
 {
 	m_totalTime = 0.0;
@@ -141,6 +143,9 @@ void RecordingSession::save()
 
 	std::string filename = "MMH_" + Timer::getCurrTime() + ".mmh";
 	std::string pathStr = RECORD_PATH;
+
+	Console::log("RecordingSession::save(): " + RECORD_PATH);
+
 	filename = pathStr + filename;
 
 	filename = removeChar(filename, ' ');

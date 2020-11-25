@@ -7,17 +7,21 @@
 #include "TrackerManagement/bvh11.h"
 
 
-static const char* RECORD_PATH = "./data/";
 
 
 
 class MotionHubUtil_DLL_import_export RecordingFrame
 {
 
+
+
+
 public:
 	RecordingFrame();
 	void addSkeleton(Skeleton currSkeleton);
 	std::vector<Skeleton> m_skeletons;
+
+
 
 	float m_duration;
 private:
@@ -38,6 +42,7 @@ public:
 	int getFrameCount();
 	RecordingFrame* getFrame(int i);
 
+	static std::string RECORD_PATH;
 
 	float getTotalTime();
 

@@ -8,5 +8,6 @@
         <file>ressources/icons/mmh-icon.png</file>
         <file>ressources/icons/64px-Location_dot_red.svg.png</file>
         <file>ressources/icons/circle-xxl.png</file>
+        <file>ressources/icons/folder-64.png</file>
     </qresource>
 </RCC>

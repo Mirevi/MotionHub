@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>399</width>
-    <height>206</height>
+    <height>279</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -481,8 +481,8 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
   <widget class="QDialogButtonBox" name="buttonBox">
    <property name="geometry">
     <rect>
-     <x>30</x>
-     <y>160</y>
+     <x>40</x>
+     <y>230</y>
      <width>341</width>
      <height>32</height>
     </rect>
@@ -494,44 +494,112 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
     <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
    </property>
   </widget>
-  <widget class="QLineEdit" name="lineEdit_ipAdress">
+  <widget class="QGroupBox" name="groupBox_network">
    <property name="geometry">
     <rect>
-     <x>60</x>
-     <y>60</y>
-     <width>113</width>
-     <height>20</height>
+     <x>10</x>
+     <y>9</y>
+     <width>381</width>
+     <height>91</height>
     </rect>
    </property>
+   <property name="title">
+    <string>Network Settings</string>
+   </property>
+   <widget class="QPushButton" name="pushButton_localhost">
+    <property name="geometry">
+     <rect>
+      <x>220</x>
+      <y>20</y>
+      <width>75</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Localhost</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_IP">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>20</y>
+      <width>111</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>IP-address</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="lineEdit_ipAdress">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>50</y>
+      <width>113</width>
+      <height>20</height>
+     </rect>
+    </property>
+   </widget>
   </widget>
-  <widget class="QLabel" name="label_IP">
+  <widget class="QGroupBox" name="groupBox_recorder">
    <property name="geometry">
     <rect>
-     <x>60</x>
-     <y>40</y>
-     <width>111</width>
-     <height>16</height>
+     <x>10</x>
+     <y>110</y>
+     <width>381</width>
+     <height>80</height>
     </rect>
    </property>
-   <property name="text">
-    <string>IP-address</string>
+   <property name="title">
+    <string>Recorder Settings</string>
    </property>
-  </widget>
-  <widget class="QPushButton" name="pushButton_localhost">
-   <property name="geometry">
-    <rect>
-     <x>290</x>
-     <y>50</y>
-     <width>75</width>
-     <height>23</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Localhost</string>
-   </property>
+   <widget class="QLabel" name="label_recorder_path">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>20</y>
+      <width>141</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Path to save recorded files</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="lineEdit_recorder_path">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>50</y>
+      <width>261</width>
+      <height>20</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_fileDialog">
+    <property name="geometry">
+     <rect>
+      <x>290</x>
+      <y>50</y>
+      <width>25</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset resource="MainWindow.qrc">
+      <normaloff>:/ressources/icons/folder-64.png</normaloff>:/ressources/icons/folder-64.png</iconset>
+    </property>
+   </widget>
   </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="MainWindow.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>buttonBox</sender>
@@ -540,8 +608,8 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>248</x>
-     <y>174</y>
+     <x>258</x>
+     <y>244</y>
     </hint>
     <hint type="destinationlabel">
      <x>157</x>
@@ -556,8 +624,8 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>316</x>
-     <y>180</y>
+     <x>326</x>
+     <y>250</y>
     </hint>
     <hint type="destinationlabel">
      <x>286</x>
@@ -572,8 +640,8 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
    <slot>setLocalhost()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>326</x>
-     <y>92</y>
+     <x>266</x>
+     <y>51</y>
     </hint>
     <hint type="destinationlabel">
      <x>240</x>
@@ -581,9 +649,26 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>pushButton_fileDialog</sender>
+   <signal>clicked()</signal>
+   <receiver>NetworkSettingsWindow</receiver>
+   <slot>slotRecorderFileDialog()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>312</x>
+     <y>170</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>28</x>
+     <y>201</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>setBroadcast()</slot>
   <slot>setLocalhost()</slot>
+  <slot>slotRecorderFileDialog()</slot>
  </slots>
 </ui>
