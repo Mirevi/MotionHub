@@ -4,7 +4,7 @@
 #include "CreateTrackerWindow.h"
 #include "GlWidget.h"
 #include "MotionHubUtil/Console.h"
-#include "NetworkSettingsWindow.h"
+#include "SettingsWindow.h"
 #include "trackermodwindow.h"
 
 #include <QtWidgets/QMainWindow>
@@ -143,7 +143,7 @@ private:
 
 	ConfigManager* m_configManager;
 
-	NetworkSettingsWindow* m_netwokSettingsWindow;
+	SettingsWindow* m_netwokSettingsWindow;
 
 	TrackerModWindow* m_trackerModWindow;
 	

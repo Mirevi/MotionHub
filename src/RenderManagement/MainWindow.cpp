@@ -642,7 +642,7 @@ void MainWindow::on_actionExit_triggered()
 void MainWindow::slotNetworkSettings()
 {
 
-	m_netwokSettingsWindow = new NetworkSettingsWindow(m_refTrackerManager->m_networkManager, m_configManager);
+	m_netwokSettingsWindow = new SettingsWindow(m_refTrackerManager->m_networkManager, m_configManager);
 
 	m_netwokSettingsWindow->setModal(true);
 	m_netwokSettingsWindow->exec();

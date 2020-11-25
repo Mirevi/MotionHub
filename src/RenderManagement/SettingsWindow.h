@@ -1,5 +1,5 @@
-#ifndef NETWORKSETTINGSWINDOW_H
-#define NETWORKSETTINGSWINDOW_H
+#ifndef SETTINGSWINDOW_H
+#define SETTINGSWINDOW_H
 
 #include <QtWidgets/QDialog>
 #include <QtWidgets/QLineEdit>
@@ -11,26 +11,25 @@
 
 namespace Ui
 {
-	class NetworkSettingsWindow;
+	class SettingsWindow;
 }
 
-class NetworkSettingsWindow : public QDialog
+class SettingsWindow : public QDialog
 {
 	Q_OBJECT
 
 public:
-	explicit NetworkSettingsWindow(NetworkManager* networkManager, ConfigManager* configManager, QWidget *parent = nullptr);
-	~NetworkSettingsWindow();
+	explicit SettingsWindow(NetworkManager* networkManager, ConfigManager* configManager, QWidget *parent = nullptr);
+	~SettingsWindow();
 
 private slots:
 	void accept();
-	//void setBroadcast();
 	void setLocalhost();
 
 	void slotRecorderFileDialog();
 
 private:
-	Ui::NetworkSettingsWindow *ui;
+	Ui::SettingsWindow* ui; 
 
 	NetworkManager* m_refNetworkManager;
 
@@ -40,4 +39,4 @@ private:
 
 };
 
-#endif // NETWORKSETTINGSWINDOW_H
+#endif // SETTINGSWINDOW_H

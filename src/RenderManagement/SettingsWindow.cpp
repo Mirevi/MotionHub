@@ -1,10 +1,10 @@
-#include "NetworkSettingsWindow.h"
-#include "ui_NetworkSettingsWindow.h"
+#include "SettingsWindow.h"
+#include "ui_SettingsWindow.h"
 
 
 //std::string RecordingSession::RECORD_PATH;
 
-NetworkSettingsWindow::NetworkSettingsWindow(NetworkManager* networkManager, ConfigManager* configManager, QWidget* parent) : QDialog(parent), ui(new Ui::NetworkSettingsWindow)
+SettingsWindow::SettingsWindow(NetworkManager* networkManager, ConfigManager* configManager, QWidget* parent) : QDialog(parent), ui(new Ui::SettingsWindow)
 {
 
 	ui->setupUi(this);
@@ -21,7 +21,7 @@ NetworkSettingsWindow::NetworkSettingsWindow(NetworkManager* networkManager, Con
 
 
 
-NetworkSettingsWindow::~NetworkSettingsWindow()
+SettingsWindow::~SettingsWindow()
 {
 
 	delete ui;
@@ -30,7 +30,7 @@ NetworkSettingsWindow::~NetworkSettingsWindow()
 
 
 
-void NetworkSettingsWindow::accept()
+void SettingsWindow::accept()
 {
 	
 	std::string newAddress = m_LineEditIP->text().toStdString();
@@ -46,15 +46,9 @@ void NetworkSettingsWindow::accept()
 }
 
 
-//void NetworkSettingsWindow::setBroadcast()
-//{
-//
-//	m_refNetworkManager->m_ipAddress = BROADCAST;
-//	m_LineEditIP->setText(QString::fromStdString(BROADCAST));
-//
-//}
 
-void NetworkSettingsWindow::setLocalhost()
+
+void SettingsWindow::setLocalhost()
 {
 
 	m_refNetworkManager->m_ipAddress = LOCALHOST;
@@ -63,7 +57,7 @@ void NetworkSettingsWindow::setLocalhost()
 
 }
 
-void NetworkSettingsWindow::slotRecorderFileDialog()
+void SettingsWindow::slotRecorderFileDialog()
 {
 
 	QString currFilePath = QFileDialog::getExistingDirectory(this, "choose path for recorded files.", QString(RecordingSession::RECORD_PATH.c_str()));
