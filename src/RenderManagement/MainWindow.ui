@@ -686,6 +686,9 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
              </property>
             </widget>
             <widget class="QPushButton" name="btn_Record">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
              <property name="geometry">
               <rect>
                <x>250</x>

@@ -448,7 +448,7 @@ void MainWindow::slotToggleTracking()
 
 		m_refTrackerManager->startTracker(); // start tracking if false
 		//m_timelineActive = true;
-
+		ui->btn_Record->setEnabled(true);
 
 	}
 	else
@@ -456,6 +456,7 @@ void MainWindow::slotToggleTracking()
 
 		m_refTrackerManager->stopTracker(); // stop tracking if true
 		//m_timelineActive = false;
+		ui->btn_Record->setEnabled(false);
 
 	}
 
