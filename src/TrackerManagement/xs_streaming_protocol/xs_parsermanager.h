@@ -36,7 +36,7 @@ public:
 	ParserManager();
 	~ParserManager();
 	virtual void readDatagram(const XsByteArray& data);
-	virtual std::vector<QuaternionDatagram::Kinematics> const& getDatagram(const XsByteArray& data) const;
+	std::vector<QuaternionDatagram::Kinematics>* getDatagram(const XsByteArray& data);
 
 private:
 	Datagram* createDgram(StreamingProtocol proto);

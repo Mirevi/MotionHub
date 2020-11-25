@@ -95,7 +95,7 @@ void ParserManager::readDatagram(const XsByteArray& data)
 }
 
 /*! Get single datagram from the incoming stream */
-std::vector<QuaternionDatagram::Kinematics> const& ParserManager::getDatagram(const XsByteArray& data) const
+std::vector<QuaternionDatagram::Kinematics>* ParserManager::getDatagram(const XsByteArray& data)
 {
 	StreamingProtocol type = static_cast<StreamingProtocol>(Datagram::messageType(data));
 

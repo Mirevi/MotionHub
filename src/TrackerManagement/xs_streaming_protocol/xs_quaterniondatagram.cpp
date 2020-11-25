@@ -131,7 +131,7 @@ void QuaternionDatagram::printData() const
 
 /*! Get Data datagram in a formatted way
 */
-std::vector<QuaternionDatagram::Kinematics> const& QuaternionDatagram::getData() const
+std::vector<QuaternionDatagram::Kinematics>* QuaternionDatagram::getData()
 {
-	return m_data;
+	return &m_data;
 }

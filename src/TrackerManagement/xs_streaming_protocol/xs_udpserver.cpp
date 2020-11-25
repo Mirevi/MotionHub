@@ -35,14 +35,14 @@ DWORD WINAPI udpThreadFunc(LPVOID param)
 	return 0;
 }
 
-UdpServer::UdpServer(XsString address, uint16_t port, std::function<void(const std::vector<QuaternionDatagram::Kinematics>& data)> func)
+UdpServer::UdpServer(XsString address, uint16_t port)
 	: m_started(false)
 	, m_stopping(false)
 
 {
 	m_port = port;
 	m_hostName = address;
-	m_func = func;
+	m_quaternionDatagram = new std::vector<QuaternionDatagram::Kinematics>();
 	m_parserManager.reset(new ParserManager());
 	m_socket.reset(new XsSocket(IpProtocol::IP_UDP, NetworkLayerProtocol::NLP_IPV4));
 
@@ -63,22 +63,19 @@ void UdpServer::readMessages()
 {
 	XsByteArray buffer;
 
-	std::cout << "Das ist der erste Build-Versuch: \nWaiting to receive packets from the client on port " << m_port << " ..." << std::endl << std::endl;
+	std::cout << "Starting receiving packets..." << std::endl << std::endl;
+
 
 	while (!m_stopping)
 	{
-		//std::cout << ".";
 		int rv = m_socket->read(buffer);
-		if (buffer.size() > 0) {
+		//filter random buffer packages with just one joint
+		if (buffer.size() > 100) {
 
-			if (!m_parserManager->getDatagram(buffer).empty()) {
-				m_func(m_parserManager->getDatagram(buffer));
-				//m_func();
+			if (!m_parserManager->getDatagram(buffer)->empty()) {
+				m_quaternionDatagram = m_parserManager->getDatagram(buffer);
 			}
-			//m_parserManager->readDatagram(buffer);
 		}
-
-
 
 		buffer.clear();
 		XsTime::msleep(1);
@@ -109,4 +106,9 @@ void UdpServer::stopThread()
 	m_stopping = true;
 	while (m_started)
 		XsTime::msleep(10);
+}
+
+std::vector<QuaternionDatagram::Kinematics>* UdpServer::getQuaternionDatagram()
+{
+	return m_quaternionDatagram;
 }

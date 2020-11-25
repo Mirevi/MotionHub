@@ -68,7 +68,30 @@ void XSTracker::start()
 	// set tracking to true
 	m_properties->isTracking = true;
 
-	createClient(iConnectionType);
+
+	std::string hostDestinationAddress = "localhost";
+	int port = 9763;
+
+	std::cout << "Das ist der erste Build-Versuch: \nWaiting to receive packets from the client on port " << port << " ..." << std::endl << std::endl;
+
+	//auto callPrint = [this](const std::vector<QuaternionDatagram::Kinematics>& data) {
+	//	printDatagram(data);
+	//};
+
+
+	//	UdpServer udpServer(hostDestinationAddress, (uint16_t)port);
+
+	m_UdpServer = new UdpServer(hostDestinationAddress, (uint16_t)port);
+
+
+
+
+	//while (!_kbhit()) {
+	//	printDatagram(*m_UdpServer->getQuaternionDatagram());
+
+
+
+	//	XsTime::msleep(10);
 
 
 	////get reference to the frame data
@@ -127,98 +150,10 @@ void XSTracker::printDatagram(const std::vector<QuaternionDatagram::Kinematics>&
 		std::cout << "k: " << m_data.at(i).orientation[3] << ")" << std::endl << std::endl;
 	}
 
-	update2(m_data);
-}
-
-void XSTracker::update2(const std::vector<QuaternionDatagram::Kinematics>& m_data) {
-
 }
 
 
-int XSTracker::createClient(int iConnectionType)
-{
 
-	// print xsens data
-	Console::log("Das ist der erste Build-Versuch!");
-	std::string hostDestinationAddress = "localhost";
-	int port = 9763;
-
-	std::cout << "Das ist der erste Build-Versuch: \nWaiting to receive packets from the client on port " << port << " ..." << std::endl << std::endl;
-
-	auto callPrint = [this](const std::vector<QuaternionDatagram::Kinematics>& data) {
-		printDatagram(data);
-	};
-
-	UdpServer udpServer(hostDestinationAddress, (uint16_t)port, callPrint);
-
-	while (!_kbhit())	
-		XsTime::msleep(10);
-
-
-	// create NatNet client
-	//m_client = new NatNetClient(iConnectionType);
-
-	//// set the callback handlers
-	//m_client->SetVerbosityLevel(Verbosity_Warning);
-	//m_client->SetMessageCallback(MessageHandler);
-
-
-
-	////create dummy object for MessageHandler
-	m_dataHandlerManager = new DataHandlerManager(m_properties);
-
-	////set callback with dummy object
-	//m_client->SetDataCallback(m_dataHandlerManager->DataHandler, m_client);	// this function will receive data from the server
-
-
-
-	//// print version info
-	//unsigned char ver[4];
-	//m_client->NatNetVersion(ver);
-
-	//Console::log("XSTracker::createClient(): Created NatNet Client (NatNet ver. " + std::to_string(ver[0]) + "." + std::to_string(ver[1]) + "." + std::to_string(ver[2]) + "." + std::to_string(ver[3]) + ")");
-
-	//// Init Client and connect to NatNet server
-	//// to use NatNet default port assignments
-	//int retCode = m_client->Initialize(szMyIPAddress, szServerIPAddress);
-
-	//// to use a different port for commands and/or data:
-	//if (retCode != ErrorCode_OK)
-	//{
-
-	//	Console::log("OTTracker::createClient(): Unable to connect to server. Error code: " + std::to_string(retCode) + ". Exiting");
-	//	return ErrorCode_Internal;
-
-	//}
-	//else
-	//{
-	//	// get # of analog samples per mocap frame of data
-	//	void* pResult;
-	//	int ret = 0;
-	//	int nBytes = 0;
-	//	ret = m_client->SendMessageAndWait("AnalogSamplesPerMocapFrame", &pResult, &nBytes);
-
-	//	if (ret == ErrorCode_OK)
-	//	{
-	//		analogSamplesPerMocapFrame = *((int*)pResult);
-	//		Console::log("OTTracker::createClient(): Analog Samples Per Mocap Frame : " + std::to_string(analogSamplesPerMocapFrame) + ".");
-	//	}
-
-	//	// print server info
-	//	sServerDescription ServerDescription;
-	//	memset(&ServerDescription, 0, sizeof(ServerDescription));
-	//	m_client->GetServerDescription(&ServerDescription);
-	//	if (!ServerDescription.HostPresent)
-	//	{
-	//		Console::log("OTTracker::createClient(): Unable to connect to server. Host not present. Exiting.");
-	//		return 1;
-	//	}
-
-	//}
-
-	return ErrorCode_OK;
-
-}
 
 // tracking loop
 void XSTracker::update()
@@ -228,7 +163,7 @@ void XSTracker::update()
 	while (m_properties->isTracking)
 	{
 
-
+		//
 		// get new data
 		track();
 
@@ -246,21 +181,10 @@ void XSTracker::update()
 void XSTracker::track()
 {
 
-	//Console::log("XSTracker::track()");
-		//when frame data wasn't initialized, try again later
-	if (m_refData == nullptr)
-	{
-
-		std::this_thread::sleep_for(std::chrono::milliseconds(10));
-
-		return;
-
-	}
-
 	//get skeleton data from frame data
 	extractSkeleton();
 
-	//cleanSkeletonPool();
+	cleanSkeletonPool();
 
 	//increase tracking cycle counter
 	m_trackingCycles++;
@@ -292,7 +216,7 @@ void XSTracker::extractSkeleton()
 	//for (int i = 0; i < m_refData->nSkeletons; i++)
 	for (int i = 0; i < 1; i++)
 	{
-		//get current skeleton data
+		//get current skeleton data this is NatNet
 		sSkeletonData skData = m_refData->Skeletons[i];
 
 		//true as long new skeleton will be added to the pool
@@ -306,6 +230,8 @@ void XSTracker::extractSkeleton()
 			{
 
 				//convert Xsens skeleton into MMH skeleton
+
+				//HWM: quaternionDatagram an parseSkeleton geben
 				Skeleton* currSkeleton = parseSkeleton(skData, skData.skeletonID, &m_skeletonPool[skData.skeletonID]);
 
 				if (currSkeleton != nullptr)
@@ -330,25 +256,25 @@ void XSTracker::extractSkeleton()
 
 
 
-	//	// create new skeleton
-	//	if (createNewSkeleton)
-	//	{
+		// create new skeleton
+		if (createNewSkeleton)
+		{
 
-	//		// create new skeleton and add it to the skeleton pool
-	//		m_skeletonPool.insert({ skData.skeletonID, *parseSkeleton(skData, skData.skeletonID, new Skeleton()) });
+			// create new skeleton and add it to the skeleton pool
+			m_skeletonPool.insert({ skData.skeletonID, *parseSkeleton(skData, skData.skeletonID, new Skeleton()) });
 
-	//		//skeleton was added/removed, so UI updates
-	//		m_hasSkeletonPoolChanged = true;
+			//skeleton was added/removed, so UI updates
+			m_hasSkeletonPoolChanged = true;
 
-	//		Console::log("DataHandlerManager::extractSkeleton(): Created new skeleton with id = " + std::to_string(skData.skeletonID) + ".");
+			Console::log("DataHandlerManager::extractSkeleton(): Created new skeleton with id = " + std::to_string(skData.skeletonID) + ".");
 
-	//	}
+		}
 
 	}
 
 }
 
-//takes data from a k4a skeleton and pushes it into the list
+//takes data from a Xsens skeleton and pushes it into the list
 Skeleton* XSTracker::parseSkeleton(sSkeletonData skeleton, int id, Skeleton* oldSkeletonData)
 {
 

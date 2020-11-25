@@ -43,14 +43,14 @@
 class UdpServer
 {
 public:
-	UdpServer(XsString address = "localhost", uint16_t port = 9763, std::function<void(const std::vector<QuaternionDatagram::Kinematics>& data)> func = {});
+	UdpServer(XsString address = "localhost", uint16_t port = 9763);
 	~UdpServer();
 
 	void readMessages();
 	void startThread();
 	void stopThread();
+	std::vector<QuaternionDatagram::Kinematics>* getQuaternionDatagram();
 	volatile std::atomic_bool m_started, m_stopping;
-	std::function<void(const std::vector<QuaternionDatagram::Kinematics>& data)> m_func;
 
 
 
@@ -59,6 +59,7 @@ private:
 	uint16_t m_port;
 	XsString m_hostName;
 	std::unique_ptr<ParserManager> m_parserManager;
+	std::vector<QuaternionDatagram::Kinematics>* m_quaternionDatagram; //the skeleton
 
 };
 

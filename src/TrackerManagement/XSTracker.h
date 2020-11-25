@@ -100,18 +100,7 @@ private:
 	UdpServer* m_UdpServer;
 
 	int analogSamplesPerMocapFrame = 0;
-	/*!
-	 * connection type
-	 *
-	 */
-	int iConnectionType = ConnectionType_Multicast;
 
-	/*!
-	 * creates xsens client
-	 * \param iConnectionType connection type
-	 * \return Error Code
-	 */
-	int createClient(int iConnectionType);
 
 
 	/*!
@@ -155,10 +144,7 @@ private:
 	void cleanSkeletonPool();
 
 
-	/*!
-	test update2
-	*/
-	void update2(const std::vector<QuaternionDatagram::Kinematics>& m_data);
+
 
 	/*
 	prints Datagram
