@@ -84,13 +84,8 @@ void XSTracker::start()
 	m_UdpServer = new UdpServer(hostDestinationAddress, (uint16_t)port);
 
 
-
-
 	//while (!_kbhit()) {
 	//	printDatagram(*m_UdpServer->getQuaternionDatagram());
-
-
-
 	//	XsTime::msleep(10);
 
 
@@ -128,26 +123,30 @@ void XSTracker::init()
 
 
 
-void XSTracker::printDatagram(const std::vector<QuaternionDatagram::Kinematics>& data)
+void XSTracker::printDatagram(ParserManager::QuaternionDataWithId* data)
 {
-	////here the data pelase
+	m_kinematics = data->kinematics;
 
-	m_data = data;
+	std::cout << "+++++++++++++++++++++++++" << std::endl;
+	std::cout << "AvatarID:  " << data->avatarId << std::endl;
+	std::cout << "DataSize:  " << m_kinematics->size() << std::endl;
+	std::cout << "+++++++++++++++++++++++++" << std::endl;
 
-	for (int i = 0; i < m_data.size(); i++)
+
+	for (int i = 0; i < m_kinematics->size(); i++)
 	{
 		// Position
 		std::cout << "Segment Position: " << i << " :  (";
-		std::cout << "x: " << m_data.at(i).position[0] << ", ";
-		std::cout << "y: " << m_data.at(i).position[1] << ", ";
-		std::cout << "z: " << m_data.at(i).position[2] << ")" << std::endl;
+		std::cout << "x: " << m_kinematics->at(i).position[0] << ", ";
+		std::cout << "y: " << m_kinematics->at(i).position[1] << ", ";
+		std::cout << "z: " << m_kinematics->at(i).position[2] << ")" << std::endl;
 
 		// Quaternion Orientation
 		std::cout << "Quaternion Orientation: " << i << " :  (";
-		std::cout << "re: " << m_data.at(i).orientation[0] << ", ";
-		std::cout << "i: " << m_data.at(i).orientation[1] << ", ";
-		std::cout << "j: " << m_data.at(i).orientation[2] << ", ";
-		std::cout << "k: " << m_data.at(i).orientation[3] << ")" << std::endl << std::endl;
+		std::cout << "re: " << m_kinematics->at(i).orientation[0] << ", ";
+		std::cout << "i: " << m_kinematics->at(i).orientation[1] << ", ";
+		std::cout << "j: " << m_kinematics->at(i).orientation[2] << ", ";
+		std::cout << "k: " << m_kinematics->at(i).orientation[3] << ")" << std::endl << std::endl;
 	}
 
 }
@@ -184,13 +183,13 @@ void XSTracker::track()
 	//get skeleton data from frame data
 	extractSkeleton();
 
-	cleanSkeletonPool();
+	//cleanSkeletonPool();
 
-	//increase tracking cycle counter
-	m_trackingCycles++;
+	////increase tracking cycle counter
+	//m_trackingCycles++;
 
-	//new data is ready
-	m_isDataAvailable = true;
+	////new data is ready
+	//m_isDataAvailable = true;
 
 }
 
@@ -212,65 +211,70 @@ void XSTracker::extractSkeleton()
 
 
 
-	////loop through all Xsens skeletons
-	//for (int i = 0; i < m_refData->nSkeletons; i++)
-	for (int i = 0; i < 1; i++)
-	{
-		//get current skeleton data this is NatNet
-		sSkeletonData skData = m_refData->Skeletons[i];
-
-		//true as long new skeleton will be added to the pool
-		bool createNewSkeleton = true;
-
-		//loop through all MMH skeletons
-		for (auto itPoolSkeletons = m_skeletonPool.begin(); itPoolSkeletons != m_skeletonPool.end(); itPoolSkeletons++)
-		{
-			//when skeletons have the same ID, the skeleton is alredy in pool and no new skeleton has to be created
-			if (skData.skeletonID == itPoolSkeletons->first)
-			{
-
-				//convert Xsens skeleton into MMH skeleton
-
-				//HWM: quaternionDatagram an parseSkeleton geben
-				Skeleton* currSkeleton = parseSkeleton(skData, skData.skeletonID, &m_skeletonPool[skData.skeletonID]);
-
-				if (currSkeleton != nullptr)
-				{
-
-					// update all joints of existing skeleon with new data
-					m_skeletonPool[skData.skeletonID].m_joints = currSkeleton->m_joints;
-
-				}
-
-				//delete temp skeleton object (FIXED MEMORY LEAK)
-				delete currSkeleton;
-
-				//no new skeleton has to be created
-				createNewSkeleton = false;
-
-				break;
-
-			}
-
-		}
-
-
-
-		// create new skeleton
-		if (createNewSkeleton)
-		{
-
-			// create new skeleton and add it to the skeleton pool
-			m_skeletonPool.insert({ skData.skeletonID, *parseSkeleton(skData, skData.skeletonID, new Skeleton()) });
-
-			//skeleton was added/removed, so UI updates
-			m_hasSkeletonPoolChanged = true;
-
-			Console::log("DataHandlerManager::extractSkeleton(): Created new skeleton with id = " + std::to_string(skData.skeletonID) + ".");
-
-		}
+	if (m_UdpServer->getQuaternionDatagram()->kinematics != NULL) {
+		printDatagram(m_UdpServer->getQuaternionDatagram());
 
 	}
+
+	////loop through all Xsens skeletons
+	//for (int i = 0; i < m_refData->nSkeletons; i++)
+	//for (int i = 0; i < 1; i++)
+	//{
+	//	//get current skeleton data this is NatNet
+	//	sSkeletonData skData = m_refData->Skeletons[i];
+
+	//	//true as long new skeleton will be added to the pool
+	//	bool createNewSkeleton = true;
+
+	//	//loop through all MMH skeletons
+	//	for (auto itPoolSkeletons = m_skeletonPool.begin(); itPoolSkeletons != m_skeletonPool.end(); itPoolSkeletons++)
+	//	{
+	//		//when skeletons have the same ID, the skeleton is alredy in pool and no new skeleton has to be created
+	//		if (skData.skeletonID == itPoolSkeletons->first)
+	//		{
+
+	//			//convert Xsens skeleton into MMH skeleton
+
+	//			//HWM: quaternionDatagram an parseSkeleton geben
+	//			Skeleton* currSkeleton = parseSkeleton(skData, skData.skeletonID, &m_skeletonPool[skData.skeletonID]);
+
+	//			if (currSkeleton != nullptr)
+	//			{
+
+	//				// update all joints of existing skeleon with new data
+	//				m_skeletonPool[skData.skeletonID].m_joints = currSkeleton->m_joints;
+
+	//			}
+
+	//			//delete temp skeleton object (FIXED MEMORY LEAK)
+	//			delete currSkeleton;
+
+	//			//no new skeleton has to be created
+	//			createNewSkeleton = false;
+
+	//			break;
+
+	//		}
+
+	//	}
+
+
+
+	//	// create new skeleton
+	//	if (createNewSkeleton)
+	//	{
+
+	//		// create new skeleton and add it to the skeleton pool
+	//		m_skeletonPool.insert({ skData.skeletonID, *parseSkeleton(skData, skData.skeletonID, new Skeleton()) });
+
+	//		//skeleton was added/removed, so UI updates
+	//		m_hasSkeletonPoolChanged = true;
+
+	//		Console::log("DataHandlerManager::extractSkeleton(): Created new skeleton with id = " + std::to_string(skData.skeletonID) + ".");
+
+	//	}
+
+	//}
 
 }
 

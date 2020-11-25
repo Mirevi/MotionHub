@@ -40,7 +40,7 @@ public:
 		float orientation[4];	// orientation (quaternion) relative to global space
 	};
 	std::vector<Kinematics> m_data;
-	virtual std::vector<Kinematics>* getData();
+	virtual std::vector<Kinematics>* getData(); 
 
 
 

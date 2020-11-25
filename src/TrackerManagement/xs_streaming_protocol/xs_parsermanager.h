@@ -36,10 +36,15 @@ public:
 	ParserManager();
 	~ParserManager();
 	virtual void readDatagram(const XsByteArray& data);
-	std::vector<QuaternionDatagram::Kinematics>* getDatagram(const XsByteArray& data);
+	struct QuaternionDataWithId { // Avatar ID with QuaternionDatagram
+		int avatarId; 
+		std::vector<QuaternionDatagram::Kinematics>* kinematics;
+	};
+	ParserManager::QuaternionDataWithId* getDatagram(const XsByteArray& data);
 
 private:
-	Datagram* createDgram(StreamingProtocol proto);
+	QuaternionDatagram* datagram;
+	ParserManager::QuaternionDataWithId* quaternionDatagramWithId;
 };
 
 #endif

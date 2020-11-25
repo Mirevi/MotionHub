@@ -40,6 +40,10 @@
 
 ParserManager::ParserManager()
 {
+	datagram = new QuaternionDatagram();
+
+	quaternionDatagramWithId = new ParserManager::QuaternionDataWithId();
+
 }
 
 /*! Destructor */
@@ -47,26 +51,7 @@ ParserManager::~ParserManager()
 {
 }
 
-Datagram* ParserManager::createDgram(StreamingProtocol proto)
-{
-	switch (proto)
-	{
-	case SPPoseEuler:		return new EulerDatagram;
-	case SPPoseQuaternion:	return new QuaternionDatagram;
-	case SPPosePositions:	return new PositionDatagram;
-	case SPMetaScaling:		return new ScaleDatagram;
-	case SPMetaMoreMeta:	return new MetaDatagram;
-	case SPJointAngles:					return new JointAnglesDatagram;
-	case SPLinearSegmentKinematics:		return new LinearSegmentKinematicsDatagram;
-	case SPAngularSegmentKinematics:	return new AngularSegmentKinematicsDatagram;
-	case SPTrackerKinematics:			return new TrackerKinematicsDatagram;
-	case SPCenterOfMass:				return new CenterOfMassDatagram;
-	case SPTimeCode:					return new TimeCodeDatagram;
 
-	default:
-		return nullptr;
-	}
-}
 
 /*! Read single datagram from the incoming stream */
 void ParserManager::readDatagram(const XsByteArray& data)
@@ -94,27 +79,33 @@ void ParserManager::readDatagram(const XsByteArray& data)
 
 }
 
-/*! Get single datagram from the incoming stream */
-std::vector<QuaternionDatagram::Kinematics>* ParserManager::getDatagram(const XsByteArray& data)
+/*! Get single QuaternionDatagram from the incoming stream with AvatarId */
+ParserManager::QuaternionDataWithId* ParserManager::getDatagram(const XsByteArray& buffer)
 {
-	StreamingProtocol type = static_cast<StreamingProtocol>(Datagram::messageType(data));
+	StreamingProtocol type = static_cast<StreamingProtocol>(Datagram::messageType(buffer));
 
-	QuaternionDatagram* datagram = new QuaternionDatagram();
+	datagram = new QuaternionDatagram();
+	quaternionDatagramWithId = new ParserManager::QuaternionDataWithId();
+
 
 	if (datagram != nullptr)
 	{
-		datagram->deserialize(data);
-		// note that this can cause a lot of console spam
-		//datagram->printHeader();
-		//datagram->printData();
+		datagram->deserialize(buffer);
+		quaternionDatagramWithId->avatarId = (int)datagram->avatarId();
+		quaternionDatagramWithId->kinematics = datagram->getData();
+
+
 	}
 	else
 	{
-		XsString str(data.size(), (const char*)data.data());
+		XsString str(buffer.size(), (const char*)buffer.data());
 		std::cout << "Unhandled datagram: " << str.c_str() << std::endl;
 
 	}
-	return datagram->getData();
+
+
+	return quaternionDatagramWithId;
 
 
 }
+

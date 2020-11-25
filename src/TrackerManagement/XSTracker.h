@@ -106,7 +106,7 @@ private:
 	/*!
 	xsens datagram
 	*/
-	std::vector<QuaternionDatagram::Kinematics> m_data;
+	std::vector<QuaternionDatagram::Kinematics>* m_kinematics;
 
 	/*!
 	 * empty override method for Tracker::init()
@@ -149,7 +149,7 @@ private:
 	/*
 	prints Datagram
 	*/
-	void XSTracker::printDatagram(const std::vector<QuaternionDatagram::Kinematics>& data);
+	void XSTracker::printDatagram(ParserManager::QuaternionDataWithId* data);
 
 	/*!
 	 * rotates the input quaternion at the y-axis with 180 degree

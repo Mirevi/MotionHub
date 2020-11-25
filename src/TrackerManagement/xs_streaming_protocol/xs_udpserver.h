@@ -49,7 +49,7 @@ public:
 	void readMessages();
 	void startThread();
 	void stopThread();
-	std::vector<QuaternionDatagram::Kinematics>* getQuaternionDatagram();
+	ParserManager::QuaternionDataWithId* getQuaternionDatagram();
 	volatile std::atomic_bool m_started, m_stopping;
 
 
@@ -59,7 +59,7 @@ private:
 	uint16_t m_port;
 	XsString m_hostName;
 	std::unique_ptr<ParserManager> m_parserManager;
-	std::vector<QuaternionDatagram::Kinematics>* m_quaternionDatagram; //the skeleton
+	ParserManager::QuaternionDataWithId* m_quaternionDatagram; //the skeleton
 
 };
 

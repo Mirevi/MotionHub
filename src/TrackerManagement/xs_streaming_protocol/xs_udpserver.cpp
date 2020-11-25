@@ -42,7 +42,7 @@ UdpServer::UdpServer(XsString address, uint16_t port)
 {
 	m_port = port;
 	m_hostName = address;
-	m_quaternionDatagram = new std::vector<QuaternionDatagram::Kinematics>();
+	m_quaternionDatagram = new ParserManager::QuaternionDataWithId();
 	m_parserManager.reset(new ParserManager());
 	m_socket.reset(new XsSocket(IpProtocol::IP_UDP, NetworkLayerProtocol::NLP_IPV4));
 
@@ -71,9 +71,10 @@ void UdpServer::readMessages()
 		int rv = m_socket->read(buffer);
 		//filter random buffer packages with just one joint
 		if (buffer.size() > 100) {
-
-			if (!m_parserManager->getDatagram(buffer)->empty()) {
+			//assign new datagram if not empty
+			if (!m_parserManager->getDatagram(buffer)->kinematics->empty()) {				
 				m_quaternionDatagram = m_parserManager->getDatagram(buffer);
+
 			}
 		}
 
@@ -108,7 +109,9 @@ void UdpServer::stopThread()
 		XsTime::msleep(10);
 }
 
-std::vector<QuaternionDatagram::Kinematics>* UdpServer::getQuaternionDatagram()
+
+// get current quaterion datagram with Avatar ID
+ParserManager::QuaternionDataWithId* UdpServer::getQuaternionDatagram()
 {
 	return m_quaternionDatagram;
 }
