@@ -1315,7 +1315,7 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
   </action>
   <action name="actionIP_settings">
    <property name="text">
-    <string>Network Settings</string>
+    <string>Settings</string>
    </property>
   </action>
  </widget>

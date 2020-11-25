@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Network Settings</string>
+   <string>MotionHub Settings</string>
   </property>
   <property name="styleSheet">
    <string notr="true">QToolTip
