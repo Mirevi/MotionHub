@@ -282,16 +282,16 @@ void ConfigManager::createNewConfigFile()
 	ySclOptiTrack->SetText("1");
 	zSclOptiTrack->SetText("1");
 
-	//set Xsens values -- TO DO!!
-	xPosXsens->SetText("0");
-	yPosXsens->SetText("0");
-	zPosXsens->SetText("0");
-	xRotXsens->SetText("0");
-	yRotXsens->SetText("0");
-	zRotXsens->SetText("0");
-	xSclXsens->SetText("0");
-	ySclXsens->SetText("0");
-	zSclXsens->SetText("0");
+	//set Xsens values HWM!!
+	xPosXsens->SetText("1");
+	yPosXsens->SetText("1");
+	zPosXsens->SetText("1");
+	xRotXsens->SetText("0.1");
+	yRotXsens->SetText("0.1");
+	zRotXsens->SetText("0.1");
+	xSclXsens->SetText("1");
+	ySclXsens->SetText("1");
+	zSclXsens->SetText("1");
 
 	//add Azure to node
 	pStartup->InsertEndChild(xPosAzure);

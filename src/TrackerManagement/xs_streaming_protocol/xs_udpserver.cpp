@@ -63,7 +63,7 @@ void UdpServer::readMessages()
 {
 	XsByteArray buffer;
 
-	std::cout << "Starting receiving packets..." << std::endl << std::endl;
+	//std::cout << "Starting receiving packets..." << std::endl << std::endl;
 
 
 	while (!m_stopping)
@@ -82,7 +82,7 @@ void UdpServer::readMessages()
 		XsTime::msleep(1);
 	}
 
-	std::cout << "Stopping receiving packets..." << std::endl << std::endl;
+	//std::cout << "Stopping receiving packets..." << std::endl << std::endl;
 
 	m_stopping = false;
 	m_started = false;

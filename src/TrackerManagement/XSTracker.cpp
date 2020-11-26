@@ -6,6 +6,7 @@
 #include <xstypes/xstime.h>
 
 
+
 // default constructor
 XSTracker::XSTracker(int id, NetworkManager* networkManager, ConfigManager* configManager)
 {
@@ -72,21 +73,7 @@ void XSTracker::start()
 	std::string hostDestinationAddress = "localhost";
 	int port = 9763;
 
-	std::cout << "Das ist der erste Build-Versuch: \nWaiting to receive packets from the client on port " << port << " ..." << std::endl << std::endl;
-
-	//auto callPrint = [this](const std::vector<QuaternionDatagram::Kinematics>& data) {
-	//	printDatagram(data);
-	//};
-
-
-	//	UdpServer udpServer(hostDestinationAddress, (uint16_t)port);
-
 	m_UdpServer = new UdpServer(hostDestinationAddress, (uint16_t)port);
-
-
-	//while (!_kbhit()) {
-	//	printDatagram(*m_UdpServer->getQuaternionDatagram());
-	//	XsTime::msleep(10);
 
 
 	////get reference to the frame data
@@ -162,12 +149,19 @@ void XSTracker::update()
 	while (m_properties->isTracking)
 	{
 
-		//
+		
 		// get new data
-		track();
+		if (m_UdpServer->getQuaternionDatagram()->kinematics != NULL) {
+			m_quaternianDataWithId = m_UdpServer->getQuaternionDatagram();
+			track();
+			//send Skeleton Pool to NetworkManager
+			m_networkManager->sendSkeletonPool(&m_skeletonPool, m_properties->id);
 
-		//send Skeleton Pool to NetworkManager
-		//m_networkManager->sendSkeletonPool(&m_skeletonPool, m_properties->id);
+		}
+
+		
+
+
 
 	}
 
@@ -183,13 +177,13 @@ void XSTracker::track()
 	//get skeleton data from frame data
 	extractSkeleton();
 
-	//cleanSkeletonPool();
+	cleanSkeletonPool();
 
-	////increase tracking cycle counter
-	//m_trackingCycles++;
+	//increase tracking cycle counter
+	m_trackingCycles++;
 
 	////new data is ready
-	//m_isDataAvailable = true;
+	m_isDataAvailable = true;
 
 }
 
@@ -211,114 +205,138 @@ void XSTracker::extractSkeleton()
 
 
 
-	if (m_UdpServer->getQuaternionDatagram()->kinematics != NULL) {
-		printDatagram(m_UdpServer->getQuaternionDatagram());
-
-	}
-
-	////loop through all Xsens skeletons
-	//for (int i = 0; i < m_refData->nSkeletons; i++)
-	//for (int i = 0; i < 1; i++)
-	//{
-	//	//get current skeleton data this is NatNet
-	//	sSkeletonData skData = m_refData->Skeletons[i];
-
-	//	//true as long new skeleton will be added to the pool
-	//	bool createNewSkeleton = true;
-
-	//	//loop through all MMH skeletons
-	//	for (auto itPoolSkeletons = m_skeletonPool.begin(); itPoolSkeletons != m_skeletonPool.end(); itPoolSkeletons++)
-	//	{
-	//		//when skeletons have the same ID, the skeleton is alredy in pool and no new skeleton has to be created
-	//		if (skData.skeletonID == itPoolSkeletons->first)
-	//		{
-
-	//			//convert Xsens skeleton into MMH skeleton
-
-	//			//HWM: quaternionDatagram an parseSkeleton geben
-	//			Skeleton* currSkeleton = parseSkeleton(skData, skData.skeletonID, &m_skeletonPool[skData.skeletonID]);
-
-	//			if (currSkeleton != nullptr)
-	//			{
-
-	//				// update all joints of existing skeleon with new data
-	//				m_skeletonPool[skData.skeletonID].m_joints = currSkeleton->m_joints;
-
-	//			}
-
-	//			//delete temp skeleton object (FIXED MEMORY LEAK)
-	//			delete currSkeleton;
-
-	//			//no new skeleton has to be created
-	//			createNewSkeleton = false;
-
-	//			break;
-
-	//		}
-
-	//	}
-
-
-
-	//	// create new skeleton
-	//	if (createNewSkeleton)
-	//	{
-
-	//		// create new skeleton and add it to the skeleton pool
-	//		m_skeletonPool.insert({ skData.skeletonID, *parseSkeleton(skData, skData.skeletonID, new Skeleton()) });
-
-	//		//skeleton was added/removed, so UI updates
-	//		m_hasSkeletonPoolChanged = true;
-
-	//		Console::log("DataHandlerManager::extractSkeleton(): Created new skeleton with id = " + std::to_string(skData.skeletonID) + ".");
-
-	//	}
+	//if (m_UdpServer->getQuaternionDatagram()->kinematics != NULL) {
+	//	printDatagram(m_UdpServer->getQuaternionDatagram());
 
 	//}
+
+	//loop through all Xsens skeletons
+	//for (int i = 0; i < m_refData->nSkeletons; i++)
+	for (int i = 0; i < 1; i++)
+	{
+		//get current skeleton data this is NatNet
+		//sSkeletonData skData = m_refData->Skeletons[i];
+
+		//true as long new skeleton will be added to the pool
+		bool createNewSkeleton = true;
+
+		//loop through all MMH skeletons
+		for (auto itPoolSkeletons = m_skeletonPool.begin(); itPoolSkeletons != m_skeletonPool.end(); itPoolSkeletons++)
+		{
+			//when skeletons have the same ID, the skeleton is alredy in pool and no new skeleton has to be created
+			//if (skData.skeletonID == itPoolSkeletons->first)
+			if (m_properties->id == itPoolSkeletons->first)
+			{
+
+				//convert Xsens skeleton into MMH skeleton
+
+				//HWM: quaternionDatagram an parseSkeleton geben
+				Skeleton* currSkeleton = parseSkeleton(m_quaternianDataWithId, m_properties->id, &m_skeletonPool[m_properties->id]);
+		
+
+				if (currSkeleton != nullptr)
+				{
+					// update all joints of existing skeleon with new data
+					m_skeletonPool[m_properties->id].m_joints = currSkeleton->m_joints;
+
+				}
+
+				//delete temp skeleton object (FIXED MEMORY LEAK)
+				delete currSkeleton;
+
+				//no new skeleton has to be created
+				createNewSkeleton = false;
+
+				break;
+
+			}
+
+		}
+
+
+
+		// create new skeleton
+		if (createNewSkeleton)
+		{
+			Console::log("createNewSkeleton");
+
+			// create new skeleton and add it to the skeleton pool
+
+			m_skeletonPool.insert({ m_properties->id, *parseSkeleton(m_quaternianDataWithId, m_properties->id, new Skeleton()) });
+
+			//skeleton was added/removed, so UI updates
+			m_hasSkeletonPoolChanged = true;
+
+			Console::log("DataHandlerManager::extractSkeleton(): Created new skeleton with id = " + std::to_string(m_properties->id) + ".");
+
+		}
+
+	}
 
 }
 
 //takes data from a Xsens skeleton and pushes it into the list
-Skeleton* XSTracker::parseSkeleton(sSkeletonData skeleton, int id, Skeleton* oldSkeletonData)
+Skeleton* XSTracker::parseSkeleton(ParserManager::QuaternionDataWithId* quaternianDataWithId, int id, Skeleton* oldSkeletonData)
 {
 
 	//skeleton data container
 	Skeleton* currSkeleton = new Skeleton(id);
 
 	//loop through all joints
-	for (int j = 0; j < skeleton.nRigidBodies; j++)
+	for (int i = 0; i < quaternianDataWithId->kinematics->size(); i++)
 	{
-		//temporary OptiTrack joint data object
-		sRigidBodyData rbData = skeleton.RigidBodyData[j];
+		////temporary OptiTrack joint data object
+		//sRigidBodyData rbData = skeleton.RigidBodyData[j];
+
+		m_kinematics = quaternianDataWithId->kinematics;
+
+
+
+
+
 
 		// convert from k4a Vectors and quaternions into custom vectors
-		Vector4f pos = m_offsetMatrix * Vector4f(rbData.x, rbData.y, rbData.z, 1.0f);
-		Quaternionf rot = Quaternionf(rbData.qw, rbData.qx, -rbData.qy, -rbData.qz);
+
+		//HWM
+
+		Vector4f pos = //m_offsetMatrix * 
+			Vector4f(m_kinematics->at(i).position[0], m_kinematics->at(i).position[1], m_kinematics->at(i).position[2], 1.0f);
+		Quaternionf rot = Quaternionf(m_kinematics->at(i).orientation[0], m_kinematics->at(i).orientation[1], m_kinematics->at(i).orientation[2], m_kinematics->at(i).orientation[3]);
 
 		//confidence values are not transmitted, default confidence is High
 		Joint::JointConfidence confidence = Joint::JointConfidence::HIGH;
 
+		std::cout << "+++++++++++++++++++++++++ Position (";
+		std::cout << "x: " << pos.x() << ",   ";
+		std::cout << "y: " << pos.y() << ",   ";
+		std::cout << "z: " << pos.z() << ")  " << std::endl;
+		std::cout << "+++++++++++++++++++++++++ Rotation(";
+		std::cout << "x: " << rot.x() << ",   ";
+		std::cout << "y: " << rot.y() << ",   ";
+		std::cout << "z: " << rot.z() << ",   ";
+		std::cout << "w: " << rot.w() << ")  " << std::endl;
 
-		//filter for corrupt position values  
-		if (pos.x() > 100 || pos.y() > 100 || pos.z() > 100 ||
-			pos.x() < -100 || pos.y() < -100 || pos.z() < -100)
-		{
 
-			return nullptr;
+		////filter for corrupt position values  
+		//if (pos.x() > 100 || pos.y() > 100 || pos.z() > 100 ||
+		//	pos.x() < -100 || pos.y() < -100 || pos.z() < -100)
+		//{
 
-		}
+		//	return nullptr;
 
-		//filter for corrupt rotation values
-		if (rot.x() < -1 || rot.y() < -1 || rot.z() < -1 || rot.w() < -1 ||
-			rot.x() > 1 || rot.y() > 1 || rot.z() > 1 || rot.w() > 1)
-		{
+		//}
 
-			return nullptr;
+		////filter for corrupt rotation values
+		//if (rot.x() < -1 || rot.y() < -1 || rot.z() < -1 || rot.w() < -1 ||
+		//	rot.x() > 1 || rot.y() > 1 || rot.z() > 1 || rot.w() > 1)
+		//{
 
-		}
+		//	return nullptr;
+
+		//}
 
 		//map the Xsens poses to the MMH skeleton joints
-		switch (j)
+		switch (i)
 		{
 
 		case 0:
@@ -411,8 +429,6 @@ Skeleton* XSTracker::parseSkeleton(sSkeletonData skeleton, int id, Skeleton* old
 			currSkeleton->m_joints.insert({ Joint::FOOT_L, Joint(pos, rot, confidence) });
 			break;
 
-
-
 		case 22:
 			currSkeleton->m_joints.insert({ Joint::TOE_L, Joint(pos, rot, confidence) });
 			break;
@@ -451,7 +467,8 @@ void XSTracker::cleanSkeletonPool()
 		bool isXSSkeletonInPool = false;
 
 		//loop thorugh all XS skeletons in frame
-		for (int itXSSkeletons = 0; itXSSkeletons < m_refData->nSkeletons; itXSSkeletons++)
+		//for (int itXSSkeletons = 0; itXSSkeletons < m_refData->nSkeletons; itXSSkeletons++)
+		for (int itXSSkeletons = 0; itXSSkeletons < 5; itXSSkeletons++)
 		{
 
 			// if XS skeleton is in pool set isXSSkeletonInPool to true
@@ -475,10 +492,16 @@ void XSTracker::cleanSkeletonPool()
 	}
 
 
+
+	if (idSkeletonsToErase.empty()) {
+		return;
+	}
+
 	//loop through the removing list
-	for (int itIndexIdSkeletonsToErase = idSkeletonsToErase.front(); itIndexIdSkeletonsToErase != idSkeletonsToErase.back(); itIndexIdSkeletonsToErase++)
+	for (int itIndexIdSkeletonsToErase = idSkeletonsToErase.front(); itIndexIdSkeletonsToErase < idSkeletonsToErase.back(); itIndexIdSkeletonsToErase++)
 	{
 
+		
 		//erase skeleton with id
 		m_skeletonPool.erase(itIndexIdSkeletonsToErase);
 
@@ -488,6 +511,8 @@ void XSTracker::cleanSkeletonPool()
 		Console::log("XSTracker::cleanSkeletonList(): Removed skeleton with id = " + std::to_string(itIndexIdSkeletonsToErase) + " from pool!");
 
 	}
+
+
 }
 
 Quaternionf XSTracker::convertXsensRotation(Quaternionf value)

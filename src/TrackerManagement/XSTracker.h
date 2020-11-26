@@ -13,6 +13,7 @@
 #include <chrono>
 #include <algorithm>
 #include "functional"
+#include <list>
 
 
 
@@ -107,6 +108,11 @@ private:
 	xsens datagram
 	*/
 	std::vector<QuaternionDatagram::Kinematics>* m_kinematics;
+	
+	/*!
+	xsens datagram with Avatar ID
+	*/
+	ParserManager::QuaternionDataWithId* m_quaternianDataWithId;
 
 	/*!
 	 * empty override method for Tracker::init()
@@ -132,11 +138,11 @@ private:
 	/*!
 	 * converts Xsens skeleton to default skeleton type
 	 *
-	 * \param skeleton input Xsens skeleto
+	 * \param quaternionDataWithId input Xsens skeleton
 	 * \param id the skeletons ID
 	 * \return converted default skeleton
 	 */
-	Skeleton* parseSkeleton(sSkeletonData skeleton, int id, Skeleton* oldSkeletonData);
+	Skeleton* XSTracker::parseSkeleton(ParserManager::QuaternionDataWithId* quaternianDataWithId, int id, Skeleton* oldSkeletonData);
 	/*!
 	 * deletes all old skeletons from the skeleton pool
 	 * \param bodyFrame the k4a frame with all skeleton data
