@@ -38,7 +38,7 @@
      border: 1px solid black;
      background-color: #ffa02f;
      padding: 1px;
-     border-radius: 3px;
+     border-radius: 5px;
      opacity: 100;
 }
 
@@ -587,6 +587,9 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
               <verstretch>1</verstretch>
              </sizepolicy>
             </property>
+            <property name="toolTip">
+             <string/>
+            </property>
             <property name="frameShape">
              <enum>QFrame::NoFrame</enum>
             </property>
@@ -652,6 +655,9 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
              <property name="cursor">
               <cursorShape>PointingHandCursor</cursorShape>
              </property>
+             <property name="toolTip">
+              <string>Add Tracker</string>
+             </property>
              <property name="text">
               <string>Add</string>
              </property>
@@ -673,6 +679,9 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
              </property>
              <property name="cursor">
               <cursorShape>PointingHandCursor</cursorShape>
+             </property>
+             <property name="toolTip">
+              <string>Play/Pause</string>
              </property>
              <property name="text">
               <string/>
@@ -706,6 +715,9 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
              <property name="cursor">
               <cursorShape>PointingHandCursor</cursorShape>
              </property>
+             <property name="toolTip">
+              <string>start/stop recording</string>
+             </property>
              <property name="text">
               <string/>
              </property>
@@ -732,6 +744,9 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
              <property name="cursor">
               <cursorShape>PointingHandCursor</cursorShape>
              </property>
+             <property name="toolTip">
+              <string>Remove Tracker</string>
+             </property>
              <property name="text">
               <string>Remove</string>
              </property>
@@ -753,6 +768,9 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
              <property name="cursor">
               <cursorShape>PointingHandCursor</cursorShape>
              </property>
+             <property name="toolTip">
+              <string>Add group</string>
+             </property>
              <property name="text">
               <string>Add group</string>
              </property>
@@ -766,6 +784,9 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
               <horstretch>0</horstretch>
               <verstretch>4</verstretch>
              </sizepolicy>
+            </property>
+            <property name="toolTip">
+             <string/>
             </property>
             <property name="itemsExpandable">
              <bool>true</bool>
@@ -852,6 +873,9 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
             </property>
             <property name="contextMenuPolicy">
              <enum>Qt::DefaultContextMenu</enum>
+            </property>
+            <property name="toolTip">
+             <string/>
             </property>
             <property name="layoutDirection">
              <enum>Qt::LeftToRight</enum>
@@ -1041,6 +1065,9 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
                <height>16777215</height>
               </size>
              </property>
+             <property name="toolTip">
+              <string/>
+             </property>
              <item>
               <property name="text">
                <string>Percentage</string>
@@ -1071,6 +1098,9 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
+             </property>
+             <property name="toolTip">
+              <string/>
              </property>
              <property name="styleSheet">
               <string notr="true"/>
@@ -1209,6 +1239,9 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
         </item>
         <item>
          <widget class="QTableWidget" name="tableWidget_console">
+          <property name="toolTip">
+           <string/>
+          </property>
           <property name="frameShape">
            <enum>QFrame::NoFrame</enum>
           </property>
