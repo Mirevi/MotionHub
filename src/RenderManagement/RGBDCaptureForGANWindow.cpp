@@ -28,7 +28,8 @@ RGBDCaptureForGANWindow::RGBDCaptureForGANWindow(ConfigManager* configManager, N
 	m_clippingDistance = 2850; //behind this value (millimeters) the points will be rejected
 
 	//feature generation
-	m_imageSize = cv::Size(256, 256);
+	m_imageSize = cv::Size(512, 512);
+	m_featureImageSize = cv::Size(256, 256);
 	m_cropRegion = cv::Rect(cv::Point(280, 0), cv::Point(1000, 720));
 	initializeFeatureLineColor();
 
@@ -55,6 +56,8 @@ void RGBDCaptureForGANWindow::updateGui()
 	ui->le_crop_region_y2->setText(QString::fromStdString(std::to_string(m_cropRegion.br().y)));
 	ui->le_image_size_x->setText(QString::fromStdString(std::to_string(m_imageSize.width)));
 	ui->le_image_size_y->setText(QString::fromStdString(std::to_string(m_imageSize.height)));
+	ui->le_feature_image_size_x->setText(QString::fromStdString(std::to_string(m_featureImageSize.width)));
+	ui->le_feature_image_size_y->setText(QString::fromStdString(std::to_string(m_featureImageSize.height)));
 	ui->le_clipping_distance->setText(QString::fromStdString(std::to_string(m_clippingDistance)));
 	ui->le_transmission_id->setText(QString::fromStdString(std::to_string(m_transmissionId)));
 
@@ -96,6 +99,8 @@ void RGBDCaptureForGANWindow::updateGui()
 		ui->le_crop_region_y2->setEnabled(true);
 		ui->le_image_size_x->setEnabled(true);
 		ui->le_image_size_y->setEnabled(true);
+		ui->le_feature_image_size_x->setEnabled(true);
+		ui->le_feature_image_size_y->setEnabled(true);
 		ui->le_clipping_distance->setEnabled(true);
 		ui->btn_start_capture->setEnabled(true);
 		ui->btn_start_transmission->setEnabled(true);
@@ -111,6 +116,8 @@ void RGBDCaptureForGANWindow::updateGui()
 		ui->le_crop_region_y2->setEnabled(false);
 		ui->le_image_size_x->setEnabled(false);
 		ui->le_image_size_y->setEnabled(false);
+		ui->le_feature_image_size_x->setEnabled(false);
+		ui->le_feature_image_size_y->setEnabled(false);
 		ui->le_clipping_distance->setEnabled(false);
 		ui->btn_start_capture->setEnabled(false);
 		ui->btn_start_transmission->setEnabled(false);
@@ -180,6 +187,9 @@ void RGBDCaptureForGANWindow::onGuiValueChanged() {
 	m_cropRegion = cv::Rect(cropA, cropB);
 
 	m_imageSize = cv::Size(ui->le_image_size_x->text().toInt(), ui->le_image_size_y->text().toInt());
+	m_featureImageSize = cv::Size(
+		ui->le_feature_image_size_x->text().toInt(), 
+		ui->le_feature_image_size_y->text().toInt());
 
 	m_clippingDistance = ui->le_clipping_distance->text().toInt();
 	m_transmissionId = ui->le_transmission_id->text().toInt();
@@ -561,7 +571,7 @@ void RGBDCaptureForGANWindow::processInfraredImage()
 
 void RGBDCaptureForGANWindow::processFeatureImage()
 {
-	cv::Mat temp = cv::Mat::zeros(m_imageSize, CV_8UC4);
+	cv::Mat temp = cv::Mat::zeros(m_featureImageSize, CV_8UC4);
 	m_featureMatrix = std::shared_ptr<cv::Mat>(new cv::Mat(temp)); //copy operation is fast enough
 
 	//color landmark pixels
@@ -570,9 +580,9 @@ void RGBDCaptureForGANWindow::processFeatureImage()
 	drawFeaturesToMatrix();
 
 	if (m_showFeatureImagePreview) {
-		QImage colorImage = QImage(m_featureMatrix->data, m_featureMatrix->cols, m_featureMatrix->rows, m_featureMatrix->step, QImage::Format_ARGB32);
-		colorImage = colorImage.scaled(256, 256, Qt::AspectRatioMode::KeepAspectRatio);
-		ui->feature_image->setPixmap(QPixmap::fromImage(colorImage));
+		QImage image = QImage(m_featureMatrix->data, m_featureMatrix->cols, m_featureMatrix->rows, m_featureMatrix->step, QImage::Format_ARGB32);
+		image = image.scaled(256, 256, Qt::AspectRatioMode::KeepAspectRatio);
+		ui->feature_image->setPixmap(QPixmap::fromImage(image));
 	}
 }
 
@@ -974,8 +984,8 @@ void RGBDCaptureForGANWindow::mapColorLandmarksToFeatureImageLandmarks()
 {
 	float cropRegionOffsetX = m_cropRegion.tl().x;
 	float cropRegionOffsetY = m_cropRegion.tl().y;
-	float scaleFactorX = static_cast<float>(m_imageSize.width) / static_cast<float>(m_cropRegion.size().width);
-	float scaleFactorY = static_cast<float>(m_imageSize.height) / static_cast<float>(m_cropRegion.size().height);
+	float scaleFactorX = static_cast<float>(m_featureImageSize.width) / static_cast<float>(m_cropRegion.size().width);
+	float scaleFactorY = static_cast<float>(m_featureImageSize.height) / static_cast<float>(m_cropRegion.size().height);
 
 	for (int i = 0; i < K4ABT_JOINT_COUNT; i++) {
 		Landmark featureImageLandmark;

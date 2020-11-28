@@ -128,6 +128,7 @@ private:
 	int m_framesToCapture;
 	int m_clippingDistance;
 	cv::Size m_imageSize;
+	cv::Size m_featureImageSize;
 	cv::Rect m_cropRegion;
 	std::string m_saveIdPrefix;
 	std::string m_dataDirPath;
