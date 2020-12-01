@@ -300,7 +300,7 @@ Skeleton* XSTracker::parseSkeleton(ParserManager::QuaternionDataWithId* quaterni
 		//HWM
 
 		Vector4f pos = //m_offsetMatrix * 
-			Vector4f(m_kinematics->at(i).position[0], m_kinematics->at(i).position[1], m_kinematics->at(i).position[2], 1.0f);
+			Vector4f(m_kinematics->at(i).position[1], m_kinematics->at(i).position[2], m_kinematics->at(i).position[0], 1.0f);
 		Quaternionf rot = Quaternionf(m_kinematics->at(i).orientation[0], m_kinematics->at(i).orientation[1], m_kinematics->at(i).orientation[2], m_kinematics->at(i).orientation[3]);
 
 		//confidence values are not transmitted, default confidence is High
