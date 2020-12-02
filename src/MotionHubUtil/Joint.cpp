@@ -199,3 +199,7 @@ Joint::JointNames Joint::toJointNames(std::string name)
 
 }
 
+void Joint::setPosition(Vector4f newPos)
+{
+	m_position = newPos;
+}

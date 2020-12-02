@@ -23,19 +23,19 @@ mmhPlayer::mmhPlayer(int id, NetworkManager* networkManager, ConfigManager* conf
 
 
 	//set default values for offsets
-	setPositionOffset(Vector3f(configManager->getFloatFromStartupConfig("xPosBVH"),
-							   configManager->getFloatFromStartupConfig("yPosBVH"),
-							   configManager->getFloatFromStartupConfig("zPosBVH")
+	setPositionOffset(Vector3f(configManager->getFloatFromStartupConfig("xPosMMH"),
+							   configManager->getFloatFromStartupConfig("yPosMMH"),
+							   configManager->getFloatFromStartupConfig("zPosMMH")
 							  ));
 
-	setRotationOffset(Vector3f(configManager->getFloatFromStartupConfig("xRotBVH"),
-							   configManager->getFloatFromStartupConfig("yRotBVH"),
-							   configManager->getFloatFromStartupConfig("zRotBVH")
+	setRotationOffset(Vector3f(configManager->getFloatFromStartupConfig("xRotMMH"),
+							   configManager->getFloatFromStartupConfig("yRotMMH"),
+							   configManager->getFloatFromStartupConfig("zRotMMH")
 							  ));
 
-	setScaleOffset(Vector3f(configManager->getFloatFromStartupConfig("xSclBVH"),
-							configManager->getFloatFromStartupConfig("ySclBVH"),
-							configManager->getFloatFromStartupConfig("zSclBVH")
+	setScaleOffset(Vector3f(configManager->getFloatFromStartupConfig("xSclMMH"),
+							configManager->getFloatFromStartupConfig("ySclMMH"),
+							configManager->getFloatFromStartupConfig("zSclMMH")
 							));
 
 
@@ -203,14 +203,36 @@ void mmhPlayer::track()
 	m_skeletonPool.clear();
 
 
-
 	//loop over skeletons and add them to pool
 	for (auto itSkeleton = m_currFrame->m_skeletons.begin(); itSkeleton != m_currFrame->m_skeletons.end(); itSkeleton++)
 	{
 
-		m_skeletonPool[skelIdx++] = *itSkeleton;
+		
+		m_skeletonPool[skelIdx] = *itSkeleton;
 
-		//Console::log(toString(m_skeletonPool[0].m_joints[Joint::HIPS].getJointPosition()));
+
+		//loop over all joints and multiply position with offsetmatrix
+		for (auto currjoint = m_skeletonPool[skelIdx].m_joints.begin(); currjoint != m_skeletonPool[skelIdx].m_joints.end(); currjoint++)
+		{
+		
+			Vector4f currPos = currjoint->second.getJointPosition();
+
+			Vector3f posOffset = m_properties->positionOffset;
+
+			Vector4f newPos = m_offsetMatrix * currPos + Vector4f(posOffset.x(), posOffset.y(), posOffset.z(), 1.0);
+
+			//if (currPos == newPos)
+			//{
+			//	Console::log("mmhPlayer::track(): Same!");
+			//}
+
+			//multiply skeleton joints with offset matrix
+			currjoint->second.setPosition(newPos);
+
+		}
+
+		skelIdx++;
+
 		m_isDataAvailable = true;
 
 	}

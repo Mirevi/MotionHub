@@ -3,7 +3,7 @@
 
 #include <QtWidgets/QDialog>
 #include <QtWidgets/QLineEdit>
-#include <QFileDialog>
+#include <QtWidgets/QFileDialog>
 
 #include "NetworkManagement/NetworkManager.h"
 #include "MotionHubUtil/ConfigManager.h"
