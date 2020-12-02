@@ -720,7 +720,7 @@ void MainWindow::slotTimelineLableModeChanged(int idx)
 
 void MainWindow::slotInspectorInputPosX(QString text)
 {
-	m_inputFieldPool.at("posX")->setText(text);
+	//m_inputFieldPool.at("posX")->setText(text);
 
 	std::string txt = text.toLocal8Bit().constData();
 
@@ -753,7 +753,7 @@ void MainWindow::slotInspectorInputPosX(QString text)
 
 void MainWindow::slotInspectorInputPosY(QString text)
 {
-	m_inputFieldPool.at("posY")->setText(text);
+	//m_inputFieldPool.at("posY")->setText(text);
 
 
 	std::string txt = text.toLocal8Bit().constData();
@@ -788,7 +788,7 @@ void MainWindow::slotInspectorInputPosY(QString text)
 void MainWindow::slotInspectorInputPosZ(QString text)
 {
 
-	m_inputFieldPool.at("posZ")->setText(text);
+	//m_inputFieldPool.at("posZ")->setText(text);
 
 	std::string txt = text.toLocal8Bit().constData();
 
@@ -821,7 +821,7 @@ void MainWindow::slotInspectorInputPosZ(QString text)
 void MainWindow::slotInspectorInputRotX(QString text)
 {
 
-	m_inputFieldPool.at("rotX")->setText(text);
+	//m_inputFieldPool.at("rotX")->setText(text);
 
 	std::string txt = text.toLocal8Bit().constData();
 
@@ -852,7 +852,7 @@ void MainWindow::slotInspectorInputRotX(QString text)
 void MainWindow::slotInspectorInputRotY(QString text)
 {
 
-	m_inputFieldPool.at("rotY")->setText(text);
+	//m_inputFieldPool.at("rotY")->setText(text);
 
 
 	std::string txt = text.toLocal8Bit().constData();
@@ -886,7 +886,7 @@ void MainWindow::slotInspectorInputRotY(QString text)
 void MainWindow::slotInspectorInputRotZ(QString text)
 {
 
-	m_inputFieldPool.at("rotZ")->setText(text);
+	//m_inputFieldPool.at("rotZ")->setText(text);
 
 
 	std::string txt = text.toLocal8Bit().constData();
@@ -921,7 +921,7 @@ void MainWindow::slotInspectorInputRotZ(QString text)
 void MainWindow::slotInspectorInputScaleX(QString text)
 {
 
-	m_inputFieldPool.at("scaleX")->setText(text);
+	//m_inputFieldPool.at("scaleX")->setText(text);
 
 
 	std::string txt = text.toLocal8Bit().constData();
@@ -955,7 +955,7 @@ void MainWindow::slotInspectorInputScaleX(QString text)
 void MainWindow::slotInspectorInputScaleY(QString text)
 {
 
-	m_inputFieldPool.at("scaleY")->setText(text);
+	//m_inputFieldPool.at("scaleY")->setText(text);
 
 	std::string txt = text.toLocal8Bit().constData();
 
@@ -988,7 +988,7 @@ void MainWindow::slotInspectorInputScaleY(QString text)
 void MainWindow::slotInspectorInputScaleZ(QString text)
 {
 
-	m_inputFieldPool.at("scaleZ")->setText(text);
+	//m_inputFieldPool.at("scaleZ")->setText(text);
 
 	std::string txt = text.toLocal8Bit().constData();
 
