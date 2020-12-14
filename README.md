@@ -6,9 +6,9 @@
 
 [MIREVI](https://www.mirevi.de/) MotionHub (MMH) is a middleware for merging body tracking data from different systems into one coordinate space in real-time in order to combine and use their individual benefits.
 
-MMH offers support for several body tracking systems and encompasses a game engine plug-in that connects the MMH with Unity by means of a standardized protocol. The plug-in allows for the usage of a single type of skeleton for any body tracking system and, therefore, facilitates the switch between different body tracking systems during app development significantly.
+MMH offers support for several body tracking systems and encompasses a [game engine plug-in](https://github.com/Mirevi/MotionHub/#Game-engine-plug-in) that connects the MMH with Unity by means of a standardized protocol. The plug-in allows for the usage of a single type of skeleton for any body tracking system and, therefore, facilitates the switch between different body tracking systems during app development significantly.
 
-MotionHub is developed at the research lab [MIREVI](https://www.mirevi.de/) from the [University of Applied Sciences Düsseldorf](https://hs-duesseldorf.de/en) within the scope of the project [HIVE](https://mirevi.de/research/immersive-digital-technologies-for-a-healthy-life-through-exercise-and-well-being-hive-lab).
+MotionHub is developed at the research lab [MIREVI](https://www.mirevi.de/) from the [University of Applied Sciences Düsseldorf](https://hs-duesseldorf.de/en) within the scope of the projects [HIVE](https://mirevi.de/research/immersive-digital-technologies-for-a-healthy-life-through-exercise-and-well-being-hive-lab) and [iKPT4.0](https://mirevi.de/research/ikpt4-0).
 
 ### Acknowledgements
 
@@ -31,41 +31,43 @@ Currently MMH is only supported on Microsoft Windows operating systems.
 
 The developer, API and user documentation including a class collaboration diagram can be found in the `doc` folder.
 
-# Supported Systems
+# Supported Body Tracking Systems
 
-MMH currently supports the listed body tracking systems.
-
-| Supported Systems                                                       |
+| Supported                                                       		  |
 | ----------------------------------------------------------------------- |
 | [Azure Kinect](https://azure.microsoft.com/en-gb/services/kinect-dk/)   |
 | [OptiTrack](https://optitrack.com/)                                     |
 
-# Setup and Building
+| Planned                                                                             							|
+| --------------------------------------------------------------------------------------------------------------|
+| [The Captury (planned for ~November 20)](https://thecaptury.com/)                                				|
+| [Perception Neuron 2 (planned for ~November 20)](https://neuronmocap.com/content/product/32-neuron-edition-v2) |
+| [XSens MVN Animate (planned for ~November 20)](https://www.xsens.com/products/mvn-animate)                    |
+
+# Installer (for users, not for developers)
+
+If you want to install the MotionHub, please download the latest release:
+[https://github.com/Mirevi/MotionHub/releases](https://github.com/Mirevi/MotionHub/releases)
+
+
+# Building from source (for developers, not for users)
 
 The [CMake](https://cmake.org/) system is used to generate project files and for downloading all required dependencies. Please use the `CMakeLists.txt` file for generating.
 
 - MMH is developed with Microsoft **Visual Studio 2017** and **2019**. *([CMake](https://cmake.org/) has only been tested with these IDE versions.)*
 
 1.  Download or clone MMH
-2.  Download Azure [Kinect Sensor](https://docs.microsoft.com/en-us/azure/kinect-dk/sensor-sdk-download) and [Body Tracking](https://docs.microsoft.com/en-us/azure/kinect-dk/body-sdk-download) SDK
-3.  In CMake, set source to the MMH path
-4.  Set binaries to (MMH path)/build
-5.  Click "configure" (click Yes, select your installed VS version and Finish). This will take a few minutes (and is expected to FAIL) so go on with 5 and 6.
+2.  Download and install Azure Kinect [Sensor](https://docs.microsoft.com/en-us/azure/kinect-dk/sensor-sdk-download) and [Body Tracking](https://docs.microsoft.com/en-us/azure/kinect-dk/body-sdk-download) SDK
+3.  In CMake, set source path to the MMH path
+4.  Set binaries path to (MMH path)/build
 
-6.  Download [Azure Kinect Sensor SDK](https://docs.microsoft.com/en-us/azure/kinect-dk/sensor-sdk-download)
-7.  Download [Azure Kinect Body Tracking SDK](https://docs.microsoft.com/en-us/azure/kinect-dk/body-sdk-download)
-8.  Install both and remember the install paths!
-9.  Meanwhile, the configuration process in CMake should have failed, because it couldn't find Azure Kinect dependencies.
+5.  Click "configure" (click Yes, select your installed VS version and Finish). This will take a few minutes (and might FAIL).
+6.  If CMake fails, because it couldn't find the Azure Kinect dependences (which you installed in step 2), paste the correct paths to K4A_ROOT (e.g. C:/Program Files/Azure Kinect SDK v1.4.0) and K4ABT_ROOT. Then again click "configure".
+7.  If the configuration was successful, click "generate"
 
-10.  In CMake, set the flags "advanced" and "grouped", you should see all dependencies listed, including K4A (Sensor SDK) and K4ABT (Body Tracking SDK)
-11. Under K4A set K4A_INCLUDE_DIR to the include folders path (something like this in your freshly installed directory: /Azure Kinect SDK v1.4.0/sdk/include)
-12. Repeat for K4A_LIBRARIES_DIR (/Azure Kinect SDK v1.4.0/sdk/windows-desktop/amd64/release/lib).
-13. Repeat both for K4ABT (/AzureKinectBodyTrackingSDKv1.0.1/sdk/include) and (/AzureKinectBodyTrackingSDKv1.0.1/sdk/windows-desktop/amd64/release/lib)
-14. Again, click "Configure" (This should be successful), then click "Generate".
-
-15. You can now click "Open Project" or open the Solution with VS (/MMH/build/MireviMotionHub.sln)
-16. In the VS Solution Explorer, right click on the project "MireviMotionHub"->"Set as StartUp Project" and "MireviMotionHub"->"build"
-17. After the code is compiled, you can push F5 (Local Windows Debugger) in VS or execute /MMH/build/bin/MireviMotionHub.exe to start the MotionHub
+8. You can now click "Open Project" or open the Solution with VS (/MMH/build/MireviMotionHub.sln)
+9. In the VS Solution Explorer, right click on the project "MireviMotionHub"->"Set as StartUp Project" and "MireviMotionHub"->"build"
+10. After the code is compiled, you can push F5 (Local Windows Debugger) in VS or execute /MMH/build/bin/MireviMotionHub.exe to start the MotionHub
 
 Please Note that we use Qt Framework for the UI. To build the project you need the [Qt Visual Studio Tools](https://marketplace.visualstudio.com/items?itemName=TheQtCompany.QtVisualStudioTools-19123) and for editing Qt `.ui` files you need [Qt Designer](https://www.qt.io/download).
 
@@ -85,6 +87,27 @@ We recognized an Error, when using a N version of Windows, in which the .exe wou
 - [OSC Pack](http://www.rossbencina.com/code/oscpack)
 - [TinyXML](http://www.grinninglizard.com/tinyxml/)
 
+# Game engine plug-in
+
+Currently, we are supporting [Unity](https://unity.com/) with a plugIn, which you can integrate in your project. It receives the tracking data and animates a character.
+You can download the project [here](https://github.com/Mirevi/MotionHub-Unity-Plugin).
+
+
 # License
 
-Pending
+[License](https://github.com/Mirevi/MotionHub/blob/master/LICENSE.txt)
+
+
+# Referencing MotionHub
+When using MotionHub please reference:
+
+```
+@inproceedings{MotionHub:2020,
+author = {Ladwig, Philipp and Evers, Kester and Jansen, Eric J. and Fischer, Ben and Nowottnik, David and Geiger, Christian},
+title = {MotionHub: Middleware for Unification of Multiple Body Tracking Systems},
+year = {2020},
+publisher = {ACM},
+url = {https://doi.org/10.1145/3401956.3404185},
+booktitle = {Proceedings of the 7th International Conference on Movement and Computing},
+}
+```

@@ -4,11 +4,13 @@
 
 
 // default constructor
-MainWindow::MainWindow(TrackerManager* trackerManager, ConfigManager* configManager, QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
+MainWindow::MainWindow(TrackerManager* trackerManager, ConfigManager* configManager, QWidget* parent)
+ : QMainWindow(parent), ui(new Ui::MainWindow)
 {
 
 	// setup base class
 	ui->setupUi(this);
+
 
 	m_oglRenderer = new GlWidget(trackerManager);
 	m_oglRenderer->setObjectName(QStringLiteral("render_ogl"));
@@ -21,10 +23,23 @@ MainWindow::MainWindow(TrackerManager* trackerManager, ConfigManager* configMana
 	m_refTrackerManager = trackerManager;
 	m_configManager = configManager;
 
+	m_timelineLableState = percentage;
+
+
 	// disable qt vector warning in console
 	qRegisterMetaType<QVector<int>>();
 	// disable highlighting of cells when hovering over them
 	ui->tableWidget_inspector->setStyleSheet("::item:hover {background-color:rgba(0,0,0,0)}\n");
+	ui->tableWidget_inspector->setRowCount(14);
+	ui->tableWidget_inspector->setColumnCount(2);
+	for(int i = 0; i < 2; i++)
+	{
+		for(int j = 0; j < 14; j++)
+		{
+			ui->tableWidget_inspector->setItem(j, i, new QTableWidgetItem());
+		}
+	}
+
 
 }
 
@@ -47,7 +62,7 @@ void MainWindow::update()
 	updateInspector();
 
 }
-  
+
 #pragma region
 
 void MainWindow::updateHirachy()
@@ -58,7 +73,8 @@ void MainWindow::updateHirachy()
 	m_hirachyItemPool.clear();
 
 	std::vector<Tracker*> trackerPoolTempCopy = m_refTrackerManager->getPoolTracker();
-	 
+
+
 	// loop throgh all tracker
 	for (auto itTrackerPool = trackerPoolTempCopy.begin(); itTrackerPool != trackerPoolTempCopy.end(); itTrackerPool++)
 	{
@@ -83,16 +99,17 @@ void MainWindow::updateHirachy()
 
 			//get the skeletons id and assign it to the display text
 			std::string skeletonName = "skeleton_" + std::to_string(itSkeletonPool->first);
+
 			m_hirachyItemPool.rbegin()->second.back()->setText(0, QString::fromStdString(skeletonName));
 
 			//add child item to top level item
 			m_hirachyItemPool.rbegin()->first->addChild(m_hirachyItemPool.rbegin()->second.back());
 
 		}
-		
+
 		//add top level item to hirachy
 		ui->treeWidget_hirachy->addTopLevelItem(m_hirachyItemPool.rbegin()->first);
-		
+
 
 		//expand all items in hirachy
 		m_hirachyItemPool.rbegin()->first->setExpanded(true);
@@ -128,7 +145,7 @@ void MainWindow::updateInspector()
 	//check if tracker is tracking and set checkbox in inspector
 	if (trackerProperties->isTracking)
 	{
-		
+
 		ui->tableWidget_inspector->item(2, 1)->setCheckState(Qt::Checked);
 
 	}
@@ -158,6 +175,7 @@ void MainWindow::updateInspector()
 
 	//refresh the inspector to show new content
 	ui->tableWidget_inspector->update();
+
 
 }
 
@@ -229,12 +247,12 @@ void MainWindow::drawInspector()
 	if (trackerProperties->isEnabled)
 	{
 		ui->tableWidget_inspector->item(3, 1)->setCheckState(Qt::Checked);
-	}		
+	}
 	else
 	{
 		ui->tableWidget_inspector->item(3, 1)->setCheckState(Qt::Unchecked);
 	}
-	
+
 	//add skeleon count row to inspector
 	addRowToInspector("countDetectedSkeleton", std::to_string(trackerProperties->countDetectedSkeleton));
 	ui->tableWidget_inspector->item(4, 0)->setFlags(Qt::NoItemFlags);
@@ -248,7 +266,7 @@ void MainWindow::drawInspector()
 	m_inputFieldPool.insert({ "posX", new QLineEdit(toQString(trackerProperties->positionOffset.x()), this) });
 	m_inputFieldPool.at("posX")->setValidator(new QDoubleValidator(-1000.0f, 1000.0f, 4, this));
 	//connect its textEdited() signal with the correct slot
-	connect(m_inputFieldPool.at("posX"), SIGNAL(textEdited(const QString &)), this, SLOT(slotInspectorInputPosX(QString)));
+	connect(m_inputFieldPool.at("posX"), SIGNAL(textEdited(const QString&)), this, SLOT(slotInspectorInputPosX(QString)));
 	//add new row to the table widget
 	addRowToInspector("position offset x", "");
 	//add QLineEdit object to cell
@@ -257,13 +275,13 @@ void MainWindow::drawInspector()
 	//repeat for y and z
 	m_inputFieldPool.insert({ "posY", new QLineEdit(toQString(trackerProperties->positionOffset.y()), this) });
 	m_inputFieldPool.at("posY")->setValidator(new QDoubleValidator(-1000.0f, 1000.0f, 4, this));
-	connect(m_inputFieldPool.at("posY"), SIGNAL(textEdited(const QString &)), this, SLOT(slotInspectorInputPosY(QString)));
+	connect(m_inputFieldPool.at("posY"), SIGNAL(textEdited(const QString&)), this, SLOT(slotInspectorInputPosY(QString)));
 	addRowToInspector("position offset y", "");
 	ui->tableWidget_inspector->setCellWidget(6, 1, m_inputFieldPool.at("posY"));
 
 	m_inputFieldPool.insert({ "posZ", new QLineEdit(toQString(trackerProperties->positionOffset.z()), this) });
 	m_inputFieldPool.at("posZ")->setValidator(new QDoubleValidator(-1000.0f, 1000.0f, 4, this));
-	connect(m_inputFieldPool.at("posZ"), SIGNAL(textEdited(const QString &)), this, SLOT(slotInspectorInputPosZ(QString)));
+	connect(m_inputFieldPool.at("posZ"), SIGNAL(textEdited(const QString&)), this, SLOT(slotInspectorInputPosZ(QString)));
 	addRowToInspector("position offset z", "");
 	ui->tableWidget_inspector->setCellWidget(7, 1, m_inputFieldPool.at("posZ"));
 
@@ -271,19 +289,19 @@ void MainWindow::drawInspector()
 	//repeat for rotation
 	m_inputFieldPool.insert({ "rotX", new QLineEdit(toQString(trackerProperties->rotationOffset.x()), this) });
 	m_inputFieldPool.at("rotX")->setValidator(new QDoubleValidator(-1000.0f, 1000.0f, 4, this));
-	connect(m_inputFieldPool.at("rotX"), SIGNAL(textEdited(const QString &)), this, SLOT(slotInspectorInputRotX(QString)));
+	connect(m_inputFieldPool.at("rotX"), SIGNAL(textEdited(const QString&)), this, SLOT(slotInspectorInputRotX(QString)));
 	addRowToInspector("rotation offset x", "");
 	ui->tableWidget_inspector->setCellWidget(8, 1, m_inputFieldPool.at("rotX"));
 
 	m_inputFieldPool.insert({ "rotY", new QLineEdit(toQString(trackerProperties->rotationOffset.y()), this) });
 	m_inputFieldPool.at("rotY")->setValidator(new QDoubleValidator(-1000.0f, 1000.0f, 4, this));
-	connect(m_inputFieldPool.at("rotY"), SIGNAL(textEdited(const QString &)), this, SLOT(slotInspectorInputRotY(QString)));
+	connect(m_inputFieldPool.at("rotY"), SIGNAL(textEdited(const QString&)), this, SLOT(slotInspectorInputRotY(QString)));
 	addRowToInspector("rotation offset y", "");
 	ui->tableWidget_inspector->setCellWidget(9, 1, m_inputFieldPool.at("rotY"));
 
 	m_inputFieldPool.insert({ "rotZ", new QLineEdit(toQString(trackerProperties->rotationOffset.z()), this) });
 	m_inputFieldPool.at("rotZ")->setValidator(new QDoubleValidator(-1000.0f, 1000.0f, 4, this));
-	connect(m_inputFieldPool.at("rotZ"), SIGNAL(textEdited(const QString &)), this, SLOT(slotInspectorInputRotZ(QString)));
+	connect(m_inputFieldPool.at("rotZ"), SIGNAL(textEdited(const QString&)), this, SLOT(slotInspectorInputRotZ(QString)));
 	addRowToInspector("rotation offset z", "");
 	ui->tableWidget_inspector->setCellWidget(10, 1, m_inputFieldPool.at("rotZ"));
 
@@ -291,21 +309,39 @@ void MainWindow::drawInspector()
 	//repeat for scale
 	m_inputFieldPool.insert({ "scaleX", new QLineEdit(toQString(trackerProperties->scaleOffset.x()), this) });
 	m_inputFieldPool.at("scaleX")->setValidator(new QDoubleValidator(-1000.0f, 1000.0f, 4, this));
-	connect(m_inputFieldPool.at("scaleX"), SIGNAL(textEdited(const QString &)), this, SLOT(slotInspectorInputScaleX(QString)));
+	connect(m_inputFieldPool.at("scaleX"), SIGNAL(textEdited(const QString&)), this, SLOT(slotInspectorInputScaleX(QString)));
 	addRowToInspector("scale offset x", "");
 	ui->tableWidget_inspector->setCellWidget(11, 1, m_inputFieldPool.at("scaleX"));
 
 	m_inputFieldPool.insert({ "scaleY", new QLineEdit(toQString(trackerProperties->scaleOffset.y()), this) });
 	m_inputFieldPool.at("scaleY")->setValidator(new QDoubleValidator(-1000.0f, 1000.0f, 4, this));
-	connect(m_inputFieldPool.at("scaleY"), SIGNAL(textEdited(const QString &)), this, SLOT(slotInspectorInputScaleY(QString)));
+	connect(m_inputFieldPool.at("scaleY"), SIGNAL(textEdited(const QString&)), this, SLOT(slotInspectorInputScaleY(QString)));
 	addRowToInspector("scale offset y", "");
 	ui->tableWidget_inspector->setCellWidget(12, 1, m_inputFieldPool.at("scaleY"));
 
 	m_inputFieldPool.insert({ "scaleZ", new QLineEdit(toQString(trackerProperties->scaleOffset.z()), this) });
 	m_inputFieldPool.at("scaleZ")->setValidator(new QDoubleValidator(-1000.0f, 1000.0f, 4, this));
-	connect(m_inputFieldPool.at("scaleZ"), SIGNAL(textEdited(const QString &)), this, SLOT(slotInspectorInputScaleZ(QString)));
+	connect(m_inputFieldPool.at("scaleZ"), SIGNAL(textEdited(const QString&)), this, SLOT(slotInspectorInputScaleZ(QString)));
 	addRowToInspector("scale offset z", "");
 	ui->tableWidget_inspector->setCellWidget(13, 1, m_inputFieldPool.at("scaleZ"));
+
+
+
+	//Add reset button
+	QPushButton* resetPushButton = new QPushButton("Reset Offsets");
+	//connect button wit reset slot
+	connect(resetPushButton, SIGNAL(pressed()), this, SLOT(slotResetTrackerOffset()));
+	addRowToInspector("Default", "");
+	ui->tableWidget_inspector->setCellWidget(14, 1, resetPushButton);
+
+	//Add reset button
+	QPushButton* modPushButton = new QPushButton("Modify Tracker");
+	//connect button wit reset slot
+	connect(modPushButton, SIGNAL(pressed()), this, SLOT(slotModifyTrackerRotations()));
+	addRowToInspector("Rotations", "");
+	ui->tableWidget_inspector->setCellWidget(15, 1, modPushButton);
+
+
 
 
 	//disable item selection on all table cells
@@ -387,12 +423,15 @@ void MainWindow::slotToggleTracking()
 	{
 
 		m_refTrackerManager->startTracker(); // start tracking if false
+		//m_timelineActive = true;
+
 
 	}
 	else
 	{
 
 		m_refTrackerManager->stopTracker(); // stop tracking if true
+		//m_timelineActive = false;
 
 	}
 
@@ -475,7 +514,7 @@ void MainWindow::slotRemoveTracker()
 // SLOT: get selected tracker index from tracker list
 void MainWindow::slotTrackerSelectionChanged()
 {
-	 
+
 	int previousSelectedTrackerInList = m_selectedTrackerInList;
 
 	QList<QTreeWidgetItem*> selectedList = ui->treeWidget_tracker->selectedItems();
@@ -511,7 +550,7 @@ void MainWindow::slotTrackerSelectionChanged()
 	//else // if other tracker than before was selected - draw the ui with new content
 	//{
 
-		drawInspector();
+	drawInspector();
 
 	//}
 
@@ -524,45 +563,45 @@ void MainWindow::slotInspectorItemChanged(QTableWidgetItem* item)
 
 		switch (item->row())
 		{
-			case 3:
+		case 3:
+		{
+
+			// set the curser to wait circle
+			QApplication::setOverrideCursor(Qt::WaitCursor);
+			//QApplication::processEvents();
+
+			// enabled or disable tracker based on check state
+			if (item->checkState() == Qt::Checked)
 			{
 
-				// set the curser to wait circle
-				QApplication::setOverrideCursor(Qt::WaitCursor);
-				//QApplication::processEvents();
+				m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->enable();
 
-				// enabled or disable tracker based on check state
-				if (item->checkState() == Qt::Checked)
-				{
-
-					m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->enable();
-
-				}
-				else if (item->checkState() == Qt::Unchecked)
-				{
-
-					m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->disable();
-
-				}
-				// update ui
-				update();
-
-				// reset cursor to default arrow
-				QApplication::restoreOverrideCursor();
-				//QApplication::processEvents();
-
-				break;
 			}
-
-			case 5:
+			else if (item->checkState() == Qt::Unchecked)
 			{
 
+				m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->disable();
 
-				break;
 			}
+			// update ui
+			update();
 
-			default:
-				break;
+			// reset cursor to default arrow
+			QApplication::restoreOverrideCursor();
+			//QApplication::processEvents();
+
+			break;
+		}
+
+		case 5:
+		{
+
+
+			break;
+		}
+
+		default:
+			break;
 
 		}
 	}
@@ -586,6 +625,69 @@ void MainWindow::slotNetworkSettings()
 
 }
 
+void MainWindow::slotTimelinePressed()
+{
+
+	m_refTrackerManager->controlTimeline(true);
+	m_timelineActive = false;
+
+
+}
+
+void MainWindow::slotTimelineReleased()
+{
+
+	m_refTrackerManager->controlTimeline(false);
+	m_timelineActive = true;
+
+
+}
+
+void MainWindow::slotTimelineValueChanged(int newValue)
+{
+
+	m_refTrackerManager->timelineValueChange(ui->slider_timeline->value());
+
+	
+}
+
+void MainWindow::slotRecord()
+{
+	if (m_refTrackerManager->isTracking())
+	{		
+		Recorder::instance().toggleRecording();
+
+		m_isRecording = !m_isRecording;
+		toggleRecButtons();
+	}
+
+}
+
+void MainWindow::slotTimelineLableModeChanged(int idx)
+{
+
+
+	switch (idx)
+	{
+	case 0:
+		m_timelineLableState = percentage;
+		break;
+
+
+	case 1:
+		m_timelineLableState = elTime;
+		break;
+
+	case 2:
+		m_timelineLableState = frame;
+		break;
+
+
+	default:
+		break;
+	}
+}
+
 
 #pragma endregion Slots
 
@@ -593,6 +695,7 @@ void MainWindow::slotNetworkSettings()
 
 void MainWindow::slotInspectorInputPosX(QString text)
 {
+	m_inputFieldPool.at("posX")->setText(text);
 
 	std::string txt = text.toLocal8Bit().constData();
 
@@ -625,6 +728,8 @@ void MainWindow::slotInspectorInputPosX(QString text)
 
 void MainWindow::slotInspectorInputPosY(QString text)
 {
+	m_inputFieldPool.at("posY")->setText(text);
+
 
 	std::string txt = text.toLocal8Bit().constData();
 
@@ -658,6 +763,8 @@ void MainWindow::slotInspectorInputPosY(QString text)
 void MainWindow::slotInspectorInputPosZ(QString text)
 {
 
+	m_inputFieldPool.at("posZ")->setText(text);
+
 	std::string txt = text.toLocal8Bit().constData();
 
 	float posZ;
@@ -689,6 +796,8 @@ void MainWindow::slotInspectorInputPosZ(QString text)
 void MainWindow::slotInspectorInputRotX(QString text)
 {
 
+	m_inputFieldPool.at("rotX")->setText(text);
+
 	std::string txt = text.toLocal8Bit().constData();
 
 	float rotX;
@@ -717,6 +826,9 @@ void MainWindow::slotInspectorInputRotX(QString text)
 
 void MainWindow::slotInspectorInputRotY(QString text)
 {
+
+	m_inputFieldPool.at("rotY")->setText(text);
+
 
 	std::string txt = text.toLocal8Bit().constData();
 
@@ -748,6 +860,9 @@ void MainWindow::slotInspectorInputRotY(QString text)
 
 void MainWindow::slotInspectorInputRotZ(QString text)
 {
+
+	m_inputFieldPool.at("rotZ")->setText(text);
+
 
 	std::string txt = text.toLocal8Bit().constData();
 
@@ -781,6 +896,9 @@ void MainWindow::slotInspectorInputRotZ(QString text)
 void MainWindow::slotInspectorInputScaleX(QString text)
 {
 
+	m_inputFieldPool.at("scaleX")->setText(text);
+
+
 	std::string txt = text.toLocal8Bit().constData();
 
 	float scaleX;
@@ -811,6 +929,8 @@ void MainWindow::slotInspectorInputScaleX(QString text)
 
 void MainWindow::slotInspectorInputScaleY(QString text)
 {
+
+	m_inputFieldPool.at("scaleY")->setText(text);
 
 	std::string txt = text.toLocal8Bit().constData();
 
@@ -843,6 +963,8 @@ void MainWindow::slotInspectorInputScaleY(QString text)
 void MainWindow::slotInspectorInputScaleZ(QString text)
 {
 
+	m_inputFieldPool.at("scaleZ")->setText(text);
+
 	std::string txt = text.toLocal8Bit().constData();
 
 	float scaleZ;
@@ -867,6 +989,38 @@ void MainWindow::slotInspectorInputScaleZ(QString text)
 	m_configManager->writeToConfig("zScl", toString(scaleZ), m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->getTrackerType());
 
 }
+
+
+void MainWindow::slotResetTrackerOffset()
+{
+
+	
+	std::vector<Vector3f> currOffsets = m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->resetOffsets();
+
+	slotInspectorInputPosX(toQString(currOffsets[0].x()));
+	slotInspectorInputPosY(toQString(currOffsets[0].y()));
+	slotInspectorInputPosZ(toQString(currOffsets[0].z()));
+	slotInspectorInputRotX(toQString(currOffsets[1].x()));
+	slotInspectorInputRotY(toQString(currOffsets[1].y()));
+	slotInspectorInputRotZ(toQString(currOffsets[1].z()));
+	slotInspectorInputScaleX(toQString(currOffsets[2].x()));
+	slotInspectorInputScaleY(toQString(currOffsets[2].y()));
+	slotInspectorInputScaleZ(toQString(currOffsets[2].z()));
+
+
+}
+
+void MainWindow::slotModifyTrackerRotations()
+{
+
+	m_trackerModWindow = new TrackerModWindow();
+
+	m_trackerModWindow->setModal(true);
+	m_trackerModWindow->exec();
+
+
+}
+
 
 #pragma endregion InspectorInputSlots
 
@@ -908,6 +1062,43 @@ void MainWindow::toggleTrackingButtons()
 
 }
 
+// toogle icon of start / stop tracking button
+void MainWindow::toggleRecButtons()
+{
+
+	QIcon icon;
+
+	// if tracking is false set icon to start arrow and enbable add / remove tracker buttons
+	if (m_isRecording)
+	{
+		//load stop button
+		icon.addFile(QStringLiteral(":/ressources/icons/circle-xxl.png"), QSize(), QIcon::Normal, QIcon::Off);
+
+		////disable add/remove buttons
+		//ui->btn_addTracker->setDisabled(true);
+		//ui->btn_removeTracker->setDisabled(true);
+		//ui->btn_addGroup->setDisabled(true);
+
+
+	}
+	else
+	{
+		//load start button
+		icon.addFile(QStringLiteral(":/ressources/icons/64px-Location_dot_red.svg.png"), QSize(), QIcon::Normal, QIcon::Off);
+
+		////enable add/remove buttons
+		//ui->btn_addTracker->setDisabled(false);
+		//ui->btn_removeTracker->setDisabled(false);
+		//ui->btn_addGroup->setDisabled(false);
+
+	}
+
+	// set icon
+	//ui->btn_Record->setIcon(icon);
+	ui->btn_Record->setIcon(icon);
+
+}
+
 #pragma endregion Utils
 
 QString MainWindow::toQString(float value)
@@ -944,7 +1135,7 @@ void MainWindow::addTrackerToList(int id)
 
 
 			//m_refTreeWidgetTracker->addItem((*itTracker)->getProperties()->name.c_str());
-			QTreeWidgetItem *topLevelItem = new QTreeWidgetItem(ui->treeWidget_tracker);
+			QTreeWidgetItem* topLevelItem = new QTreeWidgetItem(ui->treeWidget_tracker);
 
 			// Set text for item
 			topLevelItem->setText(0, (*itTracker)->getProperties()->name.c_str());
@@ -955,5 +1146,48 @@ void MainWindow::addTrackerToList(int id)
 		}
 
 	}
+
+}
+
+void MainWindow::setTimelineValue(float totalTime, int frameIdx, int numFrames)
+{
+
+	int percent = (int)round((frameIdx * 100) / numFrames);
+
+	if (m_timelineActive)
+	{
+		ui->slider_timeline->setValue(percent);
+	}
+
+	//also set lable
+
+	std::string currStr;
+
+	//Console::log("MainWindow::setTimelineValue(): totalTime = " + toString(totalTime));
+
+
+	switch (m_timelineLableState)
+	{
+	case percentage:
+		currStr = toString(percent) + "%";
+		break;
+
+	case elTime:
+		//currStr = toString((roundf(totalTime * (float)percent) / 100));
+		char chr[10];
+		sprintf(chr, "%.2f", totalTime * (float)percent / 100);
+		currStr = chr;
+		currStr += "s";
+		break;
+
+	case frame:
+		currStr = toString(frameIdx) + "/" + toString(numFrames);
+		break;
+
+	default:
+		break;
+	}
+
+	ui->label_timeline->setText(QString(currStr.c_str()));
 
 }

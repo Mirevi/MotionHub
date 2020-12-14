@@ -7,7 +7,7 @@
 #include "ConfigDllExportRenderManagement.h"
 
 #include "MainWindow.h"
-#include "CreateTrackerWindow.h"
+//#include "CreateTrackerWindow.h"
 
 #include <thread>
 

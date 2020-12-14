@@ -7,12 +7,10 @@
 #include <fstream>
 
 #include <thread>
-#include <string>
 #include <list>
 
-#include <ctime>
-#include <chrono>
 
+#include "Timer.h"
 #include "defines.h"
 
 #include <atomic>

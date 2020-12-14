@@ -9,6 +9,7 @@ OSCSender::OSCSender()
 	// create new osc outbound packet stream
 	m_packetStream = new osc::OutboundPacketStream(buffer, OUTPUT_BUFFER_SIZE);
 
+
 }
 
 OSCSender::OSCSender(std::string address, int port) : NetworkSender(address, port)
@@ -18,6 +19,8 @@ OSCSender::OSCSender(std::string address, int port) : NetworkSender(address, por
 	m_transmitSocket = new UdpTransmitSocket(IpEndpointName(m_address.c_str(), m_port));
 	// create new osc outbound packet stream
 	m_packetStream = new osc::OutboundPacketStream(buffer, OUTPUT_BUFFER_SIZE);
+
+
 
 }
 
@@ -29,8 +32,12 @@ void OSCSender::sendSkeleton(Skeleton* skeleton, const char* uri, int trackerID)
 	if (skeleton != nullptr)
 	{
 
+		int ID = (trackerID * 1000 + skeleton->getSid());
+
+
+
 		//first value in stream is user ID
-		*m_packetStream << osc::BeginBundleImmediate << osc::BeginMessage(uri) << (trackerID * 1000 + skeleton->getSid());
+		*m_packetStream << osc::BeginBundleImmediate << osc::BeginMessage(uri) << ID;
 
 		// create new var's for joint position, rotation and confidence
 		Vector4f currJointPosition;
@@ -41,11 +48,15 @@ void OSCSender::sendSkeleton(Skeleton* skeleton, const char* uri, int trackerID)
 		for (int jointsIndex = 0; jointsIndex < skeleton->m_joints.size(); jointsIndex++)
 		{
 
-			// get and assign joint position, rotation and confidence
-			currJointPosition	= skeleton->m_joints[(Joint::JointNames)jointsIndex].getJointPosition();
-			currJointRotation	= skeleton->m_joints[(Joint::JointNames)jointsIndex].getJointRotation();
-			currJointConfidence	= skeleton->m_joints[(Joint::JointNames)jointsIndex].getJointConfidence();
+			Joint::JointNames currType = (Joint::JointNames)jointsIndex;
 
+
+			// get and assign joint position, rotation and confidence
+			currJointPosition	= skeleton->m_joints[currType].getJointPosition();
+			currJointRotation	= skeleton->m_joints[currType].getJointRotation();
+			currJointConfidence	= skeleton->m_joints[currType].getJointConfidence();
+
+			//Console::log("OSCSender::sendSkeleton(): type = " + Joint::toString(currType) + ", rotation = " + toString(currJointRotation));
 
 			// ADD DATA TO OSC PACKET STREAM:
 			*m_packetStream			 

@@ -581,12 +581,22 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
         </item>
         <item>
          <property name="text">
-          <string>Xsens</string>
+          <string>.bvh-Player</string>
          </property>
         </item>
         <item>
          <property name="text">
           <string>PerceptionNeuron</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>.mmh-file Player</string>
+         </property>
+        </item>
+		<item>
+         <property name="text">
+          <string>Xsens</string>
          </property>
         </item>
        </widget>
@@ -709,3 +719,4 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
   <slot>slotCreateTracker()</slot>
  </slots>
 </ui>
+

@@ -26,7 +26,7 @@ static Matrix3f eulerToMatrix(Vector3f euler);
  * \param euler input euler angles as Vector
  * \return rotation matrix
  */
-static Quaternionf eulerToQuaternion(Vector3f euler);
+static Quaternionf eulerToQuaternion(Vector3f euler, bool radiants);
 
 /*!
  * converts transform vectors into transform matrix
@@ -109,14 +109,25 @@ static Matrix3f eulerToMatrix(Vector3f euler)
  * \param euler input euler angles as Vector
  * \return output quaternion
  */
-static Quaternionf eulerToQuaternion(Vector3f euler)
+static Quaternionf eulerToQuaternion(Vector3f euler, bool radiants = true)
 {
 
 	Quaternionf qRotation;
 
-	qRotation = AngleAxisf(euler.x() * M_PI / 180, Vector3f::UnitX())
-			  * AngleAxisf(euler.y() * M_PI / 180, Vector3f::UnitY())
-			  * AngleAxisf(euler.z() * M_PI / 180, Vector3f::UnitZ());
+	if (radiants)
+	{
+		qRotation = AngleAxisf(euler.x() * M_PI / 180, Vector3f::UnitX())
+				  * AngleAxisf(euler.y() * M_PI / 180, Vector3f::UnitY())
+				  * AngleAxisf(euler.z() * M_PI / 180, Vector3f::UnitZ());
+	}
+	else
+	{
+		qRotation = AngleAxisf(euler.x(), Vector3f::UnitX())
+				  * AngleAxisf(euler.y(), Vector3f::UnitY())
+				  * AngleAxisf(euler.z(), Vector3f::UnitZ());
+	}
+
+
 	
 	qRotation = Quaternionf(qRotation.w(), qRotation.x(), qRotation.y(), qRotation.z());
 

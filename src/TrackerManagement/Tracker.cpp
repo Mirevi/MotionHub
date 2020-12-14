@@ -17,7 +17,6 @@ void Tracker::start()
 
 	//isTracking is true, so update loop will continue tracking
 	m_properties->isTracking = true;
-
 	//start new thread for update loop
 	m_trackingThread = new std::thread(&Tracker::update, this);
 	m_trackingThread->detach();
@@ -70,8 +69,11 @@ void Tracker::clean()
 	//reset number of skeletons
 	m_properties->countDetectedSkeleton = 0;
 
+	m_skeletonPoolLock.lock();
 	//clear skeleton pool
 	m_skeletonPool.clear();
+
+	m_skeletonPoolLock.unlock();
 
 }
 
@@ -93,6 +95,8 @@ std::string Tracker::getTrackerType()
 	return "";
 
 }
+
+
 
 #pragma endregion
 
@@ -154,8 +158,29 @@ std::map<int, Skeleton> Tracker::getSkeletonPoolCache()
 	//copy cache to local copy, so we can unlock the skeleton pool befor return
 	std::map<int, Skeleton> skeletonPoolCacheCopy = m_skeletonPoolCache;
 
+
 	m_skeletonPoolLock.unlock();
 
+	//Console::log("Tracker::getSkeletonPoolCache(): pool size= " + toString(skeletonPoolCacheCopy.size()));
+
+
+	return skeletonPoolCacheCopy;
+
+}
+
+std::map<int, Skeleton> Tracker::getSkeletonPool()
+{
+
+	//lock skeleton pool for the case, that cacheSkeletonData() is called while this method reads from the cache
+	m_skeletonPoolLock.lock();
+
+	//copy cache to local copy, so we can unlock the skeleton pool befor return
+	std::map<int, Skeleton> skeletonPoolCacheCopy = m_skeletonPool;
+
+
+	m_skeletonPoolLock.unlock();
+
+	//Console::log("Tracker::getSkeletonPoolCache(): pool size= " + toString(skeletonPoolCacheCopy.size()));
 
 
 	return skeletonPoolCacheCopy;
@@ -168,7 +193,23 @@ int Tracker::getCamID()
 	return m_idCam;
 
 }
+
+float Tracker::getTotalTime()
+{
+	return -1.0;
+}
  
+int Tracker::getCurrFrameIdx()
+{
+	return -1;
+}
+
+int Tracker::getFrameCount()
+{
+	return -1;
+}
+
+
 //void Tracker::setSendSkeletonDelegate(void (*sendSkeletonDelegate)(std::map<int, Skeleton>* skeletonPool, int trackerID))
 //{
 //
@@ -218,6 +259,13 @@ void Tracker::setScaleOffset(Vector3f scale)
 
 }
 
+std::vector<Vector3f> Tracker::resetOffsets()
+{
+
+	return {};
+
+}
+
 
 #pragma endregion
 
@@ -234,18 +282,27 @@ void Tracker::init()
 void Tracker::update()
 {
 
-	Console::log("Tracker::update()");
 
-
+	// track while tracking is true
 	while (m_properties->isTracking)
 	{
 
-		Console::log("Tracker::update()");
 
-		if (!m_isDataAvailable)
-			track();
+		// get new data
+		track();
+
+
+		//send Skeleton Pool to NetworkManager
+		m_networkManager->sendSkeletonPool(&getSkeletonPoolCache(), m_properties->id);
+		//Recorder::instance().addSkeletonsToFrame(&m_skeletonPool);
+
 
 	}
+
+	//clean skeleton pool after tracking
+	clean();
+
+
 }
 
 void Tracker::track()

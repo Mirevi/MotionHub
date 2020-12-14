@@ -22,6 +22,7 @@ OTTracker::OTTracker(int id, NetworkManager* networkManager, ConfigManager* conf
 
 	m_networkManager = networkManager;
 
+
 	//default is enabled
 	m_properties->isEnabled = true;
 
@@ -195,8 +196,7 @@ void OTTracker::update()
 			// get new data
 			track();
 
-			m_networkManager->sendSkeletonPool(&m_skeletonPool, m_properties->id);
-
+			m_networkManager->sendSkeletonPool(&getSkeletonPoolCache(), m_properties->id);
 
 		}
 
@@ -531,5 +531,23 @@ std::string OTTracker::getTrackerType()
 {
 
 	return "OptiTrack";
+
+}
+
+std::vector<Vector3f> OTTracker::resetOffsets()
+{
+
+	Vector3f pos = Vector3f(0, 0.1, 0);
+	Vector3f rot = Vector3f(0, 0, 0);
+	Vector3f scl = Vector3f(1, 1, 1);
+
+	setPositionOffset(pos);
+	setRotationOffset(rot);
+	setScaleOffset(scl);
+
+	std::vector<Vector3f> offsets = { pos, rot, scl };
+
+	return offsets;
+
 
 }

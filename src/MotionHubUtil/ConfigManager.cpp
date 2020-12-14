@@ -202,6 +202,7 @@ void ConfigManager::writeToConfig(std::string mapKeyIn, std::string value, std::
 	currElem->SetText(value.c_str());
 	m_xmlFile.SaveFile(CONFIG_PATH);
 
+
 }
 
 void ConfigManager::createNewConfigFile()

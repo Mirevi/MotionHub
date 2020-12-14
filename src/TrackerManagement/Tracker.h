@@ -3,6 +3,7 @@
 #include <iostream>
 #include <thread>
 #include <mutex>
+#include <vector>
 
 #include "MotionHubUtil/Skeleton.h"
 #include "MotionHubUtil/Console.h"
@@ -134,10 +135,12 @@ public:
 	 */
 
 	/*!
-	 * getter for the trackers skeleton pool
-	 * \return the trackers skeleton pool
+	 * getter for the trackers skeleton pool cache
+	 * \return the trackers skeleton pool cache by value
 	 */
 	virtual std::map<int, Skeleton> getSkeletonPoolCache();
+
+	virtual std::map<int, Skeleton> getSkeletonPool();
 
 	/*!
 	 * recalculates the update matrix
@@ -188,6 +191,13 @@ public:
 
 	virtual std::string getTrackerType();
 
+	virtual std::vector<Vector3f> resetOffsets();
+
+	virtual float getTotalTime();
+
+	virtual int getCurrFrameIdx();
+
+	virtual int getFrameCount();
 
 
 protected:
@@ -231,7 +241,7 @@ protected:
 	/*!
 	 * updade method used for tracker thread 
 	 */
-	virtual void update() = 0;
+	virtual void update();
 
 	/*!
 	 * main tracking method

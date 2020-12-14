@@ -10,8 +10,25 @@
 #include "Tracker.h"
 #include "AKTracker.h"
 #include "OTTracker.h"
-#include "XSTracker.h"
+#include "XSTracker.h"#include "BVHPlayer.h"
+#include "mmhPlayer.h"
 #include "TrackerGroup.h"
+#include "Recorder.h"
+
+
+
+/*!
+*a container struct for frame meta data
+*/
+struct __declspec(dllexport) FrameData
+{
+public:
+	int currFrameIdx = 0;
+	float totalTime = 0.0;
+	int frameCount = 0;
+};
+
+
 
 /*!
  * \class TrackerManager
@@ -40,17 +57,21 @@ public:
 
 		azureKinect,	// Azure Kinect Tracker
 		optiTrack,		// OptiTrack	Tracker
+		bvh,			//BVH-Player
+		mmh,
 		xsens,			// Xsens		Tracker
 		group
 
 	};
+
+
 
 	/*!
 	 * creates a new tracker and adds it to the pool
 	 * 
 	 * \param type type of the tracker (Azure Kinect, XSense, ...)
 	 */
-	int createTracker(TrackerType type);
+	int createTracker(TrackerType type, std::string filePath = "");
 	/*!
 	 * removes a tracker from the pool
 	 * 
@@ -108,6 +129,14 @@ public:
 	 */
 	std::mutex* getTrackerPoolLock();
 
+	void controlTimeline(bool stop);
+
+	void timelineValueChange(int newValue);
+
+	FrameData getRecCurrFrameData();
+
+	void writeSkeletonsToRecorder();
+
 	/*!
 	 * sets the pointer to sendSkeletonDelegate() in main.cpp
 	 *
@@ -157,6 +186,8 @@ private:
 	std::mutex m_trackerPoolLock;
 
 	ConfigManager* m_configManager;
+
+
 
 
 
