@@ -26,6 +26,9 @@ void RecordingSession::addFrame(RecordingFrame frame, float duration)
 void RecordingSession::save(int* progression)
 {
 
+	Console::log("RecordingSession::save()");
+
+
 	tinyxml2::XMLDocument doc;
 	tinyxml2::XMLNode* pRoot = doc.NewElement("Frames");
 	
@@ -146,7 +149,7 @@ void RecordingSession::save(int* progression)
 	std::string filename = "MMH_" + Timer::getCurrTime() + ".mmh";
 	std::string pathStr = RECORD_PATH;
 
-	Console::log("RecordingSession::save(): " + RECORD_PATH);
+	//Console::log("RecordingSession::save(): " + RECORD_PATH);
 
 	filename = pathStr + filename;
 

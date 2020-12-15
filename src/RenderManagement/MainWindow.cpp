@@ -687,14 +687,19 @@ void MainWindow::slotRecord()
 			std::thread* saveThread = new std::thread(&MainWindow::saveRecord, this);
 			saveThread->detach();
 
-
+			//get frame count
 			int max = Recorder::instance().getFrameCount();
 
+			//Console::log("MainWindow::slotRecord(): start progress window");
+
+			//create progress bar
 			QProgressDialog progress("Saving Record...", "Abort", 0, max, this);
 			progress.setWindowModality(Qt::WindowModal);
 
+			//while still saving
 			while (m_recordSaveProgression < max)
 			{
+				//update progress bar
 				progress.setValue(m_recordSaveProgression);
 
 				if (progress.wasCanceled())
