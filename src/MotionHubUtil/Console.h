@@ -8,6 +8,7 @@
 
 #include <thread>
 #include <list>
+#include <vector>
 
 
 #include "Timer.h"
@@ -30,6 +31,15 @@ class MotionHubUtil_DLL_import_export Console
 {
 
 public:
+
+	struct Message
+	{
+		std::string time;
+		std::string type;
+		std::string message;
+	};
+
+
 
 	/*!
 	 * outputs info message to console
@@ -60,6 +70,10 @@ public:
 	 * temporary list of messages, which are pulled by the Console Widget in MainWindow
 	 * 
 	 */
-	static std::list<std::string> messagePool;
+	static std::vector<Message> m_messagePool;
+
+	static std::vector<Message> getMessages();
+
+
 	
 };

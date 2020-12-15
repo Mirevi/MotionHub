@@ -4,7 +4,7 @@
 #pragma warning(disable : 4996)
 
 //redeclaration
-std::list<std::string> Console::messagePool;
+std::vector<Console::Message> Console::m_messagePool;
 
 //outputs a string in console as info text
 void Console::log(std::string _message)
@@ -36,11 +36,18 @@ void Console::log(std::string _message)
 		time[strlen(time) - 1] = '\0';
 	}
 
-	std::string str(time);
+	std::string timeString(time);
+	std::string textString(timeString + " [INFO]: " + _message);
 
-	Console::writeToLogfile(str + " [INFO]: " + _message);
+	Console::writeToLogfile(textString);
 
-	messagePool.push_back(str + " [INFO]: " + _message);
+	Message currMessage;
+
+	currMessage.time	= timeString;
+	currMessage.type	= "[INFO]";
+	currMessage.message = _message;
+
+	m_messagePool.push_back(currMessage);
 
 	SetConsoleTextAttribute(handle_console, 8);
 	std::cout << time;
@@ -90,7 +97,14 @@ void Console::logWarning(std::string _message)
 
 	Console::writeToLogfile(str + " [WARNING]: " + _message);
 
-	messagePool.push_back(str + " [WARNING]: " + _message);
+
+	Message currMessage;
+
+	currMessage.time = str;
+	currMessage.type = "[WARNING]";
+	currMessage.message = _message;
+
+	m_messagePool.push_back(currMessage);
 
 	SetConsoleTextAttribute(handle_console, 8);
 	std::cout << time;
@@ -140,7 +154,13 @@ void Console::logError(std::string _message)
 
 	Console::writeToLogfile(str + " [ERROR]: " + _message);
 
-	messagePool.push_back(str + " [ERROR]: " + _message);
+	Message currMessage;
+
+	currMessage.time = str;
+	currMessage.type = "[ERROR]";
+	currMessage.message = _message;
+
+	m_messagePool.push_back(currMessage);
 
 	SetConsoleTextAttribute(handle_console, 8);
 	std::cout << time;
@@ -191,4 +211,15 @@ void Console::writeToLogfile(std::string message)
 	stream.open(LOGFILE, std::ofstream::app);
 
 	stream << message << std::endl;
+}
+
+std::vector<Console::Message> Console::getMessages()
+{
+	
+	std::vector<Console::Message> tempPool = m_messagePool;
+
+	m_messagePool.clear();
+
+	return tempPool;
+
 }

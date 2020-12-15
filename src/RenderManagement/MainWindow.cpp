@@ -40,6 +40,7 @@ MainWindow::MainWindow(TrackerManager* trackerManager, ConfigManager* configMana
 		}
 	}
 
+	ui->tableWidget_console->setColumnWidth(1, 70);
 
 }
 
@@ -60,6 +61,9 @@ void MainWindow::update()
 	updateHirachy();
 	// update the inspector
 	updateInspector();
+
+	//update Console
+	updateConsole();
 
 }
 
@@ -182,18 +186,38 @@ void MainWindow::updateInspector()
 void MainWindow::updateConsole()
 {
 
-	//if (Console::messagePool.size() > 0)
-	//{
+	std::vector<Console::Message> newLogs = Console::getMessages();
 
-	//	QListWidgetItem* item = new QListWidgetItem(ui->listWidget_console);
-	//	item->setText(QString::fromStdString(Console::messagePool.front()));
-	//	item->setTextAlignment(Qt::AlignRight);
+	for (int i = 0; i < newLogs.size(); i++)
+	{
+		//get time, type and message
+		QTableWidgetItem* currItemTime		= new QTableWidgetItem(QString::fromStdString(newLogs[i].time));
+		QTableWidgetItem* currItemType		= new QTableWidgetItem(QString::fromStdString(newLogs[i].type));
+		QTableWidgetItem* currItemMessage	= new QTableWidgetItem(QString::fromStdString(newLogs[i].message));
+		
+		//align the columns left
+		currItemTime->setTextAlignment(Qt::AlignLeft); //aligning is inverted, this is actually left aligned
+		currItemType->setTextAlignment(Qt::AlignLeft);
+		currItemMessage->setTextAlignment(Qt::AlignLeft);
 
-	//	ui->listWidget_console->scrollToBottom();
 
-	//	Console::messagePool.pop_front();
-	//	
-	//}
+
+		//insert new row
+		ui->tableWidget_console->insertRow(ui->tableWidget_console->rowCount());
+	
+		//insert time
+		ui->tableWidget_console->setItem(ui->tableWidget_console->rowCount() - 1, 0, currItemTime);
+		//insert type
+		ui->tableWidget_console->setItem(ui->tableWidget_console->rowCount() - 1, 1, currItemType);
+		//insert message
+		ui->tableWidget_console->setItem(ui->tableWidget_console->rowCount() - 1, 2, currItemMessage);
+
+		//std::cout << "MainWindow::updateConsole(): log: " << currItem->text().toLocal8Bit().constData() << std::endl;
+
+		ui->tableWidget_console->scrollToBottom();
+
+	}
+
 }
 
 void MainWindow::drawInspector()
@@ -424,7 +448,7 @@ void MainWindow::slotToggleTracking()
 
 		m_refTrackerManager->startTracker(); // start tracking if false
 		//m_timelineActive = true;
-
+		ui->btn_Record->setEnabled(true);
 
 	}
 	else
@@ -432,6 +456,7 @@ void MainWindow::slotToggleTracking()
 
 		m_refTrackerManager->stopTracker(); // stop tracking if true
 		//m_timelineActive = false;
+		ui->btn_Record->setEnabled(false);
 
 	}
 
@@ -451,7 +476,7 @@ void MainWindow::slotAddTracker()
 
 	// create dialog for creating new tracker
 	m_createTrackerWindow = new CreateTrackerWindow(m_refTrackerManager, ui->treeWidget_tracker);
-
+	
 	// set modal and execute
 	m_createTrackerWindow->setModal(true);
 	m_createTrackerWindow->exec();
@@ -618,7 +643,7 @@ void MainWindow::on_actionExit_triggered()
 void MainWindow::slotNetworkSettings()
 {
 
-	m_netwokSettingsWindow = new NetworkSettingsWindow(m_refTrackerManager->m_networkManager, m_configManager);
+	m_netwokSettingsWindow = new SettingsWindow(m_refTrackerManager->m_networkManager, m_configManager);
 
 	m_netwokSettingsWindow->setModal(true);
 	m_netwokSettingsWindow->exec();
@@ -654,11 +679,45 @@ void MainWindow::slotTimelineValueChanged(int newValue)
 void MainWindow::slotRecord()
 {
 	if (m_refTrackerManager->isTracking())
-	{		
-		Recorder::instance().toggleRecording();
+	{	
+
+		if (Recorder::instance().isRecording())
+		{
+			//start saving progress in new thread
+			std::thread* saveThread = new std::thread(&MainWindow::saveRecord, this);
+			saveThread->detach();
+
+
+			int max = Recorder::instance().getFrameCount();
+
+			QProgressDialog progress("Saving Record...", "Abort", 0, max, this);
+			progress.setWindowModality(Qt::WindowModal);
+
+			while (m_recordSaveProgression < max)
+			{
+				progress.setValue(m_recordSaveProgression);
+
+				if (progress.wasCanceled())
+					break;
+				//... copy one file
+			}
+			progress.setValue(m_recordSaveProgression);
+
+		}
+		else
+		{
+			Recorder::instance().startRecording();
+		}
+
+
+
 
 		m_isRecording = !m_isRecording;
 		toggleRecButtons();
+	}
+	else
+	{
+		Console::logError("Recording is Playmode only!");
 	}
 
 }
@@ -695,7 +754,7 @@ void MainWindow::slotTimelineLableModeChanged(int idx)
 
 void MainWindow::slotInspectorInputPosX(QString text)
 {
-	m_inputFieldPool.at("posX")->setText(text);
+	//m_inputFieldPool.at("posX")->setText(text);
 
 	std::string txt = text.toLocal8Bit().constData();
 
@@ -728,7 +787,7 @@ void MainWindow::slotInspectorInputPosX(QString text)
 
 void MainWindow::slotInspectorInputPosY(QString text)
 {
-	m_inputFieldPool.at("posY")->setText(text);
+	//m_inputFieldPool.at("posY")->setText(text);
 
 
 	std::string txt = text.toLocal8Bit().constData();
@@ -763,7 +822,7 @@ void MainWindow::slotInspectorInputPosY(QString text)
 void MainWindow::slotInspectorInputPosZ(QString text)
 {
 
-	m_inputFieldPool.at("posZ")->setText(text);
+	//m_inputFieldPool.at("posZ")->setText(text);
 
 	std::string txt = text.toLocal8Bit().constData();
 
@@ -796,7 +855,7 @@ void MainWindow::slotInspectorInputPosZ(QString text)
 void MainWindow::slotInspectorInputRotX(QString text)
 {
 
-	m_inputFieldPool.at("rotX")->setText(text);
+	//m_inputFieldPool.at("rotX")->setText(text);
 
 	std::string txt = text.toLocal8Bit().constData();
 
@@ -827,7 +886,7 @@ void MainWindow::slotInspectorInputRotX(QString text)
 void MainWindow::slotInspectorInputRotY(QString text)
 {
 
-	m_inputFieldPool.at("rotY")->setText(text);
+	//m_inputFieldPool.at("rotY")->setText(text);
 
 
 	std::string txt = text.toLocal8Bit().constData();
@@ -861,7 +920,7 @@ void MainWindow::slotInspectorInputRotY(QString text)
 void MainWindow::slotInspectorInputRotZ(QString text)
 {
 
-	m_inputFieldPool.at("rotZ")->setText(text);
+	//m_inputFieldPool.at("rotZ")->setText(text);
 
 
 	std::string txt = text.toLocal8Bit().constData();
@@ -896,7 +955,7 @@ void MainWindow::slotInspectorInputRotZ(QString text)
 void MainWindow::slotInspectorInputScaleX(QString text)
 {
 
-	m_inputFieldPool.at("scaleX")->setText(text);
+	//m_inputFieldPool.at("scaleX")->setText(text);
 
 
 	std::string txt = text.toLocal8Bit().constData();
@@ -930,7 +989,7 @@ void MainWindow::slotInspectorInputScaleX(QString text)
 void MainWindow::slotInspectorInputScaleY(QString text)
 {
 
-	m_inputFieldPool.at("scaleY")->setText(text);
+	//m_inputFieldPool.at("scaleY")->setText(text);
 
 	std::string txt = text.toLocal8Bit().constData();
 
@@ -963,7 +1022,7 @@ void MainWindow::slotInspectorInputScaleY(QString text)
 void MainWindow::slotInspectorInputScaleZ(QString text)
 {
 
-	m_inputFieldPool.at("scaleZ")->setText(text);
+	//m_inputFieldPool.at("scaleZ")->setText(text);
 
 	std::string txt = text.toLocal8Bit().constData();
 
@@ -1189,5 +1248,22 @@ void MainWindow::setTimelineValue(float totalTime, int frameIdx, int numFrames)
 	}
 
 	ui->label_timeline->setText(QString(currStr.c_str()));
+
+}
+
+void MainWindow::saveRecord()
+{
+	
+	//std::thread* progressionThread = new std::thread(&MainWindow::progressionBarThread, this);
+	//progressionThread->detach();
+
+
+	Recorder::instance().stopRecording(&m_recordSaveProgression);
+
+}
+
+void MainWindow::progressionBarThread()
+{
+
 
 }

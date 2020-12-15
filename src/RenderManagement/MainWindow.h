@@ -4,7 +4,7 @@
 #include "CreateTrackerWindow.h"
 #include "GlWidget.h"
 #include "MotionHubUtil/Console.h"
-#include "NetworkSettingsWindow.h"
+#include "SettingsWindow.h"
 #include "trackermodwindow.h"
 
 #include <QtWidgets/QMainWindow>
@@ -13,6 +13,7 @@
 #include "QtWidgets/qlineedit.h"
 #include "QtCore/qstringlistmodel.h"
 #include "QtCore/qstring.h"
+#include "QtWidgets/qprogressdialog.h"
 
 #include <math.h>
 #include <MotionHubUtil/MMHmath.h>
@@ -60,6 +61,10 @@ public:
 	 * updates Inspector and hirachy 
 	 */
 	void update();
+
+	/*!
+	* gets new logs from the Console and displays them in the list item
+	*/
 	void updateConsole();
 
 	void setTimelineValue(float time, int frameNum, int numFrames);
@@ -68,6 +73,7 @@ public:
 
 
 	GlWidget* getOglRenderer();
+
 
 private slots:
 	/*!
@@ -138,7 +144,7 @@ private:
 
 	ConfigManager* m_configManager;
 
-	NetworkSettingsWindow* m_netwokSettingsWindow;
+	SettingsWindow* m_netwokSettingsWindow;
 
 	TrackerModWindow* m_trackerModWindow;
 	
@@ -220,5 +226,12 @@ private:
 	};
 
 	TimelineLableMode m_timelineLableState;
+
+	void saveRecord();
+
+	void progressionBarThread();
+
+	int m_recordSaveProgression;
+
 
 };

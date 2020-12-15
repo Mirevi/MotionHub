@@ -17,7 +17,7 @@ AKTracker::AKTracker(int id, int idCam, NetworkManager* networkManager, ConfigMa
 	else
 	{
 
-		Console::logError("No connected Azure Kinect found.");
+		Console::logError("No connected Azure Kinect found");
 
 		valid = false;
 
@@ -176,14 +176,14 @@ void AKTracker::track()
 		if (queue_capture_result == K4A_WAIT_RESULT_TIMEOUT)
 		{
 			// it should never hit timeout when K4A_WAIT_INFINITE is set
-			Console::logError("[cam id = " + std::to_string(m_idCam) + "] Add capture to tracker process queue timeout!");
+			Console::logError("[cam id = " + std::to_string(m_idCam) + "] Add capture to tracker process queue timeout");
 			return;
 
 		}
 		// error handling quene capture failure
 		else if (queue_capture_result == K4A_WAIT_RESULT_FAILED)
 		{
-			Console::logError("[cam id = " + std::to_string(m_idCam) + "] Add capture to tracker process queue failed!");
+			Console::logError("[cam id = " + std::to_string(m_idCam) + "] Add capture to tracker process queue failed");
 			return;
 		}
 
@@ -218,21 +218,21 @@ void AKTracker::track()
 		else if (pop_frame_result == K4A_WAIT_RESULT_TIMEOUT)
 		{
 			//  it should never hit timeout when K4A_WAIT_INFINITE is set
-			Console::logError("[cam id = " + std::to_string(m_idCam) + "] Pop body frame result timeout!");
+			Console::logError("[cam id = " + std::to_string(m_idCam) + "] Pop body frame result timeout");
 			m_isDataAvailable = false;
 
 			return;
 		}
 		else
 		{
-			Console::logError("[cam id = " + std::to_string(m_idCam) + "] Pop body frame result failed!");
+			Console::logError("[cam id = " + std::to_string(m_idCam) + "] Pop body frame result failed");
 			return;
 		}
 	}
 	else if (get_capture_result == K4A_WAIT_RESULT_TIMEOUT)
 	{
 		// It should never hit time out when K4A_WAIT_INFINITE is set.
-		Console::logError("[cam id = " + std::to_string(m_idCam) + "] Get depth frame time out!");
+		Console::logError("[cam id = " + std::to_string(m_idCam) + "] Get depth frame time out");
 		return;
 	}
 	else
@@ -261,6 +261,8 @@ void AKTracker::extractSkeleton(k4abt_frame_t* body_frame)
 		uint32_t id = k4abt_frame_get_body_id(*body_frame, indexSkeleton);
 
 		bool createNewSkeleton = true;
+
+
 
 		m_skeletonPoolLock.lock();
 
@@ -291,7 +293,7 @@ void AKTracker::extractSkeleton(k4abt_frame_t* body_frame)
 			//skeleton was added, so UI updates
 			m_hasSkeletonPoolChanged = true;
 
-			Console::log("AkTracker::updateSkeleton(): [cam id = " + std::to_string(m_idCam) + "] Created new skeleton with id = " + std::to_string(id) + ".");
+			Console::log("AkTracker::updateSkeleton(): [cam id = " + std::to_string(m_idCam) + "] Created new skeleton with id = " + std::to_string(id));
 
 		}
 
@@ -491,7 +493,7 @@ void AKTracker::cleanSkeletonPool(k4abt_frame_t* bodyFrame)
 		//skeleton was removed, so UI updates
 		m_hasSkeletonPoolChanged = true;
 
-		Console::log("AkTracker::cleanSkeletonList(): [cam id = " + std::to_string(m_idCam) + "] Removed skeleton with id = " + std::to_string(*itIndexIdSkeletonsToErase) + " from pool!");
+		Console::log("AkTracker::cleanSkeletonList(): [cam id = " + std::to_string(m_idCam) + "] Removed skeleton with id = " + std::to_string(*itIndexIdSkeletonsToErase) + " from pool");
 
 	}
 }

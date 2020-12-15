@@ -12,7 +12,7 @@ MotionHub::MotionHub(int argc, char** argv)
 
 
 
-	Console::log("MotionHub::MotionHub(): Starting Mirevi MotionHub ...");
+	Console::log("MotionHub::MotionHub(): Starting Mirevi MotionHub");
 
 	// create new config reader
 	m_configManager = new ConfigManager();
@@ -27,6 +27,8 @@ MotionHub::MotionHub(int argc, char** argv)
 
 	m_recordingThread = new std::thread(&MotionHub::updateRecorderThread, this);
 	m_recordingThread->detach();
+
+	RecordingSession::RECORD_PATH = m_configManager->getStringFromStartupConfig("recordPath");
 
 	// start update loop
 	update();

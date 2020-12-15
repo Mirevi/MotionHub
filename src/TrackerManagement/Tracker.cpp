@@ -274,7 +274,7 @@ std::vector<Vector3f> Tracker::resetOffsets()
 void Tracker::init()
 {
 
-	Console::log("Tracker::init()");
+	//Console::log("Tracker::init()");
 
 
 }

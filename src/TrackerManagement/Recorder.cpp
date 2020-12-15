@@ -3,17 +3,7 @@
 
 
 
-void Recorder::toggleRecording()
-{
-	if (m_isRecording.load())
-	{
-		stopRecording();
-	}
-	else
-	{
-		startRecording();
-	}
-}
+
 
 
 
@@ -79,7 +69,7 @@ void Recorder::startRecording()
 		//m_recordingThread+ = new std::thread(&Recorder::update, this);
 		//m_recordingThread->detach();
 
-		Console::log("Recorder::startRecording()");
+		Console::log("Recorder::startRecording(): started recording");
 		Timer::reset();
 	}
 	else
@@ -89,13 +79,13 @@ void Recorder::startRecording()
 
 }
 
-void Recorder::stopRecording()
+void Recorder::stopRecording(int* progression)
 {
 	m_isRecording.store(false);
 
-	m_currSession->save();
+	m_currSession->save(progression);
 
-	Console::log("Recorder::stopRecording()");
+	Console::log("Recorder::stopRecording(): stopped recording");
 }
 
 void Recorder::update()
@@ -125,7 +115,7 @@ Recorder& Recorder::instance()
 	return _instance;
 }
 
-void Recorder::recodFrame()
+void Recorder::recordFrame()
 {
 
 }
@@ -133,4 +123,10 @@ void Recorder::recodFrame()
 bool Recorder::isRecording()
 {
 	return m_isRecording.load();
+}
+
+int Recorder::getFrameCount()
+{
+
+	return m_currSession->getFrameCount();
 }

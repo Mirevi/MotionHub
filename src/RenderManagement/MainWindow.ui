@@ -38,7 +38,7 @@
      border: 1px solid black;
      background-color: #ffa02f;
      padding: 1px;
-     border-radius: 3px;
+     border-radius: 5px;
      opacity: 100;
 }
 
@@ -537,9 +537,65 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
          <number>0</number>
         </property>
         <item>
-         <layout class="QVBoxLayout" name="layout_left">
-          <item>
+         <widget class="QDockWidget" name="dockWidget_hirarchy">
+          <property name="maximumSize">
+           <size>
+            <width>300</width>
+            <height>3000</height>
+           </size>
+          </property>
+          <widget class="QWidget" name="dockWidgetContents_4">
+           <widget class="QTreeWidget" name="treeWidget_hirachy">
+            <property name="geometry">
+             <rect>
+              <x>0</x>
+              <y>30</y>
+              <width>291</width>
+              <height>441</height>
+             </rect>
+            </property>
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>1</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="toolTip">
+             <string/>
+            </property>
+            <property name="frameShape">
+             <enum>QFrame::NoFrame</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Plain</enum>
+            </property>
+            <property name="lineWidth">
+             <number>0</number>
+            </property>
+            <property name="showDropIndicator" stdset="0">
+             <bool>true</bool>
+            </property>
+            <attribute name="headerVisible">
+             <bool>false</bool>
+            </attribute>
+            <attribute name="headerCascadingSectionResizes">
+             <bool>false</bool>
+            </attribute>
+            <column>
+             <property name="text">
+              <string notr="true">1</string>
+             </property>
+            </column>
+           </widget>
            <widget class="QFrame" name="frame_hirachyInfo">
+            <property name="geometry">
+             <rect>
+              <x>0</x>
+              <y>0</y>
+              <width>291</width>
+              <height>20</height>
+             </rect>
+            </property>
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
               <horstretch>0</horstretch>
@@ -569,7 +625,7 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
               <rect>
                <x>10</x>
                <y>0</y>
-               <width>241</width>
+               <width>61</width>
                <height>16</height>
               </rect>
              </property>
@@ -578,41 +634,8 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
              </property>
             </widget>
            </widget>
-          </item>
-          <item>
-           <widget class="QTreeWidget" name="treeWidget_hirachy">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>1</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="frameShape">
-             <enum>QFrame::NoFrame</enum>
-            </property>
-            <property name="frameShadow">
-             <enum>QFrame::Plain</enum>
-            </property>
-            <property name="lineWidth">
-             <number>0</number>
-            </property>
-            <property name="showDropIndicator" stdset="0">
-             <bool>true</bool>
-            </property>
-            <attribute name="headerVisible">
-             <bool>false</bool>
-            </attribute>
-            <attribute name="headerCascadingSectionResizes">
-             <bool>false</bool>
-            </attribute>
-            <column>
-             <property name="text">
-              <string notr="true">1</string>
-             </property>
-            </column>
-           </widget>
-          </item>
-         </layout>
+          </widget>
+         </widget>
         </item>
         <item>
          <layout class="QVBoxLayout" name="layout_center">
@@ -630,369 +653,407 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
            <enum>QLayout::SetDefaultConstraint</enum>
           </property>
           <item>
-           <widget class="QFrame" name="frame_trakerInfo">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>1</verstretch>
-             </sizepolicy>
-            </property>
+           <widget class="QDockWidget" name="dockWidget_tracker">
             <property name="minimumSize">
              <size>
               <width>300</width>
-              <height>0</height>
+              <height>200</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>16777215</width>
-              <height>50</height>
+              <width>300</width>
+              <height>4000</height>
              </size>
             </property>
-            <property name="autoFillBackground">
-             <bool>false</bool>
-            </property>
-            <property name="frameShape">
-             <enum>QFrame::StyledPanel</enum>
-            </property>
-            <property name="frameShadow">
-             <enum>QFrame::Plain</enum>
-            </property>
-            <property name="lineWidth">
-             <number>1</number>
-            </property>
-            <widget class="QLabel" name="label_trackerInfo">
-             <property name="geometry">
-              <rect>
-               <x>10</x>
-               <y>0</y>
-               <width>241</width>
-               <height>21</height>
-              </rect>
-             </property>
-             <property name="autoFillBackground">
-              <bool>false</bool>
-             </property>
-             <property name="text">
-              <string>Tracker</string>
-             </property>
-            </widget>
-            <widget class="QPushButton" name="btn_addTracker">
-             <property name="geometry">
-              <rect>
-               <x>10</x>
-               <y>22</y>
-               <width>60</width>
-               <height>20</height>
-              </rect>
-             </property>
-             <property name="cursor">
-              <cursorShape>PointingHandCursor</cursorShape>
-             </property>
-             <property name="text">
-              <string>Add</string>
-             </property>
-            </widget>
-            <widget class="QPushButton" name="btn_removeTracker">
-             <property name="enabled">
-              <bool>true</bool>
-             </property>
-             <property name="geometry">
-              <rect>
-               <x>150</x>
-               <y>22</y>
-               <width>60</width>
-               <height>20</height>
-              </rect>
-             </property>
-             <property name="cursor">
-              <cursorShape>PointingHandCursor</cursorShape>
-             </property>
-             <property name="text">
-              <string>Remove</string>
-             </property>
-            </widget>
-            <widget class="QPushButton" name="btn_startTracker">
-             <property name="geometry">
-              <rect>
-               <x>215</x>
-               <y>12</y>
-               <width>30</width>
-               <height>30</height>
-              </rect>
-             </property>
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="cursor">
-              <cursorShape>PointingHandCursor</cursorShape>
-             </property>
-             <property name="text">
-              <string/>
-             </property>
-             <property name="icon">
-              <iconset resource="MainWindow.qrc">
-               <normaloff>:/ressources/icons/icons8-play-32_converted.png</normaloff>:/ressources/icons/icons8-play-32_converted.png</iconset>
-             </property>
-             <property name="flat">
-              <bool>false</bool>
-             </property>
-            </widget>
-            <widget class="QPushButton" name="btn_addGroup">
-             <property name="geometry">
-              <rect>
-               <x>75</x>
-               <y>22</y>
-               <width>70</width>
-               <height>20</height>
-              </rect>
-             </property>
-             <property name="font">
-              <font>
-               <pointsize>-1</pointsize>
-              </font>
-             </property>
-             <property name="cursor">
-              <cursorShape>PointingHandCursor</cursorShape>
-             </property>
-             <property name="text">
-              <string>Add group</string>
-             </property>
-            </widget>
-            <widget class="QPushButton" name="btn_Record">
-             <property name="geometry">
-              <rect>
-               <x>250</x>
-               <y>12</y>
-               <width>30</width>
-               <height>30</height>
-              </rect>
-             </property>
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="cursor">
-              <cursorShape>PointingHandCursor</cursorShape>
-             </property>
-             <property name="text">
-              <string/>
-             </property>
-             <property name="icon">
-              <iconset resource="MainWindow.qrc">
-               <normaloff>:/ressources/icons/64px-Location_dot_red.svg.png</normaloff>:/ressources/icons/64px-Location_dot_red.svg.png</iconset>
-             </property>
-             <property name="flat">
-              <bool>false</bool>
-             </property>
+            <widget class="QWidget" name="dockWidgetContents">
+             <widget class="QGroupBox" name="groupBox_trakerInfo">
+              <property name="geometry">
+               <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>300</width>
+                <height>55</height>
+               </rect>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>300</width>
+                <height>55</height>
+               </size>
+              </property>
+              <property name="title">
+               <string>Tracker</string>
+              </property>
+              <widget class="QPushButton" name="btn_addTracker">
+               <property name="geometry">
+                <rect>
+                 <x>10</x>
+                 <y>20</y>
+                 <width>60</width>
+                 <height>25</height>
+                </rect>
+               </property>
+               <property name="cursor">
+                <cursorShape>PointingHandCursor</cursorShape>
+               </property>
+               <property name="toolTip">
+                <string>Add Tracker</string>
+               </property>
+               <property name="text">
+                <string>Add</string>
+               </property>
+              </widget>
+              <widget class="QPushButton" name="btn_startTracker">
+               <property name="geometry">
+                <rect>
+                 <x>215</x>
+                 <y>15</y>
+                 <width>30</width>
+                 <height>30</height>
+                </rect>
+               </property>
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="cursor">
+                <cursorShape>PointingHandCursor</cursorShape>
+               </property>
+               <property name="toolTip">
+                <string>Play/Pause</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="icon">
+                <iconset resource="MainWindow.qrc">
+                 <normaloff>:/ressources/icons/icons8-play-32_converted.png</normaloff>:/ressources/icons/icons8-play-32_converted.png</iconset>
+               </property>
+               <property name="flat">
+                <bool>false</bool>
+               </property>
+              </widget>
+              <widget class="QPushButton" name="btn_Record">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+               <property name="geometry">
+                <rect>
+                 <x>250</x>
+                 <y>15</y>
+                 <width>30</width>
+                 <height>30</height>
+                </rect>
+               </property>
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="cursor">
+                <cursorShape>PointingHandCursor</cursorShape>
+               </property>
+               <property name="toolTip">
+                <string>start/stop recording</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="icon">
+                <iconset resource="MainWindow.qrc">
+                 <normaloff>:/ressources/icons/64px-Location_dot_red.svg.png</normaloff>:/ressources/icons/64px-Location_dot_red.svg.png</iconset>
+               </property>
+               <property name="flat">
+                <bool>false</bool>
+               </property>
+              </widget>
+              <widget class="QPushButton" name="btn_removeTracker">
+               <property name="enabled">
+                <bool>true</bool>
+               </property>
+               <property name="geometry">
+                <rect>
+                 <x>150</x>
+                 <y>20</y>
+                 <width>60</width>
+                 <height>25</height>
+                </rect>
+               </property>
+               <property name="cursor">
+                <cursorShape>PointingHandCursor</cursorShape>
+               </property>
+               <property name="toolTip">
+                <string>Remove Tracker</string>
+               </property>
+               <property name="text">
+                <string>Remove</string>
+               </property>
+              </widget>
+              <widget class="QPushButton" name="btn_addGroup">
+               <property name="geometry">
+                <rect>
+                 <x>75</x>
+                 <y>20</y>
+                 <width>70</width>
+                 <height>25</height>
+                </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>-1</pointsize>
+                </font>
+               </property>
+               <property name="cursor">
+                <cursorShape>PointingHandCursor</cursorShape>
+               </property>
+               <property name="toolTip">
+                <string>Add group</string>
+               </property>
+               <property name="text">
+                <string>Add group</string>
+               </property>
+              </widget>
+             </widget>
+             <widget class="QTreeWidget" name="treeWidget_tracker">
+              <property name="geometry">
+               <rect>
+                <x>0</x>
+                <y>60</y>
+                <width>301</width>
+                <height>182</height>
+               </rect>
+              </property>
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>4</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="toolTip">
+               <string/>
+              </property>
+              <property name="itemsExpandable">
+               <bool>true</bool>
+              </property>
+              <property name="headerHidden">
+               <bool>true</bool>
+              </property>
+              <column>
+               <property name="text">
+                <string notr="true">1</string>
+               </property>
+              </column>
+             </widget>
             </widget>
            </widget>
           </item>
           <item>
-           <widget class="QTreeWidget" name="treeWidget_tracker">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>4</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="itemsExpandable">
-             <bool>true</bool>
-            </property>
-            <property name="headerHidden">
-             <bool>true</bool>
-            </property>
-            <column>
-             <property name="text">
-              <string notr="true">1</string>
-             </property>
-            </column>
-           </widget>
-          </item>
-          <item>
-           <widget class="QFrame" name="frame_inspektorInfo">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>1</verstretch>
-             </sizepolicy>
+           <widget class="QDockWidget" name="dockWidget_inspector">
+            <property name="minimumSize">
+             <size>
+              <width>300</width>
+              <height>100</height>
+             </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>16777215</width>
-              <height>20</height>
+              <width>300</width>
+              <height>4000</height>
              </size>
             </property>
-            <property name="autoFillBackground">
-             <bool>false</bool>
-            </property>
-            <property name="frameShape">
-             <enum>QFrame::StyledPanel</enum>
-            </property>
-            <property name="frameShadow">
-             <enum>QFrame::Plain</enum>
-            </property>
-            <property name="lineWidth">
-             <number>1</number>
-            </property>
-            <widget class="QLabel" name="label_inspektor">
-             <property name="geometry">
-              <rect>
-               <x>10</x>
-               <y>0</y>
-               <width>241</width>
-               <height>21</height>
-              </rect>
-             </property>
-             <property name="frameShape">
-              <enum>QFrame::NoFrame</enum>
-             </property>
-             <property name="frameShadow">
-              <enum>QFrame::Plain</enum>
-             </property>
-             <property name="text">
-              <string>Inspector</string>
-             </property>
-             <property name="scaledContents">
-              <bool>false</bool>
-             </property>
+            <widget class="QWidget" name="dockWidgetContents_2">
+             <widget class="QFrame" name="frame_inspektorInfo">
+              <property name="geometry">
+               <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>291</width>
+                <height>20</height>
+               </rect>
+              </property>
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>1</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="autoFillBackground">
+               <bool>false</bool>
+              </property>
+              <property name="frameShape">
+               <enum>QFrame::StyledPanel</enum>
+              </property>
+              <property name="frameShadow">
+               <enum>QFrame::Plain</enum>
+              </property>
+              <property name="lineWidth">
+               <number>1</number>
+              </property>
+              <widget class="QLabel" name="label_6">
+               <property name="geometry">
+                <rect>
+                 <x>5</x>
+                 <y>0</y>
+                 <width>221</width>
+                 <height>16</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Inspector</string>
+               </property>
+              </widget>
+             </widget>
+             <widget class="QTableWidget" name="tableWidget_inspector">
+              <property name="enabled">
+               <bool>true</bool>
+              </property>
+              <property name="geometry">
+               <rect>
+                <x>0</x>
+                <y>20</y>
+                <width>291</width>
+                <height>181</height>
+               </rect>
+              </property>
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>4</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="baseSize">
+               <size>
+                <width>0</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="focusPolicy">
+               <enum>Qt::NoFocus</enum>
+              </property>
+              <property name="contextMenuPolicy">
+               <enum>Qt::DefaultContextMenu</enum>
+              </property>
+              <property name="toolTip">
+               <string/>
+              </property>
+              <property name="layoutDirection">
+               <enum>Qt::LeftToRight</enum>
+              </property>
+              <property name="autoFillBackground">
+               <bool>false</bool>
+              </property>
+              <property name="frameShape">
+               <enum>QFrame::NoFrame</enum>
+              </property>
+              <property name="frameShadow">
+               <enum>QFrame::Plain</enum>
+              </property>
+              <property name="midLineWidth">
+               <number>0</number>
+              </property>
+              <property name="editTriggers">
+               <set>QAbstractItemView::NoEditTriggers</set>
+              </property>
+              <property name="tabKeyNavigation">
+               <bool>false</bool>
+              </property>
+              <property name="showDropIndicator" stdset="0">
+               <bool>false</bool>
+              </property>
+              <property name="dragDropOverwriteMode">
+               <bool>false</bool>
+              </property>
+              <property name="alternatingRowColors">
+               <bool>false</bool>
+              </property>
+              <property name="selectionMode">
+               <enum>QAbstractItemView::SingleSelection</enum>
+              </property>
+              <property name="selectionBehavior">
+               <enum>QAbstractItemView::SelectItems</enum>
+              </property>
+              <property name="textElideMode">
+               <enum>Qt::ElideRight</enum>
+              </property>
+              <property name="showGrid">
+               <bool>true</bool>
+              </property>
+              <property name="gridStyle">
+               <enum>Qt::DotLine</enum>
+              </property>
+              <property name="wordWrap">
+               <bool>true</bool>
+              </property>
+              <property name="cornerButtonEnabled">
+               <bool>true</bool>
+              </property>
+              <property name="rowCount">
+               <number>0</number>
+              </property>
+              <property name="columnCount">
+               <number>2</number>
+              </property>
+              <attribute name="horizontalHeaderVisible">
+               <bool>true</bool>
+              </attribute>
+              <attribute name="horizontalHeaderCascadingSectionResizes">
+               <bool>false</bool>
+              </attribute>
+              <attribute name="horizontalHeaderMinimumSectionSize">
+               <number>40</number>
+              </attribute>
+              <attribute name="horizontalHeaderDefaultSectionSize">
+               <number>100</number>
+              </attribute>
+              <attribute name="horizontalHeaderHighlightSections">
+               <bool>false</bool>
+              </attribute>
+              <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
+               <bool>false</bool>
+              </attribute>
+              <attribute name="horizontalHeaderStretchLastSection">
+               <bool>true</bool>
+              </attribute>
+              <attribute name="verticalHeaderVisible">
+               <bool>false</bool>
+              </attribute>
+              <attribute name="verticalHeaderMinimumSectionSize">
+               <number>25</number>
+              </attribute>
+              <attribute name="verticalHeaderDefaultSectionSize">
+               <number>25</number>
+              </attribute>
+              <attribute name="verticalHeaderHighlightSections">
+               <bool>false</bool>
+              </attribute>
+              <attribute name="verticalHeaderShowSortIndicator" stdset="0">
+               <bool>false</bool>
+              </attribute>
+              <attribute name="verticalHeaderStretchLastSection">
+               <bool>false</bool>
+              </attribute>
+              <column>
+               <property name="text">
+                <string>property</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>value</string>
+               </property>
+              </column>
+             </widget>
             </widget>
-           </widget>
-          </item>
-          <item>
-           <widget class="QTableWidget" name="tableWidget_inspector">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>4</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="baseSize">
-             <size>
-              <width>0</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="focusPolicy">
-             <enum>Qt::NoFocus</enum>
-            </property>
-            <property name="contextMenuPolicy">
-             <enum>Qt::DefaultContextMenu</enum>
-            </property>
-            <property name="layoutDirection">
-             <enum>Qt::LeftToRight</enum>
-            </property>
-            <property name="autoFillBackground">
-             <bool>false</bool>
-            </property>
-            <property name="frameShape">
-             <enum>QFrame::NoFrame</enum>
-            </property>
-            <property name="frameShadow">
-             <enum>QFrame::Plain</enum>
-            </property>
-            <property name="midLineWidth">
-             <number>0</number>
-            </property>
-            <property name="editTriggers">
-             <set>QAbstractItemView::NoEditTriggers</set>
-            </property>
-            <property name="tabKeyNavigation">
-             <bool>false</bool>
-            </property>
-            <property name="showDropIndicator" stdset="0">
-             <bool>false</bool>
-            </property>
-            <property name="dragDropOverwriteMode">
-             <bool>false</bool>
-            </property>
-            <property name="alternatingRowColors">
-             <bool>false</bool>
-            </property>
-            <property name="selectionMode">
-             <enum>QAbstractItemView::SingleSelection</enum>
-            </property>
-            <property name="selectionBehavior">
-             <enum>QAbstractItemView::SelectItems</enum>
-            </property>
-            <property name="textElideMode">
-             <enum>Qt::ElideRight</enum>
-            </property>
-            <property name="showGrid">
-             <bool>true</bool>
-            </property>
-            <property name="gridStyle">
-             <enum>Qt::DotLine</enum>
-            </property>
-            <property name="wordWrap">
-             <bool>true</bool>
-            </property>
-            <property name="cornerButtonEnabled">
-             <bool>true</bool>
-            </property>
-            <property name="rowCount">
-             <number>0</number>
-            </property>
-            <property name="columnCount">
-             <number>2</number>
-            </property>
-            <attribute name="horizontalHeaderVisible">
-             <bool>true</bool>
-            </attribute>
-            <attribute name="horizontalHeaderCascadingSectionResizes">
-             <bool>false</bool>
-            </attribute>
-            <attribute name="horizontalHeaderMinimumSectionSize">
-             <number>40</number>
-            </attribute>
-            <attribute name="horizontalHeaderDefaultSectionSize">
-             <number>100</number>
-            </attribute>
-            <attribute name="horizontalHeaderHighlightSections">
-             <bool>false</bool>
-            </attribute>
-            <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
-             <bool>false</bool>
-            </attribute>
-            <attribute name="horizontalHeaderStretchLastSection">
-             <bool>true</bool>
-            </attribute>
-            <attribute name="verticalHeaderVisible">
-             <bool>false</bool>
-            </attribute>
-            <attribute name="verticalHeaderMinimumSectionSize">
-             <number>25</number>
-            </attribute>
-            <attribute name="verticalHeaderDefaultSectionSize">
-             <number>25</number>
-            </attribute>
-            <attribute name="verticalHeaderHighlightSections">
-             <bool>false</bool>
-            </attribute>
-            <attribute name="verticalHeaderShowSortIndicator" stdset="0">
-             <bool>false</bool>
-            </attribute>
-            <attribute name="verticalHeaderStretchLastSection">
-             <bool>false</bool>
-            </attribute>
-            <column>
-             <property name="text">
-              <string>property</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>value</string>
-             </property>
-            </column>
            </widget>
           </item>
          </layout>
@@ -1021,10 +1082,16 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
          <layout class="QVBoxLayout" name="layout_left_bottom">
           <item>
            <widget class="QGroupBox" name="groupBox_timeline">
+            <property name="minimumSize">
+             <size>
+              <width>1000</width>
+              <height>147</height>
+             </size>
+            </property>
             <property name="maximumSize">
              <size>
               <width>16777215</width>
-              <height>142</height>
+              <height>147</height>
              </size>
             </property>
             <property name="title">
@@ -1054,20 +1121,57 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
               <string/>
              </property>
             </widget>
+            <widget class="QComboBox" name="comboBox_timelineLable">
+             <property name="geometry">
+              <rect>
+               <x>20</x>
+               <y>20</y>
+               <width>100</width>
+               <height>21</height>
+              </rect>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>100</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="toolTip">
+              <string/>
+             </property>
+             <item>
+              <property name="text">
+               <string>Percentage</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Time</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Frame</string>
+              </property>
+             </item>
+            </widget>
             <widget class="QSlider" name="slider_timeline">
              <property name="geometry">
               <rect>
                <x>10</x>
                <y>90</y>
-               <width>921</width>
+               <width>901</width>
                <height>22</height>
               </rect>
              </property>
              <property name="sizePolicy">
-              <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
+             </property>
+             <property name="toolTip">
+              <string/>
              </property>
              <property name="styleSheet">
               <string notr="true"/>
@@ -1097,32 +1201,79 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
               <number>0</number>
              </property>
             </widget>
-            <widget class="QComboBox" name="comboBox">
+            <widget class="QWidget" name="layoutWidget">
              <property name="geometry">
               <rect>
                <x>10</x>
-               <y>20</y>
-               <width>81</width>
-               <height>22</height>
+               <y>120</y>
+               <width>917</width>
+               <height>16</height>
               </rect>
              </property>
-             <item>
-              <property name="text">
-               <string>Percentage</string>
+             <layout class="QHBoxLayout" name="horizontalLayout">
+              <property name="spacing">
+               <number>200</number>
               </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Time</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Frame</string>
-              </property>
-             </item>
+              <item>
+               <widget class="QLabel" name="label_2">
+                <property name="text">
+                 <string>0%</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="label_4">
+                <property name="text">
+                 <string>25%</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="label_3">
+                <property name="text">
+                 <string>50%</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="label">
+                <property name="text">
+                 <string>75%</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="label_5">
+                <property name="text">
+                 <string>100%</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+             </layout>
             </widget>
            </widget>
+          </item>
+          <item>
+           <layout class="QVBoxLayout" name="verticalLayout_2">
+            <property name="bottomMargin">
+             <number>23</number>
+            </property>
+           </layout>
           </item>
           <item>
            <widget class="QWidget" name="widget_timeline" native="true">
@@ -1158,170 +1309,77 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
          </layout>
         </item>
         <item>
-         <layout class="QVBoxLayout" name="layout_right_bottom" stretch="0,0">
-          <property name="spacing">
-           <number>6</number>
+         <widget class="QTableWidget" name="tableWidget_console">
+          <property name="toolTip">
+           <string/>
           </property>
-          <property name="sizeConstraint">
-           <enum>QLayout::SetDefaultConstraint</enum>
+          <property name="frameShape">
+           <enum>QFrame::NoFrame</enum>
           </property>
-          <property name="leftMargin">
-           <number>0</number>
+          <property name="frameShadow">
+           <enum>QFrame::Plain</enum>
           </property>
-          <property name="rightMargin">
-           <number>0</number>
+          <property name="editTriggers">
+           <set>QAbstractItemView::NoEditTriggers</set>
           </property>
-          <property name="bottomMargin">
-           <number>0</number>
+          <property name="tabKeyNavigation">
+           <bool>false</bool>
           </property>
-          <item>
-           <widget class="QFrame" name="frame_consoleInfo">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>20</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>512</width>
-              <height>20</height>
-             </size>
-            </property>
-            <property name="layoutDirection">
-             <enum>Qt::RightToLeft</enum>
-            </property>
-            <property name="frameShape">
-             <enum>QFrame::StyledPanel</enum>
-            </property>
-            <property name="frameShadow">
-             <enum>QFrame::Plain</enum>
-            </property>
-            <widget class="QLabel" name="label_console">
-             <property name="geometry">
-              <rect>
-               <x>10</x>
-               <y>0</y>
-               <width>241</width>
-               <height>21</height>
-              </rect>
-             </property>
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="frameShape">
-              <enum>QFrame::NoFrame</enum>
-             </property>
-             <property name="frameShadow">
-              <enum>QFrame::Plain</enum>
-             </property>
-             <property name="lineWidth">
-              <number>1</number>
-             </property>
-             <property name="text">
-              <string>Console</string>
-             </property>
-             <property name="textFormat">
-              <enum>Qt::AutoText</enum>
-             </property>
-             <property name="scaledContents">
-              <bool>false</bool>
-             </property>
-            </widget>
-           </widget>
-          </item>
-          <item>
-           <widget class="QListWidget" name="listWidget_console">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>512</width>
-              <height>256</height>
-             </size>
-            </property>
-            <property name="focusPolicy">
-             <enum>Qt::NoFocus</enum>
-            </property>
-            <property name="layoutDirection">
-             <enum>Qt::RightToLeft</enum>
-            </property>
-            <property name="frameShape">
-             <enum>QFrame::NoFrame</enum>
-            </property>
-            <property name="frameShadow">
-             <enum>QFrame::Plain</enum>
-            </property>
-            <property name="lineWidth">
-             <number>1</number>
-            </property>
-            <property name="verticalScrollBarPolicy">
-             <enum>Qt::ScrollBarAlwaysOn</enum>
-            </property>
-            <property name="horizontalScrollBarPolicy">
-             <enum>Qt::ScrollBarAlwaysOn</enum>
-            </property>
-            <property name="sizeAdjustPolicy">
-             <enum>QAbstractScrollArea::AdjustToContents</enum>
-            </property>
-            <property name="autoScroll">
-             <bool>false</bool>
-            </property>
-            <property name="editTriggers">
-             <set>QAbstractItemView::NoEditTriggers</set>
-            </property>
-            <property name="showDropIndicator" stdset="0">
-             <bool>false</bool>
-            </property>
-            <property name="alternatingRowColors">
-             <bool>false</bool>
-            </property>
-            <property name="selectionMode">
-             <enum>QAbstractItemView::NoSelection</enum>
-            </property>
-            <property name="selectionBehavior">
-             <enum>QAbstractItemView::SelectRows</enum>
-            </property>
-            <property name="textElideMode">
-             <enum>Qt::ElideNone</enum>
-            </property>
-            <property name="flow">
-             <enum>QListView::TopToBottom</enum>
-            </property>
-            <property name="resizeMode">
-             <enum>QListView::Fixed</enum>
-            </property>
-            <property name="spacing">
-             <number>0</number>
-            </property>
-            <property name="batchSize">
-             <number>512</number>
-            </property>
-           </widget>
-          </item>
-         </layout>
+          <property name="showDropIndicator" stdset="0">
+           <bool>false</bool>
+          </property>
+          <property name="dragDropOverwriteMode">
+           <bool>false</bool>
+          </property>
+          <property name="selectionMode">
+           <enum>QAbstractItemView::SingleSelection</enum>
+          </property>
+          <property name="gridStyle">
+           <enum>Qt::DotLine</enum>
+          </property>
+          <property name="columnCount">
+           <number>3</number>
+          </property>
+          <attribute name="horizontalHeaderCascadingSectionResizes">
+           <bool>false</bool>
+          </attribute>
+          <attribute name="horizontalHeaderMinimumSectionSize">
+           <number>40</number>
+          </attribute>
+          <attribute name="horizontalHeaderDefaultSectionSize">
+           <number>150</number>
+          </attribute>
+          <attribute name="horizontalHeaderHighlightSections">
+           <bool>false</bool>
+          </attribute>
+          <attribute name="horizontalHeaderStretchLastSection">
+           <bool>true</bool>
+          </attribute>
+          <attribute name="verticalHeaderVisible">
+           <bool>false</bool>
+          </attribute>
+          <attribute name="verticalHeaderDefaultSectionSize">
+           <number>25</number>
+          </attribute>
+          <attribute name="verticalHeaderHighlightSections">
+           <bool>false</bool>
+          </attribute>
+          <column>
+           <property name="text">
+            <string>Time</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Type</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Message</string>
+           </property>
+          </column>
+         </widget>
         </item>
        </layout>
       </item>
@@ -1364,7 +1422,7 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
   </action>
   <action name="actionIP_settings">
    <property name="text">
-    <string>Network Settings</string>
+    <string>Settings</string>
    </property>
   </action>
  </widget>
@@ -1550,7 +1608,7 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
    </hints>
   </connection>
   <connection>
-   <sender>comboBox</sender>
+   <sender>comboBox_timelineLable</sender>
    <signal>currentIndexChanged(int)</signal>
    <receiver>MainWindow</receiver>
    <slot>slotTimelineLableModeChanged(int)</slot>

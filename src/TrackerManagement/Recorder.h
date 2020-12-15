@@ -23,10 +23,14 @@ public:
 	~Recorder() {}
 
 
-	void toggleRecording();
 	void addSkeletonsToFrame(std::map<int, Skeleton> currSkeletons);
 	void nextFrame();
 	bool isRecording();
+
+	void startRecording();
+	void stopRecording(int* progression);
+
+	int getFrameCount();
 
 
 
@@ -35,6 +39,7 @@ private:
 
 	Recorder() {}							// verhindert, dass ein Objekt von außerhalb von Recorder erzeugt wird.
 											// protected, wenn man von der Klasse noch erben möchte
+
 	Recorder(const Recorder&);				// verhindert, dass eine weitere Instanz via Kopier-Konstruktor erstellt werden kann
 	Recorder& operator = (const Recorder&); //Verhindert weitere Instanz durch Kopie
 
@@ -52,12 +57,11 @@ private:
 
 
 
-	void startRecording();
-	void stopRecording();
+
 
 	void update();
 
-	void recodFrame();
+	void recordFrame();
 
 
 	std::thread* m_recordingThread;

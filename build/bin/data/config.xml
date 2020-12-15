@@ -1,11 +1,12 @@
 <config>
     <startup_config>
         <ipAddress>127.0.0.1</ipAddress>
-        <xPosAzure>0</xPosAzure>
+        <recordPath>./data</recordPath>
+        <xPosAzure>0.000000</xPosAzure>
         <yPosAzure>1.175</yPosAzure>
         <zPosAzure>2.2</zPosAzure>
         <xRotAzure>-5.0</xRotAzure>
-        <yRotAzure>0</yRotAzure>
+        <yRotAzure>0.000000</yRotAzure>
         <zRotAzure>0</zRotAzure>
         <xSclAzure>0.0010</xSclAzure>
         <ySclAzure>-0.0010</ySclAzure>
@@ -19,5 +20,14 @@
         <xSclOptiTrack>1</xSclOptiTrack>
         <ySclOptiTrack>1</ySclOptiTrack>
         <zSclOptiTrack>1</zSclOptiTrack>
+        <xPosMMH>0.000000</xPosMMH>
+        <yPosMMH>0.000000</yPosMMH>
+        <zPosMMH>0.000000</zPosMMH>
+        <xRotMMH>0.000000</xRotMMH>
+        <yRotMMH>0.000000</yRotMMH>
+        <zRotMMH>0.000000</zRotMMH>
+        <xSclMMH>1.000000</xSclMMH>
+        <ySclMMH>1.000000</ySclMMH>
+        <zSclMMH>1.000000</zSclMMH>
     </startup_config>
 </config>

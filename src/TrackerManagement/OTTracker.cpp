@@ -323,7 +323,7 @@ Skeleton* OTTracker::parseSkeleton(sSkeletonData skeleton, int id, Skeleton* old
 		//temporary OptiTrack joint data object
 		sRigidBodyData rbData = skeleton.RigidBodyData[j];
 
-		// convert from k4a Vectors and quaternions into custom vectors
+		// convert from optiTrack Vectors and quaternions into custom vectors
 		Vector4f pos = m_offsetMatrix * Vector4f(rbData.x, rbData.y, rbData.z, 1.0f);
 		Quaternionf rot = Quaternionf(rbData.qw, rbData.qx, -rbData.qy, -rbData.qz);
 
