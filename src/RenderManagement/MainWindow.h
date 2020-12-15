@@ -13,6 +13,7 @@
 #include "QtWidgets/qlineedit.h"
 #include "QtCore/qstringlistmodel.h"
 #include "QtCore/qstring.h"
+#include "QtWidgets/qprogressdialog.h"
 
 #include <math.h>
 #include <MotionHubUtil/MMHmath.h>
@@ -225,6 +226,12 @@ private:
 	};
 
 	TimelineLableMode m_timelineLableState;
+
+	void saveRecord();
+
+	void progressionBarThread();
+
+	int m_recordSaveProgression;
 
 
 };

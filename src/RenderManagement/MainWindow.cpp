@@ -476,7 +476,7 @@ void MainWindow::slotAddTracker()
 
 	// create dialog for creating new tracker
 	m_createTrackerWindow = new CreateTrackerWindow(m_refTrackerManager, ui->treeWidget_tracker);
-
+	
 	// set modal and execute
 	m_createTrackerWindow->setModal(true);
 	m_createTrackerWindow->exec();
@@ -679,11 +679,45 @@ void MainWindow::slotTimelineValueChanged(int newValue)
 void MainWindow::slotRecord()
 {
 	if (m_refTrackerManager->isTracking())
-	{		
-		Recorder::instance().toggleRecording();
+	{	
+
+		if (Recorder::instance().isRecording())
+		{
+			//start saving progress in new thread
+			std::thread* saveThread = new std::thread(&MainWindow::saveRecord, this);
+			saveThread->detach();
+
+
+			int max = Recorder::instance().getFrameCount();
+
+			QProgressDialog progress("Saving Record...", "Abort", 0, max, this);
+			progress.setWindowModality(Qt::WindowModal);
+
+			while (m_recordSaveProgression < max)
+			{
+				progress.setValue(m_recordSaveProgression);
+
+				if (progress.wasCanceled())
+					break;
+				//... copy one file
+			}
+			progress.setValue(m_recordSaveProgression);
+
+		}
+		else
+		{
+			Recorder::instance().startRecording();
+		}
+
+
+
 
 		m_isRecording = !m_isRecording;
 		toggleRecButtons();
+	}
+	else
+	{
+		Console::logError("Recording is Playmode only!");
 	}
 
 }
@@ -1214,5 +1248,22 @@ void MainWindow::setTimelineValue(float totalTime, int frameIdx, int numFrames)
 	}
 
 	ui->label_timeline->setText(QString(currStr.c_str()));
+
+}
+
+void MainWindow::saveRecord()
+{
+	
+	//std::thread* progressionThread = new std::thread(&MainWindow::progressionBarThread, this);
+	//progressionThread->detach();
+
+
+	Recorder::instance().stopRecording(&m_recordSaveProgression);
+
+}
+
+void MainWindow::progressionBarThread()
+{
+
 
 }

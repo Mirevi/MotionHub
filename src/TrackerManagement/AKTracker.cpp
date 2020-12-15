@@ -262,6 +262,8 @@ void AKTracker::extractSkeleton(k4abt_frame_t* body_frame)
 
 		bool createNewSkeleton = true;
 
+
+
 		m_skeletonPoolLock.lock();
 
 		// update existing skeleton

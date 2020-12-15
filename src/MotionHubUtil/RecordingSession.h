@@ -34,7 +34,7 @@ class MotionHubUtil_DLL_import_export RecordingSession
 public:
 	RecordingSession();
 	void addFrame(RecordingFrame frame, float duration);
-	void save();
+	void save(int* progression);
 	void saveBVH();
 	void load(std::string filePath);
 	void loadBVH(std::string filePath);
