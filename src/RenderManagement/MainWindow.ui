@@ -1100,15 +1100,15 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
             <widget class="QLabel" name="label_timeline">
              <property name="geometry">
               <rect>
-               <x>10</x>
+               <x>20</x>
                <y>50</y>
-               <width>100</width>
+               <width>300</width>
                <height>30</height>
               </rect>
              </property>
              <property name="maximumSize">
               <size>
-               <width>100</width>
+               <width>300</width>
                <height>30</height>
               </size>
              </property>
