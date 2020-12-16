@@ -7,13 +7,11 @@
 #include "SettingsWindow.h"
 #include "trackermodwindow.h"
 
-#include <QtWidgets/QMainWindow>
 #include "QtWidgets/qtreewidget.h"
 #include "QtWidgets/qtablewidget.h"
 #include "QtWidgets/qlineedit.h"
 #include "QtCore/qstringlistmodel.h"
 #include "QtCore/qstring.h"
-#include "QtWidgets/qprogressdialog.h"
 
 #include <math.h>
 #include <MotionHubUtil/MMHmath.h>
@@ -232,6 +230,7 @@ private:
 	void progressionBarThread();
 
 	int m_recordSaveProgression;
+
 
 
 };

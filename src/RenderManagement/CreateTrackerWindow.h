@@ -14,6 +14,7 @@
 #include "ConfigDllExportRenderManagement.h"
 #include "MotionHubUtil/Console.h"
 #include "TrackerManagement/TrackerManager.h"
+#include "RenderUtils.h"
 
 
 
@@ -69,5 +70,4 @@ private:
 
 
 	int m_selectedTrackerIdInDropdown = 0;
-
 };

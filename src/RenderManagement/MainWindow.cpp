@@ -692,21 +692,7 @@ void MainWindow::slotRecord()
 
 			//Console::log("MainWindow::slotRecord(): start progress window");
 
-			//create progress bar
-			QProgressDialog progress("Saving Record...", "Abort", 0, max, this);
-			progress.setWindowModality(Qt::WindowModal);
-
-			//while still saving
-			while (m_recordSaveProgression < max)
-			{
-				//update progress bar
-				progress.setValue(m_recordSaveProgression);
-
-				if (progress.wasCanceled())
-					break;
-				//... copy one file
-			}
-			progress.setValue(m_recordSaveProgression);
+			startProgressBar(Recorder::instance().getFrameCount(), &m_recordSaveProgression, "Save Recording Session...", this);
 
 		}
 		else
@@ -1272,3 +1258,4 @@ void MainWindow::progressionBarThread()
 
 
 }
+

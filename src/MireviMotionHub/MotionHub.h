@@ -1,8 +1,5 @@
 #pragma once
 
-#include "defines.h"
-
-#include "MotionHubUtil/Console.h"
 #include "MotionHubUtil/ConfigManager.h"
 #include "MotionHubUtil/Timer.h"
 

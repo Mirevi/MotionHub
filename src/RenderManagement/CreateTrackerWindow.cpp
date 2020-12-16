@@ -35,7 +35,7 @@ void CreateTrackerWindow::slotCreateTracker()
 
 	switch (m_selectedTrackerIdInDropdown)
 	{
-
+		//Azure Kinect
 		case 0:
 		{
 			// create new azure kinect tracker and add tracker to the tracking manager tracker pool
@@ -46,7 +46,7 @@ void CreateTrackerWindow::slotCreateTracker()
 			break;
 
 		}
-
+		//OptiTrack
 		case 1:
 		{
 			// create new optiTrack tracker and add tracker to the tracking manager tracker pool
@@ -55,7 +55,7 @@ void CreateTrackerWindow::slotCreateTracker()
 			break;
 
 		}
-
+		//BVH
 		case 2:
 		{
 
@@ -78,7 +78,7 @@ void CreateTrackerWindow::slotCreateTracker()
 			break;
 
 		}
-
+		//MMH
 		case 4:
 		{
 
@@ -93,6 +93,8 @@ void CreateTrackerWindow::slotCreateTracker()
 			{
 
 				id = m_refTrackerManager->createTracker(TrackerManager::mmh, filePath.toUtf8().constData());
+
+	
 
 			}
 
