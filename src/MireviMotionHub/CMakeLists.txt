@@ -23,6 +23,9 @@ include_directories(${CMAKE_BINARY_DIR}/src ${EIGEN_INCLUDE_DIR})
 #XsensMVNSDK
 include_directories(${CMAKE_BINARY_DIR}/src ${XsensMVNSDK_INCLUDE_DIR})
 link_directories(${CMAKE_BINARY_DIR}/lib "${CMAKE_BINARY_DIR}/lib" ${XsensMVNSDK_LIBRARIES_DIR})
+#OpenVR
+include_directories(${CMAKE_BINARY_DIR}/src ${OpenVR_INCLUDE_DIR})
+link_directories(${CMAKE_BINARY_DIR}/lib "${CMAKE_BINARY_DIR}/lib" ${OpenVR_LIBRARIES_DIR})
 
 #include internal source files
 include_directories(${CMAKE_BINARY_DIR}/src/MotionHubUtil)

@@ -36,6 +36,23 @@ function(getsTheDepsNameFromURL "${URL}")
 	set(DEPS_NAME "${DEPS_NAME}" PARENT_SCOPE) #set the DEPS_NAME for the upper scope from where the function was called with PARENT_SCOPE
 endfunction(getsTheDepsNameFromURL)
 
+####################################################################################################
+################################# PREPARATION AND DOWNLOAD OF DEPS #################################
+####################################################################################################
+# Only for developers who change the online (ftp) dep files in this document:
+# TODO for new downloads and updates deps:
+# Check, if all files are up to date within your deps package
+# Prefered directory structure contains 3 folders within the deps package: bin, include and lib
+# Zip it
+# Upload it to the server
+# Create Hash from the zip with i.g. Power shell: "Get-FileHash <filename>.zip -Algorithm SHA256"
+# Convert the Hash to lower case: Short cut in Visual Studio to lower case is to select the key and press CTRL + U
+# Add new Hash (in lowercase) to this document to "set(EXPECTED_SHA256..."
+# Check if the URL is still ok (Usually it will be incremented)
+# Check if the CHECK_IF_DEPS_EXIST path and file is correct
+# Commit and push changes
+# At the End: Checkout and test (Best case: On a fresh windows 10 installation)
+
 # CMake Modules
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 #FIND_PACKAGE( OpenSceneGraph REQUIRED ) # Cmake will look for cmake scripts in /cmake/Modules/. This examples searches "FindOpenSceneGraph.cmake"
@@ -112,6 +129,14 @@ set( URL https://claymore.mirevi.com/mirevimotionhub/xsens-mvn-1.0.6.zip )
 getsTheDepsNameFromURL("${URL}")
 set(CHECK_IF_DEPS_EXIST "${CURRENT_DEPS_PATH}/include/xstypes.h")
 FIND_PACKAGE( XsensMVNSDK REQUIRED )
+
+# OpenVR
+set( EXPECTED_SHA256 a090f06c07fcb80920ec5fcc0bb2315dd2e08b610c3099c43563eb9e912de4e5 ) 
+set(CURRENT_DEPS_PATH ${CMAKE_BINARY_DIR}/../deps/openvr-1.14.15/) 
+set( URL https://claymore.mirevi.com/mirevimotionhub/openvr-1.14.15.zip )
+getsTheDepsNameFromURL("${URL}")
+set(CHECK_IF_DEPS_EXIST "${CURRENT_DEPS_PATH}/headers/openvr.h")
+FIND_PACKAGE( OpenVR REQUIRED )
 
 # Add subdir with additional CMakeLists.txt and files
 add_subdirectory("${CMAKE_SOURCE_DIR}/src/MireviMotionHub") # CMake look for further CMakeLists.txt in that directory
