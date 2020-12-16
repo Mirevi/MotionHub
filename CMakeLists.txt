@@ -163,6 +163,7 @@ file(COPY ${K4ABT_LIBRARIES_DIR}/../bin/dnn_model_2_0.onnx 				DESTINATION ${CMA
 file(COPY ${K4ABT_INCLUDE_DIR}/../../tools/cublas64_100.dll				DESTINATION ${CMAKE_BINARY_DIR}/bin)
 file(COPY ${K4ABT_INCLUDE_DIR}/../../tools/cudart64_100.dll				DESTINATION ${CMAKE_BINARY_DIR}/bin)
 file(COPY deps/cudnn101windows10x64_76224/bin/cudnn64_7.dll 			DESTINATION ${CMAKE_BINARY_DIR}/bin)
+file(COPY deps/openvr-1.14.15/bin/win64/openvr_api.dll 					DESTINATION ${CMAKE_BINARY_DIR}/bin)
 
 #file(REMOVE_RECURSE ${K4ABT_INCLUDE_DIR}/../../tools/)
 #file(REMOVE_RECURSE ${K4A_INCLUDE_DIR}/../../tools/)

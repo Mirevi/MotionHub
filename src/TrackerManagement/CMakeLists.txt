@@ -60,6 +60,7 @@ target_link_libraries(TrackerManagement
     debug legacy_stdio_definitions optimized legacy_stdio_definitions
 	debug oscpack${CMAKE_DEBUG_POSTFIX} optimized oscpack
 	debug xstypes64 optimized xstypes64
+	debug openvr_api optimized openvr_api
 	
 	debug NetworkManagement${CMAKE_DEBUG_POSTFIX} optimized NetworkManagement
 	debug MotionHubUtil${CMAKE_DEBUG_POSTFIX} optimized MotionHubUtil
