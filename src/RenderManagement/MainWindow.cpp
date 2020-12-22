@@ -11,7 +11,7 @@ MainWindow::MainWindow(TrackerManager* trackerManager, ConfigManager* configMana
 	// setup base class
 	ui->setupUi(this);
 
-
+	// create render window and set layout propertys
 	m_oglRenderer = new GlWidget(trackerManager);
 	m_oglRenderer->setObjectName(QStringLiteral("render_ogl"));
 	QSizePolicy sizePolicy2(QSizePolicy::Expanding, QSizePolicy::Preferred);
@@ -79,7 +79,7 @@ void MainWindow::updateHirachy()
 	std::vector<Tracker*> trackerPoolTempCopy = m_refTrackerManager->getPoolTracker();
 
 
-	// loop throgh all tracker
+	// loop over all tracker
 	for (auto itTrackerPool = trackerPoolTempCopy.begin(); itTrackerPool != trackerPoolTempCopy.end(); itTrackerPool++)
 	{
 
