@@ -18,6 +18,11 @@ foreach( OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES} )
     set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${CMAKE_BINARY_DIR}/lib )
 endforeach( OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES )
 
+# Building with C++17 standard (mandadory)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
 set(CMAKE_DEBUG_POSTFIX "d")
 
 #Util function for extracting the deps name from a given URL (e.g.: the
@@ -147,7 +152,7 @@ file(COPY deps/cudnn101windows10x64_76224/bin/cudnn64_7.dll 			DESTINATION ${CMA
 
 file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/bin/data/)
 
-# platforms dir
+# QT's platforms dir
 set( EXPECTED_SHA256 e3c37954f82f401333a1a3e20b1e11a48a16010e2a4fb0826c201913702ea24f ) 
 set(CURRENT_DEPS_PATH ${CMAKE_BINARY_DIR}/bin/platforms/) 
 set( URL https://claymore.mirevi.com/mirevimotionhub/platforms.zip )
@@ -159,4 +164,6 @@ set_target_properties(MireviMotionHub PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT MireviMotionHub)
 add_compile_definitions(NOMINMAX)
 # set(CMAKE_BUILD_TYPE RelWithDebInfo" CACHE STRING "Build type (default RelWithDepInfo)" FORCE)
+# https://cmake.org/cmake/help/latest/prop_tgt/CXX_STANDARD.html
+
 
