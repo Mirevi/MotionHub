@@ -41,7 +41,7 @@ The developer, API and user documentation including a class collaboration diagra
 | Planned                                                                             							|
 | --------------------------------------------------------------------------------------------------------------|
 | [The Captury (planned for ~Januar 2021)](https://thecaptury.com/)                                				|
-| [XSens MVN Animate (planned for ~Januar 2021)](https://www.xsens.com/products/mvn-animate)                    |
+| [XSens MVN Animate (only compatibel with MVN Pro License due to network streaming capabilities) (planned for ~Januar 2021)](https://www.xsens.com/products/mvn-animate)                    |
 | [Perception Neuron 2 (planned for ~March 2021)](https://neuronmocap.com/content/product/32-neuron-edition-v2) |
 
 # Installer (for users, not for developers)
