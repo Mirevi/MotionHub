@@ -7,6 +7,8 @@
 #include "GestureManagement/GestureManager.h"
 #include "RenderManagement/UIManager.h"
 
+#include "NetworkManagement/OSCListener.h"
+
 #include <chrono>
 #include <string>
 
@@ -72,7 +74,12 @@ private:
 
 	void updateRecorderThread();
 
+	void startListening();
+
 	std::thread* m_recordingThread;
+	std::thread* m_listeningThread;
+
+	OSCListener m_oscListener;
 
 
 
