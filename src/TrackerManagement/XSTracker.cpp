@@ -1,9 +1,5 @@
 #include "XSTracker.h"
-#include "xs_streaming_protocol/xs_udpserver.h"
-#include "xs_streaming_protocol/xs_streamer.h"
-#include "DataHandlerManager.h"
-#include <conio.h>
-#include <xstypes/xstime.h>
+
 
 
 
@@ -76,9 +72,6 @@ void XSTracker::start()
 	m_UdpServer = new UdpServer(hostDestinationAddress, (uint16_t)port);
 
 
-	////get reference to the frame data
-	//m_refData = m_dataHandlerManager->getData();
-
 	//// start tracking thread and detach the thread from method scope runtime
 	m_trackingThread = new std::thread(&XSTracker::update, this);
 	m_trackingThread->detach();
@@ -88,7 +81,6 @@ void XSTracker::start()
 // stop tracking loop / thread
 void XSTracker::stop()
 {
-	delete m_dataHandlerManager;
 	//is not tracking, so the update loop exits after current loop
 	m_properties->isTracking = false;
 
@@ -112,110 +104,81 @@ void XSTracker::init()
 
 void XSTracker::printDatagram(ParserManager::QuaternionDataWithId* data)
 {
-	m_kinematics = data->kinematics;
+	//m_kinematics = data->kinematics;
 
-	std::cout << "+++++++++++++++++++++++++" << std::endl;
-	std::cout << "AvatarID:  " << data->avatarId << std::endl;
-	std::cout << "DataSize:  " << m_kinematics->size() << std::endl;
-	std::cout << "+++++++++++++++++++++++++" << std::endl;
-
-
-	for (int i = 0; i < m_kinematics->size(); i++)
-	{
-		// Position
-		std::cout << "Segment Position: " << i << " :  (";
-		std::cout << "x: " << m_kinematics->at(i).position[0] << ", ";
-		std::cout << "y: " << m_kinematics->at(i).position[1] << ", ";
-		std::cout << "z: " << m_kinematics->at(i).position[2] << ")" << std::endl;
-
-		// Quaternion Orientation
-		std::cout << "Quaternion Orientation: " << i << " :  (";
-		std::cout << "re: " << m_kinematics->at(i).orientation[0] << ", ";
-		std::cout << "i: " << m_kinematics->at(i).orientation[1] << ", ";
-		std::cout << "j: " << m_kinematics->at(i).orientation[2] << ", ";
-		std::cout << "k: " << m_kinematics->at(i).orientation[3] << ")" << std::endl << std::endl;
-	}
-
-}
+	//std::cout << "+++++++++++++++++++++++++" << std::endl;
+	//std::cout << "AvatarID:  " << data->avatarId << std::endl;
+	//std::cout << "DataSize:  " << m_kinematics->size() << std::endl;
+	//std::cout << "+++++++++++++++++++++++++" << std::endl;
 
 
+	//for (int i = 0; i < m_kinematics->size(); i++)
+	//{
+	//	// Position
+	//	std::cout << "Segment Position: " << i << " :  (";
+	//	std::cout << "x: " << m_kinematics->at(i).position[0] << ", ";
+	//	std::cout << "y: " << m_kinematics->at(i).position[1] << ", ";
+	//	std::cout << "z: " << m_kinematics->at(i).position[2] << ")" << std::endl;
 
-
-// tracking loop
-void XSTracker::update()
-{
-
-	// track while tracking is true
-	while (m_properties->isTracking)
-	{
-
-		
-		// get new data
-		if (m_UdpServer->getQuaternionDatagram()->kinematics != NULL) {
-			m_quaternianDataWithId = m_UdpServer->getQuaternionDatagram();
-			track();
-			//send Skeleton Pool to NetworkManager
-			m_networkManager->sendSkeletonPool(&m_skeletonPool, m_properties->id);
-
-		}
-
-		
-
-
-
-	}
-
-	//clean skeleton pool after tracking
-	clean();
+	//	// Quaternion Orientation
+	//	std::cout << "Quaternion Orientation: " << i << " :  (";
+	//	std::cout << "re: " << m_kinematics->at(i).orientation[0] << ", ";
+	//	std::cout << "i: " << m_kinematics->at(i).orientation[1] << ", ";
+	//	std::cout << "j: " << m_kinematics->at(i).orientation[2] << ", ";
+	//	std::cout << "k: " << m_kinematics->at(i).orientation[3] << ")" << std::endl << std::endl;
+	//}
 
 }
+
 
 // get new skeleton data and parse it into the default skeleton
 void XSTracker::track()
+
 {
 
-	//get skeleton data from frame data
-	extractSkeleton();
 
-	cleanSkeletonPool();
+	if (m_UdpServer->getQuaternionDatagram()->kinematics != NULL) {
 
-	//increase tracking cycle counter
-	m_trackingCycles++;
+		m_skeletonPoolLock.lock();
 
-	////new data is ready
-	m_isDataAvailable = true;
+		m_quaternianDataWithId = m_UdpServer->getQuaternionDatagram();
+
+		//get skeleton data from frame data
+		extractSkeleton();
+
+		cleanSkeletonPool();
+
+		//increase tracking cycle counter
+		m_trackingCycles++;
+
+		////new data is ready
+		m_isDataAvailable = true;
+
+		m_networkManager->sendSkeletonPool(&m_skeletonPool, m_properties->id);
+		m_skeletonPoolLock.unlock();
+
+
+	}
 
 }
 
 void XSTracker::extractSkeleton()
 {
 
-	//when new data isn't available, skip this method run
-	//if (!m_dataHandlerManager->isDataAvailable())
-	//{
-	//	std::cout << "XSTracker::extractSkeleton() nodata";
-
-	//	return;
-
-	//}
 
 
 	//get current skeleton number
 	//m_properties->countDetectedSkeleton = m_refData->nSkeletons;
 
 
-
-	//if (m_UdpServer->getQuaternionDatagram()->kinematics != NULL) {
-	//	printDatagram(m_UdpServer->getQuaternionDatagram());
-
-	//}
-
 	//loop through all Xsens skeletons
 	//for (int i = 0; i < m_refData->nSkeletons; i++)
-	for (int i = 0; i < 1; i++)
-	{
-		//get current skeleton data this is NatNet
-		//sSkeletonData skData = m_refData->Skeletons[i];
+
+
+	int avatarID = m_quaternianDataWithId->avatarId;
+
+	//for (int i = 0; i < 1; i++)
+	//{
 
 		//true as long new skeleton will be added to the pool
 		bool createNewSkeleton = true;
@@ -225,19 +188,18 @@ void XSTracker::extractSkeleton()
 		{
 			//when skeletons have the same ID, the skeleton is alredy in pool and no new skeleton has to be created
 			//if (skData.skeletonID == itPoolSkeletons->first)
-			if (m_properties->id == itPoolSkeletons->first)
+			if (avatarID == itPoolSkeletons->first)
 			{
 
 				//convert Xsens skeleton into MMH skeleton
 
-				//HWM: quaternionDatagram an parseSkeleton geben
-				Skeleton* currSkeleton = parseSkeleton(m_quaternianDataWithId, m_properties->id, &m_skeletonPool[m_properties->id]);
-		
+				Skeleton* currSkeleton = parseSkeleton(m_quaternianDataWithId, avatarID, &m_skeletonPool[avatarID]);
+
 
 				if (currSkeleton != nullptr)
 				{
 					// update all joints of existing skeleon with new data
-					m_skeletonPool[m_properties->id].m_joints = currSkeleton->m_joints;
+					m_skeletonPool[avatarID].m_joints = currSkeleton->m_joints;
 
 				}
 
@@ -262,16 +224,16 @@ void XSTracker::extractSkeleton()
 
 			// create new skeleton and add it to the skeleton pool
 
-			m_skeletonPool.insert({ m_properties->id, *parseSkeleton(m_quaternianDataWithId, m_properties->id, new Skeleton()) });
+			m_skeletonPool.insert({ avatarID, *parseSkeleton(m_quaternianDataWithId, avatarID, new Skeleton()) });
 
 			//skeleton was added/removed, so UI updates
 			m_hasSkeletonPoolChanged = true;
 
-			Console::log("DataHandlerManager::extractSkeleton(): Created new skeleton with id = " + std::to_string(m_properties->id) + ".");
+			Console::log("DataHandlerManager::extractSkeleton(): Created new skeleton with id = " + std::to_string(avatarID) + ".");
 
 		}
 
-	}
+	//}
 
 }
 
@@ -285,19 +247,9 @@ Skeleton* XSTracker::parseSkeleton(ParserManager::QuaternionDataWithId* quaterni
 	//loop through all joints
 	for (int i = 0; i < quaternianDataWithId->kinematics->size(); i++)
 	{
-		////temporary OptiTrack joint data object
-		//sRigidBodyData rbData = skeleton.RigidBodyData[j];
 
 		m_kinematics = quaternianDataWithId->kinematics;
 
-
-
-
-
-
-		// convert from k4a Vectors and quaternions into custom vectors
-
-		//HWM
 
 		Vector4f pos = //m_offsetMatrix * 
 			Vector4f(m_kinematics->at(i).position[1], m_kinematics->at(i).position[2], m_kinematics->at(i).position[0], 1.0f);
@@ -306,34 +258,6 @@ Skeleton* XSTracker::parseSkeleton(ParserManager::QuaternionDataWithId* quaterni
 		//confidence values are not transmitted, default confidence is High
 		Joint::JointConfidence confidence = Joint::JointConfidence::HIGH;
 
-		std::cout << "+++++++++++++++++++++++++ Position (";
-		std::cout << "x: " << pos.x() << ",   ";
-		std::cout << "y: " << pos.y() << ",   ";
-		std::cout << "z: " << pos.z() << ")  " << std::endl;
-		std::cout << "+++++++++++++++++++++++++ Rotation(";
-		std::cout << "x: " << rot.x() << ",   ";
-		std::cout << "y: " << rot.y() << ",   ";
-		std::cout << "z: " << rot.z() << ",   ";
-		std::cout << "w: " << rot.w() << ")  " << std::endl;
-
-
-		////filter for corrupt position values  
-		//if (pos.x() > 100 || pos.y() > 100 || pos.z() > 100 ||
-		//	pos.x() < -100 || pos.y() < -100 || pos.z() < -100)
-		//{
-
-		//	return nullptr;
-
-		//}
-
-		////filter for corrupt rotation values
-		//if (rot.x() < -1 || rot.y() < -1 || rot.z() < -1 || rot.w() < -1 ||
-		//	rot.x() > 1 || rot.y() > 1 || rot.z() > 1 || rot.w() > 1)
-		//{
-
-		//	return nullptr;
-
-		//}
 
 		//map the Xsens poses to the MMH skeleton joints
 		switch (i)
@@ -501,7 +425,7 @@ void XSTracker::cleanSkeletonPool()
 	for (int itIndexIdSkeletonsToErase = idSkeletonsToErase.front(); itIndexIdSkeletonsToErase < idSkeletonsToErase.back(); itIndexIdSkeletonsToErase++)
 	{
 
-		
+
 		//erase skeleton with id
 		m_skeletonPool.erase(itIndexIdSkeletonsToErase);
 

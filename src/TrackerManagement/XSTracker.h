@@ -3,9 +3,12 @@
 #include "Tracker.h"
 #include "MotionHubUtil/Console.h"
 
-#include "NatNetTypes.h"
-#include "NatNetClient.h"
 #include "xs_streaming_protocol/xs_udpserver.h"
+
+#include "xs_streaming_protocol/xs_streamer.h"
+#include "DataHandlerManager.h"
+#include <conio.h>
+#include <xstypes/xstime.h>
 
 #include <atomic>
 #include <iostream>
@@ -14,6 +17,7 @@
 #include <algorithm>
 #include "functional"
 #include <list>
+
 
 
 
@@ -76,11 +80,6 @@ private:
 	 */
 	sFrameOfMocapData* m_refData;
 
-	/*!
-	 * the DataHandlerManager object for DataHandler callback
-	 *
-	 */
-	DataHandlerManager* m_dataHandlerManager;
 
 	/*!
 	 * this clients IP address
@@ -93,11 +92,9 @@ private:
 	 */
 	char szServerIPAddress[128] = "127.0.0.1";
 	/*!
-	 * the NatNet client
+	 * the UDP Server
 	 *
 	 */
-	NatNetClient* m_client;
-
 	UdpServer* m_UdpServer;
 
 	int analogSamplesPerMocapFrame = 0;
@@ -122,7 +119,7 @@ private:
 	/*!
 	 * tracking loop
 	 */
-	void update() override;
+	//void update() override;
 	/*!
 	 * starts tracking by getting the capture result and body frame
 	 * calls updateSkeletons(...)
