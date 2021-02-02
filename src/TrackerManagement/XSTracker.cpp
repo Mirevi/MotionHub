@@ -71,7 +71,6 @@ void XSTracker::start()
 
 	m_UdpServer = new UdpServer(hostDestinationAddress, (uint16_t)port);
 
-
 	//// start tracking thread and detach the thread from method scope runtime
 	m_trackingThread = new std::thread(&XSTracker::update, this);
 	m_trackingThread->detach();
@@ -83,6 +82,7 @@ void XSTracker::stop()
 {
 	//is not tracking, so the update loop exits after current loop
 	m_properties->isTracking = false;
+	delete m_UdpServer;
 
 }
 
@@ -186,6 +186,10 @@ void XSTracker::extractSkeleton()
 		//loop through all MMH skeletons
 		for (auto itPoolSkeletons = m_skeletonPool.begin(); itPoolSkeletons != m_skeletonPool.end(); itPoolSkeletons++)
 		{
+			std::cout << "print skeleton Pool ID:  " << std::endl;
+
+			std::cout << m_skeletonPool[itPoolSkeletons->first].getSid() << std::endl;
+
 			//when skeletons have the same ID, the skeleton is alredy in pool and no new skeleton has to be created
 			//if (skData.skeletonID == itPoolSkeletons->first)
 			if (avatarID == itPoolSkeletons->first)
