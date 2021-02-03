@@ -72,8 +72,10 @@ void UdpServer::readMessages()
 		//filter random buffer packages with just one joint
 		if (buffer.size() > 100) {
 			//assign new datagram if not empty
-			if (!m_parserManager->getDatagram(buffer)->kinematics->empty()) {				
+			if (!m_parserManager->getDatagram(buffer)->kinematics->empty()) {	
+				m_udpLock.lock();
 				m_quaternionDatagram = m_parserManager->getDatagram(buffer);
+				m_udpLock.unlock();
 
 			}
 		}
@@ -112,6 +114,14 @@ void UdpServer::stopThread()
 
 // get current quaterion datagram with Avatar ID
 ParserManager::QuaternionDataWithId* UdpServer::getQuaternionDatagram()
-{
-	return m_quaternionDatagram;
+{	
+	//lock skeleton pool for the case, that getQuaternionDatagram() is called while this method reads from the cache
+	m_udpLock.lock();
+
+	//copy cache to local copy to unlock before return
+	ParserManager::QuaternionDataWithId* copyQuaData =  m_quaternionDatagram;
+
+	m_udpLock.unlock();
+
+	return copyQuaData;
 }

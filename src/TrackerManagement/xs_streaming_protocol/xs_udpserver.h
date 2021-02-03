@@ -33,6 +33,7 @@
 #include <xstypes/xsthread.h>
 #include "xs_quaterniondatagram.h"
 #include "functional"
+#include <mutex>
 
 
 #include <atomic>
@@ -60,6 +61,7 @@ private:
 	XsString m_hostName;
 	std::unique_ptr<ParserManager> m_parserManager;
 	ParserManager::QuaternionDataWithId* m_quaternionDatagram; //the skeleton
+	std::mutex m_udpLock;
 
 };
 

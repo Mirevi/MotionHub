@@ -23,6 +23,9 @@ XSTracker::XSTracker(int id, NetworkManager* networkManager, ConfigManager* conf
 	//tracker is enabled
 	m_properties->isEnabled = true;
 
+	//frame countdown for unused avatars
+	m_cleanSkeletonCountDown = 300;
+
 
 
 
@@ -165,77 +168,71 @@ void XSTracker::track()
 void XSTracker::extractSkeleton()
 {
 
-
-
-	//get current skeleton number
-	//m_properties->countDetectedSkeleton = m_refData->nSkeletons;
-
-
-	//loop through all Xsens skeletons
-	//for (int i = 0; i < m_refData->nSkeletons; i++)
-
-
 	int avatarID = m_quaternianDataWithId->avatarId;
 
-	//for (int i = 0; i < 1; i++)
-	//{
+	// add avatarID to avatar list
+	m_avatarList[avatarID] = m_cleanSkeletonCountDown;
 
-		//true as long new skeleton will be added to the pool
-		bool createNewSkeleton = true;
+	// frame countdown for avatars that are not longer present
+	for (auto& entry : m_avatarList)
+	{
+		entry.second -= 1;
+	}
 
-		//loop through all MMH skeletons
-		for (auto itPoolSkeletons = m_skeletonPool.begin(); itPoolSkeletons != m_skeletonPool.end(); itPoolSkeletons++)
+
+	//true as long new skeleton will be added to the pool
+	bool createNewSkeleton = true;
+
+	//loop through all MMH skeletons
+	for (auto itPoolSkeletons = m_skeletonPool.begin(); itPoolSkeletons != m_skeletonPool.end(); itPoolSkeletons++)
+	{
+
+		//when skeletons have the same ID, the skeleton is alredy in pool and no new skeleton has to be created
+		//if (skData.skeletonID == itPoolSkeletons->first)
+		if (avatarID == itPoolSkeletons->first)
 		{
-			std::cout << "print skeleton Pool ID:  " << std::endl;
 
-			std::cout << m_skeletonPool[itPoolSkeletons->first].getSid() << std::endl;
+			//convert Xsens skeleton into MMH skeleton
 
-			//when skeletons have the same ID, the skeleton is alredy in pool and no new skeleton has to be created
-			//if (skData.skeletonID == itPoolSkeletons->first)
-			if (avatarID == itPoolSkeletons->first)
+			Skeleton* currSkeleton = parseSkeleton(m_quaternianDataWithId, avatarID, &m_skeletonPool[avatarID]);
+
+
+			if (currSkeleton != nullptr)
 			{
-
-				//convert Xsens skeleton into MMH skeleton
-
-				Skeleton* currSkeleton = parseSkeleton(m_quaternianDataWithId, avatarID, &m_skeletonPool[avatarID]);
-
-
-				if (currSkeleton != nullptr)
-				{
-					// update all joints of existing skeleon with new data
-					m_skeletonPool[avatarID].m_joints = currSkeleton->m_joints;
-
-				}
-
-				//delete temp skeleton object (FIXED MEMORY LEAK)
-				delete currSkeleton;
-
-				//no new skeleton has to be created
-				createNewSkeleton = false;
-
-				break;
+				// update all joints of existing skeleon with new data
+				m_skeletonPool[avatarID].m_joints = currSkeleton->m_joints;
 
 			}
 
-		}
+			//delete temp skeleton object (FIXED MEMORY LEAK)
+			delete currSkeleton;
 
+			//no new skeleton has to be created
+			createNewSkeleton = false;
 
-
-		// create new skeleton
-		if (createNewSkeleton)
-		{
-			Console::log("createNewSkeleton");
-
-			// create new skeleton and add it to the skeleton pool
-
-			m_skeletonPool.insert({ avatarID, *parseSkeleton(m_quaternianDataWithId, avatarID, new Skeleton()) });
-
-			//skeleton was added/removed, so UI updates
-			m_hasSkeletonPoolChanged = true;
-
-			Console::log("DataHandlerManager::extractSkeleton(): Created new skeleton with id = " + std::to_string(avatarID) + ".");
+			break;
 
 		}
+
+	}
+
+
+
+	// create new skeleton
+	if (createNewSkeleton)
+	{
+		Console::log("createNewSkeleton");
+
+		// create new skeleton and add it to the skeleton pool
+
+		m_skeletonPool.insert({ avatarID, *parseSkeleton(m_quaternianDataWithId, avatarID, new Skeleton()) });
+
+		//skeleton was added/removed, so UI updates
+		m_hasSkeletonPoolChanged = true;
+
+		Console::log("DataHandlerManager::extractSkeleton(): Created new skeleton with id = " + std::to_string(avatarID) + ".");
+
+	}
 
 	//}
 
@@ -385,63 +382,35 @@ void XSTracker::cleanSkeletonPool()
 	//all skeletons with ids in this list will be erased at the end of this method
 	std::list<int> idSkeletonsToErase;
 
-	// loop through all skeletons in pool
-	for (auto itPoolSkeletons = m_skeletonPool.begin(); itPoolSkeletons != m_skeletonPool.end(); itPoolSkeletons++)
+	int avatarToBeErased = -1;
+
+	//loop thorugh all Xsens avatars; if frameCountdown of avatar < 0 -> erase its skeleton
+
+	for (auto const& [id, frameCountdown] : m_avatarList)
 	{
+		if (frameCountdown < 0) {
+			//erase skeleton with this id
+			m_skeletonPool.erase(id);
 
-		// get current skeleton id
-		int idCurrPoolSkeleton = itPoolSkeletons->first;
+			//skeleton was added/removed, so UI updates
+			m_hasSkeletonPoolChanged = true;
 
-		bool isXSSkeletonInPool = false;
-
-		//loop thorugh all XS skeletons in frame
-		//for (int itXSSkeletons = 0; itXSSkeletons < m_refData->nSkeletons; itXSSkeletons++)
-		for (int itXSSkeletons = 0; itXSSkeletons < 5; itXSSkeletons++)
-		{
-
-			// if XS skeleton is in pool set isXSSkeletonInPool to true
-			if (idCurrPoolSkeleton == itXSSkeletons)
-			{
-
-				isXSSkeletonInPool = true;
-
-			}
-
-		}
-
-		//if current skeleton isn't in current data frame, delete it from the pool later
-		if (!isXSSkeletonInPool)
-		{
-
-			idSkeletonsToErase.push_back(idCurrPoolSkeleton);
+			Console::log("XSTracker::cleanSkeletonList(): Removed skeleton with id = " + std::to_string(id) + " from pool!");
+			
+			avatarToBeErased = id;
 
 		}
 
 	}
 
-
-
-	if (idSkeletonsToErase.empty()) {
-		return;
+	if (avatarToBeErased != -1) {
+		m_avatarList.erase(avatarToBeErased);
 	}
-
-	//loop through the removing list
-	for (int itIndexIdSkeletonsToErase = idSkeletonsToErase.front(); itIndexIdSkeletonsToErase < idSkeletonsToErase.back(); itIndexIdSkeletonsToErase++)
-	{
-
-
-		//erase skeleton with id
-		m_skeletonPool.erase(itIndexIdSkeletonsToErase);
-
-		//skeleton was added/removed, so UI updates
-		m_hasSkeletonPoolChanged = true;
-
-		Console::log("XSTracker::cleanSkeletonList(): Removed skeleton with id = " + std::to_string(itIndexIdSkeletonsToErase) + " from pool!");
-
-	}
-
 
 }
+
+
+
 
 Quaternionf XSTracker::convertXsensRotation(Quaternionf value)
 {

@@ -17,6 +17,7 @@
 #include <algorithm>
 #include "functional"
 #include <list>
+#include <set>
 
 
 
@@ -111,6 +112,23 @@ private:
 	*/
 	ParserManager::QuaternionDataWithId* m_quaternianDataWithId;
 
+
+	/*!
+	list of current Avatars
+	*/
+
+	std::map<int, int> m_avatarList;
+
+
+
+	/*!
+	skeleton clean after x frames without new data
+	*/
+
+	int m_cleanSkeletonCountDown;
+
+
+
 	/*!
 	 * empty override method for Tracker::init()
 	 * this tracker does initialization in  createClient()
@@ -142,7 +160,6 @@ private:
 	Skeleton* XSTracker::parseSkeleton(ParserManager::QuaternionDataWithId* quaternianDataWithId, int id, Skeleton* oldSkeletonData);
 	/*!
 	 * deletes all old skeletons from the skeleton pool
-	 * \param bodyFrame the k4a frame with all skeleton data
 	 */
 	void cleanSkeletonPool();
 
