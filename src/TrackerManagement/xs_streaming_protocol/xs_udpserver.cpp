@@ -46,6 +46,7 @@ UdpServer::UdpServer(XsString address, uint16_t port)
 	m_parserManager.reset(new ParserManager());
 	m_socket.reset(new XsSocket(IpProtocol::IP_UDP, NetworkLayerProtocol::NLP_IPV4));
 
+
 	XsResultValue res = m_socket->bind(m_hostName, m_port);
 
 	if (res == XRV_OK)
@@ -63,28 +64,28 @@ void UdpServer::readMessages()
 {
 	XsByteArray buffer;
 
-	//std::cout << "Starting receiving packets..." << std::endl << std::endl;
-
 
 	while (!m_stopping)
+
 	{
+	
 		int rv = m_socket->read(buffer);
 		//filter random buffer packages with just one joint
 		if (buffer.size() > 100) {
 			//assign new datagram if not empty
 			if (!m_parserManager->getDatagram(buffer)->kinematics->empty()) {	
 				m_udpLock.lock();
+
 				m_quaternionDatagram = m_parserManager->getDatagram(buffer);
+				
 				m_udpLock.unlock();
 
 			}
 		}
 
 		buffer.clear();
-		XsTime::msleep(1);
+		XsTime::msleep(0);
 	}
-
-	//std::cout << "Stopping receiving packets..." << std::endl << std::endl;
 
 	m_stopping = false;
 	m_started = false;

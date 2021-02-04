@@ -24,7 +24,7 @@ XSTracker::XSTracker(int id, NetworkManager* networkManager, ConfigManager* conf
 	m_properties->isEnabled = true;
 
 	//frame countdown for unused avatars
-	m_cleanSkeletonCountDown = 300;
+	m_cleanSkeletonCountDown = 1000;
 
 
 
