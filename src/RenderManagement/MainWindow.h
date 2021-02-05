@@ -10,6 +10,7 @@
 #include "QtWidgets/qtreewidget.h"
 #include "QtWidgets/qtablewidget.h"
 #include "QtWidgets/qlineedit.h"
+#include "QtWidgets/qcheckbox.h"
 #include "QtCore/qstringlistmodel.h"
 #include "QtCore/qstring.h"
 

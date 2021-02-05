@@ -4,6 +4,7 @@
 #include <thread>
 #include <mutex>
 #include <vector>
+#include <atomic>
 
 #include "MotionHubUtil/Skeleton.h"
 #include "MotionHubUtil/Console.h"
@@ -22,7 +23,37 @@ class  Tracker
 {
 
 public:
+	struct NullProperty
+	{
+		enum class Type {
+			INVALID,
+			BOOL,
+			INT,
+			FLOAT,
+			STRING
+		};
+		std::string name;
 
+		NullProperty(std::string name) : name(name) {};
+
+		virtual Type type() = 0 { return Type::INVALID; };
+	};
+
+	template<class T> struct Property : public NullProperty
+	{
+		T value;
+			
+		Property(std::string name, T value) : NullProperty(name), value(value) {};
+		
+		Type type() override {
+			if (std::is_same_v<T, bool>) return Type::BOOL;
+			else if (std::is_same_v<T, int>) return Type::INT;
+			else if (std::is_same_v<T, float>) return Type::FLOAT;
+			else if (std::is_same_v<T, std::string>) return Type::STRING;
+			else return Type::INVALID;
+		};
+	};
+	typedef NullProperty::Type PropertyType;
 	/*!
 	 * struct for containing tracker properties data  
 	 */
@@ -37,36 +68,30 @@ public:
 		 */
 		std::string name = "none";
 		/*!
-		 * the trackers tracking state
-		 */
-		bool isTracking = false;
-		/*!
-		 * the trackers enabling state 
-		 */
-		bool isEnabled = false;
-		/*!
-		 * the number of skeletons detected by this tracker
-		 */
-		int countDetectedSkeleton = 0;
-
-		/*!
 		 * offset of the trackers position
 		 * 
 		 */
 		Vector3f positionOffset;
-
 		/*!
 		 * offset of the trackers rotation
 		 *
 		 */
 		Vector3f rotationOffset;
-
 		/*!
 		 * offset of the trackers scale
 		 *
 		 */
 		Vector3f scaleOffset;
+		/*!
+		 * map containing additional properties. Properties have to be inserted in the Tracker's constructor
+		 */
+		std::map<std::string, NullProperty*> additionalProperties;
 
+		~Properties() {
+			if (!additionalProperties.empty()) {
+				for (const auto& kv : additionalProperties) delete kv.second;
+			}
+		}
 	};
 
 	/*!
@@ -80,15 +105,15 @@ public:
 	/*!
 	 * starts Tracker in new temporary thread
 	 */
-	virtual void start() = 0;
+	virtual void start();
 	/*!
 	 *  sets m_tracking to false
 	 */
-	virtual void stop() = 0;
+	virtual void stop();
 	/*!
 	 * resets the Trackers init data
 	 */
-	virtual void destroy() = 0;
+	virtual void destroy();
 	/*!
 	 * disable tracker, so it doesn't track skeleton data during tracking loop
 	 */
@@ -101,6 +126,14 @@ public:
 	 * deletes all skeletons which are not in the scene anymore 
 	 */
 	virtual void clean();
+	/*!
+	* checks if the tracker is enabled
+	*/
+	virtual bool isTracking();
+	/*!
+	* checks if the tracker is enabled
+	*/
+	virtual bool isEnabled();
 	/*!
 	 * checks if new skeleton date is available 
 	 * \return true when new skeleton data is available
@@ -123,7 +156,10 @@ public:
 	 * \param state
 	 */
 	virtual void setSkeletonPoolChanged(bool state);
-
+	/*!
+	* returns the number of skeletons  detected by this tracker
+	*/
+	virtual int getNumDetectedSkeletons();
 	/*!
 	 * getter for the trackers properties struct 
 	 * \return the trackers Property struct
@@ -201,7 +237,18 @@ public:
 
 
 protected:
-
+	/*!
+	* the trackers tracking state
+	 */
+	std::atomic<bool> m_isTracking = false;
+	/*!
+	 * the trackers enabling state
+	 */
+	std::atomic<bool> m_isEnabled = false;
+	/*!
+	 * the number of skeletons detected by this tracker
+	 */
+	int m_countDetectedSkeleton = 0;
 	/*!
 	 * the trackers property struct 
 	 */
@@ -209,11 +256,11 @@ protected:
 	/*!
 	 * is true after one completed tracking cycle
 	 */
-	bool m_isDataAvailable = false;
+	std::atomic<bool> m_isDataAvailable = false;
 	/*!
 	 * is true if skeleton was added or removed from pool
 	 */
-	bool m_hasSkeletonPoolChanged = false;
+	std::atomic<bool> m_hasSkeletonPoolChanged = false;
 	/*!
 	 * thread for track() method
 	 */

@@ -16,7 +16,7 @@ TrackerGroup::TrackerGroup(int id)
 	m_properties->name = "trackerGroup_" + std::to_string(id);
 
 	//default is enabled
-	m_properties->isEnabled = true;
+	m_isEnabled = true;
 
 
 	//set the offset values

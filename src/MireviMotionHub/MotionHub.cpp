@@ -61,7 +61,7 @@ void MotionHub::update()
 			{
 
 				// check if new skeleton data is available
-				if ((*itTracker)->getProperties()->isEnabled && (*itTracker)->isDataAvailable())
+				if ((*itTracker)->isDataAvailable())
 				{
 
 					//cache skeleton data of current tracker, so gesture- and network manager use current data

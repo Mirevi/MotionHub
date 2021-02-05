@@ -295,7 +295,7 @@ void GlWidget::updateSkeletonMeshTransform()
 	{
 
 		// update skeleton joint position and rotation if new data is available
-		if ((*itTracker)->getProperties()->isTracking && (*itTracker)->isDataAvailable())
+		if ((*itTracker)->isTracking() && (*itTracker)->isDataAvailable())
 		{
 
 			// get skeletonPoolCache from tracker and create skeletonPoolTempCopy

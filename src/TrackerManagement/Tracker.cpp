@@ -14,21 +14,20 @@ Tracker::Tracker()
 
 void Tracker::start()
 {
-
 	//isTracking is true, so update loop will continue tracking
-	m_properties->isTracking = true;
+	m_isTracking = true;
 	//start new thread for update loop
 	m_trackingThread = new std::thread(&Tracker::update, this);
-	m_trackingThread->detach();
-
 }
 
 void Tracker::stop()
 {
-
 	//sets isTracking to false, so update loop retruns after current frame
-	m_properties->isTracking = false;
+	m_isTracking = false;
 
+	//wait for tracking thread to terminate, then dispose of thread object
+	if (m_trackingThread->joinable()) m_trackingThread->join();
+	delete m_trackingThread;
 }
 
 void Tracker::destroy()
@@ -40,34 +39,24 @@ void Tracker::destroy()
 
 void Tracker::disable()
 {
-
-	//sets isTracking to false, so main loop doesn't check for new data
-	m_properties->isEnabled = false;
-
-	//pause this thread, so it doesn't skip cleaning 
-	std::this_thread::sleep_for(std::chrono::milliseconds(50));
-
-	//delete all skeletons from the pool
-	clean();
+	//sets isEnabled to false, so the trackingThread doesn't check for new data
+	m_isEnabled = false;
 
 	Console::log("Tracker::disable(): Disabled tracker with id = " + std::to_string(m_properties->id));
-
 }
 
 void Tracker::enable()
 {
-
-	//sets isTracking to true, so main loop checks for new data
-	m_properties->isEnabled = true;
+	//sets isEnabled to true, so the trackingThread checks for new data
+	m_isEnabled = true;
 
 	Console::log("Tracker::enable(): Enabled tracker with id = " + std::to_string(m_properties->id));
-
 }
 
 void Tracker::clean()
 {
 	//reset number of skeletons
-	m_properties->countDetectedSkeleton = 0;
+	m_countDetectedSkeleton = 0;
 
 	m_skeletonPoolLock.lock();
 	//clear skeleton pool
@@ -75,6 +64,16 @@ void Tracker::clean()
 
 	m_skeletonPoolLock.unlock();
 
+}
+
+bool Tracker::isTracking()
+{
+	return m_isTracking;
+}
+
+bool Tracker::isEnabled()
+{
+	return m_isEnabled;
 }
 
 void Tracker::cacheSkeletonData()
@@ -140,6 +139,11 @@ void Tracker::setSkeletonPoolChanged(bool state)
 
 	m_hasSkeletonPoolChanged = state;
 
+}
+
+int Tracker::getNumDetectedSkeletons()
+{
+	return m_countDetectedSkeleton;
 }
 
 Tracker::Properties* Tracker::getProperties()
@@ -274,7 +278,7 @@ std::vector<Vector3f> Tracker::resetOffsets()
 void Tracker::init()
 {
 
-	//Console::log("Tracker::init()");
+	Console::log("Tracker::init()");
 
 
 }
@@ -286,33 +290,24 @@ void Tracker::update()
 	// track while tracking is true
 	while (m_properties->isTracking)
 	{
+		// if no new data is procressed
+		if (!m_isDataAvailable && m_isEnabled) {
+			// get new data
+			track();
 
-
-		// get new data
-		track();
-
-
-		//send Skeleton Pool to NetworkManager
-		m_networkManager->sendSkeletonPool(&getSkeletonPoolCache(), m_properties->id);
-		//Recorder::instance().addSkeletonsToFrame(&m_skeletonPool);
-
-
+			// send Skeleton Pool to NetworkManager
+			if (m_networkManager != nullptr) m_networkManager->sendSkeletonPool(&m_skeletonPool, m_properties->id);
+		}
 	}
-
 	//clean skeleton pool after tracking
 	clean();
-
-
 }
 
 void Tracker::track()
 {
-
 	Console::log("Tracker::track()");
 
-
 	m_isDataAvailable = true;
-
 }
 
 #pragma endregion

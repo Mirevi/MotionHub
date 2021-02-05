@@ -3,31 +3,17 @@
 // default constructor
 AKTracker::AKTracker(int id, int idCam, NetworkManager* networkManager, ConfigManager* configManager)
 {
-
-
 	uint32_t device_count = k4a_device_get_installed_count();
 
-	if (device_count > idCam)
-	{
-
+	if (device_count > idCam) {
 		// initialize azure kinect camera and body tracker
 		init();
-
-	}
-	else
-	{
-
+	} else {
 		Console::logError("No connected Azure Kinect found");
 
 		valid = false;
-
 		return;
-
 	}
-
-	//create new Properties object
-	m_properties = new Properties();
-
 	//assign id and name to properties
 	m_properties->id = id;
 	m_properties->name = "tracker_azureKinect_" + std::to_string(id);
@@ -39,55 +25,12 @@ AKTracker::AKTracker(int id, int idCam, NetworkManager* networkManager, ConfigMa
 	m_idCam = idCam;
 
 	//tracker is enabled
-	m_properties->isEnabled = true;
-	
-
-	
-	
+	m_isEnabled = true;
 
 	//set default values for offsets
-	setPositionOffset(Vector3f(configManager->getFloatFromStartupConfig("xPosAzure"),
-							   configManager->getFloatFromStartupConfig("yPosAzure"),
-							   configManager->getFloatFromStartupConfig("zPosAzure")
-							  ));
-
-	setRotationOffset(Vector3f(configManager->getFloatFromStartupConfig("xRotAzure"),
-							   configManager->getFloatFromStartupConfig("yRotAzure"),
-							   configManager->getFloatFromStartupConfig("zRotAzure")
-							  ));
-
-	setScaleOffset(Vector3f(configManager->getFloatFromStartupConfig("xSclAzure"),
-							configManager->getFloatFromStartupConfig("ySclAzure"),
-							configManager->getFloatFromStartupConfig("zSclAzure")
-							));
-
-
-
-
-
-
-
-}
-
-// start azure kinect tracker
-void AKTracker::start()
-{
-
-	// set tracking to true
-	m_properties->isTracking = true;
-
-	// start tracking thread and detach the thread from method scope runtime
-	m_trackingThread = new std::thread(&AKTracker::update, this);
-	m_trackingThread->detach();
-	
-}
-
-// stop tracking loop / thread
-void AKTracker::stop()
-{
-	//is not tracking, so the update loop exits after current loop
-	m_properties->isTracking = false;
-
+	setPositionOffset(Vector3f(configManager->getFloatFromStartupConfig("xPosAzure"), configManager->getFloatFromStartupConfig("yPosAzure"), configManager->getFloatFromStartupConfig("zPosAzure")));
+	setRotationOffset(Vector3f(configManager->getFloatFromStartupConfig("xRotAzure"), configManager->getFloatFromStartupConfig("yRotAzure"), configManager->getFloatFromStartupConfig("zRotAzure")));
+	setScaleOffset(Vector3f(configManager->getFloatFromStartupConfig("xSclAzure"), configManager->getFloatFromStartupConfig("ySclAzure"), configManager->getFloatFromStartupConfig("zSclAzure")));
 }
 
 // shutdown and destroy azure kinect tracker
@@ -204,7 +147,7 @@ void AKTracker::track()
 			cleanSkeletonPool(&body_frame);
 
 			// remember to release the body frame once you finish using it
-			k4abt_frame_release(body_frame); 
+			k4abt_frame_release(body_frame);
 
 			//count tracking cycles
 			m_trackingCycles++;
@@ -245,16 +188,14 @@ void AKTracker::track()
 // extract skeletons from body frame and parse them into default skeleton pool
 void AKTracker::extractSkeleton(k4abt_frame_t* body_frame)
 {
-
 	// set number of detected bodies in frame
-	m_properties->countDetectedSkeleton = k4abt_frame_get_num_bodies(*body_frame);
+	m_countDetectedSkeleton = k4abt_frame_get_num_bodies(*body_frame);
 
 	//Console::log(std::to_string(m_numBodies));
 
 	// skeleton loop
-	for (int indexSkeleton = 0; indexSkeleton < m_properties->countDetectedSkeleton; indexSkeleton++)
+	for (int indexSkeleton = 0; indexSkeleton < m_countDetectedSkeleton; indexSkeleton++)
 	{
-
 		// get the skeleton and the id
 		k4abt_skeleton_t skeleton;
 		k4abt_frame_get_body_skeleton(*body_frame, indexSkeleton, &skeleton);
@@ -316,9 +257,9 @@ Skeleton* AKTracker::parseSkeleton(k4abt_skeleton_t* skeleton, int id)
 		k4a_float3_t skeleton_position = skeleton->joints[jointIndex].position;
 		k4a_quaternion_t skeleton_rotation = skeleton->joints[jointIndex].orientation;
 
-		
+
 		// convert from k4a Vectors and quaternions into Eigen vector and quaternion with coordinate transformation
-		Vector4f pos	= m_offsetMatrix * Vector4f(skeleton_position.xyz.x, skeleton_position.xyz.y, skeleton_position.xyz.z, 1);
+		Vector4f pos = m_offsetMatrix * Vector4f(skeleton_position.xyz.x, skeleton_position.xyz.y, skeleton_position.xyz.z, 1);
 		Quaternionf rot = Quaternionf(skeleton_rotation.wxyz.w, skeleton_rotation.wxyz.x, skeleton_rotation.wxyz.y, skeleton_rotation.wxyz.z);
 
 		// get joint confidence level from azure kinect body tracker API
@@ -329,120 +270,118 @@ Skeleton* AKTracker::parseSkeleton(k4abt_skeleton_t* skeleton, int id)
 		switch (jointIndex)
 		{
 
-			case 0:
-				 rot *= azureKinectEulerToQuaternion(Vector3f(90, -90, 0));
-				currSkeleton->m_joints.insert({ Joint::HIPS, Joint(pos, rot, confidence) });
-				break;
+		case 0:
+			rot *= azureKinectEulerToQuaternion(Vector3f(90, -90, 0));
+			currSkeleton->m_joints.insert({ Joint::HIPS, Joint(pos, rot, confidence) });
+			break;
 
-			case 1:
-				 rot *= azureKinectEulerToQuaternion(Vector3f(90, -90, 0));
-				currSkeleton->m_joints.insert({ Joint::SPINE, Joint(pos, rot, confidence) });
-				break;
+		case 1:
+			rot *= azureKinectEulerToQuaternion(Vector3f(90, -90, 0));
+			currSkeleton->m_joints.insert({ Joint::SPINE, Joint(pos, rot, confidence) });
+			break;
 
-			case 2:
-				 rot *= azureKinectEulerToQuaternion(Vector3f(90, -90, 0));
-				currSkeleton->m_joints.insert({ Joint::CHEST, Joint(pos, rot, confidence) });
-				break;
-				 
-			case 3:
-				 rot *= azureKinectEulerToQuaternion(Vector3f(90, -90, 0));
-				currSkeleton->m_joints.insert({ Joint::NECK, Joint(pos, rot, confidence) });
-				break;
+		case 2:
+			rot *= azureKinectEulerToQuaternion(Vector3f(90, -90, 0));
+			currSkeleton->m_joints.insert({ Joint::CHEST, Joint(pos, rot, confidence) });
+			break;
 
-			case 4:
-				 rot *= azureKinectEulerToQuaternion(Vector3f(90, 0, 0));
-				currSkeleton->m_joints.insert({ Joint::SHOULDER_L, Joint(pos, rot, confidence) });
-				break;
+		case 3:
+			rot *= azureKinectEulerToQuaternion(Vector3f(90, -90, 0));
+			currSkeleton->m_joints.insert({ Joint::NECK, Joint(pos, rot, confidence) });
+			break;
 
-			case 5:
-				 rot *= azureKinectEulerToQuaternion(Vector3f(90, 0, 0));
-				currSkeleton->m_joints.insert({ Joint::ARM_L, Joint(pos, rot, confidence) });
-				break;
+		case 4:
+			rot *= azureKinectEulerToQuaternion(Vector3f(90, 0, 0));
+			currSkeleton->m_joints.insert({ Joint::SHOULDER_L, Joint(pos, rot, confidence) });
+			break;
 
-			case 6:
-				 rot *= azureKinectEulerToQuaternion(Vector3f(90, 0, 0));
-				currSkeleton->m_joints.insert({ Joint::FOREARM_L, Joint(pos, rot, confidence) });
-				break;
+		case 5:
+			rot *= azureKinectEulerToQuaternion(Vector3f(90, 0, 0));
+			currSkeleton->m_joints.insert({ Joint::ARM_L, Joint(pos, rot, confidence) });
+			break;
 
-			case 7:
-				 rot *= azureKinectEulerToQuaternion(Vector3f(0, 180, 180));
-				currSkeleton->m_joints.insert({ Joint::HAND_L, Joint(pos, rot, confidence) });
-				break;
+		case 6:
+			rot *= azureKinectEulerToQuaternion(Vector3f(90, 0, 0));
+			currSkeleton->m_joints.insert({ Joint::FOREARM_L, Joint(pos, rot, confidence) });
+			break;
 
-			case 11:
-				 rot *= azureKinectEulerToQuaternion(Vector3f(270, 0, 0));
-				currSkeleton->m_joints.insert({ Joint::SHOULDER_R, Joint(pos, rot, confidence) });
-				break;
+		case 7:
+			rot *= azureKinectEulerToQuaternion(Vector3f(0, 180, 180));
+			currSkeleton->m_joints.insert({ Joint::HAND_L, Joint(pos, rot, confidence) });
+			break;
 
-			case 12:
-				 rot *= azureKinectEulerToQuaternion(Vector3f(270, 0, 0));
-				currSkeleton->m_joints.insert({ Joint::ARM_R, Joint(pos, rot, confidence) });
-				break;
+		case 11:
+			rot *= azureKinectEulerToQuaternion(Vector3f(270, 0, 0));
+			currSkeleton->m_joints.insert({ Joint::SHOULDER_R, Joint(pos, rot, confidence) });
+			break;
 
-			case 13:
-				 rot *= azureKinectEulerToQuaternion(Vector3f(270, 0, 0));
-				currSkeleton->m_joints.insert({ Joint::FOREARM_R, Joint(pos, rot, confidence) });
-				break;
+		case 12:
+			rot *= azureKinectEulerToQuaternion(Vector3f(270, 0, 0));
+			currSkeleton->m_joints.insert({ Joint::ARM_R, Joint(pos, rot, confidence) });
+			break;
 
-			case 14:
-				 rot *= azureKinectEulerToQuaternion(Vector3f(0, 0, 0));
-				currSkeleton->m_joints.insert({ Joint::HAND_R, Joint(pos, rot, confidence) });
-				break;
+		case 13:
+			rot *= azureKinectEulerToQuaternion(Vector3f(270, 0, 0));
+			currSkeleton->m_joints.insert({ Joint::FOREARM_R, Joint(pos, rot, confidence) });
+			break;
 
-			case 18:
-				 rot *= azureKinectEulerToQuaternion(Vector3f(90, -90, 0));
-				currSkeleton->m_joints.insert({ Joint::UPLEG_L, Joint(pos, rot, confidence) });
-				break;
+		case 14:
+			rot *= azureKinectEulerToQuaternion(Vector3f(0, 0, 0));
+			currSkeleton->m_joints.insert({ Joint::HAND_R, Joint(pos, rot, confidence) });
+			break;
 
-			case 19:
-				 rot *= azureKinectEulerToQuaternion(Vector3f(90, -90, 0));
-				currSkeleton->m_joints.insert({ Joint::LEG_L, Joint(pos, rot, confidence) });
-				break;
+		case 18:
+			rot *= azureKinectEulerToQuaternion(Vector3f(90, -90, 0));
+			currSkeleton->m_joints.insert({ Joint::UPLEG_L, Joint(pos, rot, confidence) });
+			break;
 
-			case 20:
-				 rot *= azureKinectEulerToQuaternion(Vector3f(90, -90, 0));
-				currSkeleton->m_joints.insert({ Joint::FOOT_L, Joint(pos, rot, confidence) });
-				break;
+		case 19:
+			rot *= azureKinectEulerToQuaternion(Vector3f(90, -90, 0));
+			currSkeleton->m_joints.insert({ Joint::LEG_L, Joint(pos, rot, confidence) });
+			break;
 
-			case 21:
-				 rot *= azureKinectEulerToQuaternion(Vector3f(0, -90, 0));
-				currSkeleton->m_joints.insert({ Joint::TOE_L, Joint(pos, rot, confidence) });
-				break;
+		case 20:
+			rot *= azureKinectEulerToQuaternion(Vector3f(90, -90, 0));
+			currSkeleton->m_joints.insert({ Joint::FOOT_L, Joint(pos, rot, confidence) });
+			break;
 
-			case 22:
-				 rot *= azureKinectEulerToQuaternion(Vector3f(-90, -90, 0));
-				currSkeleton->m_joints.insert({ Joint::UPLEG_R, Joint(pos, rot, confidence) });
-				break;
+		case 21:
+			rot *= azureKinectEulerToQuaternion(Vector3f(0, -90, 0));
+			currSkeleton->m_joints.insert({ Joint::TOE_L, Joint(pos, rot, confidence) });
+			break;
 
-			case 23:
-				 rot *= azureKinectEulerToQuaternion(Vector3f(-90, -90, 0));
-				currSkeleton->m_joints.insert({ Joint::LEG_R, Joint(pos, rot, confidence) });
-				break;
+		case 22:
+			rot *= azureKinectEulerToQuaternion(Vector3f(-90, -90, 0));
+			currSkeleton->m_joints.insert({ Joint::UPLEG_R, Joint(pos, rot, confidence) });
+			break;
 
-			case 24:
-				 rot *= azureKinectEulerToQuaternion(Vector3f(-90, -90, 0));
-				currSkeleton->m_joints.insert({ Joint::FOOT_R, Joint(pos, rot, confidence) });
-				break;
+		case 23:
+			rot *= azureKinectEulerToQuaternion(Vector3f(-90, -90, 0));
+			currSkeleton->m_joints.insert({ Joint::LEG_R, Joint(pos, rot, confidence) });
+			break;
 
-			case 25:
-				 rot *= azureKinectEulerToQuaternion(Vector3f(0, 90, 180));
-				currSkeleton->m_joints.insert({ Joint::TOE_R, Joint(pos, rot, confidence) });
-				break;
+		case 24:
+			rot *= azureKinectEulerToQuaternion(Vector3f(-90, -90, 0));
+			currSkeleton->m_joints.insert({ Joint::FOOT_R, Joint(pos, rot, confidence) });
+			break;
 
-			case 26:
-				 rot *= azureKinectEulerToQuaternion(Vector3f(90, -90, 0));
-				currSkeleton->m_joints.insert({ Joint::HEAD, Joint(pos, rot, confidence) });
-				break;
+		case 25:
+			rot *= azureKinectEulerToQuaternion(Vector3f(0, 90, 180));
+			currSkeleton->m_joints.insert({ Joint::TOE_R, Joint(pos, rot, confidence) });
+			break;
 
-			default:
-				break;
+		case 26:
+			rot *= azureKinectEulerToQuaternion(Vector3f(90, -90, 0));
+			currSkeleton->m_joints.insert({ Joint::HEAD, Joint(pos, rot, confidence) });
+			break;
+
+		default:
+			break;
 		}
 	}
 
 	// set body heigt based on head position
 	currSkeleton->setHeight(currSkeleton->m_joints[Joint::HEAD].getJointPosition().y());
-
-
 
 
 	// return parsed default skeleton
@@ -459,14 +398,14 @@ void AKTracker::cleanSkeletonPool(k4abt_frame_t* bodyFrame)
 
 	// loop through all skeletons in pool
 	for (auto itPoolSkeletons = m_skeletonPool.begin(); itPoolSkeletons != m_skeletonPool.end(); itPoolSkeletons++)
-	{	
+	{
 
 		// get current skeleton id
 		int idCurrPoolSkeleton = itPoolSkeletons->first;
 		bool isK4aSkeletonInPool = false;
 
 		//loop thorugh all k4a skeletons in frame
-		for (int indexK4aSkeleton = 0; indexK4aSkeleton < m_properties->countDetectedSkeleton; indexK4aSkeleton++)
+		for (int indexK4aSkeleton = 0; indexK4aSkeleton < m_countDetectedSkeleton; indexK4aSkeleton++)
 		{
 			// current k4a skeleton id
 			int idCurrK4aSkeleton = k4abt_frame_get_body_id(*bodyFrame, indexK4aSkeleton);
@@ -512,8 +451,8 @@ Quaternionf AKTracker::azureKinectEulerToQuaternion(Vector3f euler)
 
 	//calculate rotation quaternion
 	qRotation = AngleAxisf(euler.x() * M_PI / 180, Vector3f::UnitX())
-			  * AngleAxisf(euler.y() * M_PI / 180, Vector3f::UnitY())
-			  * AngleAxisf(euler.z() * M_PI / 180, Vector3f::UnitZ());
+		  * AngleAxisf(euler.y() * M_PI / 180, Vector3f::UnitY())
+		  * AngleAxisf(euler.z() * M_PI / 180, Vector3f::UnitZ());
 
 	//invert z-compunent (this works for our left handed coordinate system)
 	qRotation = Quaternionf(qRotation.w(), qRotation.x(), qRotation.y(), -qRotation.z());
