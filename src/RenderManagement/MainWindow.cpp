@@ -115,9 +115,9 @@ void MainWindow::updateInspector()
 
 	}
 
-	//get properties of selected tracker
-	Tracker::Properties* trackerProperties = m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->getProperties();
-
+	//get selected tracker and its properties
+	Tracker* tracker = m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList);
+	Tracker::Properties* trackerProperties = tracker->getProperties();
 	//Console::logWarning("MainWindow::updateInspector()");
 
 	//set ID and name in inspector
@@ -126,7 +126,7 @@ void MainWindow::updateInspector()
 	ui->tableWidget_inspector->item(1, 1)->setText(trackerProperties->name.c_str());
 
 	//check if tracker is tracking and set checkbox in inspector
-	if (trackerProperties->isTracking)
+	if (tracker->isTracking())
 	{
 		
 		ui->tableWidget_inspector->item(2, 1)->setCheckState(Qt::Checked);
@@ -140,7 +140,7 @@ void MainWindow::updateInspector()
 	}
 
 	//check if tracker is enabled and set checkbox in inspector
-	if (trackerProperties->isEnabled)
+	if (tracker->isEnabled())
 	{
 
 		ui->tableWidget_inspector->item(3, 1)->setCheckState(Qt::Checked);
@@ -154,7 +154,7 @@ void MainWindow::updateInspector()
 	}
 
 	//set skeleton count in inspector
-	ui->tableWidget_inspector->item(4, 1)->setText(std::to_string(trackerProperties->countDetectedSkeleton).c_str());
+	ui->tableWidget_inspector->item(4, 1)->setText(std::to_string(tracker->getNumDetectedSkeletons()).c_str());
 
 	//refresh the inspector to show new content
 	ui->tableWidget_inspector->update();
@@ -193,8 +193,9 @@ void MainWindow::drawInspector()
 	//reset the inspector
 	clearInspector();
 
-	//get properties of selected tracker
-	Tracker::Properties* trackerProperties = m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->getProperties();
+	//get selected tracker and its properties
+	Tracker* tracker = m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList);
+	Tracker::Properties* trackerProperties = tracker->getProperties();
 
 	//add ID row to inspector
 	addRowToInspector("id", std::to_string(trackerProperties->id));
@@ -212,7 +213,7 @@ void MainWindow::drawInspector()
 	ui->tableWidget_inspector->item(2, 1)->setFlags(Qt::NoItemFlags);
 
 	//insert checkbox into row, checked if tracker is tracking
-	if (trackerProperties->isTracking)
+	if (tracker->isTracking())
 	{
 		ui->tableWidget_inspector->item(2, 1)->setCheckState(Qt::Checked);
 	}
@@ -226,7 +227,7 @@ void MainWindow::drawInspector()
 	ui->tableWidget_inspector->item(3, 0)->setFlags(Qt::NoItemFlags);
 
 	//insert checkbox into row, checked if tracker is enabled
-	if (trackerProperties->isEnabled)
+	if (tracker->isEnabled())
 	{
 		ui->tableWidget_inspector->item(3, 1)->setCheckState(Qt::Checked);
 	}		
@@ -236,7 +237,7 @@ void MainWindow::drawInspector()
 	}
 	
 	//add skeleon count row to inspector
-	addRowToInspector("countDetectedSkeleton", std::to_string(trackerProperties->countDetectedSkeleton));
+	addRowToInspector("countDetectedSkeleton", std::to_string(tracker->getNumDetectedSkeletons()));
 	ui->tableWidget_inspector->item(4, 0)->setFlags(Qt::NoItemFlags);
 	ui->tableWidget_inspector->item(4, 1)->setFlags(Qt::NoItemFlags);
 
@@ -307,9 +308,47 @@ void MainWindow::drawInspector()
 	addRowToInspector("scale offset z", "");
 	ui->tableWidget_inspector->setCellWidget(13, 1, m_inputFieldPool.at("scaleZ"));
 
+	//add additional properties
+	int numAdditionalProperties = 0;
+	for (const auto& kv : trackerProperties->additionalProperties)
+	{
+		if (kv.second->type() == Tracker::PropertyType::INVALID) continue;
+		else if (kv.second->type() == Tracker::PropertyType::BOOL) {
+			//Console::log("Property type: BOOL");
+			QCheckBox* checkBox = new QCheckBox(this);
+			if (((Tracker::Property<bool>*) kv.second)->value) checkBox->setChecked(true);
+			connect(checkBox, &QCheckBox::clicked, [=](bool state) { ((Tracker::Property<bool>*) kv.second)->value = state; Console::log(std::to_string(((Tracker::Property<bool>*) kv.second)->value)); });
+			addRowToInspector(kv.second->name, "");
+			ui->tableWidget_inspector->setCellWidget(14 + numAdditionalProperties, 1, checkBox);
+		}
+		else if (kv.second->type() == Tracker::PropertyType::INT) {
+			//Console::log("Property type: INT");
+			m_inputFieldPool.insert({ kv.first, new QLineEdit(toQString(((Tracker::Property<int>*) kv.second)->value), this) });
+			m_inputFieldPool.at(kv.first)->setValidator(new QIntValidator(this));
+			connect(m_inputFieldPool.at(kv.first), &QLineEdit::textEdited, [=](const QString& text) { ((Tracker::Property<int>*) kv.second)->value = text.toInt(); });
+			addRowToInspector(kv.second->name, "");
+			ui->tableWidget_inspector->setCellWidget(14 + numAdditionalProperties, 1, m_inputFieldPool.at(kv.first));
+		}
+		else if (kv.second->type() == Tracker::PropertyType::FLOAT)	{
+			//Console::log("Property type: FLOAT");
+			m_inputFieldPool.insert({ kv.first, new QLineEdit(toQString(((Tracker::Property<float>*) kv.second)->value), this) });
+			m_inputFieldPool.at(kv.first)->setValidator(new QDoubleValidator(this));
+			connect(m_inputFieldPool.at(kv.first), &QLineEdit::textEdited, [=](const QString& text) { ((Tracker::Property<float>*) kv.second)->value = text.toFloat(); });
+			addRowToInspector(kv.second->name, "");
+			ui->tableWidget_inspector->setCellWidget(14 + numAdditionalProperties, 1, m_inputFieldPool.at(kv.first));
+		}
+		else if (kv.second->type() == Tracker::PropertyType::STRING) {
+			//Console::log("Property type: STRING");
+			m_inputFieldPool.insert({ kv.first, new QLineEdit(((Tracker::Property<std::string>*) kv.second)->value.c_str(), this) });
+			connect(m_inputFieldPool.at(kv.first), &QLineEdit::textEdited, [=](const QString& text) { ((Tracker::Property<std::string>*) kv.second)->value = text.toStdString(); });
+			addRowToInspector(kv.second->name, "");
+			ui->tableWidget_inspector->setCellWidget(14 + numAdditionalProperties, 1, m_inputFieldPool.at(kv.first));
+		}
+		numAdditionalProperties++;
+	}
 
 	//disable item selection on all table cells
-	for (int i = 5; i < 14; i++)
+	for (int i = 5; i < 14 + numAdditionalProperties; i++)
 	{
 
 		ui->tableWidget_inspector->item(i, 0)->setFlags(Qt::NoItemFlags);

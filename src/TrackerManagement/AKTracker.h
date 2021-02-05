@@ -39,15 +39,6 @@ public:
 	 * \param idCam the cameras id number
 	 */
 	AKTracker(int id, int idCam, NetworkManager* networkManager, ConfigManager* configManager);
-
-	/*!
-	 * calls the start() method of the base class which sets m_tracking to true 
-	 */
-	void start() override;
-	/*!
-	* executes the stop() method of the base class which sets m_tracking to false
-	*/
-	void stop() override;
 	/*!
 	 * stops and closes tracker and camera
 	 */
@@ -87,10 +78,6 @@ private:
 	 * \param configDevice configuration parameters, standart: DISABLE_ALL
 	 */
 	void init() override;
-	/*!
-	 * tracking loop 
-	 */
-	void update() override;
 	/*!
 	 * starts tracking by getting the capture result and body frame
 	 * calls updateSkeletons(...)

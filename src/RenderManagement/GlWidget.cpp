@@ -234,7 +234,7 @@ void GlWidget::updateSkeletonMeshCount()
 
 		std::map<int, Skeleton> skeletonPoolTempCopy = (*itTracker)->getSkeletonPoolCache();
 
-		if ((*itTracker)->getProperties()->isTracking)
+		if ((*itTracker)->isTracking())
 		{
 
 			int skeletonPoolSize = skeletonPoolTempCopy.size();
@@ -277,7 +277,7 @@ void GlWidget::updateSkeletonMeshTransform()
 	{
 
 		// update skeleton joint position and rotation if new data is available
-		if ((*itTracker)->getProperties()->isTracking && (*itTracker)->isDataAvailable())
+		if ((*itTracker)->isTracking() && (*itTracker)->isDataAvailable())
 		{
 
 			std::map<int, Skeleton> skeletonPoolTempCopy = (*itTracker)->getSkeletonPoolCache();

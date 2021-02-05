@@ -25,9 +25,9 @@ public:
 	/*!
 	 * constructor with properties for checking members
 	 * 
-	 * \param properties DataHandler needs to check for isTracking
+	 * \param tracker DataHandler needs to check for isTracking
 	 */
-	DataHandlerManager(Tracker::Properties* properties);
+	DataHandlerManager(Tracker* tracker);
 	/*!
 	 * called by NatNet Client via callback
 	 * receives Data from the server
@@ -56,7 +56,7 @@ private:
 	 * properties container of OTTracker
 	 * 
 	 */
-	static Tracker::Properties* m_properties;
+	static Tracker* m_tracker;
 	/*!
 	 * contains frame data containing current skeletons
 	 * 

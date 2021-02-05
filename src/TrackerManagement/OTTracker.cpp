@@ -1,21 +1,16 @@
 #include "OTTracker.h"
 #include "DataHandlerManager.h"
 
-
+#pragma once
 
 OTTracker::OTTracker()
 {
 
 }
 
+
 OTTracker::OTTracker(int id, NetworkManager* networkManager, ConfigManager* configManager)
 {
-
-
-
-	//create new Properties object
-	m_properties = new Properties();
-
 	//assign id and name to properties
 	m_properties->id = id;
 	m_properties->name = "tracker_optiTrack_" + std::to_string(id);
@@ -23,31 +18,17 @@ OTTracker::OTTracker(int id, NetworkManager* networkManager, ConfigManager* conf
 	m_networkManager = networkManager;
 
 	//default is enabled
-	m_properties->isEnabled = true;
+	m_isEnabled = true;
 
 
 	//set default values for offsets
-	setPositionOffset(Vector3f(configManager->getFloatFromStartupConfig("xPosOptiTrack"),
-							   configManager->getFloatFromStartupConfig("yPosOptiTrack"),
-							   configManager->getFloatFromStartupConfig("zPosOptiTrack")
-	));																		 
-																			 
-	setRotationOffset(Vector3f(configManager->getFloatFromStartupConfig("xRotOptiTrack"),
-							   configManager->getFloatFromStartupConfig("yRotOptiTrack"),
-							   configManager->getFloatFromStartupConfig("zRotOptiTrack")
-	));
-
-	setScaleOffset(Vector3f(configManager->getFloatFromStartupConfig("xSclOptiTrack"),
-							configManager->getFloatFromStartupConfig("ySclOptiTrack"),
-							configManager->getFloatFromStartupConfig("zSclOptiTrack")
-	));
+	setPositionOffset(Vector3f(configManager->getFloatFromStartupConfig("xPosOptiTrack"), configManager->getFloatFromStartupConfig("yPosOptiTrack"), configManager->getFloatFromStartupConfig("zPosOptiTrack")));																		 																			 
+	setRotationOffset(Vector3f(configManager->getFloatFromStartupConfig("xRotOptiTrack"), configManager->getFloatFromStartupConfig("yRotOptiTrack"), configManager->getFloatFromStartupConfig("zRotOptiTrack")));
+	setScaleOffset(Vector3f(configManager->getFloatFromStartupConfig("xSclOptiTrack"), configManager->getFloatFromStartupConfig("ySclOptiTrack"), configManager->getFloatFromStartupConfig("zSclOptiTrack")));
 
 	m_idCam = -1;
-
-
-
-
 }
+
 
 OTTracker::~OTTracker()
 {
@@ -60,11 +41,6 @@ OTTracker::~OTTracker()
 
 void OTTracker::start()
 {
-
-
-	// set tracking to true
-	m_properties->isTracking = true;
-
 	//init NatNet client
 	createClient(iConnectionType);
 
@@ -72,16 +48,15 @@ void OTTracker::start()
 	//get reference to the frame data
 	m_refData = m_dataHandlerManager->getData();
 
-	//start update() in new thread
-	m_trackingThread = new std::thread(&OTTracker::update, this);
-	m_trackingThread->detach();
-
+	//start tracking in a new thread
+	Tracker::start();
 }
+
 
 void OTTracker::stop()
 {
 	//is not tracking, so the update loop exits 
-	m_properties->isTracking = false;
+	Tracker::stop();
 
 	//resets the client
 	m_client->Uninitialize();
@@ -89,17 +64,7 @@ void OTTracker::stop()
 	//dlete client and dataHandlerManager Objects
 	delete m_client;
 	delete m_dataHandlerManager;
-
 }
-
-void OTTracker::destroy()
-{
-
-	// delete this object
-	delete this;
-
-}
-
 
 
 int OTTracker::createClient(int iConnectionType)
@@ -115,7 +80,7 @@ int OTTracker::createClient(int iConnectionType)
 
 
 	//create dummy object for MessageHandler
-	m_dataHandlerManager = new DataHandlerManager(m_properties);
+	m_dataHandlerManager = new DataHandlerManager(this);
 
 	//set callback with dummy object
 	m_client->SetDataCallback(m_dataHandlerManager->DataHandler, m_client);	// this function will receive data from the server
@@ -179,35 +144,6 @@ void OTTracker::init()
 
 }
 
-void OTTracker::update()
-{
-	
-
-	// track while tracking is true
-	while (m_properties->isTracking)
-	{
-
-		// if no new data is procressed
-		if (!m_isDataAvailable)
-		{
-
-
-			// get new data
-			track();
-
-			m_networkManager->sendSkeletonPool(&m_skeletonPool, m_properties->id);
-
-
-		}
-
-
-	}
-
-	//clean skeleton pool after tracking
-	clean();
-
-	
-}
 
 void OTTracker::track()
 {
@@ -250,7 +186,7 @@ void OTTracker::extractSkeleton()
 
 
 	//get current skeleton number
-	m_properties->countDetectedSkeleton = m_refData->nSkeletons;
+	m_countDetectedSkeleton = m_refData->nSkeletons;
 
 	//loop through all OptiTrack skeletons
 	for (int i = 0; i < m_refData->nSkeletons; i++)

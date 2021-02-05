@@ -54,19 +54,12 @@ public:
 	/*!
 	 * calls the start() method of the base class which sets m_tracking to true
 	 */
-	 
-	 
-
 	void start() override;
 	/*!
 	 * sets m_tracking to false, so track() runs for the last time and exits,
 	 * after that, the tracking thread is stopped
 	 */
 	void stop() override;
-	/*!
-	 * resets the Trackers init data
-	 */
-	void destroy() override;
 
 	std::string getTrackerType() override;
 
@@ -125,10 +118,6 @@ private:
 	 * this tracker does initialization in  createClient()
 	 */
 	void init() override;
-	/*!
-	 * updade method used for tracker thread
-	 */
-	void update() override;
 	/*!
 	 * main tracking method
 	 * captures one frame of body tracking data and saves all data in the skeleton pool

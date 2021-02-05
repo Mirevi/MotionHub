@@ -1,15 +1,15 @@
 #include "DataHandlerManager.h"
 
 //redeclaration
-Tracker::Properties* DataHandlerManager::m_properties;
+Tracker* DataHandlerManager::m_tracker;
 sFrameOfMocapData* DataHandlerManager::m_data;
 std::atomic<bool> DataHandlerManager::m_isDataAvailable;
 
 
-DataHandlerManager::DataHandlerManager(Tracker::Properties* properties)
+DataHandlerManager::DataHandlerManager(Tracker* tracker)
 {
 
-	m_properties = properties;
+	m_tracker = tracker;
 	m_isDataAvailable = false;
 
 }
@@ -18,7 +18,7 @@ void DataHandlerManager::DataHandler(sFrameOfMocapData* data, void* pUserData)
 {
 
 	//check if Tracker is active or if it hasn't fetched data yet
-	if (!m_properties->isTracking || m_isDataAvailable.load())
+	if (!m_tracker->isTracking() || m_isDataAvailable.load())
 	{
 
 		return;
