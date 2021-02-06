@@ -8,16 +8,9 @@ ${Cudnn_INCLUDE_DIR}
 ${NATNET_SDK_INCLUDE_DIR}
 ${OSCp_INCLUDE_DIR}
 ${EIGEN_INCLUDE_DIR}
+${XsensMVNSDK_INCLUDE_DIR}
+${OSG_INCLUDE_DIR}
 )
-
-
-#link_directories(${CMAKE_BINARY_DIR}/lib "${CMAKE_BINARY_DIR}/lib" )
-#k4abt
-#link_directories(${CMAKE_BINARY_DIR}/lib "${CMAKE_BINARY_DIR}/lib" )
-#Cudnn
-#link_directories(${CMAKE_BINARY_DIR}/lib "${CMAKE_BINARY_DIR}/lib" )
-#NatNetSDK
-#link_directories(${CMAKE_BINARY_DIR}/lib "${CMAKE_BINARY_DIR}/lib" )
 
 #eigen
 link_directories(${CMAKE_BINARY_DIR}/lib
@@ -27,6 +20,8 @@ ${K4ABT_LIBRARIES_DIR}
 ${Cudnn_LIBRARIES_DIR}
 ${NATNET_SDK_LIBRARIES_DIR}
 ${OSCp_LIBRARIES_DIR}
+${OSG_LIBRARIES_DIR}
+${XsensMVNSDK_LIBRARIES_DIR}
 )
 
 # Find includes in corresponding build directories
@@ -61,4 +56,15 @@ target_link_libraries(RenderManagement
 	debug NatNetLibStatic optimized NatNetLibStatic
 	#debug Qt5Core${CMAKE_DEBUG_POSTFIX} optimized Qt5Core
 	#debug Qt5Widgets${CMAKE_DEBUG_POSTFIX} optimized Qt5Widgets
+	debug xstypes64 optimized xstypes64
+	
+	debug osg${CMAKE_DEBUG_POSTFIX} optimized osg
+	debug osgDB${CMAKE_DEBUG_POSTFIX} optimized osgDB
+	debug osgGA${CMAKE_DEBUG_POSTFIX} optimized osgGA
+	debug osgFX${CMAKE_DEBUG_POSTFIX} optimized osgFX
+	debug osgText${CMAKE_DEBUG_POSTFIX} optimized osgText
+	debug osgUtil${CMAKE_DEBUG_POSTFIX} optimized osgUtil
+	debug osgViewer${CMAKE_DEBUG_POSTFIX} optimized osgViewer
+	debug osgShadow${CMAKE_DEBUG_POSTFIX} optimized osgShadow
+	debug OpenThreads${CMAKE_DEBUG_POSTFIX} optimized OpenThreads
 )
