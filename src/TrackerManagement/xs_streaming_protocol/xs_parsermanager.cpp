@@ -94,7 +94,6 @@ ParserManager::QuaternionDataWithId* ParserManager::getDatagram(const XsByteArra
 		quaternionDatagramWithId->avatarId = (int)datagram->avatarId();
 		quaternionDatagramWithId->kinematics = datagram->getData();
 
-
 	}
 	else
 	{
@@ -103,9 +102,7 @@ ParserManager::QuaternionDataWithId* ParserManager::getDatagram(const XsByteArra
 
 	}
 
-
 	return quaternionDatagramWithId;
-
 
 }
 

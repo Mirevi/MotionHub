@@ -66,7 +66,6 @@ void UdpServer::readMessages()
 
 
 	while (!m_stopping)
-
 	{
 	
 		int rv = m_socket->read(buffer);
@@ -81,6 +80,9 @@ void UdpServer::readMessages()
 				m_udpLock.unlock();
 
 			}
+		}
+		else {
+			m_quaternionDatagram = NULL;
 		}
 
 		buffer.clear();
@@ -118,10 +120,8 @@ ParserManager::QuaternionDataWithId* UdpServer::getQuaternionDatagram()
 {	
 	//lock skeleton pool for the case, that getQuaternionDatagram() is called while this method reads from the cache
 	m_udpLock.lock();
-
 	//copy cache to local copy to unlock before return
 	ParserManager::QuaternionDataWithId* copyQuaData =  m_quaternionDatagram;
-
 	m_udpLock.unlock();
 
 	return copyQuaData;

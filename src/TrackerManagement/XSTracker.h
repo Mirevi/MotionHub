@@ -1,44 +1,15 @@
 #pragma once
 
 #include "Tracker.h"
-#include "MotionHubUtil/Console.h"
-
 #include "xs_streaming_protocol/xs_udpserver.h"
-
-#include "xs_streaming_protocol/xs_streamer.h"
-#include "DataHandlerManager.h"
-#include <conio.h>
-#include <xstypes/xstime.h>
-
-#include <atomic>
-#include <iostream>
 #include <map>
-#include <chrono>
-#include <algorithm>
-#include "functional"
-#include <list>
-#include <set>
-
-
-
 
 /*!
- * receives NatNet error mesages
+ * \class XSTracker
+ *
+ * \brief Manages Xsens Body Tracking
  *
  */
-void __cdecl MessageHandler(int msgType, char* msg);
-
-
-//Forward Declaration
-class DataHandlerManager;
-
-
- /*!
-  * \class XSTracker
-  *
-  * \brief Manages Xsens Body Tracking
-  *
-  */
 
 class XSTracker : public Tracker
 {
@@ -52,9 +23,9 @@ public:
 	XSTracker(int id, NetworkManager* networkManager, ConfigManager* configManager);
 
 	/*!
- * default destructor
- *
- */
+	* default destructor
+	*
+	*/
 	~XSTracker();
 	/*!
 	 * calls the start() method of the base class which sets m_tracking to true
@@ -76,58 +47,30 @@ public:
 private:
 
 	/*!
-	 * reference to frame data
-	 *
-	 */
-	sFrameOfMocapData* m_refData;
-
-
-	/*!
-	 * this clients IP address
-	 *
-	 */
-	char szMyIPAddress[128] = "127.0.0.1";
-	/*!
-	 * the NatNet servers IP address
-	 *
-	 */
-	char szServerIPAddress[128] = "127.0.0.1";
-	/*!
 	 * the UDP Server
 	 *
 	 */
 	UdpServer* m_UdpServer;
 
-	int analogSamplesPerMocapFrame = 0;
-
-
-
 	/*!
 	xsens datagram
 	*/
 	std::vector<QuaternionDatagram::Kinematics>* m_kinematics;
-	
+
 	/*!
 	xsens datagram with Avatar ID
 	*/
 	ParserManager::QuaternionDataWithId* m_quaternianDataWithId;
 
-
 	/*!
 	list of current Avatars
 	*/
-
 	std::map<int, int> m_avatarList;
-
-
 
 	/*!
 	skeleton clean after x frames without new data
 	*/
-
 	int m_cleanSkeletonCountDown;
-
-
 
 	/*!
 	 * empty override method for Tracker::init()
@@ -137,11 +80,11 @@ private:
 	/*!
 	 * tracking loop
 	 */
-	//void update() override;
-	/*!
-	 * starts tracking by getting the capture result and body frame
-	 * calls updateSkeletons(...)
-	 */
+	 //void update() override;
+	 /*!
+	  * starts tracking by getting the capture result and body frame
+	  * calls updateSkeletons(...)
+	  */
 	void track() override;
 	/*!
 	 * gets the current skeleton data from the current body frame
@@ -163,20 +106,5 @@ private:
 	 */
 	void cleanSkeletonPool();
 
-
-
-
-	/*
-	prints Datagram
-	*/
-	void XSTracker::printDatagram(ParserManager::QuaternionDataWithId* data);
-
-	/*!
-	 * rotates the input quaternion at the y-axis with 180 degree
-	 *
-	 * \param value input quaternion
-	 * \return rotated output quaternion
-	 */
-	Quaternionf convertXsensRotation(Quaternionf value);
 
 };
