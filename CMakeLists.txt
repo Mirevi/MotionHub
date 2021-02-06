@@ -44,6 +44,22 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 #FIND_PACKAGE( OSCPack REQUIRED )
 #FIND_PACKAGE( Cudnn REQUIRED )
 
+####################################################################################################
+###################################### HOW TO: PREPARE DEPS ########################################
+####################################################################################################
+# Only for developers who change the online dep files in this document:
+# Check, if all files up to date of the zip
+# Zip it
+# Upload it to the server
+# Create Hash: Power shell: "Get-FileHash XYZ.zip -Algorithm SHA256" 
+# Put the hash to lower case: Shortcut in Visual Studio to lower case is CTRL + U for selected text
+# Add new Hash (in lowercase) to this CMakeList
+# Check if the URL is still ok (usually the version will be incremented)
+# Check if the CHECK_IF_DEPS_EXIST path and file is correct
+# Commit and push changes (don't forget to add FindXYForMireviMotionHub.cmake)
+# At the End: Test and build it with cmake and Visual Studio
+####################################################################################################
+
 #QT5ForMireviMotionHub -> downloads dependency from web
 cmake_policy(SET CMP0020 NEW) #supresses CMake Warnings to CMP2020
 set(EXPECTED_SHA256 60ba1f48a17c9156fbe70d25c1bc65df9cf4a1d93d172d115ac85253e23d9c2d )
@@ -52,6 +68,14 @@ set(URL http://claymore.mirevi.com/qt-5920.zip)
 getsTheDepsNameFromURL("${URL}")
 set(CHECK_IF_DEPS_EXIST "${CURRENT_DEPS_PATH}/include/QtCore/5.9.2/QtCore/private/qcoreapplication_p.h")
 FIND_PACKAGE( Qt5ForMireviMotionHub REQUIRED )
+
+#OpenSceneGraph OSG
+set(EXPECTED_SHA256 0009b3f5f329b80d59de51763af6f09cc748033b7bb42c55a290f9cb5dbcf300 )
+set(CURRENT_DEPS_PATH ${CMAKE_BINARY_DIR}/../deps/osg-3.6.5/)
+set(URL http://claymore.mirevi.com/mirevimotionhub/osg-3.6.5.zip)
+getsTheDepsNameFromURL("${URL}")
+set(CHECK_IF_DEPS_EXIST "${CURRENT_DEPS_PATH}/include/osg/Object")
+FIND_PACKAGE( OSGForMireviMotionHub REQUIRED )
 
 # NatNetSDK (NaturalPoint Optitrack Tracking SDK - Streaming over network)
 set( EXPECTED_SHA256 29c71ebbc2374f4ddfb5af2fa45dd1c4c0def076c4a595ab3b046192bd86fd5d ) 
@@ -139,6 +163,10 @@ file(COPY ${K4ABT_LIBRARIES_DIR}/../bin/dnn_model_2_0.onnx 				DESTINATION ${CMA
 file(COPY ${K4ABT_INCLUDE_DIR}/../../tools/cublas64_100.dll				DESTINATION ${CMAKE_BINARY_DIR}/bin)
 file(COPY ${K4ABT_INCLUDE_DIR}/../../tools/cudart64_100.dll				DESTINATION ${CMAKE_BINARY_DIR}/bin)
 file(COPY deps/cudnn101windows10x64_76224/bin/cudnn64_7.dll 			DESTINATION ${CMAKE_BINARY_DIR}/bin)
+file(COPY deps/xsens-mvn-1.0.6/bin/xstypes64.dll						DESTINATION ${CMAKE_BINARY_DIR}/bin)
+
+file(COPY ${OSG_INCLUDE_DIR}/../bin/									DESTINATION ${CMAKE_BINARY_DIR}/bin FILES_MATCHING PATTERN "*.dll")
+file(COPY ${OSG_INCLUDE_DIR}/../bin/									DESTINATION ${CMAKE_BINARY_DIR}/bin FILES_MATCHING PATTERN "*.pdb")
 
 #file(REMOVE_RECURSE ${K4ABT_INCLUDE_DIR}/../../tools/)
 #file(REMOVE_RECURSE ${K4A_INCLUDE_DIR}/../../tools/)

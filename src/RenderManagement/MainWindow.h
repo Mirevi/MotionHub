@@ -14,6 +14,8 @@
 #include "QtCore/qstringlistmodel.h"
 #include "QtCore/qstring.h"
 
+#include <osg/Array>
+
 #include <math.h>
 #include <MotionHubUtil/MMHmath.h>
 

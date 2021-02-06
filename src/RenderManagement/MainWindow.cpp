@@ -7,7 +7,7 @@
 MainWindow::MainWindow(TrackerManager* trackerManager, ConfigManager* configManager, QWidget* parent)
  : QMainWindow(parent), ui(new Ui::MainWindow)
 {
-
+	osg::Vec4 test(1.0, 1.0, 1.0, 1.0);
 	// setup base class
 	ui->setupUi(this);
 
