@@ -20,15 +20,20 @@ void OSCListener::ProcessMessage(const osc::ReceivedMessage& m, const IpEndpoint
             std::string a1 = (arg++)->AsString();
 
 
-           std::cout << "received message with arguments: " << a1 << "\n";
+
+           if (a1 == "toggleRec")
+           {
+               //it has to be the instance because it is called via osc::OscPacketListener, which calls a function of another object
+               OSCListener::instance().m_toggleStatus = true;
+
+           }
         }
     }
     catch (osc::Exception& e)
     {
         // any parsing errors such as unexpected argument types, or 
         // missing arguments get thrown as exceptions.
-        std::cout << "error while parsing message: "
-            << m.AddressPattern() << ": " << e.what() << "\n";
+        std::cout << "error while parsing message: " << m.AddressPattern() << ": " << e.what() << "\n";
     }
 }
 
@@ -41,3 +46,20 @@ void OSCListener::start()
     s.RunUntilSigInt();
 
 }
+
+bool OSCListener::getToggleStatus()
+{
+    //saves the state so it can be reseted
+    bool status = m_toggleStatus;
+    m_toggleStatus = false;
+
+    return status;
+}
+
+
+OSCListener& OSCListener::instance()
+{
+    static OSCListener _instance;
+    return _instance;
+}
+

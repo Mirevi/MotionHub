@@ -678,38 +678,8 @@ void MainWindow::slotTimelineValueChanged(int newValue)
 
 void MainWindow::slotRecord()
 {
-	if (m_refTrackerManager->isTracking())
-	{	
 
-		if (Recorder::instance().isRecording())
-		{
-			//start saving progress in new thread
-			std::thread* saveThread = new std::thread(&MainWindow::saveRecord, this);
-			saveThread->detach();
-
-			//get frame count
-			int max = Recorder::instance().getFrameCount();
-
-			//Console::log("MainWindow::slotRecord(): start progress window");
-
-			startProgressBar(Recorder::instance().getFrameCount(), &m_recordSaveProgression, "Save Recording Session...", this);
-
-		}
-		else
-		{
-			Recorder::instance().startRecording();
-		}
-
-
-
-
-		m_isRecording = !m_isRecording;
-		toggleRecButtons();
-	}
-	else
-	{
-		Console::logError("Recording is Playmode only!");
-	}
+	Record();
 
 }
 
@@ -1259,3 +1229,41 @@ void MainWindow::progressionBarThread()
 
 }
 
+void MainWindow::Record(bool showProgressionBar)
+{
+	if (m_refTrackerManager->isTracking())
+	{
+
+		if (Recorder::instance().isRecording())
+		{
+			//start saving progress in new thread
+			std::thread* saveThread = new std::thread(&MainWindow::saveRecord, this);
+			saveThread->detach();
+
+			//get frame count
+			int max = Recorder::instance().getFrameCount();
+
+			//Console::log("MainWindow::slotRecord(): start progress window");
+
+			if (showProgressionBar)
+			{
+				startProgressBar(Recorder::instance().getFrameCount(), &m_recordSaveProgression, "Save Recording Session...", this);
+			}
+
+		}
+		else
+		{
+			Recorder::instance().startRecording();
+		}
+
+
+
+
+		m_isRecording = !m_isRecording;
+		toggleRecButtons();
+	}
+	else
+	{
+		Console::logError("Recording is Playmode only!");
+	}
+}

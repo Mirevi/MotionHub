@@ -79,7 +79,7 @@ private:
 	std::thread* m_recordingThread;
 	std::thread* m_listeningThread;
 
-	OSCListener m_oscListener;
+	//OSCListener m_oscListener;
 
 
 
