@@ -102,7 +102,7 @@ void XSTracker::track()
 	m_quaternianDataWithId = m_UdpServer->getQuaternionDatagram();
 
 	// check if data valid
-	if (m_quaternianDataWithId != NULL && m_quaternianDataWithId->avatarId != NULL) {
+	if (m_quaternianDataWithId != NULL && m_quaternianDataWithId->kinematics != NULL) {
 		//get skeleton data from frame data
 		extractSkeleton();
 	}
