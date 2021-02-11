@@ -130,7 +130,6 @@ void RGBDCaptureForGANWindow::updateGui()
 		ui->btn_start_transmission->setEnabled(true);
 		ui->le_transmission_id->setEnabled(true);
 	}
-
 }
 
 void RGBDCaptureForGANWindow::initializeFeatureLineColor()
