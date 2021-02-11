@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>979</width>
-    <height>691</height>
+    <height>682</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -675,6 +675,151 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
     </rect>
    </property>
    <layout class="QGridLayout" name="settings">
+    <item row="2" column="6">
+     <widget class="QLineEdit" name="le_image_size_y">
+      <property name="inputMask">
+       <string/>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="0">
+     <widget class="QLabel" name="label_3">
+      <property name="text">
+       <string>Image Size: </string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="0">
+     <widget class="QLabel" name="label">
+      <property name="text">
+       <string>File Prefix: </string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="9">
+     <widget class="QLabel" name="label_11">
+      <property name="text">
+       <string>Y2</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="8">
+     <widget class="QLineEdit" name="le_crop_region_x2">
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="5">
+     <widget class="QLabel" name="label_8">
+      <property name="text">
+       <string>Y1</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="8">
+     <widget class="QLabel" name="label_12">
+      <property name="text">
+       <string>Frames to Capture</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QLabel" name="label_2">
+      <property name="text">
+       <string>Crop Region: </string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="2">
+     <widget class="QLineEdit" name="le_clipping_distance">
+      <property name="inputMask">
+       <string/>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="7">
+     <widget class="QLabel" name="label_9">
+      <property name="text">
+       <string>X2</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="1">
+     <widget class="QLabel" name="label_5">
+      <property name="text">
+       <string>X</string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="10">
+     <widget class="QLineEdit" name="le_transmission_id">
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="2">
+     <widget class="QLineEdit" name="le_image_size_x">
+      <property name="inputMask">
+       <string/>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="8">
+     <widget class="QLabel" name="label_13">
+      <property name="text">
+       <string>Transmission ID</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="0">
+     <widget class="QLabel" name="label_4">
+      <property name="text">
+       <string>Clipping Distance: </string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="2">
+     <widget class="QLineEdit" name="le_file_prefix">
+      <property name="maxLength">
+       <number>3</number>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="5">
+     <widget class="QLabel" name="label_6">
+      <property name="text">
+       <string>Y</string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="4">
+     <widget class="QLabel" name="label_10">
+      <property name="text">
+       <string>mm</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="10">
+     <widget class="QLineEdit" name="le_frames_to_capture">
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+    </item>
     <item row="1" column="1">
      <widget class="QLabel" name="label_7">
       <property name="text">
@@ -682,10 +827,16 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
       </property>
      </widget>
     </item>
-    <item row="3" column="0">
-     <widget class="QLabel" name="label_4">
+    <item row="1" column="2">
+     <widget class="QLineEdit" name="le_crop_region_x1">
+      <property name="inputMask">
+       <string/>
+      </property>
       <property name="text">
-       <string>Clipping Distance: </string>
+       <string/>
+      </property>
+      <property name="maxLength">
+       <number>32767</number>
       </property>
      </widget>
     </item>
@@ -705,123 +856,6 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
       </property>
      </widget>
     </item>
-    <item row="0" column="0">
-     <widget class="QLabel" name="label">
-      <property name="text">
-       <string>File Prefix: </string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="8">
-     <widget class="QLineEdit" name="le_crop_region_x2">
-      <property name="text">
-       <string/>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="2">
-     <widget class="QLineEdit" name="le_clipping_distance">
-      <property name="inputMask">
-       <string/>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="5">
-     <widget class="QLabel" name="label_8">
-      <property name="text">
-       <string>Y1</string>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="6">
-     <widget class="QLineEdit" name="le_image_size_y">
-      <property name="inputMask">
-       <string/>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="4">
-     <widget class="QLabel" name="label_10">
-      <property name="text">
-       <string>mm</string>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="2">
-     <widget class="QLineEdit" name="le_image_size_x">
-      <property name="inputMask">
-       <string/>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="2">
-     <widget class="QLineEdit" name="le_file_prefix">
-      <property name="maxLength">
-       <number>3</number>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="2">
-     <widget class="QLineEdit" name="le_crop_region_x1">
-      <property name="inputMask">
-       <string/>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
-      <property name="maxLength">
-       <number>32767</number>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="1">
-     <widget class="QLabel" name="label_5">
-      <property name="text">
-       <string>X</string>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="0">
-     <widget class="QLabel" name="label_3">
-      <property name="text">
-       <string>Image Size: </string>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="5">
-     <widget class="QLabel" name="label_6">
-      <property name="text">
-       <string>Y</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="0">
-     <widget class="QLabel" name="label_2">
-      <property name="text">
-       <string>Crop Region: </string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="7">
-     <widget class="QLabel" name="label_9">
-      <property name="text">
-       <string>X2</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="9">
-     <widget class="QLabel" name="label_11">
-      <property name="text">
-       <string>Y2</string>
-      </property>
-     </widget>
-    </item>
     <item row="1" column="10">
      <widget class="QLineEdit" name="le_crop_region_y2">
       <property name="text">
@@ -829,35 +863,42 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
       </property>
      </widget>
     </item>
-    <item row="0" column="8">
-     <widget class="QLabel" name="label_12">
+    <item row="3" column="0">
+     <widget class="QLabel" name="label_14">
       <property name="text">
-       <string>Frames to Capture</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       <string>Feature Image Size: </string>
       </property>
      </widget>
     </item>
-    <item row="0" column="10">
-     <widget class="QLineEdit" name="le_frames_to_capture">
+    <item row="3" column="1">
+     <widget class="QLabel" name="label_15">
+      <property name="text">
+       <string>X</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="5">
+     <widget class="QLabel" name="label_16">
+      <property name="text">
+       <string>Y</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="2">
+     <widget class="QLineEdit" name="le_feature_image_size_x">
+      <property name="inputMask">
+       <string/>
+      </property>
       <property name="text">
        <string/>
       </property>
      </widget>
     </item>
-    <item row="3" column="8">
-     <widget class="QLabel" name="label_13">
-      <property name="text">
-       <string>Transmission ID</string>
+    <item row="3" column="6">
+     <widget class="QLineEdit" name="le_feature_image_size_y">
+      <property name="inputMask">
+       <string/>
       </property>
-      <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="10">
-     <widget class="QLineEdit" name="le_transmission_id">
       <property name="text">
        <string/>
       </property>

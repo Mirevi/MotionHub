@@ -90,9 +90,9 @@ private:
 	void saveIrImage();
 	void saveFeatureImage();
 
-	//feature image generation
+	//feature image generation 
 	void extractJointLandmarks();
-	void saveJointLandmarks();
+	void saveColorImageLandmarks();
 	void drawFeaturesToMatrix();
 	void continuousLineDrawingBetweenLandmarks(int start, int end);
 	void drawSingleLineBetweenLandmarks(int landmarkIndexStart, int landmarkIndexEnd);
@@ -102,10 +102,10 @@ private:
 	void startLandmarkTransmission();
 	void startLandmarkTransmissionWithCapturedData();
 	void countFramesInLandmarkFile();
-	void processLandmarkFileData();
+	void processImageLandmarkFileData();
 	bool stringStartsWith(std::string* string, std::string startsWith);
 	void splitDataString(std::string fullString, std::string* splittedString);
-	void sendImageLandmarksOverNetwork();
+	void sendFeatureImageLandmarksOverNetwork();
 
 	//general
 	boolean convertJointLandmarksToColorImageLandmarks();
@@ -128,6 +128,7 @@ private:
 	int m_framesToCapture;
 	int m_clippingDistance;
 	cv::Size m_imageSize;
+	cv::Size m_featureImageSize;
 	cv::Rect m_cropRegion;
 	std::string m_saveIdPrefix;
 	std::string m_dataDirPath;
@@ -158,8 +159,8 @@ private:
 	k4a::capture* m_currentCapture;
 	k4a::image m_transformedDepthImage;
 	std::pair<k4a::image, k4a::image> m_depthAndIrImagePair;
-	std::ofstream m_jointLandmarkWriter;
-	std::ifstream m_jointLandmarkReader;
+	std::ofstream m_colorImageLandmarkWriter;
+	std::ifstream m_colorImageLandmarkReader;
 
 	//transmission
 	int m_landmarkFileFrameCount;
