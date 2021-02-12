@@ -1,5 +1,7 @@
 #include "MotionHub.h"
 
+//#include "RenderManagement/QTOsgWidget.h"
+
 MotionHub::MotionHub(int argc, char** argv)
 {
 
