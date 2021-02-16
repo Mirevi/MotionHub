@@ -1,6 +1,5 @@
 # CmakeLists for MireviMotionHub
 
-#k4a
 include_directories(${CMAKE_BINARY_DIR}/src 
 ${K4A_INCLUDE_DIR}
 ${K4ABT_INCLUDE_DIR}
@@ -44,9 +43,12 @@ target_link_libraries(MireviMotionHub
 	debug cudnn optimized cudnn
 	debug oscpack${CMAKE_DEBUG_POSTFIX} optimized oscpack
 	debug Ws2_32 optimized Ws2_32
-	debug winmm optimized winmm		
-	debug Qt5Core${CMAKE_DEBUG_POSTFIX} optimized Qt5Core
-	debug Qt5Widgets${CMAKE_DEBUG_POSTFIX} optimized Qt5Widgets
+	debug winmm optimized winmm	
+
+	Qt5::Core
+	Qt5::Widgets
+	Qt5::OpenGL
+	
     debug NatNetLibStatic optimized NatNetLibStatic
 	debug xstypes64 optimized xstypes64
 	
@@ -65,6 +67,9 @@ target_link_libraries(MireviMotionHub
 	debug osgViewer${CMAKE_DEBUG_POSTFIX} optimized osgViewer
 	debug osgShadow${CMAKE_DEBUG_POSTFIX} optimized osgShadow
 	debug OpenThreads${CMAKE_DEBUG_POSTFIX} optimized OpenThreads
+	debug osgText${CMAKE_DEBUG_POSTFIX} optimized osgText
+	debug osgQOpenGL${CMAKE_DEBUG_POSTFIX} optimized osgQOpenGL
+	debug osgQt5${CMAKE_DEBUG_POSTFIX} optimized osgQt5
 )
 
 set_target_properties(MireviMotionHub PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/bin")

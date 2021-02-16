@@ -1,3 +1,4 @@
+
 #include "MotionHub.h"
 
 //#include "RenderManagement/QTOsgWidget.h"
@@ -82,14 +83,11 @@ void MotionHub::update()
 						//update UI
 						m_uiManager->getMainWindow()->update();	
 
-
-						m_uiManager->getMainWindow()->getOglRenderer()->updateSkeletonMeshCount();
+						//m_uiManager->getMainWindow()->getOglRenderer()->updateSkeletonMeshCount();
 
 					}
 
-					//Console::log("MotionHub::update(): number of skeletons = " + toString(m_trackerManager->getTrackerRefAt(0)->getProperties()->countDetectedSkeleton));
-
-					m_uiManager->getMainWindow()->getOglRenderer()->updateSkeletonMeshTransform();
+					//m_uiManager->getMainWindow()->getOglRenderer()->updateSkeletonMeshTransform();
 
 					// reset bool and start new tracking cycle
 					(*itTracker)->resetIsDataAvailable();
@@ -109,7 +107,7 @@ void MotionHub::update()
 			//update UI
 			m_uiManager->getMainWindow()->update();
 
-			m_uiManager->getMainWindow()->getOglRenderer()->updateSkeletonMeshPoolSize();
+			//m_uiManager->getMainWindow()->getOglRenderer()->updateSkeletonMeshPoolSize();
 
 		}
 

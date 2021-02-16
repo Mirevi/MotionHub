@@ -136,7 +136,7 @@ else()
 	##########################################################################
 endif()
 
-find_package(Qt5 REQUIRED COMPONENTS Widgets Network PATHS ${CURRENT_DEPS_PATH} NO_DEFAULT_PATH)
+find_package(Qt5 REQUIRED COMPONENTS Widgets Network OpenGL PATHS ${CURRENT_DEPS_PATH} NO_DEFAULT_PATH)
 
 
 # Look for the header file.

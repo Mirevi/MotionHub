@@ -1,6 +1,6 @@
 # top level cmake file MireviMotionHub
 
-cmake_minimum_required (VERSION 2.6 FATAL_ERROR)
+cmake_minimum_required (VERSION 3.0 FATAL_ERROR)
 project (MireviMotionHub)
 
 include_directories("${CMAKE_SOURCE_DIR}/src")
@@ -62,17 +62,17 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
 #QT5ForMireviMotionHub -> downloads dependency from web
 cmake_policy(SET CMP0020 NEW) #supresses CMake Warnings to CMP2020
-set(EXPECTED_SHA256 60ba1f48a17c9156fbe70d25c1bc65df9cf4a1d93d172d115ac85253e23d9c2d )
-set(CURRENT_DEPS_PATH ${CMAKE_BINARY_DIR}/../deps/qt-5920/)
-set(URL http://claymore.mirevi.com/qt-5920.zip)
+set(EXPECTED_SHA256 3e6ca0d8a030cbffd2e2896c478730b0b45468f6294e1c46c8023d6e5cd066cc )
+set(CURRENT_DEPS_PATH ${CMAKE_BINARY_DIR}/../deps/qt-5.15.2/)
+set(URL http://claymore.mirevi.com/qt-5.15.2.zip)
 getsTheDepsNameFromURL("${URL}")
-set(CHECK_IF_DEPS_EXIST "${CURRENT_DEPS_PATH}/include/QtCore/5.9.2/QtCore/private/qcoreapplication_p.h")
+set(CHECK_IF_DEPS_EXIST "${CURRENT_DEPS_PATH}/include/QtCore/5.15.2/QtCore/private/qcoreapplication_p.h")
 FIND_PACKAGE( Qt5ForMireviMotionHub REQUIRED )
 
-#OpenSceneGraph OSG
-set(EXPECTED_SHA256 0009b3f5f329b80d59de51763af6f09cc748033b7bb42c55a290f9cb5dbcf300 )
+# OSG (How-to-pack OSG below)
+set( EXPECTED_SHA256 87efd7368c42f424d2a0993fa370b059685452a9bb326ad0720dd78281797ea9 )
 set(CURRENT_DEPS_PATH ${CMAKE_BINARY_DIR}/../deps/osg-3.6.5/)
-set(URL http://claymore.mirevi.com/mirevimotionhub/osg-3.6.5.zip)
+set( URL https://claymore.mirevi.com/osg-3.6.5.zip)
 getsTheDepsNameFromURL("${URL}")
 set(CHECK_IF_DEPS_EXIST "${CURRENT_DEPS_PATH}/include/osg/Object")
 FIND_PACKAGE( OSGForMireviMotionHub REQUIRED )
@@ -147,14 +147,33 @@ add_subdirectory("${CMAKE_SOURCE_DIR}/src/RenderManagement")
 add_subdirectory("${CMAKE_SOURCE_DIR}/src/GestureManagement")
 add_subdirectory("${CMAKE_SOURCE_DIR}/src/MotionHubUtil")
 
-message(STATUS "Copiyng files to bin")
+message(STATUS "Copiyng files (.dll, .pdb, etc.) to bin")
 
-file(COPY deps/qt-5920/bin/Qt5Widgetsd.dll 								DESTINATION ${CMAKE_BINARY_DIR}/bin)
-file(COPY deps/qt-5920/bin/Qt5Widgets.dll 								DESTINATION ${CMAKE_BINARY_DIR}/bin)
-file(COPY deps/qt-5920/bin/Qt5Guid.dll 									DESTINATION ${CMAKE_BINARY_DIR}/bin)
-file(COPY deps/qt-5920/bin/Qt5Gui.dll 									DESTINATION ${CMAKE_BINARY_DIR}/bin)
-file(COPY deps/qt-5920/bin/Qt5Cored.dll 								DESTINATION ${CMAKE_BINARY_DIR}/bin)
-file(COPY deps/qt-5920/bin/Qt5Core.dll 									DESTINATION ${CMAKE_BINARY_DIR}/bin)
+file(COPY ${Qt5ForMireviMotionHub_INCLUDE_DIR}/../bin/Qt5Widgetsd.dll DESTINATION ${CMAKE_BINARY_DIR}/bin)
+file(COPY ${Qt5ForMireviMotionHub_INCLUDE_DIR}/../bin/Qt5Widgets.dll DESTINATION ${CMAKE_BINARY_DIR}/bin)
+file(COPY ${Qt5ForMireviMotionHub_INCLUDE_DIR}/../bin/Qt5Guid.dll DESTINATION ${CMAKE_BINARY_DIR}/bin)
+file(COPY ${Qt5ForMireviMotionHub_INCLUDE_DIR}/../bin/Qt5Gui.dll DESTINATION ${CMAKE_BINARY_DIR}/bin)
+file(COPY ${Qt5ForMireviMotionHub_INCLUDE_DIR}/../bin/Qt5Cored.dll DESTINATION ${CMAKE_BINARY_DIR}/bin)
+file(COPY ${Qt5ForMireviMotionHub_INCLUDE_DIR}/../bin/Qt5Core.dll DESTINATION ${CMAKE_BINARY_DIR}/bin)
+file(COPY ${Qt5ForMireviMotionHub_INCLUDE_DIR}/../bin/Qt5OpenGL.dll DESTINATION ${CMAKE_BINARY_DIR}/bin)
+file(COPY ${Qt5ForMireviMotionHub_INCLUDE_DIR}/../bin/Qt5OpenGLd.dll DESTINATION ${CMAKE_BINARY_DIR}/bin)
+
+file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/bin/platforms)
+file(COPY ${Qt5ForMireviMotionHub_INCLUDE_DIR}/../plugins/platforms/qwindows.dll DESTINATION ${CMAKE_BINARY_DIR}/bin/platforms)
+file(COPY ${Qt5ForMireviMotionHub_INCLUDE_DIR}/../plugins/platforms/qwindowsd.dll DESTINATION ${CMAKE_BINARY_DIR}/bin/platforms)
+
+
+file(COPY ${Qt5ForMireviMotionHub_INCLUDE_DIR}/../bin/Qt5Widgetsd.pdb DESTINATION ${CMAKE_BINARY_DIR}/bin)
+file(COPY ${Qt5ForMireviMotionHub_INCLUDE_DIR}/../bin/Qt5Widgets.pdb DESTINATION ${CMAKE_BINARY_DIR}/bin)
+file(COPY ${Qt5ForMireviMotionHub_INCLUDE_DIR}/../bin/Qt5Guid.pdb DESTINATION ${CMAKE_BINARY_DIR}/bin)
+file(COPY ${Qt5ForMireviMotionHub_INCLUDE_DIR}/../bin/Qt5Gui.pdb DESTINATION ${CMAKE_BINARY_DIR}/bin)
+file(COPY ${Qt5ForMireviMotionHub_INCLUDE_DIR}/../bin/Qt5Cored.pdb DESTINATION ${CMAKE_BINARY_DIR}/bin)
+file(COPY ${Qt5ForMireviMotionHub_INCLUDE_DIR}/../bin/Qt5Core.pdb DESTINATION ${CMAKE_BINARY_DIR}/bin)
+file(COPY ${Qt5ForMireviMotionHub_INCLUDE_DIR}/../bin/Qt5OpenGL.pdb DESTINATION ${CMAKE_BINARY_DIR}/bin)
+file(COPY ${Qt5ForMireviMotionHub_INCLUDE_DIR}/../bin/Qt5OpenGLd.pdb DESTINATION ${CMAKE_BINARY_DIR}/bin)
+file(COPY ${Qt5ForMireviMotionHub_INCLUDE_DIR}/../plugins/platforms/qwindows.pdb DESTINATION ${CMAKE_BINARY_DIR}/bin/platforms)
+file(COPY ${Qt5ForMireviMotionHub_INCLUDE_DIR}/../plugins/platforms/qwindowsd.pdb DESTINATION ${CMAKE_BINARY_DIR}/bin/platforms)
+
 file(COPY ${K4A_LIBRARIES_DIR}/../bin/k4a.dll							DESTINATION ${CMAKE_BINARY_DIR}/bin)
 file(COPY ${K4A_LIBRARIES_DIR}/../bin/depthengine_2_0.dll 				DESTINATION ${CMAKE_BINARY_DIR}/bin)
 file(COPY ${K4ABT_LIBRARIES_DIR}/../bin/k4abt.dll 						DESTINATION ${CMAKE_BINARY_DIR}/bin)
@@ -163,6 +182,7 @@ file(COPY ${K4ABT_LIBRARIES_DIR}/../bin/dnn_model_2_0.onnx 				DESTINATION ${CMA
 file(COPY ${K4ABT_INCLUDE_DIR}/../../tools/cublas64_100.dll				DESTINATION ${CMAKE_BINARY_DIR}/bin)
 file(COPY ${K4ABT_INCLUDE_DIR}/../../tools/cudart64_100.dll				DESTINATION ${CMAKE_BINARY_DIR}/bin)
 file(COPY deps/cudnn101windows10x64_76224/bin/cudnn64_7.dll 			DESTINATION ${CMAKE_BINARY_DIR}/bin)
+
 file(COPY deps/xsens-mvn-1.0.6/bin/xstypes64.dll						DESTINATION ${CMAKE_BINARY_DIR}/bin)
 
 file(COPY ${OSG_INCLUDE_DIR}/../bin/									DESTINATION ${CMAKE_BINARY_DIR}/bin FILES_MATCHING PATTERN "*.dll")

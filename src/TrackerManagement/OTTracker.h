@@ -2,7 +2,10 @@
 #include "Tracker.h"
 #include "MotionHubUtil/Console.h"
 
+#include <osgViewer/Viewer>
+#include <osgDB/ReadFile>
 #include "NatNetTypes.h"
+//#include <osgViewer/ViewerEventHandlers>
 #include "NatNetClient.h"
 
 #include <atomic>

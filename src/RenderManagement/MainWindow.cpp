@@ -2,22 +2,38 @@
 #include "ui_mainwindow.h"
 
 
-
 // default constructor
 MainWindow::MainWindow(TrackerManager* trackerManager, ConfigManager* configManager, QWidget* parent)
  : QMainWindow(parent), ui(new Ui::MainWindow)
 {
+
+
 	osg::Vec4 test(1.0, 1.0, 1.0, 1.0);
 	// setup base class
 	ui->setupUi(this);
 
-	// create render window and set layout propertys
-	m_oglRenderer = new GlWidget(trackerManager);
-	m_oglRenderer->setObjectName(QStringLiteral("render_ogl"));
-	QSizePolicy sizePolicy2(QSizePolicy::Expanding, QSizePolicy::Preferred);
-	m_oglRenderer->setSizePolicy(sizePolicy2);
+	//m_oglRenderer = new GlWidget(trackerManager);
+	//m_oglRenderer->setObjectName(QStringLiteral("render_ogl"));
+	//QSizePolicy sizePolicy2(QSizePolicy::Expanding, QSizePolicy::Preferred);
+	//m_oglRenderer->setSizePolicy(sizePolicy2);
+	//ui->layout_center->addWidget(m_oglRenderer);
 
-	ui->layout_center->addWidget(m_oglRenderer);
+	osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
+	traits->windowDecoration = false;
+	traits->x = 50;
+	traits->y = 50;
+	traits->width = 640;
+	traits->height = 480;
+	traits->doubleBuffer = true;	
+
+	osgQt::GraphicsWindowQt* gw = new osgQt::GraphicsWindowQt(traits.get());
+	osg::Node* scene = osgDB::readNodeFile("cow.osg");
+	m_osgQtWidget = new OsgQtWidget(gw, scene);
+	m_osgQtWidget->setObjectName(QStringLiteral("render_ogl"));
+	QSizePolicy sizePolicyOsgQtWidget(QSizePolicy::Expanding, QSizePolicy::Preferred);
+	m_osgQtWidget->setSizePolicy(sizePolicyOsgQtWidget);
+	ui->layout_center->addWidget(m_osgQtWidget);
+	m_osgQtWidget->show();
 
 	// assign reference to tracker manager
 	m_refTrackerManager = trackerManager;
@@ -71,6 +87,7 @@ void MainWindow::update()
 
 void MainWindow::updateHirachy()
 {
+	//m_osgQtWidget->update();
 	// clear hirachy
 	ui->treeWidget_hirachy->clear();
 	// clear item pool
@@ -1202,12 +1219,12 @@ QString MainWindow::toQString(float value)
 
 }
 
-GlWidget* MainWindow::getOglRenderer()
-{
-
-	return m_oglRenderer;
-
-}
+//GlWidget* MainWindow::getOglRenderer()
+//{
+//
+//	return m_oglRenderer;
+//
+//}
 
 void MainWindow::addTrackerToList(int id)
 {
