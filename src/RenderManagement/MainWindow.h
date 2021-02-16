@@ -2,7 +2,8 @@
 
 #include "ConfigDllExportRenderManagement.h"
 #include "CreateTrackerWindow.h"
-#include "GlWidget.h"
+#include "OsgQtWidget.h"
+//#include "GlWidget.h"
 #include "MotionHubUtil/Console.h"
 #include "NetworkSettingsWindow.h"
 
@@ -17,6 +18,7 @@
 #include <osg/Array>
 
 #include <math.h>
+
 
 
 #define GET_VARIABLE_NAME(Variable) (#Variable)
@@ -62,7 +64,7 @@ public:
 	void update();
 	void updateConsole();
 
-	GlWidget* getOglRenderer();
+	//GlWidget* getOglRenderer();
 
 private slots:
 	/*!
@@ -114,7 +116,9 @@ private:
 	 */
 	Ui::MainWindow *ui;
 
-	GlWidget* m_oglRenderer;
+	//GlWidget* m_oglRenderer;
+
+	OsgQtWidget* m_osgQtWidget;
 	/*!
 	 * createTracker dialog
 	 */

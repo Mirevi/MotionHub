@@ -1,6 +1,5 @@
 # CmakeLists for RenderManagement
 
-#k4a
 include_directories(${CMAKE_BINARY_DIR}/src
 ${K4A_INCLUDE_DIR}
 ${K4ABT_INCLUDE_DIR}
@@ -10,9 +9,9 @@ ${OSCp_INCLUDE_DIR}
 ${EIGEN_INCLUDE_DIR}
 ${XsensMVNSDK_INCLUDE_DIR}
 ${OSG_INCLUDE_DIR}
+${Qt5ForMireviMotionHub_INCLUDE_DIR}
 )
 
-#eigen
 link_directories(${CMAKE_BINARY_DIR}/lib
  "${CMAKE_BINARY_DIR}/lib"
 ${K4A_LIBRARIES_DIR}
@@ -44,12 +43,14 @@ file(GLOB_RECURSE RenderManagement_UI "${CMAKE_CURRENT_SRC_DIR}" *.ui)
 add_library(RenderManagement SHARED ${RenderManagement_HEADER} ${RenderManagement_SRC} ${RenderManagement_QRC} ${RenderManagement_UI})
 
 target_link_libraries(RenderManagement
+	Qt5::Core
 	Qt5::Widgets
+	Qt5::OpenGL
+	
 	debug MotionHubUtil${CMAKE_DEBUG_POSTFIX} optimized MotionHubUtil
 	debug TrackerManagement${CMAKE_DEBUG_POSTFIX} optimized TrackerManagement
 	debug NetworkManagement${CMAKE_DEBUG_POSTFIX} optimized NetworkManagement
 
-	
 	debug k4a optimized k4a
 	debug k4abt optimized k4abt
 	debug cudnn optimized cudnn
@@ -67,4 +68,7 @@ target_link_libraries(RenderManagement
 	debug osgViewer${CMAKE_DEBUG_POSTFIX} optimized osgViewer
 	debug osgShadow${CMAKE_DEBUG_POSTFIX} optimized osgShadow
 	debug OpenThreads${CMAKE_DEBUG_POSTFIX} optimized OpenThreads
+	debug osgText${CMAKE_DEBUG_POSTFIX} optimized osgText
+	debug osgQOpenGL${CMAKE_DEBUG_POSTFIX} optimized osgQOpenGL
+	debug osgQt5${CMAKE_DEBUG_POSTFIX} optimized osgQt5
 )
