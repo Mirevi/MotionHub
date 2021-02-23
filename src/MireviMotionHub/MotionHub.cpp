@@ -83,11 +83,11 @@ void MotionHub::update()
 						//update UI
 						m_uiManager->getMainWindow()->update();	
 
-						//m_uiManager->getMainWindow()->getOglRenderer()->updateSkeletonMeshCount();
+						m_uiManager->getMainWindow()->getRenderWindow()->updateSkeletonMeshCount();
 
 					}
 
-					//m_uiManager->getMainWindow()->getOglRenderer()->updateSkeletonMeshTransform();
+					m_uiManager->getMainWindow()->getRenderWindow()->updateSkeletonMeshTransform();
 
 					// reset bool and start new tracking cycle
 					(*itTracker)->resetIsDataAvailable();
@@ -107,7 +107,7 @@ void MotionHub::update()
 			//update UI
 			m_uiManager->getMainWindow()->update();
 
-			//m_uiManager->getMainWindow()->getOglRenderer()->updateSkeletonMeshPoolSize();
+			m_uiManager->getMainWindow()->getRenderWindow()->updateSkeletonMeshPoolSize();
 
 		}
 

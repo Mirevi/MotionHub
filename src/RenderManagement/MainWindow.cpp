@@ -12,24 +12,18 @@ MainWindow::MainWindow(TrackerManager* trackerManager, ConfigManager* configMana
 	// setup base class
 	ui->setupUi(this);
 
-	//m_oglRenderer = new GlWidget(trackerManager);
-	//m_oglRenderer->setObjectName(QStringLiteral("render_ogl"));
-	//QSizePolicy sizePolicy2(QSizePolicy::Expanding, QSizePolicy::Preferred);
-	//m_oglRenderer->setSizePolicy(sizePolicy2);
-	//ui->layout_center->addWidget(m_oglRenderer);
-
 	osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
 	traits->windowDecoration = false;
-	traits->x = 50;
-	traits->y = 50;
+	traits->x = 0;
+	traits->y = 0;
 	traits->width = 640;
 	traits->height = 480;
 	traits->doubleBuffer = true;	
 
 	osgQt::GraphicsWindowQt* gw = new osgQt::GraphicsWindowQt(traits.get());
 	osg::Node* scene = osgDB::readNodeFile("cow.osg");
-	m_osgQtWidget = new OsgQtWidget(gw, scene);
-	m_osgQtWidget->setObjectName(QStringLiteral("render_ogl"));
+	m_osgQtWidget = new OsgQtWidget(gw, scene, m_refTrackerManager);
+	m_osgQtWidget->setObjectName(QStringLiteral("OsgRenderer"));
 	QSizePolicy sizePolicyOsgQtWidget(QSizePolicy::Expanding, QSizePolicy::Preferred);
 	m_osgQtWidget->setSizePolicy(sizePolicyOsgQtWidget);
 	ui->layout_center->addWidget(m_osgQtWidget);
@@ -1219,12 +1213,12 @@ QString MainWindow::toQString(float value)
 
 }
 
-//GlWidget* MainWindow::getOglRenderer()
-//{
-//
-//	return m_oglRenderer;
-//
-//}
+OsgQtWidget* MainWindow::getRenderWindow()
+{
+
+	return m_osgQtWidget;
+
+}
 
 void MainWindow::addTrackerToList(int id)
 {

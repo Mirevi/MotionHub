@@ -2,10 +2,10 @@
 #include "Tracker.h"
 #include "MotionHubUtil/Console.h"
 
+//OBSCURE: One has to include some OSG headers before NatNetTypes.h to avoid compiler errors. What is the reason for this?
 #include <osgViewer/Viewer>
 #include <osgDB/ReadFile>
 #include "NatNetTypes.h"
-//#include <osgViewer/ViewerEventHandlers>
 #include "NatNetClient.h"
 
 #include <atomic>
