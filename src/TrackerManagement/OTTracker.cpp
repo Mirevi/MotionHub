@@ -19,7 +19,7 @@ OTTracker::OTTracker(int id, NetworkManager* networkManager, ConfigManager* conf
 
 
 	//default is enabled
-	m_isEnabled = true;
+	m_properties->isEnabled = true;
 
 
 	//set default values for offsets
@@ -145,7 +145,8 @@ void OTTracker::init()
 
 }
 
-
+void OTTracker::update()
+{
 	// track while tracking is true
 	while (m_properties->isTracking)
 	{
@@ -212,7 +213,7 @@ void OTTracker::extractSkeleton()
 
 
 	//get current skeleton number
-	m_countDetectedSkeleton = m_refData->nSkeletons;
+	m_properties->countDetectedSkeleton = m_refData->nSkeletons;
 
 	//loop through all OptiTrack skeletons
 	for (int i = 0; i < m_refData->nSkeletons; i++)

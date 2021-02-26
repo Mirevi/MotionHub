@@ -66,7 +66,7 @@ void MotionHub::update()
 				// check if new skeleton data is available
 				if ((*itTracker)->isDataAvailable())
 				{
-
+					//Console::log("In isDataAvailable");
 					//cache skeleton data of current tracker, so gesture- and network manager use current data
 					(*itTracker)->cacheSkeletonData();
 
@@ -78,7 +78,7 @@ void MotionHub::update()
 					// update ui if skeleton was added or removed from pool
 					if ((*itTracker)->hasSkeletonPoolChanged())
 					{
-						//Console::log("skeleton pool has changed!");
+						Console::log("skeleton pool has changed!");
 
 						//update UI
 						m_uiManager->getMainWindow()->update();	

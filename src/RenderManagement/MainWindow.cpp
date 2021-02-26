@@ -6,7 +6,11 @@
 MainWindow::MainWindow(TrackerManager* trackerManager, ConfigManager* configManager, QWidget* parent)
  : QMainWindow(parent), ui(new Ui::MainWindow)
 {
+	// assign reference to tracker manager
+	m_refTrackerManager = trackerManager;
+	m_configManager = configManager;
 
+	m_timelineLableState = percentage;
 
 	osg::Vec4 test(1.0, 1.0, 1.0, 1.0);
 	// setup base class
@@ -18,7 +22,7 @@ MainWindow::MainWindow(TrackerManager* trackerManager, ConfigManager* configMana
 	traits->y = 0;
 	traits->width = 640;
 	traits->height = 480;
-	traits->doubleBuffer = true;	
+	traits->doubleBuffer = true;
 
 	osgQt::GraphicsWindowQt* gw = new osgQt::GraphicsWindowQt(traits.get());
 	osg::Node* scene = osgDB::readNodeFile("cow.osg");
@@ -28,12 +32,6 @@ MainWindow::MainWindow(TrackerManager* trackerManager, ConfigManager* configMana
 	m_osgQtWidget->setSizePolicy(sizePolicyOsgQtWidget);
 	ui->layout_center->addWidget(m_osgQtWidget);
 	m_osgQtWidget->show();
-
-	// assign reference to tracker manager
-	m_refTrackerManager = trackerManager;
-	m_configManager = configManager;
-
-	m_timelineLableState = percentage;
 
 
 	// disable qt vector warning in console
@@ -158,7 +156,7 @@ void MainWindow::updateInspector()
 	ui->tableWidget_inspector->item(1, 1)->setText(trackerProperties->name.c_str());
 
 	//check if tracker is tracking and set checkbox in inspector
-	if (tracker->isTracking())
+	if (tracker->getProperties()->isTracking)
 	{
 
 		ui->tableWidget_inspector->item(2, 1)->setCheckState(Qt::Checked);
@@ -172,7 +170,7 @@ void MainWindow::updateInspector()
 	}
 
 	//check if tracker is enabled and set checkbox in inspector
-	if (tracker->isEnabled())
+	if (tracker->getProperties()->isEnabled)
 	{
 
 		ui->tableWidget_inspector->item(3, 1)->setCheckState(Qt::Checked);
@@ -186,7 +184,7 @@ void MainWindow::updateInspector()
 	}
 
 	//set skeleton count in inspector
-	ui->tableWidget_inspector->item(4, 1)->setText(std::to_string(tracker->getNumDetectedSkeletons()).c_str());
+	ui->tableWidget_inspector->item(4, 1)->setText(std::to_string(tracker->getProperties()->countDetectedSkeleton).c_str());
 
 	//refresh the inspector to show new content
 	ui->tableWidget_inspector->update();
@@ -266,7 +264,7 @@ void MainWindow::drawInspector()
 	ui->tableWidget_inspector->item(2, 1)->setFlags(Qt::NoItemFlags);
 
 	//insert checkbox into row, checked if tracker is tracking
-	if (tracker->isTracking())
+	if (tracker->getProperties()->isTracking)
 	{
 		ui->tableWidget_inspector->item(2, 1)->setCheckState(Qt::Checked);
 	}
@@ -280,7 +278,7 @@ void MainWindow::drawInspector()
 	ui->tableWidget_inspector->item(3, 0)->setFlags(Qt::NoItemFlags);
 
 	//insert checkbox into row, checked if tracker is enabled
-	if (tracker->isEnabled())
+	if (tracker->getProperties()->isEnabled)
 	{
 		ui->tableWidget_inspector->item(3, 1)->setCheckState(Qt::Checked);
 	}
@@ -290,7 +288,7 @@ void MainWindow::drawInspector()
 	}
 
 	//add skeleon count row to inspector
-	addRowToInspector("countDetectedSkeleton", std::to_string(tracker->getNumDetectedSkeletons()));
+	addRowToInspector("countDetectedSkeleton", std::to_string(tracker->getProperties()->countDetectedSkeleton));
 	ui->tableWidget_inspector->item(4, 0)->setFlags(Qt::NoItemFlags);
 	ui->tableWidget_inspector->item(4, 1)->setFlags(Qt::NoItemFlags);
 
@@ -362,43 +360,43 @@ void MainWindow::drawInspector()
 	ui->tableWidget_inspector->setCellWidget(13, 1, m_inputFieldPool.at("scaleZ"));
 
 	//add additional properties
-	int numAdditionalProperties = 0;
-	for (const auto& kv : trackerProperties->additionalProperties)
-	{
-		if (kv.second->type() == Tracker::PropertyType::INVALID) continue;
-		else if (kv.second->type() == Tracker::PropertyType::BOOL) {
-			//Console::log("Property type: BOOL");
-			QCheckBox* checkBox = new QCheckBox(this);
-			if (((Tracker::Property<bool>*) kv.second)->value) checkBox->setChecked(true);
-			connect(checkBox, &QCheckBox::clicked, [=](bool state) { ((Tracker::Property<bool>*) kv.second)->value = state; Console::log(std::to_string(((Tracker::Property<bool>*) kv.second)->value)); });
-			addRowToInspector(kv.second->name, "");
-			ui->tableWidget_inspector->setCellWidget(14 + numAdditionalProperties, 1, checkBox);
-		}
-		else if (kv.second->type() == Tracker::PropertyType::INT) {
-			//Console::log("Property type: INT");
-			m_inputFieldPool.insert({ kv.first, new QLineEdit(toQString(((Tracker::Property<int>*) kv.second)->value), this) });
-			m_inputFieldPool.at(kv.first)->setValidator(new QIntValidator(this));
-			connect(m_inputFieldPool.at(kv.first), &QLineEdit::textEdited, [=](const QString& text) { ((Tracker::Property<int>*) kv.second)->value = text.toInt(); });
-			addRowToInspector(kv.second->name, "");
-			ui->tableWidget_inspector->setCellWidget(14 + numAdditionalProperties, 1, m_inputFieldPool.at(kv.first));
-		}
-		else if (kv.second->type() == Tracker::PropertyType::FLOAT)	{
-			//Console::log("Property type: FLOAT");
-			m_inputFieldPool.insert({ kv.first, new QLineEdit(toQString(((Tracker::Property<float>*) kv.second)->value), this) });
-			m_inputFieldPool.at(kv.first)->setValidator(new QDoubleValidator(this));
-			connect(m_inputFieldPool.at(kv.first), &QLineEdit::textEdited, [=](const QString& text) { ((Tracker::Property<float>*) kv.second)->value = text.toFloat(); });
-			addRowToInspector(kv.second->name, "");
-			ui->tableWidget_inspector->setCellWidget(14 + numAdditionalProperties, 1, m_inputFieldPool.at(kv.first));
-		}
-		else if (kv.second->type() == Tracker::PropertyType::STRING) {
-			//Console::log("Property type: STRING");
-			m_inputFieldPool.insert({ kv.first, new QLineEdit(((Tracker::Property<std::string>*) kv.second)->value.c_str(), this) });
-			connect(m_inputFieldPool.at(kv.first), &QLineEdit::textEdited, [=](const QString& text) { ((Tracker::Property<std::string>*) kv.second)->value = text.toStdString(); });
-			addRowToInspector(kv.second->name, "");
-			ui->tableWidget_inspector->setCellWidget(14 + numAdditionalProperties, 1, m_inputFieldPool.at(kv.first));
-		}
-		numAdditionalProperties++;
-	}
+	//int numAdditionalProperties = 0;
+	//for (const auto& kv : trackerProperties->additionalProperties)
+	//{
+	//	if (kv.second->type() == Tracker::PropertyType::INVALID) continue;
+	//	else if (kv.second->type() == Tracker::PropertyType::BOOL) {
+	//		//Console::log("Property type: BOOL");
+	//		QCheckBox* checkBox = new QCheckBox(this);
+	//		if (((Tracker::Property<bool>*) kv.second)->value) checkBox->setChecked(true);
+	//		connect(checkBox, &QCheckBox::clicked, [=](bool state) { ((Tracker::Property<bool>*) kv.second)->value = state; Console::log(std::to_string(((Tracker::Property<bool>*) kv.second)->value)); });
+	//		addRowToInspector(kv.second->name, "");
+	//		ui->tableWidget_inspector->setCellWidget(14 + numAdditionalProperties, 1, checkBox);
+	//	}
+	//	else if (kv.second->type() == Tracker::PropertyType::INT) {
+	//		//Console::log("Property type: INT");
+	//		m_inputFieldPool.insert({ kv.first, new QLineEdit(toQString(((Tracker::Property<int>*) kv.second)->value), this) });
+	//		m_inputFieldPool.at(kv.first)->setValidator(new QIntValidator(this));
+	//		connect(m_inputFieldPool.at(kv.first), &QLineEdit::textEdited, [=](const QString& text) { ((Tracker::Property<int>*) kv.second)->value = text.toInt(); });
+	//		addRowToInspector(kv.second->name, "");
+	//		ui->tableWidget_inspector->setCellWidget(14 + numAdditionalProperties, 1, m_inputFieldPool.at(kv.first));
+	//	}
+	//	else if (kv.second->type() == Tracker::PropertyType::FLOAT)	{
+	//		//Console::log("Property type: FLOAT");
+	//		m_inputFieldPool.insert({ kv.first, new QLineEdit(toQString(((Tracker::Property<float>*) kv.second)->value), this) });
+	//		m_inputFieldPool.at(kv.first)->setValidator(new QDoubleValidator(this));
+	//		connect(m_inputFieldPool.at(kv.first), &QLineEdit::textEdited, [=](const QString& text) { ((Tracker::Property<float>*) kv.second)->value = text.toFloat(); });
+	//		addRowToInspector(kv.second->name, "");
+	//		ui->tableWidget_inspector->setCellWidget(14 + numAdditionalProperties, 1, m_inputFieldPool.at(kv.first));
+	//	}
+	//	else if (kv.second->type() == Tracker::PropertyType::STRING) {
+	//		//Console::log("Property type: STRING");
+	//		m_inputFieldPool.insert({ kv.first, new QLineEdit(((Tracker::Property<std::string>*) kv.second)->value.c_str(), this) });
+	//		connect(m_inputFieldPool.at(kv.first), &QLineEdit::textEdited, [=](const QString& text) { ((Tracker::Property<std::string>*) kv.second)->value = text.toStdString(); });
+	//		addRowToInspector(kv.second->name, "");
+	//		ui->tableWidget_inspector->setCellWidget(14 + numAdditionalProperties, 1, m_inputFieldPool.at(kv.first));
+	//	}
+	//	numAdditionalProperties++;
+	//}
 
 
 	//Add reset button
@@ -418,13 +416,13 @@ void MainWindow::drawInspector()
 
 
 
-	//disable item selection on all table cells
-	for (int i = 5; i < 14 + numAdditionalProperties; i++)
-	{
+	////disable item selection on all table cells
+	//for (int i = 5; i < 14 + numAdditionalProperties; i++)
+	//{
 
-		ui->tableWidget_inspector->item(i, 0)->setFlags(Qt::NoItemFlags);
+	//	ui->tableWidget_inspector->item(i, 0)->setFlags(Qt::NoItemFlags);
 
-	}
+	//}
 
 
 

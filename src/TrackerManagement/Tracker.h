@@ -4,7 +4,6 @@
 #include <thread>
 #include <mutex>
 #include <vector>
-#include <atomic>
 
 #include "MotionHubUtil/Skeleton.h"
 #include "MotionHubUtil/Console.h"
@@ -23,79 +22,55 @@ class  Tracker
 {
 
 public:
-	struct NullProperty
-	{
-		enum class Type {
-			INVALID,
-			BOOL,
-			INT,
-			FLOAT,
-			STRING
-		};
-		std::string name;
 
-		NullProperty(std::string name) : name(name) {};
-
-		virtual Type type() = 0 { return Type::INVALID; };
-	};
-
-	template<class T> struct Property : public NullProperty
-	{
-		T value;
-			
-		Property(std::string name, T value) : NullProperty(name), value(value) {};
-		
-		Type type() override {
-			if (std::is_same_v<T, bool>) return Type::BOOL;
-			else if (std::is_same_v<T, int>) return Type::INT;
-			else if (std::is_same_v<T, float>) return Type::FLOAT;
-			else if (std::is_same_v<T, std::string>) return Type::STRING;
-			else return Type::INVALID;
-		};
-	};
-	typedef NullProperty::Type PropertyType;
 	/*!
-	 * struct for containing tracker properties data  
+	 * struct for containing tracker properties data
 	 */
 	struct Properties
 	{
 		/*!
-		 * tracker ID 
+		 * tracker ID
 		 */
 		int id = -1;
 		/*!
-		 * tracker name 
+		 * tracker name
 		 */
 		std::string name = "none";
 		/*!
+		 * the trackers tracking state
+		 */
+		bool isTracking = false;
+		/*!
+		 * the trackers enabling state
+		 */
+		bool isEnabled = false;
+		/*!
+		 * the number of skeletons detected by this tracker
+		 */
+		int countDetectedSkeleton = 0;
+
+		/*!
 		 * offset of the trackers position
-		 * 
+		 *
 		 */
 		Vector3f positionOffset;
+
 		/*!
 		 * offset of the trackers rotation
 		 *
 		 */
 		Vector3f rotationOffset;
+
 		/*!
 		 * offset of the trackers scale
 		 *
 		 */
 		Vector3f scaleOffset;
-		/*!
-		 * map containing additional properties. Properties have to be inserted in the Tracker's constructor
-		 */
-		std::map<std::string, NullProperty*> additionalProperties;
 
-		~Properties() {
-			if (!additionalProperties.empty()) {
-				for (const auto& kv : additionalProperties) delete kv.second;
-			}
-		}
 	};
 
 	/*!
-	 * default constructor 
+	 * default constructor
 	 */
 	Tracker();
 
@@ -123,25 +98,17 @@ public:
 	 */
 	virtual void enable();
 	/*!
-	 * deletes all skeletons which are not in the scene anymore 
+	 * deletes all skeletons which are not in the scene anymore
 	 */
 	virtual void clean();
 	/*!
-	* checks if the tracker is enabled
-	*/
-	virtual bool isTracking();
-	/*!
-	* checks if the tracker is enabled
-	*/
-	virtual bool isEnabled();
-	/*!
-	 * checks if new skeleton date is available 
+	 * checks if new skeleton date is available
 	 * \return true when new skeleton data is available
 	 */
 	virtual bool isDataAvailable();
 	/*!
 	 * resets the isDataAvailable to false
-	 * call when you got the current skeleton data 
+	 * call when you got the current skeleton data
 	 */
 	virtual void resetIsDataAvailable();
 	/*!
@@ -152,41 +119,38 @@ public:
 
 	/*!
 	 * setter for m_hasSkeletonPoolChanged
-	 * 
+	 *
 	 * \param state
 	 */
 	virtual void setSkeletonPoolChanged(bool state);
+
 	/*!
-	* returns the number of skeletons  detected by this tracker
-	*/
-	virtual int getNumDetectedSkeletons();
-	/*!
-	 * getter for the trackers properties struct 
+	 * getter for the trackers properties struct
 	 * \return the trackers Property struct
 	 */
 	virtual Properties* getProperties();
 	/*!
-	 * getter for the trackers skeleton pool 
+	 * getter for the trackers skeleton pool
 	 * \return the trackers skeleton pool
 	 */
 
-	/*!
-	 * getter for the trackers skeleton pool cache
-	 * \return the trackers skeleton pool cache by value
-	 */
+	 /*!
+	  * getter for the trackers skeleton pool cache
+	  * \return the trackers skeleton pool cache by value
+	  */
 	virtual std::map<int, Skeleton> getSkeletonPoolCache();
 
 	virtual std::map<int, Skeleton> getSkeletonPool();
 
 	/*!
 	 * recalculates the update matrix
-	 * 
+	 *
 	 */
 	virtual void updateMatrix();
 
 	/*!
 	 * sets the position offset in the properties
-	 * 
+	 *
 	 * \param position position offset
 	 */
 	virtual void setPositionOffset(Vector3f position);
@@ -207,14 +171,14 @@ public:
 
 	/*!
 	 * getter for the camera ID
-	 * 
+	 *
 	 * \return m_idCam
 	 */
 	virtual int getCamID();
 
 	/*!
 	 * copys the skeleton pool to it's cache
-	 * 
+	 *
 	 */
 	virtual void cacheSkeletonData();
 
@@ -222,7 +186,7 @@ public:
 	 * pointer to sendSkeletonDelegate() in main.cpp
 	 *
 	 */
-	//virtual void setSendSkeletonDelegate(void (*sendSkeletonDelegate)(std::map<int, Skeleton>* skeletonPool, int trackerID));
+	 //virtual void setSendSkeletonDelegate(void (*sendSkeletonDelegate)(std::map<int, Skeleton>* skeletonPool, int trackerID));
 
 
 	virtual std::string getTrackerType();
@@ -237,30 +201,19 @@ public:
 
 
 protected:
+
 	/*!
-	* the trackers tracking state
-	 */
-	std::atomic<bool> m_isTracking = false;
-	/*!
-	 * the trackers enabling state
-	 */
-	std::atomic<bool> m_isEnabled = false;
-	/*!
-	 * the number of skeletons detected by this tracker
-	 */
-	int m_countDetectedSkeleton = 0;
-	/*!
-	 * the trackers property struct 
+	 * the trackers property struct
 	 */
 	Properties* m_properties;
 	/*!
 	 * is true after one completed tracking cycle
 	 */
-	std::atomic<bool> m_isDataAvailable = false;
+	bool m_isDataAvailable = false;
 	/*!
 	 * is true if skeleton was added or removed from pool
 	 */
-	std::atomic<bool> m_hasSkeletonPoolChanged = false;
+	bool m_hasSkeletonPoolChanged = false;
 	/*!
 	 * thread for track() method
 	 */
@@ -281,12 +234,12 @@ protected:
 
 
 	/*!
-	 * base method for tracker initialisation 
+	 * base method for tracker initialisation
 	 */
-	virtual void init() = 0;
+	virtual void init();
 
 	/*!
-	 * updade method used for tracker thread 
+	 * updade method used for tracker thread
 	 */
 	virtual void update();
 
@@ -294,24 +247,24 @@ protected:
 	 * main tracking method
 	 * captures one frame of body tracking data and saves all data in the skeleton pool
 	 */
-	virtual void track() = 0;
+	virtual void track();
 
 
 	/*!
 	 * tracks the refresh cycles of a tracker
-	 * 
+	 *
 	 */
 	int m_trackingCycles = 0;
 
 	/*!
 	 * matrix calculated with the offset Vectors
-	 * 
+	 *
 	 */
 	Matrix4f m_offsetMatrix;
 
 	/*!
 	 * lock for save acces to skeleton pool
-	 * 
+	 *
 	 */
 	std::mutex m_skeletonPoolLock;
 

@@ -48,5 +48,13 @@ protected:
     osgViewer::Viewer _viewer;
     QTimer _timer;
     TrackerManager* m_refTrackerManager;
+    
+    /*!
+     *
+     * color components for the background color
+     *
+     */
+    Vector3 m_colorRed, m_colorYellow, m_colorGreen;
+
     std::map<int, std::vector<SkeletonMesh>> m_skeletonMeshPool;
 };

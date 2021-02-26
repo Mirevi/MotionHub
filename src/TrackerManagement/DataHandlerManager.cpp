@@ -16,9 +16,8 @@ DataHandlerManager::DataHandlerManager(Tracker* tracker)
 
 void DataHandlerManager::DataHandler(sFrameOfMocapData* data, void* pUserData)
 {
-
 	//check if Tracker is active or if it hasn't fetched data yet
-	if (!m_tracker->isTracking() || m_isDataAvailable.load())
+	if (!(m_tracker->getProperties()->isTracking) || m_isDataAvailable.load())
 	{
 
 		return;

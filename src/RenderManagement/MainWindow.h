@@ -76,7 +76,7 @@ public:
 	bool m_timelineActive;
 
 
-	GlWidget* getOglRenderer();
+	//GlWidget* getOglRenderer();
 
 
 private slots:
