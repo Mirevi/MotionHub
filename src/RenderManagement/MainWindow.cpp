@@ -25,8 +25,7 @@ MainWindow::MainWindow(TrackerManager* trackerManager, ConfigManager* configMana
 	traits->doubleBuffer = true;
 
 	osgQt::GraphicsWindowQt* gw = new osgQt::GraphicsWindowQt(traits.get());
-	osg::Node* scene = osgDB::readNodeFile("cow.osg");
-	m_osgQtWidget = new OsgQtWidget(gw, scene, m_refTrackerManager);
+	m_osgQtWidget = new OsgQtWidget(gw, m_refTrackerManager, m_configManager);
 	m_osgQtWidget->setObjectName(QStringLiteral("OsgRenderer"));
 	QSizePolicy sizePolicyOsgQtWidget(QSizePolicy::Expanding, QSizePolicy::Preferred);
 	m_osgQtWidget->setSizePolicy(sizePolicyOsgQtWidget);

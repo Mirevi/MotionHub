@@ -1,7 +1,10 @@
 #include "OsgQtWidget.h"
-
+#include "MotionHubUtil/ConfigManager.h"
 #include "TrackerManagement/TrackerManager.h"
+#include "Grid.h"
+
 #include <QVBoxLayout>
+
 
 
 namespace osgQt
@@ -9,8 +12,8 @@ namespace osgQt
 	class GraphicsWindowQt;
 }
 
-OsgQtWidget::OsgQtWidget(osgQt::GraphicsWindowQt* gw, osg::Node* scene, TrackerManager* trackerManager) :
-	QWidget(), m_refTrackerManager(trackerManager)
+OsgQtWidget::OsgQtWidget(osgQt::GraphicsWindowQt* gw, TrackerManager* trackerManager, ConfigManager* configManager ) :
+	QWidget(), m_refTrackerManager(trackerManager), m_configManager(configManager)
 {
 	const osg::GraphicsContext::Traits* traits = gw->getTraits();
 
@@ -20,7 +23,10 @@ OsgQtWidget::OsgQtWidget(osgQt::GraphicsWindowQt* gw, osg::Node* scene, TrackerM
 	camera->setViewport(new osg::Viewport(0, 0, traits->width, traits->height));
 	camera->setProjectionMatrixAsPerspective(30.0f, static_cast<double>(traits->width) / static_cast<double>(traits->height), 0.1f, 1000.0f);
 
-	_viewer.setSceneData(scene);
+	//osg::Node* scene = osgDB::readNodeFile("cow.osg");
+	m_sceneRoot = new osg::Group();
+	m_sceneRoot->setName("m_sceneRoot");
+	_viewer.setSceneData(m_sceneRoot);
 	_viewer.addEventHandler(new osgViewer::StatsHandler);
 	_viewer.setCameraManipulator(new osgGA::TrackballManipulator);
 	_viewer.setThreadingModel(osgViewer::Viewer::SingleThreaded);
@@ -30,11 +36,26 @@ OsgQtWidget::OsgQtWidget(osgQt::GraphicsWindowQt* gw, osg::Node* scene, TrackerM
 	setLayout(layout);
 
 	connect(&_timer, SIGNAL(timeout()), this, SLOT(update()));
-	_timer.start(10);
+	_timer.start(10); //TODO1: Hardcoded fps timing
+
+	Grid grid(m_configManager->getIntFromStartupConfig("line_count_for_floor_grid"),
+		SHOW_X_Z,
+		m_configManager->getFloatFromStartupConfig("cell_size_for_floor_grid"),
+		m_configManager->getFloatFromStartupConfig("line_width_for_rgb_axes_floor_grid"),
+		m_configManager->getFloatFromStartupConfig("line_width_for_grey_axes_floor_grid"));
+	grid.attachToSceneGraph(m_sceneRoot);
+
 
 	m_colorRed = Vector3(0.75f, 0.0f, 0.0f);
 	m_colorYellow = Vector3(0.75f, 0.75f, 0.0f);
 	m_colorGreen = Vector3(0.0f, 0.75f, 0.0f);
+
+	for (int i = 0; i <= 21; i++)
+	{
+		m_sphereVector.push_back(new osg::ShapeDrawable());
+		m_sphereVector.at(i)->setShape(new osg::Sphere(osg::Vec3(0.0f, 0.0f, 0.0f), 1.0f));
+		m_sphereVector.at(i)->setColor(osg::Vec4(1.0f, 0.0f, 0.0f, 1.0f));
+	}
 }
 
 
@@ -154,6 +175,9 @@ void OsgQtWidget::updateSkeletonMeshTransform()
 					// set joint position and rotation
 					currJoint->setPosition(itJoint->second.getJointPosition());
 					currJoint->setRotation(itJoint->second.getJointRotation());
+
+					//HWM: Ist eine geometry, und die hänge ich an eine Matrix bzw. PosAtt und diese hänge ich an den scenengraph.
+					//m_sphereVector.at(1)
 
 					// set joint confidence in the shader
 					switch (itJoint->second.getJointConfidence())
