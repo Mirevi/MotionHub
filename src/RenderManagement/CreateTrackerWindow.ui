@@ -581,6 +581,11 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
         </item>
         <item>
          <property name="text">
+           <string>CapturyLive</string>
+         </property>
+       </item>
+       <item>
+         <property name="text">
           <string>PerceptionNeuron</string>
          </property>
         </item>

@@ -82,6 +82,16 @@ int TrackerManager::createTracker(TrackerType type)
 
 		}
 
+		case CapturyLive:
+		{
+
+			//create new Tracker with current ID
+			tempTracker = new CLTracker(id, m_networkManager, m_configManager);
+
+			break;
+
+		}
+
 		case group:
 		{
 
@@ -180,7 +190,7 @@ void TrackerManager::removeTrackerAt(int positionInList)
 void TrackerManager::startTracker()
 {
 
-	Console::log("TrackerManager::startTracker(): Starting all tracker ...");
+	Console::log("TrackerManager::startTracker(): Starting all trackers ...");
 
 	//lock the tracker pool
 	m_trackerPoolLock.lock();
@@ -200,7 +210,7 @@ void TrackerManager::startTracker()
 	//we are now in playMode
 	m_isTracking = true;
 
-	Console::log("TrackerManager::startTracker(): Started all tracker.");
+	Console::log("TrackerManager::startTracker(): Started all trackers.");
 
 }
 

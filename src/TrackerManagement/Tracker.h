@@ -306,8 +306,8 @@ protected:
 	std::mutex m_skeletonPoolLock;
 
 
-	NetworkManager* m_networkManager;
+	NetworkManager* m_networkManager = nullptr;
 
-	ConfigManager* m_configManager;
+	ConfigManager* m_configManager = nullptr;
 
 };

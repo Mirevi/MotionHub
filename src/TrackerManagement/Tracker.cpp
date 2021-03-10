@@ -237,12 +237,10 @@ void Tracker::init()
 
 void Tracker::update()
 {
-
-	Console::log("Tracker::update()");
 	// track while tracking is true
 	while (m_isTracking)
 	{
-		Console::log("Tracker::update()");
+		//Console::log("Tracker::update()");
 		// if no new data is procressed
 		if (!m_isDataAvailable && m_isEnabled) {
 			// get new data

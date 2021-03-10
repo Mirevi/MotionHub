@@ -54,6 +54,15 @@ void CreateTrackerWindow::slotCreateTracker()
 
 		}
 
+		case 2:
+		{
+			// create new azure kinect tracker and add tracker to the tracking manager tracker pool
+			id = m_refTrackerManager->createTracker(TrackerManager::CapturyLive);
+
+			break;
+
+		}
+
 		default:
 			Console::logError("CreateTrackerWindow::slotCreateTracker(): Can not create tracker. Tracker type unkown!");
 			break;
