@@ -40,6 +40,7 @@ void OSCListener::ProcessMessage(const osc::ReceivedMessage& m, const IpEndpoint
 
 void OSCListener::start()
 {
+    //connecting listener with Port
     OSCListener listener;
     UdpListeningReceiveSocket s(IpEndpointName(IpEndpointName::ANY_ADDRESS, 6161), &listener);
 
