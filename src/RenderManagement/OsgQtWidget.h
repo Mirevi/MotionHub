@@ -6,6 +6,9 @@
 #include <QtGui/QtGui>
 #include <QTimer>
 
+#include <osg/ShapeDrawable>
+#include <osg/MatrixTransform>
+
 #include <osgQt/GraphicsWindowQt>
 
 #include <osgDB/ReadFile>
@@ -18,7 +21,7 @@
 //#include "Cube.h"
 #include "SkeletonMesh.h"
 
-#include <osg/ShapeDrawable>
+
 
 namespace osgQt {
     class GraphicsWindowQt;
@@ -45,11 +48,12 @@ public:
 protected:
     virtual void paintEvent(QPaintEvent* event)
     {
-        _viewer.frame();
+        m_viewer.frame();
     }
 
-    osgViewer::Viewer _viewer;
-    QTimer _timer;
+    osgViewer::Viewer m_viewer;
+    osg::ref_ptr< osgGA::TrackballManipulator> m_cameraManipulator;
+    QTimer m_timer;
     TrackerManager* m_refTrackerManager;
     ConfigManager* m_configManager;
     
@@ -64,5 +68,6 @@ protected:
 
     std::map<int, std::vector<SkeletonMesh>> m_skeletonMeshPool;
 
-    std::vector<osg::ref_ptr<osg::ShapeDrawable>> m_sphereVector;
+    std::vector<osg::ref_ptr<osg::ShapeDrawable>> m_spheres;
+    std::vector<osg::ref_ptr<osg::MatrixTransform>> m_sphereTransforms;
 };
