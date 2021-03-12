@@ -26,6 +26,12 @@ MotionHub::MotionHub(int argc, char** argv)
 	m_networkManager = new NetworkManager(m_configManager);
 	m_trackerManager = new TrackerManager(m_networkManager, m_configManager);
 
+	//m_oscListener = OSCListener();
+
+	//create OSC listener to receive remote commands
+	m_recordingThread = new std::thread(&MotionHub::startListening, this);
+	m_recordingThread->detach();
+
 	m_uiManager		 = new UIManager(m_argc, m_argv, m_trackerManager, m_configManager);
 
 	m_recordingThread = new std::thread(&MotionHub::updateRecorderThread, this);
@@ -146,6 +152,13 @@ void MotionHub::updateRecorderThread()
 	while (true)
 	{
 
+		if (OSCListener::instance().getToggleStatus())
+		{
+			//Console::log("MotionHub::updateRecorderThread(): toggleStatus = true");
+
+			m_uiManager->getMainWindow()->Record(false);
+		}
+
 		//record skeletons
 		if (Recorder::instance().isRecording())
 		{
@@ -157,4 +170,12 @@ void MotionHub::updateRecorderThread()
 		//wait frametime - elapsed time
 		std::this_thread::sleep_for(std::chrono::milliseconds(FRAMETIME));
 	}
+}
+
+
+void MotionHub::startListening()
+{
+
+	OSCListener::instance().start();
+
 }

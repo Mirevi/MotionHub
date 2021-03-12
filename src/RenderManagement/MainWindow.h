@@ -79,6 +79,9 @@ public:
 	//GlWidget* getOglRenderer();
 
 
+	void Record(bool showProgressionBar = true);
+
+
 private slots:
 	/*!
 	 * called when user clicks start/stop button 

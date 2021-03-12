@@ -7,7 +7,6 @@
 #include "GestureManagement/GestureManager.h"
 #include "RenderManagement/UIManager.h"
 
-
 #include "NetworkManagement/OSCListener.h"
 
 #include <chrono>

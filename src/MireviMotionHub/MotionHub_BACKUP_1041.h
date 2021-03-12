@@ -7,8 +7,10 @@
 #include "GestureManagement/GestureManager.h"
 #include "RenderManagement/UIManager.h"
 
-
+<<<<<<< HEAD
+=======
 #include "NetworkManagement/OSCListener.h"
+>>>>>>> feature/OscListener
 
 #include <chrono>
 #include <string>
