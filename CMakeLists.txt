@@ -149,6 +149,7 @@ add_subdirectory("${CMAKE_SOURCE_DIR}/src/MotionHubUtil")
 
 message(STATUS "Copiyng files (.dll, .pdb, etc.) to bin")
 
+# copy Qt dlls
 file(COPY ${Qt5ForMireviMotionHub_INCLUDE_DIR}/../bin/Qt5Widgetsd.dll DESTINATION ${CMAKE_BINARY_DIR}/bin)
 file(COPY ${Qt5ForMireviMotionHub_INCLUDE_DIR}/../bin/Qt5Widgets.dll DESTINATION ${CMAKE_BINARY_DIR}/bin)
 file(COPY ${Qt5ForMireviMotionHub_INCLUDE_DIR}/../bin/Qt5Guid.dll DESTINATION ${CMAKE_BINARY_DIR}/bin)
@@ -158,11 +159,12 @@ file(COPY ${Qt5ForMireviMotionHub_INCLUDE_DIR}/../bin/Qt5Core.dll DESTINATION ${
 file(COPY ${Qt5ForMireviMotionHub_INCLUDE_DIR}/../bin/Qt5OpenGL.dll DESTINATION ${CMAKE_BINARY_DIR}/bin)
 file(COPY ${Qt5ForMireviMotionHub_INCLUDE_DIR}/../bin/Qt5OpenGLd.dll DESTINATION ${CMAKE_BINARY_DIR}/bin)
 
+# copy qt platform dlls
 file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/bin/platforms)
 file(COPY ${Qt5ForMireviMotionHub_INCLUDE_DIR}/../plugins/platforms/qwindows.dll DESTINATION ${CMAKE_BINARY_DIR}/bin/platforms)
 file(COPY ${Qt5ForMireviMotionHub_INCLUDE_DIR}/../plugins/platforms/qwindowsd.dll DESTINATION ${CMAKE_BINARY_DIR}/bin/platforms)
 
-
+# copy pdbs
 file(COPY ${Qt5ForMireviMotionHub_INCLUDE_DIR}/../bin/Qt5Widgetsd.pdb DESTINATION ${CMAKE_BINARY_DIR}/bin)
 file(COPY ${Qt5ForMireviMotionHub_INCLUDE_DIR}/../bin/Qt5Widgets.pdb DESTINATION ${CMAKE_BINARY_DIR}/bin)
 file(COPY ${Qt5ForMireviMotionHub_INCLUDE_DIR}/../bin/Qt5Guid.pdb DESTINATION ${CMAKE_BINARY_DIR}/bin)
@@ -188,18 +190,7 @@ file(COPY deps/xsens-mvn-1.0.6/bin/xstypes64.dll						DESTINATION ${CMAKE_BINARY
 file(COPY ${OSG_INCLUDE_DIR}/../bin/									DESTINATION ${CMAKE_BINARY_DIR}/bin FILES_MATCHING PATTERN "*.dll")
 file(COPY ${OSG_INCLUDE_DIR}/../bin/									DESTINATION ${CMAKE_BINARY_DIR}/bin FILES_MATCHING PATTERN "*.pdb")
 
-#file(REMOVE_RECURSE ${K4ABT_INCLUDE_DIR}/../../tools/)
-#file(REMOVE_RECURSE ${K4A_INCLUDE_DIR}/../../tools/)
-
 file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/bin/data/)
-
-# platforms dir
-set( EXPECTED_SHA256 e3c37954f82f401333a1a3e20b1e11a48a16010e2a4fb0826c201913702ea24f ) 
-set(CURRENT_DEPS_PATH ${CMAKE_BINARY_DIR}/bin/platforms/) 
-set( URL https://claymore.mirevi.com/mirevimotionhub/platforms.zip )
-getsTheDepsNameFromURL("${URL}")
-set(CHECK_IF_DEPS_EXIST "${CURRENT_DEPS_PATH}/qwindows.dll")
-FIND_PACKAGE( Platforms REQUIRED )
 
 set_target_properties(MireviMotionHub PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT MireviMotionHub)
