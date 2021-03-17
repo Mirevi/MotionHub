@@ -31,7 +31,8 @@ void NetworkSettingsWindow::accept()
 	std::string newAddress = m_LineEditIP->text().toStdString();
 
 	m_refNetworkManager->m_ipAddress = newAddress;
-	m_configManager->writeToConfig("ipAddress", newAddress);
+	//m_configManager->writeToConfig("ipAddress", newAddress);
+	m_configManager->writeString("ipAddress", newAddress);
 
 	delete this;
 

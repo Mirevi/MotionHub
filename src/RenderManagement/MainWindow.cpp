@@ -312,57 +312,46 @@ void MainWindow::drawInspector()
 	int numAdditionalProperties = 0;
 	for (const auto& kv : trackerProperties->additionalProperties)
 	{
-		if (kv.second->type() == Tracker::PropertyType::INVALID) continue;
-		else if (kv.second->type() == Tracker::PropertyType::BOOL) {
+		if (kv.second->isType<bool>()) {
 			//Console::log("Property type: BOOL");
 			QCheckBox* checkBox = new QCheckBox(this);
 			if (((Tracker::Property<bool>*) kv.second)->value) checkBox->setChecked(true);
-			connect(checkBox, &QCheckBox::clicked, [=](bool state) { ((Tracker::Property<bool>*) kv.second)->value = state; Console::log(std::to_string(((Tracker::Property<bool>*) kv.second)->value)); });
+			connect(checkBox, &QCheckBox::clicked, [=](bool state) { tracker->setPropertyValue<bool>(kv.first, state); Console::log(std::to_string(((Tracker::Property<bool>*) kv.second)->value)); });
 			addRowToInspector(kv.second->name, "");
 			ui->tableWidget_inspector->setCellWidget(14 + numAdditionalProperties, 1, checkBox);
 		}
-		else if (kv.second->type() == Tracker::PropertyType::INT) {
+		else if (kv.second->isType<int>()) {
 			//Console::log("Property type: INT");
 			m_inputFieldPool.insert({ kv.first, new QLineEdit(toQString(((Tracker::Property<int>*) kv.second)->value), this) });
 			m_inputFieldPool.at(kv.first)->setValidator(new QIntValidator(this));
-			connect(m_inputFieldPool.at(kv.first), &QLineEdit::textEdited, [=](const QString& text) { ((Tracker::Property<int>*) kv.second)->value = text.toInt(); });
+			connect(m_inputFieldPool.at(kv.first), &QLineEdit::textEdited, [=](const QString& text) { tracker->setPropertyValue<int>(kv.first, text.toInt()); });
 			addRowToInspector(kv.second->name, "");
 			ui->tableWidget_inspector->setCellWidget(14 + numAdditionalProperties, 1, m_inputFieldPool.at(kv.first));
 		}
-		else if (kv.second->type() == Tracker::PropertyType::FLOAT)	{
+		else if (kv.second->isType<float>()) {
 			//Console::log("Property type: FLOAT");
 			m_inputFieldPool.insert({ kv.first, new QLineEdit(toQString(((Tracker::Property<float>*) kv.second)->value), this) });
 			m_inputFieldPool.at(kv.first)->setValidator(new QDoubleValidator(this));
-			connect(m_inputFieldPool.at(kv.first), &QLineEdit::textEdited, [=](const QString& text) { ((Tracker::Property<float>*) kv.second)->value = text.toFloat(); });
+			connect(m_inputFieldPool.at(kv.first), &QLineEdit::textEdited, [=](const QString& text) { tracker->setPropertyValue<float>(kv.first, text.toFloat()); });
 			addRowToInspector(kv.second->name, "");
 			ui->tableWidget_inspector->setCellWidget(14 + numAdditionalProperties, 1, m_inputFieldPool.at(kv.first));
 		}
-		else if (kv.second->type() == Tracker::PropertyType::STRING) {
+		else if (kv.second->isType<std::string>()) {
 			//Console::log("Property type: STRING");
 			m_inputFieldPool.insert({ kv.first, new QLineEdit(((Tracker::Property<std::string>*) kv.second)->value.c_str(), this) });
-			connect(m_inputFieldPool.at(kv.first), &QLineEdit::textEdited, [=](const QString& text) { ((Tracker::Property<std::string>*) kv.second)->value = text.toStdString(); });
+			connect(m_inputFieldPool.at(kv.first), &QLineEdit::textEdited, [=](const QString& text) { tracker->setPropertyValue<std::string>(kv.first, text.toStdString()); });
 			addRowToInspector(kv.second->name, "");
 			ui->tableWidget_inspector->setCellWidget(14 + numAdditionalProperties, 1, m_inputFieldPool.at(kv.first));
 		}
+		else continue;
 		numAdditionalProperties++;
 	}
 
 	//disable item selection on all table cells
-	for (int i = 5; i < 14 + numAdditionalProperties; i++)
-	{
-
-		ui->tableWidget_inspector->item(i, 0)->setFlags(Qt::NoItemFlags);
-
-	}
-
-
-
-
-
+	for (int i = 5; i < 14 + numAdditionalProperties; i++) ui->tableWidget_inspector->item(i, 0)->setFlags(Qt::NoItemFlags);
 
 	// inspector has items
 	m_isInspectorInit = true;
-
 }
 
 void MainWindow::clearInspector()
@@ -656,10 +645,6 @@ void MainWindow::slotInspectorInputPosX(QString text)
 	Vector3f pos = m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->getProperties()->positionOffset;
 
 	m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->setPositionOffset(Vector3f(posX, pos.y(), pos.z()));
-
-	m_configManager->writeToConfig("xPos", toString(posX), m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->getTrackerType());
-
-
 }
 
 void MainWindow::slotInspectorInputPosY(QString text)
@@ -688,10 +673,6 @@ void MainWindow::slotInspectorInputPosY(QString text)
 	Vector3f pos = m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->getProperties()->positionOffset;
 
 	m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->setPositionOffset(Vector3f(pos.x(), posY, pos.z()));
-
-	m_configManager->writeToConfig("yPos", toString(posY), m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->getTrackerType());
-
-
 }
 
 void MainWindow::slotInspectorInputPosZ(QString text)
@@ -718,10 +699,6 @@ void MainWindow::slotInspectorInputPosZ(QString text)
 	Vector3f pos = m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->getProperties()->positionOffset;
 
 	m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->setPositionOffset(Vector3f(pos.x(), pos.y(), posZ));
-
-	m_configManager->writeToConfig("zPos", toString(posZ), m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->getTrackerType());
-
-
 }
 
 
@@ -748,10 +725,6 @@ void MainWindow::slotInspectorInputRotX(QString text)
 	Vector3f rot = m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->getProperties()->rotationOffset;
 
 	m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->setRotationOffset(Vector3f(rotX, rot.y(), rot.z()));
-
-	m_configManager->writeToConfig("xRot", toString(rotX), m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->getTrackerType());
-
-
 }
 
 void MainWindow::slotInspectorInputRotY(QString text)
@@ -779,10 +752,6 @@ void MainWindow::slotInspectorInputRotY(QString text)
 	Vector3f rot = m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->getProperties()->rotationOffset;
 
 	m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->setRotationOffset(Vector3f(rot.x(), rotY, rot.z()));
-
-	m_configManager->writeToConfig("yRot", toString(rotY), m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->getTrackerType());
-
-
 }
 
 void MainWindow::slotInspectorInputRotZ(QString text)
@@ -810,10 +779,6 @@ void MainWindow::slotInspectorInputRotZ(QString text)
 	Vector3f rot = m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->getProperties()->rotationOffset;
 
 	m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->setRotationOffset(Vector3f(rot.x(), rot.y(), rotZ));
-
-	m_configManager->writeToConfig("zRot", toString(rotZ), m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->getTrackerType());
-
-
 }
 
 
@@ -842,10 +807,6 @@ void MainWindow::slotInspectorInputScaleX(QString text)
 	Vector3f scale = m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->getProperties()->scaleOffset;
 
 	m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->setScaleOffset(Vector3f(scaleX, scale.y(), scale.z()));
-
-	m_configManager->writeToConfig("xScl", toString(scaleX), m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->getTrackerType());
-
-
 }
 
 void MainWindow::slotInspectorInputScaleY(QString text)
@@ -873,10 +834,6 @@ void MainWindow::slotInspectorInputScaleY(QString text)
 	Vector3f scale = m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->getProperties()->scaleOffset;
 
 	m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->setScaleOffset(Vector3f(scale.x(), scaleY, scale.z()));
-
-	m_configManager->writeToConfig("yScl", toString(scaleY), m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->getTrackerType());
-
-
 }
 
 void MainWindow::slotInspectorInputScaleZ(QString text)
@@ -902,9 +859,6 @@ void MainWindow::slotInspectorInputScaleZ(QString text)
 	Vector3f scale = m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->getProperties()->scaleOffset;
 
 	m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->setScaleOffset(Vector3f(scale.x(), scale.y(), scaleZ));
-
-	m_configManager->writeToConfig("zScl", toString(scaleZ), m_refTrackerManager->getTrackerRefAt(m_selectedTrackerInList)->getTrackerType());
-
 }
 
 #pragma endregion InspectorInputSlots

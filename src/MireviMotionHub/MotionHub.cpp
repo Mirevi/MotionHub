@@ -30,6 +30,15 @@ MotionHub::MotionHub(int argc, char** argv)
 
 }
 
+MotionHub::~MotionHub()
+{
+	delete m_uiManager;
+	delete m_trackerManager;
+	delete m_networkManager;
+	delete m_gestureManager;
+	delete m_configManager;
+}
+
 // motion hub main loop
 void MotionHub::update()
 {

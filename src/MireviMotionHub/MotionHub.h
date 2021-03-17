@@ -34,6 +34,8 @@ public:
 	 */
 	MotionHub(int argc, char** argv);
 
+	~MotionHub();
+
 private:
 	/*!
 	 * argument c 

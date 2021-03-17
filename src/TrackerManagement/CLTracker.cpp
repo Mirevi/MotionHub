@@ -7,7 +7,7 @@ CLTracker::CLTracker(int id, NetworkManager* networkManager, ConfigManager* conf
 	m_properties->name = "tracker_CapturyLive_" + std::to_string(id);
 
 	Property<std::string>* ip = new Property<std::string>("IP address", "127.0.0.1");
-	m_properties->additionalProperties.insert({ "ip", ip });
+	m_properties->additionalProperties.insert({ "ipAddress", ip });
 	m_ipAddress = &(ip->value);
 
 	Property<int>* port = new Property<int>("Port", 2101);
@@ -20,10 +20,10 @@ CLTracker::CLTracker(int id, NetworkManager* networkManager, ConfigManager* conf
 	// default is enabled
 	m_isEnabled = true;
 
-	// set the offset values
-	setPositionOffset(Vector3f(0.0f, 0.0f, 0.0f));
-	setRotationOffset(Vector3f(0.0f, 0.0f, 0.0f));
-	setScaleOffset(Vector3f(1.0f, 1.0f, 1.0f));
+	// read property values from config
+	readOffsetFromConfig();
+	m_configManager->readString("ipAddress", *m_ipAddress, getTrackerType());
+	m_configManager->readInt("port", *m_port, getTrackerType());
 }
 
 CLTracker::~CLTracker() {
@@ -47,12 +47,6 @@ void CLTracker::stop()
 	// disconnect from CapturyLive
 	disconnect();
 }
-
-void CLTracker::destroy() {
-	delete this;
-}
-
-void CLTracker::init() {}
 
 void CLTracker::track()
 {
@@ -105,7 +99,7 @@ bool CLTracker::disconnect() {
 void CLTracker::parseSkeleton(Skeleton* skeleton, CapturyActor* actor, CapturyPose* pose) {
 	for (int i = 0; i < actor->numJoints; i++) {
 		std::pair<Joint::JointNames, bool> parsedName = parseJointName(&actor->joints[i]);
-		if (parsedName.second) skeleton->m_joints[parsedName.first] = Joint(convertCapturyPosition(&pose->transforms[i]), /*getCapturyJointRotation(&actor->joints[i], actor).inverse() * */convertCapturyEuler(&pose->transforms[i]), Joint::JointConfidence::HIGH);
+		if (parsedName.second) skeleton->m_joints[parsedName.first] = Joint(convertCapturyPosition(&pose->transforms[i]), convertCapturyEuler(&pose->transforms[i]), Joint::JointConfidence::HIGH);
 	}
 }
 
@@ -175,9 +169,15 @@ Quaternionf CLTracker::getCapturyJointRotation(CapturyJoint* joint, CapturyActor
 }
 
 Vector4f CLTracker::convertCapturyPosition(const CapturyTransform* transform) {
-	return Vector4f(transform->translation[0] * .001f, transform->translation[1] * .001f, transform->translation[2] * .001f, 1);
+	return applyOffset(Vector4f(transform->translation[0] * .001f, transform->translation[1] * .001f, transform->translation[2] * .001f, 1));
 }
 
 Quaternionf CLTracker::convertCapturyEuler(const CapturyTransform* transform) {
-	return AngleAxisf(transform->rotation[2] * M_PI / 180, Vector3f::UnitZ()) * AngleAxisf(transform->rotation[1] * M_PI / 180, Vector3f::UnitY()) * AngleAxisf(transform->rotation[0] * M_PI / 180, Vector3f::UnitX());
+	return applyOffset(AngleAxisf(transform->rotation[2] * M_PI / 180, Vector3f::UnitZ()) * AngleAxisf(transform->rotation[1] * M_PI / 180, Vector3f::UnitY()) * AngleAxisf(transform->rotation[0] * M_PI / 180, Vector3f::UnitX()));
+}
+
+
+std::string CLTracker::getTrackerType()
+{
+	return "CapturyLive";
 }

@@ -23,9 +23,6 @@ TrackerGroup::TrackerGroup(int id)
 	setPositionOffset(Vector3f(0.0f, 0.0f, 0.0f));
 	setRotationOffset(Vector3f(0.0f, 0.0f, 0.0f));
 	setScaleOffset(Vector3f(1.0f, 1.0f, 1.0f));
-
-	m_idCam = -1;
-
 }
 
 
@@ -40,13 +37,6 @@ void TrackerGroup::stop()
 
 }
 
-void TrackerGroup::destroy()
-{
-
-	//delete this;
-
-}
-
 void TrackerGroup::addTacker(Tracker* tracker)
 {
 
@@ -58,17 +48,6 @@ void TrackerGroup::removeTrackerAt(int position)
 {
 
 	m_groupedTracker.erase(m_groupedTracker.begin() + position);
-
-}
-
-
-
-
-
-void TrackerGroup::init()
-{
-
-
 
 }
 
@@ -102,4 +81,9 @@ void TrackerGroup::mergeSkeletons()
 
 	}
 
+}
+
+std::string TrackerGroup::getTrackerType()
+{
+	return "TrackerGroup";
 }

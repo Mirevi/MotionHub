@@ -2,12 +2,12 @@
 
 Tracker::Tracker()
 {
-
 	m_properties = new Properties();
+}
 
-
-	init();
-
+Tracker::~Tracker()
+{
+	delete m_properties;
 }
 
 #pragma region controls/util
@@ -29,13 +29,6 @@ void Tracker::stop()
 	//wait for tracking thread to terminate, then dispose of thread object
 	if (m_trackingThread->joinable()) m_trackingThread->join();
 	delete m_trackingThread;
-}
-
-void Tracker::destroy()
-{
-
-	delete this;
-
 }
 
 void Tracker::disable()
@@ -88,9 +81,12 @@ void Tracker::cacheSkeletonData()
 
 std::string Tracker::getTrackerType()
 {
-
 	return "";
+}
 
+std::string Tracker::getTrackerIdentifier()
+{
+	return "";
 }
 
 #pragma endregion
@@ -166,13 +162,6 @@ std::map<int, Skeleton> Tracker::getSkeletonPoolCache()
 
 }
 
-int Tracker::getCamID()
-{
-
-	return m_idCam;
-
-}
- 
 //void Tracker::setSendSkeletonDelegate(void (*sendSkeletonDelegate)(std::map<int, Skeleton>* skeletonPool, int trackerID))
 //{
 //
@@ -180,60 +169,63 @@ int Tracker::getCamID()
 //
 //}
 
-
-
-
 #pragma endregion
 
 #pragma region tracker_Offset_handling
 
-void Tracker::updateMatrix()
+/*void Tracker::updateMatrix()
 {
-
 	//create new Matrix and set it to be identity
 	m_offsetMatrix = transformMatrix(m_properties->positionOffset, m_properties->rotationOffset, m_properties->scaleOffset);
-
-}
+}*/
 
 void Tracker::setPositionOffset(Vector3f position)
 {
-
 	m_properties->positionOffset = position;
-
-	updateMatrix();
-
+	m_configManager->writeVec3f("position", position, getTrackerType(), getTrackerIdentifier());
+	//updateMatrix();
 }
 
 void Tracker::setRotationOffset(Vector3f rotation)
 {
-
 	m_properties->rotationOffset = rotation;
-
-	updateMatrix();
-
+	m_rotationOffset = AngleAxisf(rotation.y() * M_PI / 180, Vector3f::UnitY()) * AngleAxisf(rotation.x() * M_PI / 180, Vector3f::UnitX()) * AngleAxisf(rotation.z() * M_PI / 180, Vector3f::UnitZ());
+	m_configManager->writeVec3f("rotation", rotation, getTrackerType(), getTrackerIdentifier());
+	//updateMatrix();
 }
 
 void Tracker::setScaleOffset(Vector3f scale)
 {
-
 	m_properties->scaleOffset = scale;
-
-	updateMatrix();
-
+	m_configManager->writeVec3f("scale", scale, getTrackerType(), getTrackerIdentifier());
+	//updateMatrix();
 }
 
+Vector4f Tracker::applyOffset(Vector4f pos)
+{
+	pos.head<3>() = m_rotationOffset * (pos.head<3>()).cwiseProduct(m_properties->scaleOffset) + m_properties->positionOffset;
+	return pos;
+}
+
+Quaternionf Tracker::applyOffset(Quaternionf rot)
+{
+	if (m_properties->scaleOffset.x() < 0) rot.x() *= -1;
+	if (m_properties->scaleOffset.y() < 0) rot.y() *= -1;
+	if (m_properties->scaleOffset.z() < 0) rot.z() *= -1;
+	return m_rotationOffset * rot;
+}
+
+bool Tracker::readOffsetFromConfig()
+{
+	//std::cout << getTrackerType() << ", " << getTrackerIdentifier() << std::endl;
+	return	m_configManager->readVec3f("position", m_properties->positionOffset, getTrackerType(), getTrackerIdentifier()) &&
+			m_configManager->readVec3f("rotation", m_properties->rotationOffset, getTrackerType(), getTrackerIdentifier()) &&
+			m_configManager->readVec3f("scale", m_properties->scaleOffset, getTrackerType(), getTrackerIdentifier());
+}
 
 #pragma endregion
 
 #pragma region protected_methods
-
-void Tracker::init()
-{
-
-	Console::log("Tracker::init()");
-
-
-}
 
 void Tracker::update()
 {

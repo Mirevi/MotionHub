@@ -32,20 +32,14 @@ public:
 	 */
 	void stop() override;
 	/*!
-	 * stops and closes tracker and camera
-	 */
-	void destroy() override;
-	/*!
-	 * method for tracker initialisation. Not needed, thus empty
-	 */
-	void init() override;
-	/*!
 	 * main tracking method
 	 * captures one frame of body tracking data and saves all data in the skeleton pool
 	 */
 	void track() override;
 
 protected:
+
+	std::string getTrackerType() override;
 	
 	std::string* m_ipAddress;
 	

@@ -27,7 +27,7 @@
  *
  * \brief Manages Azure Kinect Body Tracking
  *
- * \author Kester Evers and Eric Jansen
+ * \author Kester Evers, Eric Jansen and Manuel Zohlen
  */
 class AKTracker : public Tracker
 {
@@ -38,18 +38,22 @@ public:
 	 * constructor with config
 	 * \param idCam the cameras id number
 	 */
-	AKTracker(int id, int idCam, NetworkManager* networkManager, ConfigManager* configManager);
-	/*!
-	 * stops and closes tracker and camera
-	 */
-	void destroy() override;
+	AKTracker(int id, NetworkManager* networkManager, ConfigManager* configManager);
+
+	~AKTracker();
 
 	std::string getTrackerType() override;
+	std::string getTrackerIdentifier() override;
 
 private:
-
-
-	 
+	/*!
+	 * k4a camera id
+	 */
+	int m_idCam;
+	/*!
+	* k4a camera serial number
+	 */
+	std::string m_serial;
 	/*!
 	 * k4a camera handle
 	 */
@@ -77,7 +81,7 @@ private:
 	 * stop() resets all initialization
 	 * \param configDevice configuration parameters, standart: DISABLE_ALL
 	 */
-	void init() override;
+	bool init();
 	/*!
 	 * starts tracking by getting the capture result and body frame
 	 * calls updateSkeletons(...)

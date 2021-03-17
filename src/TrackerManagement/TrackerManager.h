@@ -32,6 +32,8 @@ public:
 	 */
 	TrackerManager(NetworkManager* networkManager, ConfigManager* configManager);
 
+	~TrackerManager();
+
 	/*!
 	 * enum for all tracker types 
 	 */
@@ -143,12 +145,6 @@ private:
 	 * 
 	 */
 	int m_nextFreeTrackerID;
-
-	/*!
-	 * the next created AK tracker gets this cam ID
-	 *
-	 */
-	int m_nextFreeAKCamID;
 
 	/*!
 	 * mutex lock for the tracker pool

@@ -21,12 +21,13 @@ OTTracker::OTTracker(int id, NetworkManager* networkManager, ConfigManager* conf
 	m_isEnabled = true;
 
 
-	//set default values for offsets
+	/*//set default values for offsets
 	setPositionOffset(Vector3f(configManager->getFloatFromStartupConfig("xPosOptiTrack"), configManager->getFloatFromStartupConfig("yPosOptiTrack"), configManager->getFloatFromStartupConfig("zPosOptiTrack")));																		 																			 
 	setRotationOffset(Vector3f(configManager->getFloatFromStartupConfig("xRotOptiTrack"), configManager->getFloatFromStartupConfig("yRotOptiTrack"), configManager->getFloatFromStartupConfig("zRotOptiTrack")));
-	setScaleOffset(Vector3f(configManager->getFloatFromStartupConfig("xSclOptiTrack"), configManager->getFloatFromStartupConfig("ySclOptiTrack"), configManager->getFloatFromStartupConfig("zSclOptiTrack")));
+	setScaleOffset(Vector3f(configManager->getFloatFromStartupConfig("xSclOptiTrack"), configManager->getFloatFromStartupConfig("ySclOptiTrack"), configManager->getFloatFromStartupConfig("zSclOptiTrack")));*/
 
-	m_idCam = -1;
+	// read property values from config
+	readOffsetFromConfig();
 }
 
 
@@ -132,15 +133,6 @@ int OTTracker::createClient(int iConnectionType)
 	}
 
 	return ErrorCode_OK;
-
-}
-
-
-
-void OTTracker::init()
-{
-
-	//no init code. The receiver is created on start, because it cannot be deactivated/paused
 
 }
 
@@ -260,7 +252,7 @@ Skeleton* OTTracker::parseSkeleton(sSkeletonData skeleton, int id, Skeleton* old
 		sRigidBodyData rbData = skeleton.RigidBodyData[j];
 
 		// convert from k4a Vectors and quaternions into custom vectors
-		Vector4f pos = m_offsetMatrix * Vector4f(rbData.x, rbData.y, rbData.z, 1.0f);
+		Vector4f pos = applyOffset(Vector4f(rbData.x, rbData.y, rbData.z, 1.0f));
 		Quaternionf rot = Quaternionf(rbData.qw, rbData.qx, -rbData.qy, -rbData.qz);
 
 		//confidence values are not transmitted, default confidence is High
@@ -284,6 +276,7 @@ Skeleton* OTTracker::parseSkeleton(sSkeletonData skeleton, int id, Skeleton* old
 			return nullptr;
 
 		}
+		rot = applyOffset(rot);
 
 		//map the OptiTRack poses to the MMH skeleton joints
 		switch (j)

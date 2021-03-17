@@ -114,11 +114,6 @@ private:
 	int createClient(int iConnectionType);
 
 	/*!
-	 * empty override method for Tracker::init()
-	 * this tracker does initialization in  createClient()
-	 */
-	void init() override;
-	/*!
 	 * main tracking method
 	 * captures one frame of body tracking data and saves all data in the skeleton pool
 	 */
