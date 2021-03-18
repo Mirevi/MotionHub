@@ -27,6 +27,7 @@ ${K4ABT_LIBRARIES_DIR}
 ${Cudnn_LIBRARIES_DIR}
 ${NATNET_SDK_LIBRARIES_DIR}
 ${OSCp_LIBRARIES_DIR}
+${XsensMVNSDK_LIBRARIES_DIR}
 )
 
 # Find includes in corresponding build directories
