@@ -15,9 +15,9 @@ namespace std {
 }
 #endif
 
-#include "osc/OscReceivedElements.h"
-#include "osc/OscPacketListener.h"
-#include "ip/UdpSocket.h"
+#include "OscReceivedElements.h"
+#include "OscPacketListener.h"
+#include "UdpSocket.h"
 
 
 #define PORT 7000

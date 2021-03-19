@@ -2,7 +2,7 @@
 
 #include "NetworkSender.h"
 
-#include "ip/UdpSocket.h"
+#include "UdpSocket.h"
 #include "OscOutboundPacketStream.h"
 
 #include "defines.h"
