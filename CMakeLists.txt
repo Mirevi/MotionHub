@@ -123,9 +123,9 @@ set(CHECK_IF_DEPS_EXIST "${CURRENT_DEPS_PATH}/include/cudnn.h")
 FIND_PACKAGE( Cudnn REQUIRED )
 
 # OSCpack
-set( EXPECTED_SHA256 a660874bfe1b4edfea96a966d9196b1a5fa9686d4c9500eeb1781ba50650ff38 ) 
-set(CURRENT_DEPS_PATH ${CMAKE_BINARY_DIR}/../deps/oscpack110/) 
-set( URL https://claymore.mirevi.com/mirevimotionhub/oscpack110.zip )
+set( EXPECTED_SHA256 5582c525d2bddbb0eab709be9cb54ba4ef026b062c84ba511b0243af2963b871 ) 
+set(CURRENT_DEPS_PATH ${CMAKE_BINARY_DIR}/../deps/oscpack-1.1.0/) 
+set( URL https://claymore.mirevi.com/mirevimotionhub/oscpack-1.1.0.zip )
 getsTheDepsNameFromURL("${URL}")
 set(CHECK_IF_DEPS_EXIST "${CURRENT_DEPS_PATH}/include/OscTypes.h")
 FIND_PACKAGE( OSCPack REQUIRED )
