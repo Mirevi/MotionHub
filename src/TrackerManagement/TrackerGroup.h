@@ -12,7 +12,6 @@ public:
 
 	TrackerGroup();
 	TrackerGroup(int id);
-	~TrackerGroup();
 
 	void start() override;
 	/*!
@@ -20,22 +19,13 @@ public:
 	 * after that, the tracking thread is stopped
 	 */
 	void stop() override;
-	/*!
-	 * resets the Trackers init data
-	 */
-	void destroy() override;
 
 	void addTacker(Tracker* tracker);
 
 	void removeTrackerAt(int position);
 
 private:
-
-	/*!
-	 * empty override method for Tracker::init()
-	 * this tracker does initialization in  createClient()
-	 */
-	void init() override;
+	std::string getTrackerType();
 	/*!
 	 * updade method used for tracker thread
 	 */

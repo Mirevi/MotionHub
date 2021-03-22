@@ -10,6 +10,7 @@
 #include "Tracker.h"
 #include "AKTracker.h"
 #include "OTTracker.h"
+#include "CLTracker.h"
 #include "BVHPlayer.h"
 #include "mmhPlayer.h"
 #include "TrackerGroup.h"
@@ -49,6 +50,8 @@ public:
 	 */
 	TrackerManager(NetworkManager* networkManager, ConfigManager* configManager);
 
+	~TrackerManager();
+
 	/*!
 	 * enum for all tracker types 
 	 */
@@ -59,6 +62,7 @@ public:
 		optiTrack,		// OptiTrack	Tracker
 		bvh,			//BVH-Player
 		mmh,
+		CapturyLive,	// CapturyLive  Tracker
 		group
 
 	};
@@ -171,12 +175,6 @@ private:
 	 * 
 	 */
 	int m_nextFreeTrackerID;
-
-	/*!
-	 * the next created AK tracker gets this cam ID
-	 *
-	 */
-	int m_nextFreeAKCamID;
 
 	/*!
 	 * mutex lock for the tracker pool

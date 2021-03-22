@@ -19,33 +19,41 @@ BVHPlayer::BVHPlayer(int id, NetworkManager* networkManager, ConfigManager* conf
 	m_properties->name = "tracker_bvhPlayer_" + toString(id);
 
 	//tracker is enabled
-	m_properties->isEnabled = true;
+	m_isEnabled = true;
 
 
-	//set default values for offsets
-	setPositionOffset(Vector3f(configManager->getFloatFromStartupConfig("xPosBVH"),
-							   configManager->getFloatFromStartupConfig("yPosBVH"),
-							   configManager->getFloatFromStartupConfig("zPosBVH")
-							  ));
+	////set default values for offsets
+	//setPositionOffset(Vector3f(configManager->getFloatFromStartupConfig("xPosBVH"),
+	//						   configManager->getFloatFromStartupConfig("yPosBVH"),
+	//						   configManager->getFloatFromStartupConfig("zPosBVH")
+	//						  ));
 
-	setRotationOffset(Vector3f(configManager->getFloatFromStartupConfig("xRotBVH"),
-							   configManager->getFloatFromStartupConfig("yRotBVH"),
-							   configManager->getFloatFromStartupConfig("zRotBVH")
-							  ));
+	//setRotationOffset(Vector3f(configManager->getFloatFromStartupConfig("xRotBVH"),
+	//						   configManager->getFloatFromStartupConfig("yRotBVH"),
+	//						   configManager->getFloatFromStartupConfig("zRotBVH")
+	//						  ));
 
-	setScaleOffset(Vector3f(configManager->getFloatFromStartupConfig("xSclBVH"),
-							configManager->getFloatFromStartupConfig("ySclBVH"),
-							configManager->getFloatFromStartupConfig("zSclBVH")
-							));
+	//setScaleOffset(Vector3f(configManager->getFloatFromStartupConfig("xSclBVH"),
+	//						configManager->getFloatFromStartupConfig("ySclBVH"),
+	//						configManager->getFloatFromStartupConfig("zSclBVH")
+	//						));
+	readOffsetFromConfig();
 
 
+}
+
+
+
+BVHPlayer::~BVHPlayer()
+{
+	delete m_bvhObject;
 }
 
 void BVHPlayer::start()
 {
 
 	// set tracking to true
-	m_properties->isTracking = true;
+	m_isTracking = true;
 
 
 	//create new skeleton and add it to the pool
@@ -53,7 +61,7 @@ void BVHPlayer::start()
 	m_currSkeleton = &m_skeletonPool[0];
 
 	//there schould only be one skeleton in the file
-	m_properties->countDetectedSkeleton = m_skeletonPool.size();
+	m_countDetectedSkeleton = m_skeletonPool.size();
 	//skeleton was added/removed, so UI updates
 	m_hasSkeletonPoolChanged = true;
 
@@ -70,17 +78,9 @@ void BVHPlayer::start()
 void BVHPlayer::stop()
 {
 	//is not tracking, so the update loop exits after current loop
-	m_properties->isTracking = false;
+	m_isTracking = false;
 }
 
-void BVHPlayer::destroy()
-{
-
-	delete m_bvhObject;
-
-	// delete this object
-	delete this;
-}
 
 void BVHPlayer::init()
 {
@@ -132,7 +132,7 @@ void BVHPlayer::update()
 {
 
 	// track while tracking is true
-	while (m_properties->isTracking)
+	while (m_isTracking)
 	{
 
 		Timer::reset();
@@ -263,20 +263,20 @@ std::string BVHPlayer::getTrackerType()
 	return "BVH";
 }
 
-std::vector<Vector3f> BVHPlayer::resetOffsets()
-{
-	Vector3f pos = Vector3f(0, 0, 0);
-	Vector3f rot = Vector3f(0, 0, 0);
-	Vector3f scl = Vector3f(1, 1, 1);
-
-	setPositionOffset(pos);
-	setRotationOffset(rot);
-	setScaleOffset(scl);
-
-	std::vector<Vector3f> offsets = { pos, rot, scl };
-
-	return offsets;
-}
+//std::vector<Vector3f> BVHPlayer::resetOffsets()
+//{
+//	Vector3f pos = Vector3f(0, 0, 0);
+//	Vector3f rot = Vector3f(0, 0, 0);
+//	Vector3f scl = Vector3f(1, 1, 1);
+//
+//	setPositionOffset(pos);
+//	setRotationOffset(rot);
+//	setScaleOffset(scl);
+//
+//	std::vector<Vector3f> offsets = { pos, rot, scl };
+//
+//	return offsets;
+//}
 
 void BVHPlayer::controlTime(bool stop)
 {
@@ -287,7 +287,7 @@ void BVHPlayer::setCurrentFrame(int newValue)
 {
 	m_currFrame = (int)round(m_frameCount * newValue / 100);
 
-	if (m_properties->isTracking)
+	if (m_isTracking)
 	{
 		track();
 	}

@@ -12,6 +12,12 @@ class BVHPlayer : public Tracker
 public:
 
 	BVHPlayer(int id, NetworkManager* networkManager, ConfigManager* configManager, std::string filePath);
+	
+	/*!
+	 * default destructor
+	 *
+	 */
+	~BVHPlayer();
 
 	/*!
 	 * calls the start() method of the base class which sets m_tracking to true
@@ -21,14 +27,8 @@ public:
 	* executes the stop() method of the base class which sets m_tracking to false
 	*/
 	void stop() override;
-	/*!
-	 * stops and closes tracker and camera
-	 */
-	void destroy() override;
 
 	std::string getTrackerType() override;
-
-	std::vector<Vector3f> resetOffsets() override;
 
 	void controlTime(bool stop);
 
@@ -49,7 +49,8 @@ private:
 	 * stop() resets all initialization
 	 * \param configDevice configuration parameters, standart: DISABLE_ALL
 	 */
-	void init() override;
+	void init();
+
 	/*!
 	 * tracking loop
 	 */

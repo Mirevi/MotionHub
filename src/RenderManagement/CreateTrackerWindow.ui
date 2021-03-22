@@ -594,6 +594,11 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
           <string>.mmh-file Player</string>
          </property>
         </item>
+        <item>
+         <property name="text">
+          <string>CapturyLive</string>
+         </property>
+        </item>
        </widget>
        <widget class="QPushButton" name="btn_create">
         <property name="geometry">

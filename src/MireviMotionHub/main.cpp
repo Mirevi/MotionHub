@@ -20,6 +20,7 @@ int main(int argc, char** argv)
 	//create the MotionHub object 
 	MotionHub* motionHub = new MotionHub(argc, argv);
 
+	delete motionHub;
 	return 0;
 
 }

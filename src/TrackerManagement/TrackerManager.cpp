@@ -4,13 +4,18 @@ TrackerManager::TrackerManager(NetworkManager* networkManager, ConfigManager* co
 {
 	
 	m_nextFreeTrackerID = 0;
-	m_nextFreeAKCamID = 0;
 
 	m_networkManager = networkManager;
 	m_configManager = configManager;
 
 	Console::log("TrackerManager::TrackerManager(): Created tracker manager");
 
+}
+
+TrackerManager::~TrackerManager()
+{
+	if (m_isTracking) stopTracker();
+	while (m_trackerPool.size() > 0) removeTrackerAt(0);
 }
 
 int TrackerManager::createTracker(TrackerType type, std::string filePath)
@@ -38,10 +43,10 @@ int TrackerManager::createTracker(TrackerType type, std::string filePath)
 		case azureKinect:
 		{
 
-			Console::log("TrackerManager::createTracker(): Creating AKtracker with cam ID = " + toString(m_nextFreeAKCamID));
+			//Console::log("TrackerManager::createTracker(): Creating AKtracker with cam ID = " + toString(m_nextFreeAKCamID) + " ...");
 
 			//create new AK Tracker with next free Cam ID
-			tempTracker = new AKTracker(id, m_nextFreeAKCamID, m_networkManager, m_configManager);
+			tempTracker = new AKTracker(id, m_networkManager, m_configManager);
 
 
 			if (!tempTracker->valid)
@@ -58,9 +63,6 @@ int TrackerManager::createTracker(TrackerType type, std::string filePath)
 
 			//sendSkeletonDelegate() funcPtr pass through
 			//tempTracker->setSendSkeletonDelegate(m_sendSkeletonDelegate);
-
-			//next AK Tracker has new cam ID
-			m_nextFreeAKCamID++;
 
 			break;
 
@@ -83,6 +85,16 @@ int TrackerManager::createTracker(TrackerType type, std::string filePath)
 
 			//create new BVH-Player with current ID
 			tempTracker = new BVHPlayer(id, m_networkManager, m_configManager, filePath);
+
+			break;
+
+		}
+
+		case CapturyLive:
+		{
+
+			//create new Tracker with current ID
+			tempTracker = new CLTracker(id, m_networkManager, m_configManager);
 
 			break;
 
@@ -146,59 +158,33 @@ void TrackerManager::removeTrackerAt(int positionInList)
 	//lock the tracker pool
 	m_trackerPoolLock.lock();
 
-	//current Tracker to delete
-	Tracker* currTracker;
+	if (positionInList < m_trackerPool.size()) {
+		//save the pointer to the tracker
+		Tracker* currTracker = m_trackerPool.at(positionInList);
 
-	int currID;
+		// remove tracker with key from tracker pool
+		m_trackerPool.erase(m_trackerPool.begin() + positionInList);
 
-	// find tracker with positionInList
-	for(int i = 0; i < m_trackerPool.size(); i++)
-	{
+		int currID = currTracker->getProperties()->id;
 
-		if (i == positionInList)
-		{
-			//save the pointer to the tracker
-			currTracker = m_trackerPool.at(i);
+		// destroy tracker with key
+		delete currTracker;
 
-			//when tracker is AKtracker
-			if (currTracker->getCamID() != -1)
-			{
-				//get the cam ID to reuse it
-				m_nextFreeAKCamID = currTracker->getCamID();
+		//a tracker has been removed, so the tracker pool has changed
+		m_hasTrackerPoolChanged = true;
 
-			}
+		Console::log("TrackerManager::removeTracker(): Removed tracker with id = " + std::to_string(positionInList) + ".");
 
-			// remove tracker with key from tracker pool
-			m_trackerPool.erase(m_trackerPool.begin() + i);
-
-			currID = currTracker->getProperties()->id;
-
-			// destroy tracker with key
-			currTracker->destroy();
-
-			//a tracker has been removed, so the tracker pool has changed
-			m_hasTrackerPoolChanged = true;
-
-			Console::log("TrackerManager::removeTracker(): Removed tracker with id = " + std::to_string(i));
-
-			break;
-		}
-
+		m_networkManager->removeNetworkSender(currID);
 	}
-
 	//unlock the tracker pool
 	m_trackerPoolLock.unlock();
-
-	m_networkManager->removeNetworkSender(currID);
-
-	return;
-
 }
 
 void TrackerManager::startTracker()
 {
 
-	Console::log("TrackerManager::startTracker(): Starting all tracker");
+	Console::log("TrackerManager::startTracker(): Starting all trackers ...");
 
 	//lock the tracker pool
 	m_trackerPoolLock.lock();
@@ -218,7 +204,7 @@ void TrackerManager::startTracker()
 	//we are now in playMode
 	m_isTracking = true;
 
-	Console::log("TrackerManager::startTracker(): Started all tracker");
+	Console::log("TrackerManager::startTracker(): Started all trackers.");
 
 }
 
@@ -423,7 +409,7 @@ void TrackerManager::writeSkeletonsToRecorder()
 	{
 
 		//check if Tracker is enabled
-		if ((*itTracker)->getProperties()->isEnabled)
+		if ((*itTracker)->isEnabled())
 		{
 			
 			//add skeletons to Recording Frame, use cache because thread issues

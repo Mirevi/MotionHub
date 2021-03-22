@@ -7,7 +7,7 @@
 //Must be declared in .cpp since it is static
 
 
-ConfigManager::ConfigManager()
+/*ConfigManager::ConfigManager()
 {
 
 	// load config file
@@ -240,15 +240,15 @@ void ConfigManager::createNewConfigFile()
 	tinyxml2::XMLElement* zRotAzure = newXmlDoc.NewElement("zRotAzure");
 	tinyxml2::XMLElement* xSclAzure = newXmlDoc.NewElement("xSclAzure");
 	tinyxml2::XMLElement* ySclAzure = newXmlDoc.NewElement("ySclAzure");
-	tinyxml2::XMLElement* zSclAzure = newXmlDoc.NewElement("zSclAzure"); 
+	tinyxml2::XMLElement* zSclAzure = newXmlDoc.NewElement("zSclAzure");
 
 	//create OptiTrack offset Elements to startup
 	tinyxml2::XMLElement* xPosOptiTrack = newXmlDoc.NewElement("xPosOptiTrack");
 	tinyxml2::XMLElement* yPosOptiTrack = newXmlDoc.NewElement("yPosOptiTrack");
-	tinyxml2::XMLElement* zPosOptiTrack = newXmlDoc.NewElement("zPosOptiTrack");													
+	tinyxml2::XMLElement* zPosOptiTrack = newXmlDoc.NewElement("zPosOptiTrack");
 	tinyxml2::XMLElement* xRotOptiTrack = newXmlDoc.NewElement("xRotOptiTrack");
 	tinyxml2::XMLElement* yRotOptiTrack = newXmlDoc.NewElement("yRotOptiTrack");
-	tinyxml2::XMLElement* zRotOptiTrack = newXmlDoc.NewElement("zRotOptiTrack");												
+	tinyxml2::XMLElement* zRotOptiTrack = newXmlDoc.NewElement("zRotOptiTrack");
 	tinyxml2::XMLElement* xSclOptiTrack = newXmlDoc.NewElement("xSclOptiTrack");
 	tinyxml2::XMLElement* ySclOptiTrack = newXmlDoc.NewElement("ySclOptiTrack");
 	tinyxml2::XMLElement* zSclOptiTrack = newXmlDoc.NewElement("zSclOptiTrack");
@@ -317,4 +317,195 @@ void ConfigManager::createNewConfigFile()
 
 
 
+}*/
+
+bool ConfigManager::isLoaded()
+{
+	return (m_config.RootElement() != nullptr);
+}
+
+bool ConfigManager::loadConfig()
+{
+	if (isLoaded()) return true;
+
+	//Read XML file
+	tinyxml2::XMLError result = m_config.LoadFile(CONFIG_PATH);
+
+	switch (result) {
+	case tinyxml2::XMLError::XML_SUCCESS:
+		return true;
+
+	case tinyxml2::XMLError::XML_ERROR_FILE_NOT_FOUND:
+		m_config.InsertFirstChild(m_config.NewElement("config"));
+		return true;
+
+	default:
+		std::cerr << "ERROR: could not load config: " << m_config.ErrorIDToName(result) << std::endl;
+		return false;
+	}
+}
+
+bool ConfigManager::saveConfig()
+{
+	if (isLoaded()) return (m_config.SaveFile(CONFIG_PATH) == tinyxml2::XMLError::XML_SUCCESS);
+	else return false;
+}
+
+
+tinyxml2::XMLElement* ConfigManager::findElement(std::string name, std::string identifier, tinyxml2::XMLElement* parent)
+{
+	if (!loadConfig() || name == "") return nullptr;
+
+	if (parent == nullptr) parent = m_config.RootElement();
+	tinyxml2::XMLElement* element = parent->FirstChildElement();
+
+	while (element) {
+		const char* elementName = element->Name();
+		const char* elementId = element->Attribute("id");
+		if (std::string(elementName) == name && ((elementId == nullptr && identifier == "") || (elementId != nullptr && std::string(elementId) == identifier))) break;
+		element = element->NextSiblingElement();
+	}
+	return element;
+}
+
+tinyxml2::XMLElement* ConfigManager::findOrCreateElement(std::string name, std::string identifier, tinyxml2::XMLElement* parent)
+{
+	if (!loadConfig() || name == "") return nullptr;
+	tinyxml2::XMLElement* element = findElement(name, identifier, parent);
+
+	if (element == nullptr) {
+		if (parent == nullptr) parent = m_config.RootElement();
+		element = m_config.NewElement(name.c_str());
+		if (identifier != "") element->SetAttribute("id", identifier.c_str());
+		parent->InsertEndChild(element);
+	}
+	return element;
+}
+
+
+bool ConfigManager::readString(std::string name, std::string& out, std::string parent, std::string identifier)
+{
+	if (!loadConfig()) return false;
+	tinyxml2::XMLElement* parentElement = findElement(parent, identifier);
+	if (parent != "" && parentElement == nullptr) return false;
+	tinyxml2::XMLElement* element = findElement(name, "", parentElement);
+	if (element != nullptr) {
+		out = element->GetText();
+		return true;
+	}
+	return false;
+}
+
+bool ConfigManager::readBool(std::string name, bool& out, std::string parent, std::string identifier)
+{
+	std::string outStr;
+	if (readString(name, outStr, parent, identifier)) {
+		out = (outStr == "true");
+		return true;
+	} else return false;
+}
+
+bool ConfigManager::readInt(std::string name, int& out, std::string parent, std::string identifier)
+{
+	std::string outStr;
+	if (readString(name, outStr, parent, identifier)) {
+		out = std::stoi(outStr);
+		return true;
+	} else return false;
+}
+
+bool ConfigManager::readFloat(std::string name, float& out, std::string parent, std::string identifier)
+{
+	std::string outStr;
+	if (readString(name, outStr, parent, identifier)) {
+		out = std::stof(outStr);
+		return true;
+	} else return false;
+}
+
+bool ConfigManager::readVec3f(std::string name, Vector3f& out, std::string parent, std::string identifier)
+{
+	std::string outStr;
+	if (readString(name, outStr, parent, identifier)) {
+		Vector3f v;
+		try {
+			size_t l = 0;
+			size_t r = 0;
+			for (int i = 0; i < 3; i++) {
+				if (r == outStr.npos) return false;
+				l = r;
+				r = outStr.find(" ", l);
+				v[i] = stof(outStr.substr(l, r - l));
+				++r;
+			}
+		} catch (const std::invalid_argument& e) {
+			return false;
+		}
+		//std::cout << std::to_string(v.x()) << ", " << std::to_string(v.y()) << ", " << std::to_string(v.z()) << std::endl;
+		out = v;
+		return true;
+	} else return false;
+}
+
+bool ConfigManager::readVec4f(std::string name, Vector4f& out, std::string parent, std::string identifier)
+{
+	std::string outStr;
+	if (readString(name, outStr, parent, identifier)) {
+		Vector4f v;
+		try {
+			size_t l = 0;
+			size_t r = 0;
+			for (int i = 0; i < 4; i++) {
+				if (r == outStr.npos) return false;
+				l = r;
+				r = outStr.find(" ", l);
+				v[i] = stof(outStr.substr(l, r - l));
+				++r;
+			}
+		} catch (const std::invalid_argument& e) {
+			return false;
+		}
+		//std::cout << std::to_string(v.x()) << ", " << std::to_string(v.y()) << ", " << std::to_string(v.z()) << ", " << std::to_string(v.w()) << std::endl;
+		out = v;
+		return true;
+	} else return false;
+}
+
+
+
+bool ConfigManager::writeString(std::string name, std::string value, std::string parent, std::string identifier)
+{
+	if (!loadConfig()) return false;
+	tinyxml2::XMLElement* element = findOrCreateElement(name, "", findOrCreateElement(parent, identifier));
+	if (element != nullptr) {
+		element->SetText(value.c_str());
+		return saveConfig();
+	}
+	return false;
+}
+
+bool ConfigManager::writeBool(std::string name, bool value, std::string parent, std::string identifier)
+{
+	if (value) return writeString(name, "true", parent, identifier);
+	else return writeString(name, "false", parent, identifier);
+}
+
+bool ConfigManager::writeInt(std::string name, int value, std::string parent, std::string identifier)
+{
+	return writeString(name, std::to_string(value), parent, identifier);
+}
+
+bool ConfigManager::writeFloat(std::string name, float value, std::string parent, std::string identifier)
+{
+	return writeString(name, std::to_string(value), parent, identifier);
+}
+
+bool ConfigManager::writeVec3f(std::string name, Vector3f value, std::string parent, std::string identifier)
+{
+	return writeString(name, std::to_string(value.x()) + " " + std::to_string(value.y()) + " " + std::to_string(value.z()), parent, identifier);
+}
+
+bool ConfigManager::writeVec4f(std::string name, Vector4f value, std::string parent, std::string identifier)
+{
+	return writeString(name, std::to_string(value.x()) + " " + std::to_string(value.y()) + " " + std::to_string(value.z()) + " " + std::to_string(value.w()), parent, identifier);
 }

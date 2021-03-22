@@ -125,7 +125,7 @@ private slots:
 	void slotInspectorInputScaleY(QString text);
 	void slotInspectorInputScaleZ(QString text);
 
-	void slotResetTrackerOffset();
+	//void slotResetTrackerOffset();
 
 	void slotModifyTrackerRotations();
 

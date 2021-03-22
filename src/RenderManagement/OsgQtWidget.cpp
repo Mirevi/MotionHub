@@ -40,11 +40,22 @@ OsgQtWidget::OsgQtWidget(osgQt::GraphicsWindowQt* gw, TrackerManager* trackerMan
 	connect(&m_timer, SIGNAL(timeout()), this, SLOT(update()));
 	m_timer.start(10); //TODO1: Hardcoded fps timing
 
-	Grid grid(m_configManager->getIntFromStartupConfig("line_count_for_floor_grid"),
-		SHOW_X_Z,
-		m_configManager->getFloatFromStartupConfig("cell_size_for_floor_grid"),
-		m_configManager->getFloatFromStartupConfig("line_width_for_rgb_axes_floor_grid"),
-		m_configManager->getFloatFromStartupConfig("line_width_for_grey_axes_floor_grid"));
+
+	int lineCountGrid = 20;
+	m_configManager->readInt("line_count_for_floor_grid", lineCountGrid);
+	
+	float cellSizeGrid = 5.0;
+	m_configManager->readFloat("line_width_for_rgb_axes_floor_grid", cellSizeGrid);
+
+	float lineWidthForRGBAxesGrid = 2.0;
+	m_configManager->readFloat("line_width_for_grey_axes_floor_grid", lineWidthForRGBAxesGrid);
+
+	float lineWidthForGreyAxesGrid = 0.1;
+	m_configManager->readFloat("cell_size_for_floor_grid", lineWidthForGreyAxesGrid);
+
+	
+	
+	Grid grid(lineCountGrid, SHOW_X_Z, cellSizeGrid, lineWidthForRGBAxesGrid, lineWidthForGreyAxesGrid);
 	grid.attachToSceneGraph(m_sceneRoot);
 
 
@@ -146,7 +157,7 @@ void OsgQtWidget::updateSkeletonMeshTransform()
 	{
 
 		// update skeleton joint position and rotation if new data is available
-		if ((*itTracker)->getProperties()->isTracking && (*itTracker)->isDataAvailable())
+		if ((*itTracker)->isTracking() && (*itTracker)->isDataAvailable())
 		{
 
 			// get skeletonPoolCache from tracker and create skeletonPoolTempCopy
@@ -245,7 +256,7 @@ void OsgQtWidget::updateSkeletonMeshCount()
 		std::map<int, Skeleton> skeletonPoolTempCopy = (*itTracker)->getSkeletonPoolCache();
 
 		// if tracker is active update
-		if ((*itTracker)->getProperties()->isTracking)
+		if ((*itTracker)->isTracking())
 		{
 
 			// get skeletonPoolSize

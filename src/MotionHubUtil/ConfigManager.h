@@ -13,8 +13,9 @@
 #include "tinyxml2.h"
 
 #include "Console.h"
+#include "MMHmath.h"
 
-class MotionHubUtil_DLL_import_export ConfigManager
+/*class MotionHubUtil_DLL_import_export ConfigManager
 {
 	// #### CONSTRUCTOR & DESTRUCTOR ###############
 public:
@@ -64,4 +65,43 @@ public:
 
 
 
+};*/
+
+class MotionHubUtil_DLL_import_export ConfigManager {
+private:
+	tinyxml2::XMLDocument m_config;
+
+	inline bool isLoaded();
+	bool loadConfig();
+	bool saveConfig();
+
+	tinyxml2::XMLElement* findElement(std::string name, std::string identifier = "", tinyxml2::XMLElement* parent = nullptr);
+	tinyxml2::XMLElement* findOrCreateElement(std::string name, std::string identifier = "", tinyxml2::XMLElement* parent = nullptr);
+
+public:
+	bool readString(std::string name, std::string& out, std::string parent = "", std::string identifier = "");
+	bool readBool(std::string name, bool& out, std::string parent = "", std::string identifier = "");
+	bool readInt(std::string name, int& out, std::string parent = "", std::string identifier = "");
+	bool readFloat(std::string name, float& out, std::string parent = "", std::string identifier = "");
+	bool readVec3f(std::string name, Vector3f& out, std::string parent = "", std::string identifier = "");
+	bool readVec4f(std::string name, Vector4f& out, std::string parent = "", std::string identifier = "");
+
+	bool writeString(std::string name, std::string value, std::string parent = "", std::string identifier = "");
+	bool writeBool(std::string name, bool value, std::string parent = "", std::string identifier = "");
+	bool writeInt(std::string name, int value, std::string parent = "", std::string identifier = "");
+	bool writeFloat(std::string name, float value, std::string parent = "", std::string identifier = "");
+	bool writeVec3f(std::string name, Vector3f value, std::string parent = "", std::string identifier = "");
+	bool writeVec4f(std::string name, Vector4f value, std::string parent = "", std::string identifier = "");
+
+	template<class T> bool write(std::string name, T value, std::string parent = "", std::string identifier = "", bool enableTypeWarning = false) // Needs to be defined in the header, due to template
+	{
+		if (std::is_same_v<T, std::string>) return writeString(name, *((std::string*) &value), parent, identifier);
+		else if (std::is_same_v<T, bool>) return writeBool(name, *((bool*) &value), parent, identifier);
+		else if (std::is_same_v<T, int>) return writeInt(name, *((int*) &value), parent, identifier);
+		else if (std::is_same_v<T, float>) return writeFloat(name, *((float*) &value), parent, identifier);
+		else if (std::is_same_v<T, Vector3f>) return writeVec3f(name, *((Vector3f*) &value), parent, identifier);
+		else if (std::is_same_v<T, Vector4f>) return writeVec4f(name, *((Vector4f*) &value), parent, identifier);
+		if (enableTypeWarning) std::cerr << "ERROR: could not write to config: The given type is not supported" << std::endl;
+		return false;
+	}
 };

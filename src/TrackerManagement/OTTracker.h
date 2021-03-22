@@ -66,8 +66,6 @@ public:
 
 	std::string getTrackerType() override;
 
-	std::vector<Vector3f> resetOffsets() override;
-
 
 private:
 
@@ -117,17 +115,6 @@ private:
 	 * \return Error Code
 	 */
 	int createClient(int iConnectionType);
-
-	/*!
-	 * empty override method for Tracker::init()
-	 * this tracker does initialization in  createClient()
-	 */
-	void init() override;
-	
-	/*!
-	* updade method used for tracker thread
-	*/
-	void update() override;
 
 	/*!
 	 * main tracking method

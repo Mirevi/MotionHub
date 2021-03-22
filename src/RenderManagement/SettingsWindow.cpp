@@ -36,10 +36,10 @@ void SettingsWindow::accept()
 	std::string newAddress = m_LineEditIP->text().toStdString();
 
 	m_refNetworkManager->m_ipAddress = newAddress;
-	m_configManager->writeToConfig("ipAddress", newAddress);
+	m_configManager->writeString("ipAddress", newAddress);
 
 	RecordingSession::RECORD_PATH = std::string(ui->lineEdit_recorder_path->text().toLocal8Bit().data());
-	m_configManager->writeToConfig("recordPath", RecordingSession::RECORD_PATH);
+	m_configManager->writeString("recordPath", RecordingSession::RECORD_PATH);
 
 
 	delete this;

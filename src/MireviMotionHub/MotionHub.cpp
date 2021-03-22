@@ -37,11 +37,22 @@ MotionHub::MotionHub(int argc, char** argv)
 	m_recordingThread = new std::thread(&MotionHub::updateRecorderThread, this);
 	m_recordingThread->detach();
 
-	RecordingSession::RECORD_PATH = m_configManager->getStringFromStartupConfig("recordPath");
+	//RecordingSession::RECORD_PATH = m_configManager->getStringFromStartupConfig("recordPath");
+	RecordingSession::RECORD_PATH = "./data/recording/";
+	m_configManager->readString("recordPath", RecordingSession::RECORD_PATH);
 
 	// start update loop
 	update();
 
+}
+
+MotionHub::~MotionHub()
+{
+	delete m_uiManager;
+	delete m_trackerManager;
+	delete m_networkManager;
+	delete m_gestureManager;
+	delete m_configManager;
 }
 
 // motion hub main loop

@@ -27,7 +27,7 @@
  *
  * \brief Manages Azure Kinect Body Tracking
  *
- * \author Kester Evers and Eric Jansen
+ * \author Kester Evers, Eric Jansen and Manuel Zohlen
  */
 class AKTracker : public Tracker
 {
@@ -38,20 +38,23 @@ public:
 	 * constructor with config
 	 * \param idCam the cameras id number
 	 */
-	AKTracker(int id, int idCam, NetworkManager* networkManager, ConfigManager* configManager);
-	/*!
-	 * stops and closes tracker and camera
-	 */
-	void destroy() override;
+	AKTracker(int id, NetworkManager* networkManager, ConfigManager* configManager);
+	~AKTracker();
 
 	std::string getTrackerType() override;
+	std::string getTrackerIdentifier() override;
 
-	std::vector<Vector3f> resetOffsets() override;
+	//std::vector<Vector3f> resetOffsets() override;
 
 private:
-
-
-	 
+	/*!
+	 * k4a camera id
+	 */
+	int m_idCam;
+	/*!
+	* k4a camera serial number
+	 */
+	std::string m_serial;
 	/*!
 	 * k4a camera handle
 	 */
@@ -79,11 +82,8 @@ private:
 	 * stop() resets all initialization
 	 * \param configDevice configuration parameters, standart: DISABLE_ALL
 	 */
-	void init() override;
-	/*!
-	 * tracking loop 
-	 */
-	//void update() override;
+	bool init();
+	
 	/*!
 	 * starts tracking by getting the capture result and body frame
 	 * calls updateSkeletons(...)
@@ -95,6 +95,7 @@ private:
 	 * \param body_frame
 	 */
 	void extractSkeleton(k4abt_frame_t* body_frame);
+	
 	/*!
 	 *convertes k4a skeleton to default skeleton
 	*\param skeleton the k4a skeleton to convert
@@ -102,6 +103,7 @@ private:
 	*\return returns the pointer of the default skeleton in the pool
 	 */
 	Skeleton* parseSkeleton(k4abt_skeleton_t* skeleton, int id);
+
 	/*!
 	 * deletes all old skeletons from the skeleton pool
 	 * \param bodyFrame the k4a frame with all skeleton data

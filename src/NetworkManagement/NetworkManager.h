@@ -43,7 +43,7 @@ public:
 
 
 
-	std::string m_ipAddress;
+	std::string m_ipAddress = "127.0.0.1";
 
 
 

@@ -19,25 +19,25 @@ mmhPlayer::mmhPlayer(int id, NetworkManager* networkManager, ConfigManager* conf
 	m_properties->name = "tracker_mmhPlayer_" + toString(id);
 
 	//tracker is enabled
-	m_properties->isEnabled = true;
+	m_isEnabled = true;
 
 
 	//set default values for offsets
-	setPositionOffset(Vector3f(configManager->getFloatFromStartupConfig("xPosMMH"),
-							   configManager->getFloatFromStartupConfig("yPosMMH"),
-							   configManager->getFloatFromStartupConfig("zPosMMH")
-							  ));
+	//setPositionOffset(Vector3f(configManager->getFloatFromStartupConfig("xPosMMH"),
+	//						   configManager->getFloatFromStartupConfig("yPosMMH"),
+	//						   configManager->getFloatFromStartupConfig("zPosMMH")
+	//						  ));
 
-	setRotationOffset(Vector3f(configManager->getFloatFromStartupConfig("xRotMMH"),
-							   configManager->getFloatFromStartupConfig("yRotMMH"),
-							   configManager->getFloatFromStartupConfig("zRotMMH")
-							  ));
+	//setRotationOffset(Vector3f(configManager->getFloatFromStartupConfig("xRotMMH"),
+	//						   configManager->getFloatFromStartupConfig("yRotMMH"),
+	//						   configManager->getFloatFromStartupConfig("zRotMMH")
+	//						  ));
 
-	setScaleOffset(Vector3f(configManager->getFloatFromStartupConfig("xSclMMH"),
-							configManager->getFloatFromStartupConfig("ySclMMH"),
-							configManager->getFloatFromStartupConfig("zSclMMH")
-							));
-
+	//setScaleOffset(Vector3f(configManager->getFloatFromStartupConfig("xSclMMH"),
+	//						configManager->getFloatFromStartupConfig("ySclMMH"),
+	//						configManager->getFloatFromStartupConfig("zSclMMH")
+	//						));
+	readOffsetFromConfig();
 
 }
 
@@ -45,7 +45,7 @@ void mmhPlayer::start()
 {
 
 	// set tracking to true
-	m_properties->isTracking = true;
+	m_isTracking = true;
 
 
 	////create new skeleton and add it to the pool
@@ -53,7 +53,7 @@ void mmhPlayer::start()
 	//m_currSkeleton = &m_skeletonPool[0];
 
 	//there schould only be one skeleton in the file
-	m_properties->countDetectedSkeleton = m_skeletonPool.size();
+	m_countDetectedSkeleton = m_skeletonPool.size();
 	//skeleton was added/removed, so UI updates
 	m_hasSkeletonPoolChanged = true;
 
@@ -68,16 +68,9 @@ void mmhPlayer::start()
 void mmhPlayer::stop()
 {
 	//is not tracking, so the update loop exits after current loop
-	m_properties->isTracking = false;
+	m_isTracking = false;
 }
 
-void mmhPlayer::destroy()
-{
-
-
-	// delete this object
-	delete this;
-}
 
 void mmhPlayer::init()
 {
@@ -119,18 +112,13 @@ void mmhPlayer::init()
 	m_nameTranslationTable["RightHand"]		= Joint::HAND_R;
 	m_nameTranslationTable["Hips"]			= Joint::HIPS;
 
-	
-
-
-
-
 }
 
 void mmhPlayer::update()
 {
 
 	// track while tracking is true
-	while (m_properties->isTracking)
+	while (m_isTracking)
 	{
 
 		Timer::reset();
@@ -187,11 +175,11 @@ void mmhPlayer::track()
 	//Console::log("mmhPlayer::track(): skeleton count = " + toString(m_currFrame->m_skeletons.size()));
 
 	//get the current number of skeletons
-	m_properties->countDetectedSkeleton = m_currFrame->m_skeletons.size();
+	m_countDetectedSkeleton = m_currFrame->m_skeletons.size();
 
 	m_skeletonPoolLock.lock();
 
-	if (m_properties->countDetectedSkeleton != m_skeletonPool.size())
+	if (m_countDetectedSkeleton != m_skeletonPool.size())
 	{
 		m_hasSkeletonPoolChanged = true;
 		m_isDataAvailable = true;
@@ -248,20 +236,20 @@ std::string mmhPlayer::getTrackerType()
 	return "MMH";
 }
 
-std::vector<Vector3f> mmhPlayer::resetOffsets()
-{
-	Vector3f pos = Vector3f(0, 0, 0);
-	Vector3f rot = Vector3f(0, 0, 0);
-	Vector3f scl = Vector3f(1, 1, 1);
-
-	setPositionOffset(pos);
-	setRotationOffset(rot);
-	setScaleOffset(scl);
-
-	std::vector<Vector3f> offsets = { pos, rot, scl };
-
-	return offsets;
-}
+//std::vector<Vector3f> mmhPlayer::resetOffsets()
+//{
+//	Vector3f pos = Vector3f(0, 0, 0);
+//	Vector3f rot = Vector3f(0, 0, 0);
+//	Vector3f scl = Vector3f(1, 1, 1);
+//
+//	setPositionOffset(pos);
+//	setRotationOffset(rot);
+//	setScaleOffset(scl);
+//
+//	std::vector<Vector3f> offsets = { pos, rot, scl };
+//
+//	return offsets;
+//}
 
 void mmhPlayer::controlTime(bool stop)
 {
@@ -272,7 +260,7 @@ void mmhPlayer::setCurrentFrame(int newValue)
 {
 	m_currFrameIdx = (int)round(m_frameCount * newValue / 100);
 
-	if (m_properties->isTracking)
+	if (m_isTracking)
 	{
 		track();
 	}

@@ -16,16 +16,13 @@ TrackerGroup::TrackerGroup(int id)
 	m_properties->name = "trackerGroup_" + std::to_string(id);
 
 	//default is enabled
-	m_properties->isEnabled = true;
+	m_isEnabled = true;
 
 
 	//set the offset values
 	setPositionOffset(Vector3f(0.0f, 0.0f, 0.0f));
 	setRotationOffset(Vector3f(0.0f, 0.0f, 0.0f));
 	setScaleOffset(Vector3f(1.0f, 1.0f, 1.0f));
-
-	m_idCam = -1;
-
 }
 
 
@@ -40,13 +37,6 @@ void TrackerGroup::stop()
 
 }
 
-void TrackerGroup::destroy()
-{
-
-	//delete this;
-
-}
-
 void TrackerGroup::addTacker(Tracker* tracker)
 {
 
@@ -58,17 +48,6 @@ void TrackerGroup::removeTrackerAt(int position)
 {
 
 	m_groupedTracker.erase(m_groupedTracker.begin() + position);
-
-}
-
-
-
-
-
-void TrackerGroup::init()
-{
-
-
 
 }
 
@@ -102,4 +81,9 @@ void TrackerGroup::mergeSkeletons()
 
 	}
 
+}
+
+std::string TrackerGroup::getTrackerType()
+{
+	return "TrackerGroup";
 }
