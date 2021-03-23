@@ -52,8 +52,10 @@ void CLTracker::track()
 {
 	if (m_connected) {
 		CapturyActor* actors = nullptr;
-		int numActors = Captury_getActors((const CapturyActor**)&actors);
-		for (int i = 0; i < numActors; i++) {
+		m_countDetectedSkeleton = Captury_getActors((const CapturyActor**)&actors);
+		
+		m_skeletonPoolLock.lock();
+		for (int i = 0; i < m_countDetectedSkeleton; i++) {
 			CapturyPose* pose = Captury_getCurrentPose(actors[i].id);
 
 			if (pose != nullptr) {
@@ -66,7 +68,7 @@ void CLTracker::track()
 		// clean skeleton pool
 		for (auto it = m_skeletonPool.begin(); it != m_skeletonPool.end();) {
 			bool foundActor = false;
-			for (int i = 0; i < numActors; i++) {
+			for (int i = 0; i < m_countDetectedSkeleton; i++) {
 				if (it->first == actors[i].id) {
 					foundActor = true;
 					++it;
@@ -78,6 +80,8 @@ void CLTracker::track()
 				m_hasSkeletonPoolChanged = true;
 			}
 		}
+		m_skeletonPoolLock.unlock();
+
 		// increase tracking cycle counter
 		m_trackingCycles++;
 

@@ -238,17 +238,14 @@ void AKTracker::extractSkeleton(k4abt_frame_t* body_frame)
 		// find existing skeleton or insert a new empty one
 		m_hasSkeletonPoolChanged = m_hasSkeletonPoolChanged || m_skeletonPool.emplace(id, id).second;
 
-
-		
 		// update all joints of skeleton with new data
 		Skeleton* currSkeleton = parseSkeleton(&skeleton, id);
 		m_skeletonPool[id].m_joints = currSkeleton->m_joints;
 		delete currSkeleton;
 
 		if (m_hasSkeletonPoolChanged) Console::log("AkTracker::updateSkeleton(): [cam id = " + std::to_string(m_idCam) + "] Created new skeleton with id = " + std::to_string(id) + ".");
-
-		m_skeletonPoolLock.unlock();
 	}
+	m_skeletonPoolLock.unlock();
 }
 
 //takes data from a k4a skeleton and pushes it into the list
@@ -269,8 +266,8 @@ Skeleton* AKTracker::parseSkeleton(k4abt_skeleton_t * skeleton, int id)
 
 		// convert from k4a Vectors and quaternions into Eigen vector and quaternion with coordinate transformation
 		Vector4f pos = Vector4f(skeleton_position.xyz.x, skeleton_position.xyz.y, skeleton_position.xyz.z, 1);
-		pos.head<3>() = (AngleAxisf(M_PI / -36, Vector3f::UnitX()) * pos.head<3>()).cwiseProduct(Vector3f(0.001, -0.001, -0.001)); // The 0.001 translates Azure Kinect millimeters to MMH meters
-		Quaternionf rot = AngleAxisf(M_PI / -36, Vector3f::UnitX()) * Quaternionf(skeleton_rotation.wxyz.w, skeleton_rotation.wxyz.x, skeleton_rotation.wxyz.y, skeleton_rotation.wxyz.z);
+		pos.head<3>() = AngleAxisf(M_PI, Vector3f::UnitX()) * (pos.head<3>() * 0.001f); // The 0.001 translates Azure Kinect millimeters to MMH meters
+		Quaternionf rot = Quaternionf(skeleton_rotation.wxyz.w, skeleton_rotation.wxyz.x, skeleton_rotation.wxyz.y, skeleton_rotation.wxyz.z);
 
 		// get joint confidence level from azure kinect body tracker API
 		Joint::JointConfidence confidence = (Joint::JointConfidence)skeleton->joints[jointIndex].confidence_level;
@@ -388,14 +385,13 @@ Skeleton* AKTracker::parseSkeleton(k4abt_skeleton_t * skeleton, int id)
 		default:
 			break;
 		}
-		rot = AngleAxisf(M_PI, Vector3f::UnitY()) * Quaternionf(rot.w(), -rot.x(), -rot.y(), rot.z());
+		rot = Quaternionf(rot.y(), rot.z(), rot.w(), rot.x());
 
 		currSkeleton->m_joints.insert({ jointName, Joint(applyOffset(pos), applyOffset(rot), confidence) });
 	}
 
 	// set body heigt based on head position
 	currSkeleton->setHeight(currSkeleton->m_joints[Joint::HEAD].getJointPosition().y());
-
 
 	// return parsed default skeleton
 	return currSkeleton;
@@ -409,10 +405,11 @@ void AKTracker::cleanSkeletonPool(k4abt_frame_t* bodyFrame)
 	//all skeletons with ids in this list will be erased at the end of this method
 	std::list<int> idSkeletonsToErase;
 
+	m_skeletonPoolLock.lock();
+
 	// loop through all skeletons in pool
 	for (auto itPoolSkeletons = m_skeletonPool.begin(); itPoolSkeletons != m_skeletonPool.end(); itPoolSkeletons++)
 	{
-
 		// get current skeleton id
 		int idCurrPoolSkeleton = itPoolSkeletons->first;
 		bool isK4aSkeletonInPool = false;
@@ -435,10 +432,8 @@ void AKTracker::cleanSkeletonPool(k4abt_frame_t* bodyFrame)
 			idSkeletonsToErase.push_back(idCurrPoolSkeleton);
 		}
 	}
-
 	for (auto itIndexIdSkeletonsToErase = idSkeletonsToErase.begin(); itIndexIdSkeletonsToErase != idSkeletonsToErase.end(); itIndexIdSkeletonsToErase++)
 	{
-
 		// erase skeleton with id
 		m_skeletonPool.erase(*itIndexIdSkeletonsToErase);
 
@@ -446,8 +441,8 @@ void AKTracker::cleanSkeletonPool(k4abt_frame_t* bodyFrame)
 		m_hasSkeletonPoolChanged = true;
 
 		Console::log("AkTracker::cleanSkeletonList(): [cam id = " + std::to_string(m_idCam) + "] Removed skeleton with id = " + std::to_string(*itIndexIdSkeletonsToErase) + " from pool");
-
 	}
+	m_skeletonPoolLock.unlock();
 }
 
 Quaternionf AKTracker::convertKinectRotation(Quaternionf value)

@@ -148,7 +148,7 @@ void OsgQtWidget::updateSkeletonMeshPoolSize()
 
 void OsgQtWidget::updateSkeletonMeshTransform()
 {
-	std::cout << "Test aus updateSkeletonMeshTransform" << std::endl;
+	//std::cout << "Test aus updateSkeletonMeshTransform" << std::endl;
 	// get tracker pool from the tracker manager
 	std::vector<Tracker*> trackerTempCopy = m_refTrackerManager->getPoolTracker();
 
@@ -194,9 +194,13 @@ void OsgQtWidget::updateSkeletonMeshTransform()
 
 					//HWM: Ist eine geometry, und die hänge ich an eine Matrix bzw. PosAtt und diese hänge ich an den scenengraph.
 					osg::Matrix transformMatrix;
-					transformMatrix.makeTranslate(osg::Vec3f(itJoint->second.getJointPosition().x(),
-						itJoint->second.getJointPosition().y(),
-						itJoint->second.getJointPosition().z()));
+					transformMatrix = osg::Matrix::rotate(osg::Quat(itJoint->second.getJointRotation().x(), 
+																	itJoint->second.getJointRotation().y(), 
+																	itJoint->second.getJointRotation().z(), 
+																	itJoint->second.getJointRotation().w()))
+									* osg::Matrix::translate(osg::Vec3f(itJoint->second.getJointPosition().x(),
+																		itJoint->second.getJointPosition().y(),
+																		itJoint->second.getJointPosition().z()));
 					m_sphereTransforms.at(indexJoint)->setMatrix(transformMatrix);
 
 					// set joint confidence in the shader

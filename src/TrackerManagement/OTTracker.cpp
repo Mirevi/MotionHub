@@ -277,7 +277,7 @@ Skeleton* OTTracker::parseSkeleton(sSkeletonData skeleton, int id, Skeleton* old
 			return nullptr;
 
 		}
-		rot = applyOffset(rot);
+		rot = applyOffset(Quaternionf(rot.y(), rot.z(), rot.w(), rot.x()));
 
 		//map the OptiTRack poses to the MMH skeleton joints
 		switch (j)
