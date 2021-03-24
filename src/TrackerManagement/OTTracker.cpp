@@ -16,6 +16,7 @@ OTTracker::OTTracker(int id, NetworkManager* networkManager, ConfigManager* conf
 	m_properties->name = "tracker_optiTrack_" + std::to_string(id);
 
 	m_networkManager = networkManager;
+	m_configManager = configManager;
 
 
 	//default is enabled
