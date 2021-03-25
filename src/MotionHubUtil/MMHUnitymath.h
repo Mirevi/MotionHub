@@ -10,6 +10,7 @@
 
 using namespace Eigen;
 
+// TODO: Kommentieren
 
 template <typename T> static int sgn(T val) {
 	return (T(0) < val) - (val < T(0));
@@ -186,6 +187,14 @@ static void orthoNormalize(Vector3f& normal, Vector3f& tangent, Vector3f& binorm
 }
 
 // https://github.com/Unity-Technologies/UnityCsReference/blob/61f92bd79ae862c4465d35270f9d1d57befd1761/Runtime/Export/Math/Vector3.cs#L305
+
+/*!
+ * Returns the angle in degrees between vector from and vector to. This is always the smallest
+ *
+ * \param from The first vector.
+ * \param to The second vector.
+ * \return The angle in degrees between both vectors.
+ */
 static float angle(Vector3f from, Vector3f to) {
 	// sqrt(a) * sqrt(b) = sqrt(a * b) -- valid for real numbers
 	float denominator = sqrt(from.squaredNorm() * to.squaredNorm());
@@ -200,7 +209,16 @@ static float angle(Vector3f from, Vector3f to) {
 	return acosf(dot) * M_Rad2Deg;
 }
 
-static float signedAngle(Vector3f from, Vector3f to, Vector3f axis) {
+/*!
+ * The smaller of the two possible angles between the two vectors is returned, therefore the result will never be greater than 180 degrees or smaller than -180 degrees.
+ * If you imagine the from and to vectors as lines on a piece of paper, both originating from the same point, then the /axis/ vector would point up out of the paper.
+ * 
+ * \param from The first vector.
+ * \param to The second vector.
+ * \param axis The axis vector.
+ * \return The measured angle between the two vectors. positive in a clockwise direction and negative in an anti-clockwise direction.
+ */
+static float signedAngle(const Vector3f& from, const Vector3f& to, const Vector3f& axis) {
 	float unsignedAngle = angle(from, to);
 
 	float cross_x = from.y() * to.z() - from.z() * to.y();
@@ -208,11 +226,20 @@ static float signedAngle(Vector3f from, Vector3f to, Vector3f axis) {
 	float cross_z = from.x() * to.y() - from.y() * to.x();
 
 	float sign = sgn(axis.x() * cross_x + axis.y() * cross_y + axis.z() * cross_z);
+
 	return unsignedAngle * sign;
 }
 
 // https://github.com/Unity-Technologies/Unity.Mathematics/blob/4915b7afebc50b9c6c9a410b7a86ae5489aa6b9c/src/Unity.Mathematics/quaternion.cs#L99
-static Quaternionf axisAngle(float angle, Vector3f axis) {
+/*!
+ * Returns a quaternion representing a rotation around a unit axis by an angle in radians.
+ * The rotation direction is clockwise when looking along the rotation axis towards the origin.
+ *
+ * \param angle The angle of rotation in radians.
+ * \param axis The axis of rotation.
+ * \return The quaternion representing a rotation around an axis.
+ */
+static Quaternionf axisAngle(const float& angle, const Vector3f& axis) {
 	float halfAngle = 0.5f * angle;
 
 	float sina = sinf(halfAngle);
@@ -221,4 +248,19 @@ static Quaternionf axisAngle(float angle, Vector3f axis) {
 	Vector3f axisAngle = axis * sina;
 
 	return Quaternionf(cosa, axisAngle.x(), axisAngle.y(), axisAngle.z());
+}
+
+/*!
+ * Returns the distance between vector a and  vector b.
+ *
+ * \param a The first vector.
+ * \param b The second vector.
+ * \return The distance between both vectors.
+ */
+static float distance(const Vector3f& a, const Vector3f& b) {
+	float diff_x = a.x() - b.x();
+	float diff_y = a.y() - b.y();
+	float diff_z = a.z() - b.z();
+
+	return sqrt(diff_x * diff_x + diff_y * diff_y + diff_z * diff_z);
 }
