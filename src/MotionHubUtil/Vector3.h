@@ -35,6 +35,8 @@ public:
 	Vector3 operator - (Vector3 const vector3);
 	Vector3 operator * (Vector3 const vector3);
 	Vector3 operator / (Vector3 const vector3);
+	bool operator == (Vector3 const vector3);
+	bool operator != (Vector3 const vector3);
 	Vector3 operator * (float const scale);
 	Vector3 operator * (int const scale);
 

@@ -82,6 +82,28 @@ int TrackerManager::createTracker(TrackerType type)
 
 		}
 
+		case openVR:
+		{
+			Console::log("TrackerManager::createTracker(): Creating OpenVR");
+
+			tempTracker = new OVRTracker(id, m_networkManager, m_configManager);
+
+			if (!tempTracker->valid) {
+
+				Console::log("TrackerManager::createTracker(): valid = false");
+
+				delete tempTracker;
+
+				//unlock the tracker pool
+				m_trackerPoolLock.unlock();
+
+				return -1;
+
+			}
+
+			break;
+		}
+
 		case group:
 		{
 

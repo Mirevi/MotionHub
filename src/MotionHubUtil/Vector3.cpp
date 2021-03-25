@@ -113,3 +113,22 @@ Vector3f Vector3::toEigen()
 	return Vector3f(m_xyz.x, m_xyz.y, m_xyz.z);
 
 }
+
+bool Vector3::operator == (Vector3 const vector3)
+{
+	if (this == &vector3)
+		return true;
+
+	if (m_xyz.x == vector3.m_xyz.x && m_xyz.y == vector3.m_xyz.y && m_xyz.z == vector3.m_xyz.z)
+		return true;
+
+	return false;
+
+}
+
+bool Vector3::operator != (Vector3 const vector3)
+{
+
+	return !(*this == vector3);
+
+}

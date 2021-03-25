@@ -10,6 +10,7 @@
 #include "Tracker.h"
 #include "AKTracker.h"
 #include "OTTracker.h"
+#include "OVRTracker.h"
 #include "TrackerGroup.h"
 
 /*!
@@ -39,6 +40,7 @@ public:
 
 		azureKinect,	// Azure Kinect Tracker
 		optiTrack,		// OptiTrack	Tracker
+		openVR,
 		group
 
 	};
