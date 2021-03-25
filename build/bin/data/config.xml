@@ -29,9 +29,14 @@
         <xSclMMH>1.000000</xSclMMH>
         <ySclMMH>1.000000</ySclMMH>
         <zSclMMH>1.000000</zSclMMH>
-		<line_count_for_floor_grid>20</line_count_for_floor_grid>
-	    <line_width_for_rgb_axes_floor_grid>5.0</line_width_for_rgb_axes_floor_grid>
-	    <line_width_for_grey_axes_floor_grid>2.0</line_width_for_grey_axes_floor_grid>
-	    <cell_size_for_floor_grid>0.1</cell_size_for_floor_grid>
+        <line_count_for_floor_grid>20</line_count_for_floor_grid>
+        <line_width_for_rgb_axes_floor_grid>5.0</line_width_for_rgb_axes_floor_grid>
+        <line_width_for_grey_axes_floor_grid>2.0</line_width_for_grey_axes_floor_grid>
+        <cell_size_for_floor_grid>0.1</cell_size_for_floor_grid>
     </startup_config>
+    <ipAddress>127.0.0.1</ipAddress>
+    <recordPath>./data/</recordPath>
+    <Azure id="000053694012">
+        <position>0.000000 1.500000 0.000000</position>
+    </Azure>
 </config>

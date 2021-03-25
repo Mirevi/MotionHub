@@ -29,8 +29,10 @@ MainWindow::MainWindow(TrackerManager* trackerManager, ConfigManager* configMana
 	m_osgQtWidget->setObjectName(QStringLiteral("OsgRenderer"));
 	QSizePolicy sizePolicyOsgQtWidget(QSizePolicy::Expanding, QSizePolicy::Preferred);
 	m_osgQtWidget->setSizePolicy(sizePolicyOsgQtWidget);
-	ui->layout_center->addWidget(m_osgQtWidget);
+	ui->gridLayout_main->addWidget(m_osgQtWidget);
 	m_osgQtWidget->show();
+
+	this->setWindowState(Qt::WindowMaximized);
 
 
 	// disable qt vector warning in console
