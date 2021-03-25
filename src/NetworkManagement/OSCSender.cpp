@@ -76,6 +76,10 @@ void OSCSender::sendSkeleton(Skeleton* skeleton, const char* uri, int trackerID)
 				// add joint confidence level to stream
 				<< (int)currJointConfidence;
 
+			//Console::log("OSCSender::sendSkeleton(): currJointPosition: " + toString(currJointPosition));
+			//Console::log("OSCSender::sendSkeleton(): currJointRotation: " + toString(currJointRotation));
+
+
 		}
 
 		// add skeleton posture

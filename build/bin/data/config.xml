@@ -1,42 +1,11 @@
 <config>
-    <startup_config>
-        <ipAddress>127.0.0.1</ipAddress>
-        <recordPath>./data/</recordPath>
-        <xPosAzure>0.000000</xPosAzure>
-        <yPosAzure>1.175</yPosAzure>
-        <zPosAzure>2.2</zPosAzure>
-        <xRotAzure>-5.0</xRotAzure>
-        <yRotAzure>0.000000</yRotAzure>
-        <zRotAzure>0</zRotAzure>
-        <xSclAzure>0.0010</xSclAzure>
-        <ySclAzure>-0.0010</ySclAzure>
-        <zSclAzure>-0.0010</zSclAzure>
-        <xPosOptiTrack>0</xPosOptiTrack>
-        <yPosOptiTrack>0.1</yPosOptiTrack>
-        <zPosOptiTrack>0</zPosOptiTrack>
-        <xRotOptiTrack>0</xRotOptiTrack>
-        <yRotOptiTrack>0</yRotOptiTrack>
-        <zRotOptiTrack>0</zRotOptiTrack>
-        <xSclOptiTrack>1</xSclOptiTrack>
-        <ySclOptiTrack>1</ySclOptiTrack>
-        <zSclOptiTrack>1</zSclOptiTrack>
-        <xPosMMH>0.000000</xPosMMH>
-        <yPosMMH>0.000000</yPosMMH>
-        <zPosMMH>0.000000</zPosMMH>
-        <xRotMMH>0.000000</xRotMMH>
-        <yRotMMH>0.000000</yRotMMH>
-        <zRotMMH>0.000000</zRotMMH>
-        <xSclMMH>1.000000</xSclMMH>
-        <ySclMMH>1.000000</ySclMMH>
-        <zSclMMH>1.000000</zSclMMH>
-        <line_count_for_floor_grid>20</line_count_for_floor_grid>
-        <line_width_for_rgb_axes_floor_grid>5.0</line_width_for_rgb_axes_floor_grid>
-        <line_width_for_grey_axes_floor_grid>2.0</line_width_for_grey_axes_floor_grid>
-        <cell_size_for_floor_grid>0.1</cell_size_for_floor_grid>
-    </startup_config>
-    <ipAddress>127.0.0.1</ipAddress>
-    <recordPath>./data/</recordPath>
+    <MMH>
+        <position>0.000000 0.000000 0.000000</position>
+        <rotation>0.000000 0.000000 0.000000</rotation>
+        <scale>1.000000 1.000000 1.000000</scale>
+    </MMH>
     <Azure id="000053694012">
         <position>0.000000 1.500000 0.000000</position>
+        <rotation>0.000000 0.000000 0.000000</rotation>
     </Azure>
 </config>

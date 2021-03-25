@@ -203,19 +203,9 @@ void mmhPlayer::track()
 		for (auto currjoint = m_skeletonPool[skelIdx].m_joints.begin(); currjoint != m_skeletonPool[skelIdx].m_joints.end(); currjoint++)
 		{
 		
-			Vector4f currPos = currjoint->second.getJointPosition();
+			Vector4f currPos = applyOffset(currjoint->second.getJointPosition());
 
-			Vector3f posOffset = m_properties->positionOffset;
-
-			Vector4f newPos = m_offsetMatrix * currPos + Vector4f(posOffset.x(), posOffset.y(), posOffset.z(), 1.0);
-
-			//if (currPos == newPos)
-			//{
-			//	Console::log("mmhPlayer::track(): Same!");
-			//}
-
-			//multiply skeleton joints with offset matrix
-			currjoint->second.setPosition(newPos);
+			currjoint->second.setPosition(currPos);
 
 		}
 
