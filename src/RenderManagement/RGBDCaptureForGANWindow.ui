@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>979</width>
-    <height>682</height>
+    <width>980</width>
+    <height>701</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -482,7 +482,7 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
    <property name="geometry">
     <rect>
      <x>40</x>
-     <y>150</y>
+     <y>170</y>
      <width>901</width>
      <height>142</height>
     </rect>
@@ -591,7 +591,7 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
    <property name="geometry">
     <rect>
      <x>40</x>
-     <y>300</y>
+     <y>320</y>
      <width>901</width>
      <height>331</height>
     </rect>
@@ -603,6 +603,26 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
     <property name="verticalSpacing">
      <number>10</number>
     </property>
+    <item row="0" column="0">
+     <widget class="QPushButton" name="cb_visualizeColor">
+      <property name="text">
+       <string/>
+      </property>
+      <property name="checkable">
+       <bool>true</bool>
+      </property>
+      <property name="checked">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="2">
+     <widget class="QLabel" name="feature_image">
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+    </item>
     <item row="1" column="1">
      <widget class="QLabel" name="depth_image">
       <property name="text">
@@ -610,8 +630,21 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
       </property>
      </widget>
     </item>
-    <item row="0" column="0">
-     <widget class="QPushButton" name="cb_visualizeColor">
+    <item row="0" column="1">
+     <widget class="QPushButton" name="cb_visualizeDepth">
+      <property name="text">
+       <string/>
+      </property>
+      <property name="checkable">
+       <bool>true</bool>
+      </property>
+      <property name="checked">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="2">
+     <widget class="QPushButton" name="cb_visualizeLandmarks">
       <property name="text">
        <string/>
       </property>
@@ -630,39 +663,6 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
       </property>
      </widget>
     </item>
-    <item row="1" column="2">
-     <widget class="QLabel" name="feature_image">
-      <property name="text">
-       <string/>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="2">
-     <widget class="QPushButton" name="cb_visualizeLandmarks">
-      <property name="text">
-       <string/>
-      </property>
-      <property name="checkable">
-       <bool>true</bool>
-      </property>
-      <property name="checked">
-       <bool>true</bool>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="1">
-     <widget class="QPushButton" name="cb_visualizeDepth">
-      <property name="text">
-       <string/>
-      </property>
-      <property name="checkable">
-       <bool>true</bool>
-      </property>
-      <property name="checked">
-       <bool>true</bool>
-      </property>
-     </widget>
-    </item>
    </layout>
   </widget>
   <widget class="QWidget" name="gridLayoutWidget_3">
@@ -671,52 +671,14 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
      <x>40</x>
      <y>10</y>
      <width>901</width>
-     <height>131</height>
+     <height>151</height>
     </rect>
    </property>
    <layout class="QGridLayout" name="settings">
-    <item row="2" column="6">
-     <widget class="QLineEdit" name="le_image_size_y">
-      <property name="inputMask">
-       <string/>
-      </property>
+    <item row="2" column="5">
+     <widget class="QLabel" name="label_6">
       <property name="text">
-       <string/>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="0">
-     <widget class="QLabel" name="label_3">
-      <property name="text">
-       <string>Image Size: </string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="0">
-     <widget class="QLabel" name="label">
-      <property name="text">
-       <string>File Prefix: </string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="9">
-     <widget class="QLabel" name="label_11">
-      <property name="text">
-       <string>Y2</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="8">
-     <widget class="QLineEdit" name="le_crop_region_x2">
-      <property name="text">
-       <string/>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="5">
-     <widget class="QLabel" name="label_8">
-      <property name="text">
-       <string>Y1</string>
+       <string>Y</string>
       </property>
      </widget>
     </item>
@@ -730,31 +692,23 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
       </property>
      </widget>
     </item>
+    <item row="1" column="2">
+     <widget class="QLineEdit" name="le_crop_region_x1">
+      <property name="inputMask">
+       <string/>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="maxLength">
+       <number>32767</number>
+      </property>
+     </widget>
+    </item>
     <item row="1" column="0">
      <widget class="QLabel" name="label_2">
       <property name="text">
        <string>Crop Region: </string>
-      </property>
-     </widget>
-    </item>
-    <item row="4" column="2">
-     <widget class="QLineEdit" name="le_clipping_distance">
-      <property name="inputMask">
-       <string/>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="7">
-     <widget class="QLabel" name="label_9">
-      <property name="text">
-       <string>X2</string>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="1">
-     <widget class="QLabel" name="label_5">
-      <property name="text">
-       <string>X</string>
       </property>
      </widget>
     </item>
@@ -765,13 +719,17 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
       </property>
      </widget>
     </item>
-    <item row="2" column="2">
-     <widget class="QLineEdit" name="le_image_size_x">
-      <property name="inputMask">
-       <string/>
-      </property>
+    <item row="2" column="0">
+     <widget class="QLabel" name="label_3">
       <property name="text">
-       <string/>
+       <string>Image Size: </string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="2">
+     <widget class="QLineEdit" name="le_file_prefix">
+      <property name="maxLength">
+       <number>3</number>
       </property>
      </widget>
     </item>
@@ -785,31 +743,17 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
       </property>
      </widget>
     </item>
-    <item row="4" column="0">
-     <widget class="QLabel" name="label_4">
+    <item row="0" column="0">
+     <widget class="QLabel" name="label">
       <property name="text">
-       <string>Clipping Distance: </string>
+       <string>File Prefix: </string>
       </property>
      </widget>
     </item>
-    <item row="0" column="2">
-     <widget class="QLineEdit" name="le_file_prefix">
-      <property name="maxLength">
-       <number>3</number>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="5">
-     <widget class="QLabel" name="label_6">
+    <item row="1" column="10">
+     <widget class="QLineEdit" name="le_crop_region_y2">
       <property name="text">
-       <string>Y</string>
-      </property>
-     </widget>
-    </item>
-    <item row="4" column="4">
-     <widget class="QLabel" name="label_10">
-      <property name="text">
-       <string>mm</string>
+       <string/>
       </property>
      </widget>
     </item>
@@ -820,23 +764,10 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
       </property>
      </widget>
     </item>
-    <item row="1" column="1">
-     <widget class="QLabel" name="label_7">
+    <item row="1" column="7">
+     <widget class="QLabel" name="label_9">
       <property name="text">
-       <string>X1</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="2">
-     <widget class="QLineEdit" name="le_crop_region_x1">
-      <property name="inputMask">
-       <string/>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
-      <property name="maxLength">
-       <number>32767</number>
+       <string>X2</string>
       </property>
      </widget>
     </item>
@@ -856,31 +787,27 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
       </property>
      </widget>
     </item>
-    <item row="1" column="10">
-     <widget class="QLineEdit" name="le_crop_region_y2">
+    <item row="3" column="5">
+     <widget class="QLabel" name="label_16">
       <property name="text">
-       <string/>
+       <string>Y</string>
       </property>
      </widget>
     </item>
-    <item row="3" column="0">
-     <widget class="QLabel" name="label_14">
-      <property name="text">
-       <string>Feature Image Size: </string>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="1">
-     <widget class="QLabel" name="label_15">
+    <item row="2" column="1">
+     <widget class="QLabel" name="label_5">
       <property name="text">
        <string>X</string>
       </property>
      </widget>
     </item>
-    <item row="3" column="5">
-     <widget class="QLabel" name="label_16">
+    <item row="2" column="2">
+     <widget class="QLineEdit" name="le_image_size_x">
+      <property name="inputMask">
+       <string/>
+      </property>
       <property name="text">
-       <string>Y</string>
+       <string/>
       </property>
      </widget>
     </item>
@@ -894,6 +821,72 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
       </property>
      </widget>
     </item>
+    <item row="3" column="1">
+     <widget class="QLabel" name="label_15">
+      <property name="text">
+       <string>X</string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="4">
+     <widget class="QLabel" name="label_10">
+      <property name="text">
+       <string>mm</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="6">
+     <widget class="QLineEdit" name="le_image_size_y">
+      <property name="inputMask">
+       <string/>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="1">
+     <widget class="QLabel" name="label_7">
+      <property name="text">
+       <string>X1</string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="0">
+     <widget class="QLabel" name="label_4">
+      <property name="text">
+       <string>Clipping Distance: </string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="8">
+     <widget class="QLineEdit" name="le_crop_region_x2">
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="2">
+     <widget class="QLineEdit" name="le_clipping_distance">
+      <property name="inputMask">
+       <string/>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="9">
+     <widget class="QLabel" name="label_11">
+      <property name="text">
+       <string>Y2</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="0">
+     <widget class="QLabel" name="label_14">
+      <property name="text">
+       <string>Feature Image Size: </string>
+      </property>
+     </widget>
+    </item>
     <item row="3" column="6">
      <widget class="QLineEdit" name="le_feature_image_size_y">
       <property name="inputMask">
@@ -904,13 +897,44 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
       </property>
      </widget>
     </item>
+    <item row="1" column="5">
+     <widget class="QLabel" name="label_8">
+      <property name="text">
+       <string>Y1</string>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="0">
+     <widget class="QLabel" name="label_17">
+      <property name="text">
+       <string>Depth Capture Bit Size</string>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="2">
+     <widget class="QRadioButton" name="rb_8BitDepthSize">
+      <property name="text">
+       <string>8 Bit</string>
+      </property>
+      <property name="checked">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="6">
+     <widget class="QRadioButton" name="rb_16BitDepthSize">
+      <property name="text">
+       <string>16 Bit</string>
+      </property>
+     </widget>
+    </item>
    </layout>
   </widget>
   <widget class="QWidget" name="gridLayoutWidget_4">
    <property name="geometry">
     <rect>
      <x>40</x>
-     <y>640</y>
+     <y>660</y>
      <width>901</width>
      <height>31</height>
     </rect>
@@ -927,8 +951,28 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
   </widget>
  </widget>
  <tabstops>
+  <tabstop>le_file_prefix</tabstop>
+  <tabstop>le_frames_to_capture</tabstop>
+  <tabstop>le_crop_region_x1</tabstop>
+  <tabstop>le_crop_region_y1</tabstop>
+  <tabstop>le_crop_region_x2</tabstop>
+  <tabstop>le_crop_region_y2</tabstop>
+  <tabstop>le_image_size_x</tabstop>
+  <tabstop>le_image_size_y</tabstop>
+  <tabstop>le_feature_image_size_x</tabstop>
+  <tabstop>le_feature_image_size_y</tabstop>
+  <tabstop>le_clipping_distance</tabstop>
+  <tabstop>le_transmission_id</tabstop>
+  <tabstop>rb_8BitDepthSize</tabstop>
+  <tabstop>rb_16BitDepthSize</tabstop>
+  <tabstop>btn_initiate_kinect</tabstop>
+  <tabstop>btn_stop</tabstop>
   <tabstop>btn_start_capture</tabstop>
   <tabstop>btn_start_transmission</tabstop>
+  <tabstop>btn_start_captured_transmission</tabstop>
+  <tabstop>cb_visualizeColor</tabstop>
+  <tabstop>cb_visualizeDepth</tabstop>
+  <tabstop>cb_visualizeLandmarks</tabstop>
  </tabstops>
  <resources/>
  <connections>
@@ -939,8 +983,8 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
    <slot>onInitializeAzureKinectTriggered()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>456</x>
-     <y>168</y>
+     <x>628</x>
+     <y>198</y>
     </hint>
     <hint type="destinationlabel">
      <x>647</x>
@@ -955,8 +999,8 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
    <slot>onStartLandmarkTransissionTriggered()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>435</x>
-     <y>273</y>
+     <x>628</x>
+     <y>298</y>
     </hint>
     <hint type="destinationlabel">
      <x>649</x>
@@ -987,8 +1031,8 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
    <slot>onStartLandmarkTransissionWithCapturedDataTriggered()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>692</x>
-     <y>264</y>
+     <x>939</x>
+     <y>298</y>
     </hint>
     <hint type="destinationlabel">
      <x>729</x>
@@ -1051,8 +1095,8 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
    <slot>onGuiValueChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>304</x>
-     <y>91</y>
+     <x>361</x>
+     <y>82</y>
     </hint>
     <hint type="destinationlabel">
      <x>343</x>
@@ -1072,7 +1116,7 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
     </hint>
     <hint type="destinationlabel">
      <x>343</x>
-     <y>135</y>
+     <y>137</y>
     </hint>
    </hints>
   </connection>
@@ -1083,8 +1127,8 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
    <slot>onGuiValueChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>527</x>
-     <y>64</y>
+     <x>570</x>
+     <y>56</y>
     </hint>
     <hint type="destinationlabel">
      <x>551</x>
@@ -1099,8 +1143,8 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
    <slot>onGuiValueChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>538</x>
-     <y>91</y>
+     <x>570</x>
+     <y>82</y>
     </hint>
     <hint type="destinationlabel">
      <x>557</x>
@@ -1131,8 +1175,8 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
    <slot>onGuiValueChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>929</x>
-     <y>62</y>
+     <x>939</x>
+     <y>56</y>
     </hint>
     <hint type="destinationlabel">
      <x>949</x>
@@ -1147,8 +1191,8 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
    <slot>onGuiValueChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>312</x>
-     <y>316</y>
+     <x>313</x>
+     <y>337</y>
     </hint>
     <hint type="destinationlabel">
      <x>334</x>
@@ -1163,8 +1207,8 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
    <slot>onGuiValueChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>613</x>
-     <y>315</y>
+     <x>629</x>
+     <y>336</y>
     </hint>
     <hint type="destinationlabel">
      <x>642</x>
@@ -1179,8 +1223,8 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
    <slot>onGuiValueChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>927</x>
-     <y>316</y>
+     <x>939</x>
+     <y>337</y>
     </hint>
     <hint type="destinationlabel">
      <x>953</x>
@@ -1217,6 +1261,38 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
     <hint type="destinationlabel">
      <x>957</x>
      <y>121</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rb_8BitDepthSize</sender>
+   <signal>clicked()</signal>
+   <receiver>RGBDCaptureForGANWindow</receiver>
+   <slot>onGuiValueChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>280</x>
+     <y>151</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>300</x>
+     <y>161</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rb_16BitDepthSize</sender>
+   <signal>clicked()</signal>
+   <receiver>RGBDCaptureForGANWindow</receiver>
+   <slot>onGuiValueChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>459</x>
+     <y>150</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>504</x>
+     <y>161</y>
     </hint>
    </hints>
   </connection>

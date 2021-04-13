@@ -36,6 +36,7 @@ RGBDCaptureForGANWindow::RGBDCaptureForGANWindow(ConfigManager* configManager, N
 	//save
 	m_dataDirPath = "data\\RGBD-GAN\\";
 	m_saveIdPrefix = "a";
+	m_depthCaptureBitSize = 8;
 
 	//preview
 	m_showColorImagePreview = true;
@@ -60,6 +61,15 @@ void RGBDCaptureForGANWindow::updateGui()
 	ui->le_feature_image_size_y->setText(QString::fromStdString(std::to_string(m_featureImageSize.height)));
 	ui->le_clipping_distance->setText(QString::fromStdString(std::to_string(m_clippingDistance)));
 	ui->le_transmission_id->setText(QString::fromStdString(std::to_string(m_transmissionId)));
+	if (m_depthCaptureBitSize == 8)
+		ui->rb_8BitDepthSize->setChecked(true);
+	else
+		ui->rb_8BitDepthSize->setChecked(false);
+	if (m_depthCaptureBitSize == 16)
+		ui->rb_16BitDepthSize->setChecked(true);
+	else
+		ui->rb_16BitDepthSize->setChecked(false);
+
 
 	//preview buttons
 	ui->cb_visualizeColor->setChecked(m_showColorImagePreview);
@@ -92,12 +102,14 @@ void RGBDCaptureForGANWindow::updateGui()
 	ui->le_feature_image_size_x->setEnabled(false);
 	ui->le_feature_image_size_y->setEnabled(false);
 	ui->le_clipping_distance->setEnabled(false);
+	ui->le_transmission_id->setEnabled(false);
+	ui->rb_8BitDepthSize->setEnabled(false);
+	ui->rb_16BitDepthSize->setEnabled(false);
 	ui->btn_initiate_kinect->setEnabled(false);
 	ui->btn_stop->setEnabled(false);
 	ui->btn_start_capture->setEnabled(false);
 	ui->btn_start_transmission->setEnabled(false);
 	ui->btn_start_captured_transmission->setEnabled(false);
-	ui->le_transmission_id->setEnabled(false);
 
 	if (m_state == State::UNINITIALIZED) {
 		ui->le_crop_region_x1->setEnabled(true);
@@ -126,6 +138,8 @@ void RGBDCaptureForGANWindow::updateGui()
 		ui->le_feature_image_size_x->setEnabled(true);
 		ui->le_feature_image_size_y->setEnabled(true);
 		ui->le_clipping_distance->setEnabled(true);
+		ui->rb_8BitDepthSize->setEnabled(true);
+		ui->rb_16BitDepthSize->setEnabled(true);
 		ui->btn_start_capture->setEnabled(true);
 		ui->btn_start_transmission->setEnabled(true);
 		ui->le_transmission_id->setEnabled(true);
@@ -198,6 +212,11 @@ void RGBDCaptureForGANWindow::onGuiValueChanged() {
 
 	m_clippingDistance = ui->le_clipping_distance->text().toInt();
 	m_transmissionId = ui->le_transmission_id->text().toInt();
+
+	if (ui->rb_8BitDepthSize->isChecked())
+		m_depthCaptureBitSize = 8;
+	else if (ui->rb_16BitDepthSize->isChecked())
+		m_depthCaptureBitSize = 16;
 
 	m_showColorImagePreview = ui->cb_visualizeColor->isChecked();
 	m_showDepthImagePreview = ui->cb_visualizeDepth->isChecked();
@@ -644,7 +663,18 @@ void RGBDCaptureForGANWindow::saveDepthImage()
 {
 	//Create a file name
 	std::string depthFileName = imageFilePath(ImageType::DEPTH_IMAGE);
-	cv::imwrite(depthFileName, *m_depthMat, std::vector<int>());
+
+	if (m_depthCaptureBitSize == 8) {
+		cv::Mat depthMat8 = cv::Mat(m_depthMat->rows, m_depthMat->cols, CV_8UC1);
+		m_depthMat->convertTo(depthMat8, CV_8UC1, 255.0 / m_clippingDistance);
+		cv::imwrite(depthFileName, depthMat8, std::vector<int>());
+	}
+	else if (m_depthCaptureBitSize == 16) {
+		cv::imwrite(depthFileName, *m_depthMat, std::vector<int>());
+	}
+	else {
+		std::cout << "Depth Bit Size is not supported: " << m_depthCaptureBitSize << std::endl;
+	}
 }
 
 void RGBDCaptureForGANWindow::saveIrImage()

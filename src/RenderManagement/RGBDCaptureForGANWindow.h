@@ -127,6 +127,7 @@ private:
 	int m_transmissionId;
 	int m_framesToCapture;
 	int m_clippingDistance;
+	int m_depthCaptureBitSize;
 	cv::Size m_imageSize;
 	cv::Size m_featureImageSize;
 	cv::Rect m_cropRegion;
