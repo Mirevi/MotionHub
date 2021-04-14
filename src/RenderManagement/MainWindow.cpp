@@ -32,6 +32,22 @@ MainWindow::MainWindow(TrackerManager* trackerManager, ConfigManager* configMana
 	ui->gridLayout_main->addWidget(m_osgQtWidget);
 	m_osgQtWidget->show();
 
+	//add timeline-Widget to MainWindow
+	m_mmhTimeline = new mmhTimeline();
+	ui->verticalLayout_timeline->addWidget(m_mmhTimeline);
+
+	//connect all of the Widgets Signals to the slots here
+	connect(m_mmhTimeline, SIGNAL(timelinePressed(float)),	this, SLOT(slotTimelinePressed(float)		));
+	connect(m_mmhTimeline, SIGNAL(timelineReleased(float)), this, SLOT(slotTimelineReleased(float)		));
+	connect(m_mmhTimeline, SIGNAL(timelineMoved(float)),	this, SLOT(slotTimelineValueChanged(float)	));
+	
+	//sets the Timeline visible
+	m_mmhTimeline->show();
+
+
+
+
+	//maximize the MainWindow
 	this->setWindowState(Qt::WindowMaximized);
 
 
@@ -679,30 +695,21 @@ void MainWindow::slotNetworkSettings()
 
 }
 
-void MainWindow::slotTimelinePressed()
+void MainWindow::slotTimelinePressed(float newValue)
 {
-
 	m_refTrackerManager->controlTimeline(true);
 	m_timelineActive = false;
-
-
 }
 
-void MainWindow::slotTimelineReleased()
+void MainWindow::slotTimelineReleased(float newValue)
 {
-
 	m_refTrackerManager->controlTimeline(false);
 	m_timelineActive = true;
-
-
 }
 
-void MainWindow::slotTimelineValueChanged(int newValue)
+void MainWindow::slotTimelineValueChanged(float newValue)
 {
-
-	m_refTrackerManager->timelineValueChange(ui->slider_timeline->value());
-
-	
+	m_refTrackerManager->timelineValueChange((int)m_mmhTimeline->getValue());	
 }
 
 void MainWindow::slotRecord()
@@ -1170,7 +1177,7 @@ void MainWindow::setTimelineValue(float totalTime, int frameIdx, int numFrames)
 
 	if (m_timelineActive)
 	{
-		ui->slider_timeline->setValue(percent);
+		m_mmhTimeline->setValue((frameIdx * 100) / numFrames);
 	}
 
 	//also set lable

@@ -15,6 +15,8 @@
 #include "QtCore/qstringlistmodel.h"
 #include "QtCore/qstring.h"
 
+#include "mmhTimeline/mmhtimeline.h"
+
 #include <osg/Array>
 
 #include <math.h>
@@ -82,6 +84,7 @@ public:
 	void Record(bool showProgressionBar = true);
 
 
+
 private slots:
 	/*!
 	 * called when user clicks start/stop button 
@@ -129,9 +132,9 @@ private slots:
 
 	void slotModifyTrackerRotations();
 
-	void slotTimelinePressed();
-	void slotTimelineReleased();
-	void slotTimelineValueChanged(int newValue);
+	void slotTimelinePressed(float newValue);
+	void slotTimelineReleased(float newValue);
+	void slotTimelineValueChanged(float newValue);
 
 	void slotRecord();
 
@@ -144,6 +147,8 @@ private:
 	Ui::MainWindow *ui;
 
 	OsgQtWidget* m_osgQtWidget;
+
+	mmhTimeline* m_mmhTimeline;
 	/*!
 	 * createTracker dialog
 	 */

@@ -1,11 +1,7 @@
 <config>
+    <ipAddress>127.0.0.1</ipAddress>
+    <recordPath>./data/recording/</recordPath>
     <MMH>
-        <position>0.000000 0.000000 0.000000</position>
-        <rotation>0.000000 0.000000 0.000000</rotation>
-        <scale>1.000000 1.000000 1.000000</scale>
+        <position>0.000000 2.000000 0.000000</position>
     </MMH>
-    <Azure id="000053694012">
-        <position>0.000000 1.500000 0.000000</position>
-        <rotation>0.000000 0.000000 0.000000</rotation>
-    </Azure>
 </config>

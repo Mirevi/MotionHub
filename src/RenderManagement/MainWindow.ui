@@ -593,138 +593,110 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
        <property name="title">
         <string>Tracker Controls</string>
        </property>
-       <widget class="QPushButton" name="btn_addTracker">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>25</y>
-          <width>60</width>
-          <height>25</height>
-         </rect>
-        </property>
-        <property name="cursor">
-         <cursorShape>PointingHandCursor</cursorShape>
-        </property>
-        <property name="toolTip">
-         <string>Add Tracker</string>
-        </property>
-        <property name="text">
-         <string>Add</string>
-        </property>
-       </widget>
-       <widget class="QPushButton" name="btn_startTracker">
-        <property name="geometry">
-         <rect>
-          <x>215</x>
-          <y>22</y>
-          <width>30</width>
-          <height>30</height>
-         </rect>
-        </property>
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="cursor">
-         <cursorShape>PointingHandCursor</cursorShape>
-        </property>
-        <property name="toolTip">
-         <string>Play/Pause</string>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-         <iconset resource="MainWindow.qrc">
-          <normaloff>:/ressources/icons/icons8-play-32_converted.png</normaloff>:/ressources/icons/icons8-play-32_converted.png</iconset>
-        </property>
-        <property name="flat">
-         <bool>false</bool>
-        </property>
-       </widget>
-       <widget class="QPushButton" name="btn_Record">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="geometry">
-         <rect>
-          <x>250</x>
-          <y>22</y>
-          <width>30</width>
-          <height>30</height>
-         </rect>
-        </property>
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="cursor">
-         <cursorShape>PointingHandCursor</cursorShape>
-        </property>
-        <property name="toolTip">
-         <string>start/stop recording</string>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-         <iconset resource="MainWindow.qrc">
-          <normaloff>:/ressources/icons/64px-Location_dot_red.svg.png</normaloff>:/ressources/icons/64px-Location_dot_red.svg.png</iconset>
-        </property>
-        <property name="flat">
-         <bool>false</bool>
-        </property>
-       </widget>
-       <widget class="QPushButton" name="btn_removeTracker">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
-        <property name="geometry">
-         <rect>
-          <x>150</x>
-          <y>25</y>
-          <width>60</width>
-          <height>25</height>
-         </rect>
-        </property>
-        <property name="cursor">
-         <cursorShape>PointingHandCursor</cursorShape>
-        </property>
-        <property name="toolTip">
-         <string>Remove Tracker</string>
-        </property>
-        <property name="text">
-         <string>Remove</string>
-        </property>
-       </widget>
-       <widget class="QPushButton" name="btn_addGroup">
-        <property name="geometry">
-         <rect>
-          <x>75</x>
-          <y>25</y>
-          <width>70</width>
-          <height>25</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>-1</pointsize>
-         </font>
-        </property>
-        <property name="cursor">
-         <cursorShape>PointingHandCursor</cursorShape>
-        </property>
-        <property name="toolTip">
-         <string>Add group</string>
-        </property>
-        <property name="text">
-         <string>Add group</string>
-        </property>
-       </widget>
+       <layout class="QGridLayout" name="gridLayout_4">
+        <item row="0" column="0">
+         <widget class="QPushButton" name="btn_addTracker">
+          <property name="cursor">
+           <cursorShape>PointingHandCursor</cursorShape>
+          </property>
+          <property name="toolTip">
+           <string>Add Tracker</string>
+          </property>
+          <property name="text">
+           <string>Add</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QPushButton" name="btn_addGroup">
+          <property name="font">
+           <font>
+            <pointsize>-1</pointsize>
+           </font>
+          </property>
+          <property name="cursor">
+           <cursorShape>PointingHandCursor</cursorShape>
+          </property>
+          <property name="toolTip">
+           <string>Add group</string>
+          </property>
+          <property name="text">
+           <string>Add group</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="2">
+         <widget class="QPushButton" name="btn_removeTracker">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="cursor">
+           <cursorShape>PointingHandCursor</cursorShape>
+          </property>
+          <property name="toolTip">
+           <string>Remove Tracker</string>
+          </property>
+          <property name="text">
+           <string>Remove</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="3">
+         <widget class="QPushButton" name="btn_startTracker">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="cursor">
+           <cursorShape>PointingHandCursor</cursorShape>
+          </property>
+          <property name="toolTip">
+           <string>Play/Pause</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="icon">
+           <iconset resource="MainWindow.qrc">
+            <normaloff>:/ressources/icons/icons8-play-32_converted.png</normaloff>:/ressources/icons/icons8-play-32_converted.png</iconset>
+          </property>
+          <property name="flat">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="4">
+         <widget class="QPushButton" name="btn_Record">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="cursor">
+           <cursorShape>PointingHandCursor</cursorShape>
+          </property>
+          <property name="toolTip">
+           <string>start/stop recording</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="icon">
+           <iconset resource="MainWindow.qrc">
+            <normaloff>:/ressources/icons/64px-Location_dot_red.svg.png</normaloff>:/ressources/icons/64px-Location_dot_red.svg.png</iconset>
+          </property>
+          <property name="flat">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </widget>
      </item>
      <item row="1" column="0">
@@ -904,7 +876,7 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
    <property name="minimumSize">
     <size>
      <width>800</width>
-     <height>103</height>
+     <height>140</height>
     </size>
    </property>
    <property name="windowTitle">
@@ -916,96 +888,54 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
    <widget class="QWidget" name="dockWidgetContents_11">
     <layout class="QGridLayout" name="gridLayout_6">
      <item row="0" column="0">
-      <widget class="QComboBox" name="comboBox_timelineLable">
-       <property name="maximumSize">
-        <size>
-         <width>100</width>
-         <height>16777215</height>
-        </size>
-       </property>
-       <property name="toolTip">
-        <string/>
-       </property>
+      <layout class="QVBoxLayout" name="verticalLayout_timeline">
        <item>
-        <property name="text">
-         <string>Percentage</string>
-        </property>
+        <widget class="QComboBox" name="comboBox_timelineLable">
+         <property name="maximumSize">
+          <size>
+           <width>100</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="toolTip">
+          <string/>
+         </property>
+         <item>
+          <property name="text">
+           <string>Percentage</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Time</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Frame</string>
+          </property>
+         </item>
+        </widget>
        </item>
        <item>
-        <property name="text">
-         <string>Time</string>
-        </property>
+        <widget class="QLabel" name="label_timeline">
+         <property name="maximumSize">
+          <size>
+           <width>300</width>
+           <height>30</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>16</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>00:00:00</string>
+         </property>
+        </widget>
        </item>
-       <item>
-        <property name="text">
-         <string>Frame</string>
-        </property>
-       </item>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="label_timeline">
-       <property name="maximumSize">
-        <size>
-         <width>300</width>
-         <height>30</height>
-        </size>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>16</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>00:00:00</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="0">
-      <widget class="QSlider" name="slider_timeline">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="minimumSize">
-        <size>
-         <width>500</width>
-         <height>0</height>
-        </size>
-       </property>
-       <property name="toolTip">
-        <string/>
-       </property>
-       <property name="styleSheet">
-        <string notr="true"/>
-       </property>
-       <property name="maximum">
-        <number>100</number>
-       </property>
-       <property name="pageStep">
-        <number>1</number>
-       </property>
-       <property name="value">
-        <number>0</number>
-       </property>
-       <property name="sliderPosition">
-        <number>0</number>
-       </property>
-       <property name="tracking">
-        <bool>true</bool>
-       </property>
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="tickPosition">
-        <enum>QSlider::NoTicks</enum>
-       </property>
-       <property name="tickInterval">
-        <number>0</number>
-       </property>
-      </widget>
+      </layout>
      </item>
     </layout>
    </widget>
@@ -1126,8 +1056,8 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
    <slot>slotTrackerSelectionChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>885</x>
-     <y>186</y>
+     <x>1910</x>
+     <y>267</y>
     </hint>
     <hint type="destinationlabel">
      <x>788</x>
@@ -1139,63 +1069,15 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
    <sender>tableWidget_inspector</sender>
    <signal>itemChanged(QTableWidgetItem*)</signal>
    <receiver>MainWindow</receiver>
-   <slot>slotInspectorItemChanged()</slot>
+   <slot>slotInspectorItemChanged(QTableWidgetItem*)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>891</x>
-     <y>512</y>
+     <x>1910</x>
+     <y>822</y>
     </hint>
     <hint type="destinationlabel">
      <x>787</x>
      <y>502</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>slider_timeline</sender>
-   <signal>sliderPressed()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>slotTimelinePressed()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>235</x>
-     <y>756</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>355</x>
-     <y>800</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>slider_timeline</sender>
-   <signal>sliderReleased()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>slotTimelineReleased()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>138</x>
-     <y>753</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>201</x>
-     <y>350</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>slider_timeline</sender>
-   <signal>sliderMoved(int)</signal>
-   <receiver>MainWindow</receiver>
-   <slot>slotTimelineValueChanged(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>95</x>
-     <y>754</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>204</x>
-     <y>584</y>
     </hint>
    </hints>
   </connection>
@@ -1206,8 +1088,8 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
    <slot>slotTimelineLableModeChanged(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>59</x>
-     <y>697</y>
+     <x>61</x>
+     <y>920</y>
     </hint>
     <hint type="destinationlabel">
      <x>200</x>
@@ -1222,8 +1104,8 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
    <slot>slotToggleTracking()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1033</x>
-     <y>77</y>
+     <x>1850</x>
+     <y>95</y>
     </hint>
     <hint type="destinationlabel">
      <x>786</x>
@@ -1238,8 +1120,8 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
    <slot>slotRemoveTracker()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>975</x>
-     <y>83</y>
+     <x>1802</x>
+     <y>94</y>
     </hint>
     <hint type="destinationlabel">
      <x>787</x>
@@ -1254,8 +1136,8 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
    <slot>slotAddTracker()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>827</x>
-     <y>88</y>
+     <x>1664</x>
+     <y>94</y>
     </hint>
     <hint type="destinationlabel">
      <x>787</x>
@@ -1270,8 +1152,8 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
    <slot>slotAddGroup()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>910</x>
-     <y>85</y>
+     <x>1740</x>
+     <y>94</y>
     </hint>
     <hint type="destinationlabel">
      <x>789</x>
@@ -1286,8 +1168,8 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
    <slot>slotRecord()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1066</x>
-     <y>84</y>
+     <x>1898</x>
+     <y>95</y>
     </hint>
     <hint type="destinationlabel">
      <x>788</x>
@@ -1314,10 +1196,10 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
  </connections>
  <slots>
   <slot>slotTrackerSelectionChanged()</slot>
-  <slot>slotInspectorItemChanged()</slot>
-  <slot>slotTimelinePressed()</slot>
-  <slot>slotTimelineReleased()</slot>
-  <slot>slotTimelineValueChanged(int)</slot>
+  <slot>slotInspectorItemChanged(QTableWidgetItem*)</slot>
+  <slot>slotTimelinePressed(float)</slot>
+  <slot>slotTimelineReleased(float)</slot>
+  <slot>slotTimelineValueChanged(float)</slot>
   <slot>slotTimelineLableModeChanged(int)</slot>
   <slot>slotToggleTracking()</slot>
   <slot>slotRemoveTracker()</slot>
