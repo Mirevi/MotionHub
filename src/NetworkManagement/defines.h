@@ -7,3 +7,6 @@ static const char* BROADCAST = "172.16.255.255";
 
 static const int DEFAULT_PORT = 7000;
 static const char* DEFAULT_URI = "/mh/skeleton/";
+
+static const char* IPV4_REGEX = "^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$";
+static const char* IPV6_REGEX = "^(?:[A-F0-9]{1,4}:){7}[A-F0-9]{1,4}$"; // Does not match shortened Addresses ::1 OR ::

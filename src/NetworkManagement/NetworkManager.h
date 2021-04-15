@@ -13,6 +13,7 @@
 #include <string>
 #include <iostream>
 #include <vector>
+#include <regex>
 
 /*!
  * \class NetworkManager
@@ -41,7 +42,13 @@ public:
 
 	void removeNetworkSender(int ID);
 
-
+	/*!
+	 * Checks if IP Address is within IPv4 range 0.0.0.0 - 255.255.255.255 OR a valid IPv6 Address
+	 * 
+	 * \param ipAddress IP Address to validate
+	 * \return true if valid, false if invalid
+	 */
+	bool isValidIPAddress(std::string ipAddress);
 
 	std::string m_ipAddress = "127.0.0.1";
 

@@ -32,11 +32,14 @@ SettingsWindow::~SettingsWindow()
 
 void SettingsWindow::accept()
 {
-	
-	std::string newAddress = m_LineEditIP->text().toStdString();
 
-	m_refNetworkManager->m_ipAddress = newAddress;
-	m_configManager->writeString("ipAddress", newAddress);
+	std::string newAddress = m_LineEditIP->text().trimmed().toStdString();
+
+	// Apply only valid IP addresses
+	if (m_refNetworkManager->isValidIPAddress(newAddress)) {
+		m_refNetworkManager->m_ipAddress = newAddress;
+		m_configManager->writeString("ipAddress", newAddress);
+	}
 
 	RecordingSession::RECORD_PATH = std::string(ui->lineEdit_recorder_path->text().toLocal8Bit().data());
 	m_configManager->writeString("recordPath", RecordingSession::RECORD_PATH);

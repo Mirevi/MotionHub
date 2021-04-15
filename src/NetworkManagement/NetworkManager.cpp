@@ -54,3 +54,16 @@ void NetworkManager::removeNetworkSender(int ID)
 	Console::log("NetworkManager::removeNetworkSender(): erased Sender " + toString(ID) + ". remaining Sender: " + toString((int)m_poolSender.size()));
 
 }
+
+bool NetworkManager::isValidIPAddress(std::string ipAddress)
+{
+	// Check if IP Address is valid IPv4 Address
+	std::regex ipV4RegEx = std::regex(IPV4_REGEX);
+	if (std::regex_match(ipAddress, ipV4RegEx)) {
+		return true;
+	}
+
+	// Check if IP Address is valid IPv6 Address
+	std::regex ipV6RegEx = std::regex(IPV6_REGEX);
+	return std::regex_match(ipAddress, ipV6RegEx);
+}
