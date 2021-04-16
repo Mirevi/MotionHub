@@ -17,6 +17,8 @@ SettingsWindow::SettingsWindow(NetworkManager* networkManager, ConfigManager* co
 
 	m_LineEditIP->setText(QString::fromStdString(m_refNetworkManager->m_ipAddress));
 
+	// Connect TextChanged event to IP address textfield
+	connect(m_LineEditIP, &QLineEdit::textChanged, this, &SettingsWindow::ipAddressTextChanged);
 }
 
 
@@ -33,11 +35,12 @@ SettingsWindow::~SettingsWindow()
 void SettingsWindow::accept()
 {
 
+	// Trim text and convert to std::string
 	std::string newAddress = m_LineEditIP->text().trimmed().toStdString();
 
 	// Apply only valid IP addresses
 	if (m_refNetworkManager->isValidIPAddress(newAddress)) {
-		m_refNetworkManager->m_ipAddress = newAddress;
+		m_refNetworkManager->setIPAddress(newAddress);
 		m_configManager->writeString("ipAddress", newAddress);
 	}
 
@@ -72,4 +75,28 @@ void SettingsWindow::slotRecorderFileDialog()
 	}
 	
 
+}
+
+void SettingsWindow::ipAddressTextChanged(const QString& text) {
+
+	// Trim text and convert to std::string
+	std::string newAddress = text.trimmed().toStdString();
+
+	// Is text an IP address valid?
+	if (m_refNetworkManager->isValidIPAddress(newAddress)) {
+
+		// Remove border color
+		m_LineEditIP->setStyleSheet("");
+
+		// Enable OK button
+		ui->buttonBox->button(QDialogButtonBox::Ok)->setDisabled(false);
+	}
+	// Invalid IP address
+	else {
+		// Change border color to red
+		m_LineEditIP->setStyleSheet("border-color: orange");
+
+		// Disable OK button
+		ui->buttonBox->button(QDialogButtonBox::Ok)->setDisabled(true);
+	}
 }

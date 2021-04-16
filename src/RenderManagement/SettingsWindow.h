@@ -28,6 +28,8 @@ private slots:
 
 	void slotRecorderFileDialog();
 
+	void ipAddressTextChanged(const QString& value);
+
 private:
 	Ui::SettingsWindow* ui; 
 

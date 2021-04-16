@@ -55,15 +55,26 @@ void NetworkManager::removeNetworkSender(int ID)
 
 }
 
+void NetworkManager::setIPAddress(std::string ipAddress) 
+{
+	// Override IP address
+	m_ipAddress = ipAddress;
+	
+	// Update IP address for each NetworkSender
+	for (const std::pair<const int, NetworkSender*> &entry: m_poolSender) {
+		entry.second->setIPAddress(ipAddress);
+	}
+}
+
 bool NetworkManager::isValidIPAddress(std::string ipAddress)
 {
-	// Check if IP Address is valid IPv4 Address
+	// Check if IP address is valid IPv4 address
 	std::regex ipV4RegEx = std::regex(IPV4_REGEX);
 	if (std::regex_match(ipAddress, ipV4RegEx)) {
 		return true;
 	}
 
-	// Check if IP Address is valid IPv6 Address
-	std::regex ipV6RegEx = std::regex(IPV6_REGEX);
+	// Check if IP address is valid IPv6 address
+	std::regex ipV6RegEx = std::regex(IPV6_REGEX, std::regex::icase);
 	return std::regex_match(ipAddress, ipV6RegEx);
 }

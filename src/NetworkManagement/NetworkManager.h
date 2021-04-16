@@ -42,10 +42,12 @@ public:
 
 	void removeNetworkSender(int ID);
 
+	void setIPAddress(std::string ipAddress);
+
 	/*!
-	 * Checks if IP Address is within IPv4 range 0.0.0.0 - 255.255.255.255 OR a valid IPv6 Address
+	 * Checks if IP address is within IPv4 range 0.0.0.0 - 255.255.255.255 OR a valid IPv6 address
 	 * 
-	 * \param ipAddress IP Address to validate
+	 * \param ipAddress IP address to validate
 	 * \return true if valid, false if invalid
 	 */
 	bool isValidIPAddress(std::string ipAddress);

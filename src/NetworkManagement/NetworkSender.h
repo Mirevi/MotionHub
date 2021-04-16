@@ -54,7 +54,12 @@ public:
 	 */
 	virtual void sendSkeleton(Skeleton* skeleton, const char* uri, int trackerID) = 0;
 
-	
+	/*!
+	 * overrides the receivers address
+	 *
+	 * \param address the receivers address
+	 */
+	virtual void setIPAddress(std::string address) = 0;
 protected:
 
 	/*!

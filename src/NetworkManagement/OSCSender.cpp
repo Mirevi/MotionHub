@@ -96,3 +96,15 @@ void OSCSender::sendSkeleton(Skeleton* skeleton, const char* uri, int trackerID)
 
 	}
 }
+
+void OSCSender::setIPAddress(std::string address) {
+
+	// override IP address
+	m_address = address;
+
+	// destroy old udp transmit socket
+	delete m_transmitSocket;
+
+	// create new udp transmit socket sending on address and port
+	m_transmitSocket = new UdpTransmitSocket(IpEndpointName(m_address.c_str(), m_port));
+}
