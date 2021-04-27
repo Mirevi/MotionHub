@@ -21,6 +21,7 @@ RGBDCaptureForGANWindow::RGBDCaptureForGANWindow(ConfigManager* configManager, N
 
 	//states
 	m_state = State::UNINITIALIZED;
+	m_closeAzureDeviceAfterTask = false;
 
 	//capture
 	m_currentCapture = new k4a::capture();
@@ -280,6 +281,7 @@ void RGBDCaptureForGANWindow::onStartLandmarkTransissionWithCapturedDataTriggere
 void RGBDCaptureForGANWindow::taskThreadMethod()
 {
 	printAndShowMessage("Start GAN Task Thread");
+	m_closeAzureDeviceAfterTask = false;
 
 	if (m_state == State::IS_INITIALIZING) {
 		initiateAzureKinect();
@@ -308,10 +310,7 @@ void RGBDCaptureForGANWindow::taskThreadMethod()
 	}
 
 	//close Azure
-	switch (m_state) {
-	case State::INITIALIZED:
-	case State::CAPTURING:
-	case State::TRANSMITTING:
+	if (m_closeAzureDeviceAfterTask) {
 		m_azureKinectSensor.close();
 		m_tracker.destroy();
 	}
@@ -361,6 +360,7 @@ void RGBDCaptureForGANWindow::initiateAzureKinect()
 	m_tracker = m_tracker.create(m_calibration, m_trackerConfig);
 	printAndShowMessage("Initiate Body Tracking Component done");
 
+	m_closeAzureDeviceAfterTask = true;
 	m_state = State::INITIALIZED;
 }
 
@@ -372,7 +372,8 @@ void RGBDCaptureForGANWindow::updateUiLineEditBoundaries() {
 	ui->le_crop_region_y2->setValidator(new QIntValidator(0, m_colorResolution.height, this));
 	ui->le_image_size_x->setValidator(new QIntValidator(0, m_colorResolution.width, this));
 	ui->le_image_size_y->setValidator(new QIntValidator(0, m_colorResolution.height, this));
-	ui->le_clipping_distance->setValidator(new QIntValidator(0, 65000, this));
+	ui->le_clipping_near->setValidator(new QIntValidator(0, 65000, this));
+	ui->le_clipping_far->setValidator(new QIntValidator(0, 65000, this));
 	ui->le_transmission_id->setValidator(new QIntValidator(0, 1000, this));
 }
 
@@ -566,32 +567,37 @@ void RGBDCaptureForGANWindow::processDepthImage()
 	int transformedDepthWidth = m_transformedDepthImage.get_width_pixels();
 	int transformedDepthHeight = m_transformedDepthImage.get_height_pixels();
 
-	m_depthMat = std::shared_ptr<cv::Mat>(new cv::Mat(transformedDepthHeight, transformedDepthWidth, CV_16UC1, (void*)transformed_depth_buffer, cv::Mat::AUTO_STEP));
+	m_depthMat16 = std::shared_ptr<cv::Mat>(new cv::Mat(transformedDepthHeight, transformedDepthWidth, CV_16UC1, (void*)transformed_depth_buffer, cv::Mat::AUTO_STEP));
+	m_depthMat8 = std::shared_ptr<cv::Mat>(new cv::Mat(transformedDepthHeight, transformedDepthWidth, CV_8UC1));
 
-	cropAndResizeMat(&m_depthMat);
+	cropAndResizeMat(&m_depthMat16);
 
-	cv::Mat tempDepth;
-	cv::Mat depthMat8 = cv::Mat(transformedDepthHeight, transformedDepthWidth, CV_8UC1);
+	estimateDepth8Mat();
 
 	if (m_showDepthImagePreview) {
-		//TODO apply thresholds and convert in raw format as followed:
-		/*
-        _, image = cv.threshold(image, 0, 65535, cv.THRESH_TOZERO)
-        _, image = cv.threshold(image, unclipped_area_size, 65535, cv.THRESH_TOZERO_INV)
-        image = image * (float(255.0) / float(unclipped_area_size))
-		*/
-		tempDepth = *m_depthMat - m_clippingNear;
-		tempDepth.convertTo(depthMat8, CV_8UC1, 255.0 / m_unclippedAreaSize);
 		QImage image = QImage(
-			depthMat8.data,
-			depthMat8.cols,
-			depthMat8.rows,
-			depthMat8.step,
+			m_depthMat8->data,
+			m_depthMat8->cols,
+			m_depthMat8->rows,
+			m_depthMat8->step,
 			QImage::Format_Grayscale8
 		);
 		image = image.scaled(256, 256, Qt::AspectRatioMode::KeepAspectRatio);
 		ui->depth_image->setPixmap(QPixmap::fromImage(image));
 	}
+}
+
+void RGBDCaptureForGANWindow::estimateDepth8Mat() {
+	//TODO apply thresholds and convert in raw format as followed:
+	/*
+	_, image = cv.threshold(image, 0, 65535, cv.THRESH_TOZERO)
+	_, image = cv.threshold(image, unclipped_area_size, 65535, cv.THRESH_TOZERO_INV)
+	image = image * (float(255.0) / float(unclipped_area_size))
+	*/
+	cv::Mat tempDepth16 = *m_depthMat16 - m_clippingNear;
+	cv::threshold(tempDepth16, tempDepth16, 0, 65535, cv::THRESH_TOZERO);
+	cv::threshold(tempDepth16, tempDepth16, m_unclippedAreaSize, 65535, cv::THRESH_TOZERO_INV);
+	tempDepth16.convertTo(*m_depthMat8, CV_8UC1, 255.0 / m_unclippedAreaSize);
 }
 
 void RGBDCaptureForGANWindow::processInfraredImage()
@@ -683,18 +689,10 @@ void RGBDCaptureForGANWindow::saveDepthImage()
 	std::string depthFileName = imageFilePath(ImageType::DEPTH_IMAGE);
 
 	if (m_depthCaptureBitSize == 8) {
-		//TODO apply thresholds and convert in raw format as followed:
-		/*
-		_, image = cv.threshold(image, 0, 65535, cv.THRESH_TOZERO)
-		_, image = cv.threshold(image, unclipped_area_size, 65535, cv.THRESH_TOZERO_INV)
-		image = image * (float(255.0) / float(unclipped_area_size))
-		*/
-		cv::Mat depthMat8 = cv::Mat(m_depthMat->rows, m_depthMat->cols, CV_8UC1);
-		m_depthMat->convertTo(depthMat8, CV_8UC1, 255.0 / m_clippingDistance);
-		cv::imwrite(depthFileName, depthMat8, std::vector<int>());
+		cv::imwrite(depthFileName, *m_depthMat8, std::vector<int>());
 	}
 	else if (m_depthCaptureBitSize == 16) {
-		cv::imwrite(depthFileName, *m_depthMat, std::vector<int>());
+		cv::imwrite(depthFileName, *m_depthMat16, std::vector<int>());
 	}
 	else {
 		std::cout << "Depth Bit Size is not supported: " << m_depthCaptureBitSize << std::endl;
@@ -1046,7 +1044,7 @@ boolean RGBDCaptureForGANWindow::convertJointLandmarksToColorImageLandmarks()
 			Landmark colorImageLandmark;
 			colorImageLandmark.x = imagePosition.xy.x;
 			colorImageLandmark.y = imagePosition.xy.y;
-			colorImageLandmark.depth = 256 - (jointPosition.xyz.z / m_clippingDistance) * 256;
+			colorImageLandmark.depth = 256 - ((jointPosition.xyz.z - m_clippingNear) / m_unclippedAreaSize) * 256;
 
 			m_colorImageLandmarks[i] = colorImageLandmark;
 		}
