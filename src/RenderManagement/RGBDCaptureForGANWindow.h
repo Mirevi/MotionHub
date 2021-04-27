@@ -126,7 +126,9 @@ private:
 	int m_senderId;
 	int m_transmissionId;
 	int m_framesToCapture;
-	int m_clippingDistance;
+	int m_clippingNear;
+	int m_clippingFar;
+	int m_unclippedAreaSize;
 	int m_depthCaptureBitSize;
 	cv::Size m_imageSize;
 	cv::Size m_featureImageSize;

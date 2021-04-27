@@ -25,7 +25,9 @@ RGBDCaptureForGANWindow::RGBDCaptureForGANWindow(ConfigManager* configManager, N
 	//capture
 	m_currentCapture = new k4a::capture();
 	m_framesToCapture = 1000;
-	m_clippingDistance = 2850; //behind this value (millimeters) the points will be rejected
+	m_clippingNear = 1000;//before this value (millimeters) the points will be rejected
+	m_clippingFar = 2850; //behind this value (millimeters) the points will be rejected
+	m_unclippedAreaSize = m_clippingFar - m_clippingNear;
 
 	//feature generation
 	m_imageSize = cv::Size(512, 512);
@@ -59,7 +61,8 @@ void RGBDCaptureForGANWindow::updateGui()
 	ui->le_image_size_y->setText(QString::fromStdString(std::to_string(m_imageSize.height)));
 	ui->le_feature_image_size_x->setText(QString::fromStdString(std::to_string(m_featureImageSize.width)));
 	ui->le_feature_image_size_y->setText(QString::fromStdString(std::to_string(m_featureImageSize.height)));
-	ui->le_clipping_distance->setText(QString::fromStdString(std::to_string(m_clippingDistance)));
+	ui->le_clipping_near->setText(QString::fromStdString(std::to_string(m_clippingNear)));
+	ui->le_clipping_far->setText(QString::fromStdString(std::to_string(m_clippingFar)));
 	ui->le_transmission_id->setText(QString::fromStdString(std::to_string(m_transmissionId)));
 	if (m_depthCaptureBitSize == 8)
 		ui->rb_8BitDepthSize->setChecked(true);
@@ -101,7 +104,8 @@ void RGBDCaptureForGANWindow::updateGui()
 	ui->le_image_size_y->setEnabled(false);
 	ui->le_feature_image_size_x->setEnabled(false);
 	ui->le_feature_image_size_y->setEnabled(false);
-	ui->le_clipping_distance->setEnabled(false);
+	ui->le_clipping_near->setEnabled(false);
+	ui->le_clipping_far->setEnabled(false);
 	ui->le_transmission_id->setEnabled(false);
 	ui->rb_8BitDepthSize->setEnabled(false);
 	ui->rb_16BitDepthSize->setEnabled(false);
@@ -118,7 +122,8 @@ void RGBDCaptureForGANWindow::updateGui()
 		ui->le_crop_region_y2->setEnabled(true);
 		ui->le_feature_image_size_x->setEnabled(true);
 		ui->le_feature_image_size_y->setEnabled(true);
-		ui->le_clipping_distance->setEnabled(true);
+		ui->le_clipping_near->setEnabled(true);
+		ui->le_clipping_far->setEnabled(true);
 		ui->btn_initiate_kinect->setEnabled(true);
 		ui->btn_start_captured_transmission->setEnabled(true);
 	}
@@ -137,7 +142,8 @@ void RGBDCaptureForGANWindow::updateGui()
 		ui->le_image_size_y->setEnabled(true);
 		ui->le_feature_image_size_x->setEnabled(true);
 		ui->le_feature_image_size_y->setEnabled(true);
-		ui->le_clipping_distance->setEnabled(true);
+		ui->le_clipping_near->setEnabled(true);
+		ui->le_clipping_far->setEnabled(true);
 		ui->rb_8BitDepthSize->setEnabled(true);
 		ui->rb_16BitDepthSize->setEnabled(true);
 		ui->btn_start_capture->setEnabled(true);
@@ -192,8 +198,10 @@ void RGBDCaptureForGANWindow::onGuiValueChanged() {
 		ui->le_image_size_x->setText("0");
 	if (ui->le_image_size_y->text().length() == 0)
 		ui->le_image_size_y->setText("0");
-	if (ui->le_clipping_distance->text().length() == 0)
-		ui->le_clipping_distance->setText("0");
+	if (ui->le_clipping_near->text().length() == 0)
+		ui->le_clipping_near->setText("0");
+	if (ui->le_clipping_far->text().length() == 0)
+		ui->le_clipping_far->setText("0");
 	if (ui->le_transmission_id->text().length() == 0)
 		ui->le_transmission_id->setText("0");
 
@@ -210,7 +218,9 @@ void RGBDCaptureForGANWindow::onGuiValueChanged() {
 		ui->le_feature_image_size_x->text().toInt(), 
 		ui->le_feature_image_size_y->text().toInt());
 
-	m_clippingDistance = ui->le_clipping_distance->text().toInt();
+	m_clippingNear = ui->le_clipping_near->text().toInt();
+	m_clippingFar = ui->le_clipping_far->text().toInt();
+	m_unclippedAreaSize = m_clippingFar - m_clippingNear;
 	m_transmissionId = ui->le_transmission_id->text().toInt();
 
 	if (ui->rb_8BitDepthSize->isChecked())
@@ -536,7 +546,7 @@ void RGBDCaptureForGANWindow::processDepthImage()
 	{
 		//If the distance is farther than clip (format is YUY2 -> Two byte per pixel results in 16bit and 65535mm depth resolution)
 		uint16_t depth = (uint16_t)(depth_buffer[i + 1] << 8 | depth_buffer[i]);
-		if (depth > m_clippingDistance)
+		if (depth < m_clippingNear || depth > m_clippingFar)
 		{
 			depth_buffer[i] = 0;
 			depth_buffer[i + 1] = 0;
@@ -560,10 +570,18 @@ void RGBDCaptureForGANWindow::processDepthImage()
 
 	cropAndResizeMat(&m_depthMat);
 
+	cv::Mat tempDepth;
 	cv::Mat depthMat8 = cv::Mat(transformedDepthHeight, transformedDepthWidth, CV_8UC1);
 
 	if (m_showDepthImagePreview) {
-		m_depthMat->convertTo(depthMat8, CV_8UC1, 255.0 / m_clippingDistance);
+		//TODO apply thresholds and convert in raw format as followed:
+		/*
+        _, image = cv.threshold(image, 0, 65535, cv.THRESH_TOZERO)
+        _, image = cv.threshold(image, unclipped_area_size, 65535, cv.THRESH_TOZERO_INV)
+        image = image * (float(255.0) / float(unclipped_area_size))
+		*/
+		tempDepth = *m_depthMat - m_clippingNear;
+		tempDepth.convertTo(depthMat8, CV_8UC1, 255.0 / m_unclippedAreaSize);
 		QImage image = QImage(
 			depthMat8.data,
 			depthMat8.cols,
@@ -665,6 +683,12 @@ void RGBDCaptureForGANWindow::saveDepthImage()
 	std::string depthFileName = imageFilePath(ImageType::DEPTH_IMAGE);
 
 	if (m_depthCaptureBitSize == 8) {
+		//TODO apply thresholds and convert in raw format as followed:
+		/*
+		_, image = cv.threshold(image, 0, 65535, cv.THRESH_TOZERO)
+		_, image = cv.threshold(image, unclipped_area_size, 65535, cv.THRESH_TOZERO_INV)
+		image = image * (float(255.0) / float(unclipped_area_size))
+		*/
 		cv::Mat depthMat8 = cv::Mat(m_depthMat->rows, m_depthMat->cols, CV_8UC1);
 		m_depthMat->convertTo(depthMat8, CV_8UC1, 255.0 / m_clippingDistance);
 		cv::imwrite(depthFileName, depthMat8, std::vector<int>());

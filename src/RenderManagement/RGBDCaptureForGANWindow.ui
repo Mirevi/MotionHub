@@ -855,7 +855,7 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
     <item row="4" column="0">
      <widget class="QLabel" name="label_4">
       <property name="text">
-       <string>Clipping Distance: </string>
+       <string>Clipping Planes: </string>
       </property>
      </widget>
     </item>
@@ -867,7 +867,7 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
      </widget>
     </item>
     <item row="4" column="2">
-     <widget class="QLineEdit" name="le_clipping_distance">
+     <widget class="QLineEdit" name="le_clipping_near">
       <property name="inputMask">
        <string/>
       </property>
@@ -928,6 +928,34 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
       </property>
      </widget>
     </item>
+    <item row="4" column="1">
+     <widget class="QLabel" name="label_18">
+      <property name="text">
+       <string>Near</string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="5">
+     <widget class="QLabel" name="label_19">
+      <property name="text">
+       <string>Far</string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="7">
+     <widget class="QLabel" name="label_20">
+      <property name="text">
+       <string>mm</string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="6">
+     <widget class="QLineEdit" name="le_clipping_far">
+      <property name="inputMask">
+       <string/>
+      </property>
+     </widget>
+    </item>
    </layout>
   </widget>
   <widget class="QWidget" name="gridLayoutWidget_4">
@@ -961,7 +989,7 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
   <tabstop>le_image_size_y</tabstop>
   <tabstop>le_feature_image_size_x</tabstop>
   <tabstop>le_feature_image_size_y</tabstop>
-  <tabstop>le_clipping_distance</tabstop>
+  <tabstop>le_clipping_near</tabstop>
   <tabstop>le_transmission_id</tabstop>
   <tabstop>rb_8BitDepthSize</tabstop>
   <tabstop>rb_16BitDepthSize</tabstop>
@@ -1105,7 +1133,7 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
    </hints>
   </connection>
   <connection>
-   <sender>le_clipping_distance</sender>
+   <sender>le_clipping_near</sender>
    <signal>editingFinished()</signal>
    <receiver>RGBDCaptureForGANWindow</receiver>
    <slot>onGuiValueChanged()</slot>
