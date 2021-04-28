@@ -1,6 +1,5 @@
 #pragma once
 
-//include Eigen Library
 #include <Dense>
 
 #define M_PI 3.141592653589793238462643383279502884L
@@ -10,10 +9,9 @@
 
 using namespace Eigen;
 
-// TODO: Kommentieren
-
 /*!
- * Returns the signum function of x.
+ * Returns the signum function of x
+ * 
  * \return -1 if x<0, 0 if x=0, 1 if x>0
  */
 template <typename T> static int sgn(T x) {
@@ -21,17 +19,18 @@ template <typename T> static int sgn(T x) {
 }
 
 /*!
- * Returns the reverse square root of x.
- * \return The reverse square root of x
+ * Calculates the reverse square root of x
+ * 
+ * \return reverse square root of x
  */
 static float rsqrt(float x) {
 	return 1.0f / sqrt(x);
 }
 
 /*!
- * Returns the result of linearly interpolating from a to b using the interpolation parameter t.
+ * Returns the result of linearly interpolating from a to b using the interpolation parameter t
  * 
- * \remarks If the interpolation parameter is not in the range [0, 1], then this function extrapolates.
+ * \remarks If the interpolation parameter is not in the range [0, 1], then this function extrapolates
  * \param a zhe first endpoint, corresponding to the interpolation parameter value of 0
  * \param b The second endpoint, corresponding to the interpolation parameter value of 1
  * \param t The interpolation parameter. May be a value outside the interval [0, 1]
@@ -42,7 +41,8 @@ static float lerp(const float a, const float b, const float t) {
 }
 
 /*!
- * Clamps x between min and max and returns value.
+ * Clamps x between min and max and returns value
+ * 
  * \param x input value to be clamped
  * \param min lower bound of the interval
  * \param max upper bound of the interval
@@ -53,7 +53,8 @@ static float clamp(const float x, const float min, const float max) {
 }
 
 /*!
- * Clamps x between 0 and 1 and returns value.
+ * Clamps x between 0 and 1 and returns value
+ * 
  * \param x input value to be clamped
  * \return x between 0 and 1
  */
@@ -62,9 +63,9 @@ static float clamp01(const float x) {
 }
 
 /*!
- * Returns a quaternion view rotation given a forward vector and an up vector.
- * The two input vectors are not assumed to be unit length.
- * If the magnitude of either of the vectors is so extreme that the calculation cannot be carried out reliably or the vectors are collinear, the identity will be returned instead.
+ * Returns a quaternion view rotation given a forward vector and an up vector
+ * The two input vectors are not assumed to be unit length
+ * If the magnitude of either of the vectors is so extreme that the calculation cannot be carried out reliably or the vectors are collinear, the identity will be returned instead
  *
  * \param forward The view forward direction
  * \param up The view up direction
@@ -118,18 +119,49 @@ static Quaternionf lookRotation(Vector3f forward, Vector3f up) {
 	}
 }
 
-static Quaternionf rotationToLocalSpace(Quaternionf space, Quaternionf rotation) {
+/*!
+ * Transforms a rotation to a another rotational space
+ *
+ * \param space the rotational space to transform to
+ * \param rotation lower bound of the interval
+ * \return the transformed rotation 
+ */
+static Quaternionf rotationToSpace(Quaternionf space, Quaternionf rotation) {
 	return (space.inverse() * rotation).inverse();
 }
 
+/*!
+ * Creates a rotation which rotates from first direction to second direction
+ *
+ * \param from first direction
+ * \param to second direction
+ * \return the transformed direction
+ */
 static Quaternionf fromToRotation(Quaternionf from, Quaternionf to) {
 	return to * from.inverse();
 }
 
+/*!
+ * Creates a rotation which rotates from first direction to second direction
+ *
+ * \param from first direction
+ * \param to second direction
+ * \return the transformed direction
+ */
 static Quaternionf fromToRotation(Vector3f from, Vector3f to) {
 	return Quaternionf::FromTwoVectors(from, to);
 }
 
+/*!
+ * Rotates a rotation from towards to
+ * The from quaternion is rotated towards to by an angular step of maxDegreesDelta (but note that the rotation will not overshoot)
+ * Negative values of maxDegreesDelta will move away from to until the rotation is exactly the opposite direction.
+ *
+ * \param from first direction
+ * \param to second direction
+ * \param maxDegreesDelta angular step 
+ * \return the transformed rotation
+ */
 static Quaternionf rotateTowards(Quaternionf from, Quaternionf to, float maxDegreesDelta) {
 	float angle = from.angularDistance(to);
 	if (angle == 0.0f) return to;
@@ -137,22 +169,29 @@ static Quaternionf rotateTowards(Quaternionf from, Quaternionf to, float maxDegr
 	return from.slerp(fmin(1.0f, maxDegreesDelta / angle), to);
 }
 
-static Quaternionf clampRotation(Quaternionf rotation, float clampWeight, int clampSmoothing) {
+/*!
+ * Clamps a rotation to a identity rotation by the weight of clamp [0, 1]
+ * 
+ * \param rotation the rotation
+ * \param clamp the weight to clamp [0 = rotation, 1 = identity rotation]
+ * \param clampSmoothing angular step
+ * \return the clamped rotation
+ */
+static Quaternionf clamp(Quaternionf rotation, float clamp, int clampSmoothing) {
 	Quaternionf identity = Quaternionf::Identity();
 
-	if (clampWeight >= 1.0f) {
+	if (clamp >= 1.0f) {
 		return identity;
 	}
 
-	if (clampWeight <= 0.0f) {
+	if (clamp <= 0.0f) {
 		return rotation;
 	}
 
-	float angle = identity.angularDistance(rotation);
-	float dot = 1.0f - (angle / 180.0f);
+	float dot = 1.0f - (identity.angularDistance(rotation) / 180.0f);
 
-	float targetClampMlp = clamp01(1.0f - ((clampWeight - dot) / (1.0f - dot)));
-	float clampMlp = clamp01(dot / clampWeight);
+	float targetClampMlp = clamp01(1.0f - ((clamp - dot) / (1.0f - dot)));
+	float clampMlp = clamp01(dot / clamp);
 
 	for (int i = 0; i < clampSmoothing; i++) {
 		float sinF = clampMlp * M_PI * 0.5f;
@@ -162,9 +201,14 @@ static Quaternionf clampRotation(Quaternionf rotation, float clampWeight, int cl
 	return identity.slerp(clampMlp * targetClampMlp, rotation);
 }
 
-/*!
- * Projects a vector onto another vector.
- */
+ /*!
+  * Projects a vector onto another vector
+  *
+  * \param vector the vector
+  * \param onNormal the normal to project on
+  * \return projected vector
+  * \see https://docs.unity3d.com/ScriptReference/Vector3.Project.html
+  */
  static Vector3f project(Vector3f vector, Vector3f onNormal) {
 
 	float sqrMag = onNormal.dot(onNormal);
@@ -183,11 +227,37 @@ static Quaternionf clampRotation(Quaternionf rotation, float clampWeight, int cl
 	}
 }
 
-/*!
- * take a vector space basis and transform it into an orthonormal basis
- * \see https://graemepottsfolio.wordpress.com/2015/11/26/vectors-programming/
+ /*!
+ * Reflects a vector off the plane defined by a plane normal
+ *
+ * \param vector the vector is treated as a directional arrow coming in to the plane
+ * \param planeNormal the normal to project on
+ * \return reflected vector
+ * \see https://docs.unity3d.com/ScriptReference/Vector3.Reflect.html
  */
-// 
+ static Vector3f reflect(Vector3f vector, Vector3f planeNormal) {
+	 return vector - 2 * project(vector, planeNormal);
+ }
+
+ /*!
+ * Projects a vector onto another vector and rejects a 
+ *
+ * \param a the vector to reject
+ * \param b the second vector
+ * \return rejected vector
+ */
+ static Vector3f reject(Vector3f a, Vector3f b) {
+	 return a - project(a, b);
+ }
+
+ /*!
+  * Normalizes normal. Normalizes tangent and makes sure it is orthogonal to normal (that is, angle between them is 90 degrees)
+  *
+  * \param normal the normal
+  * \param tangent the tangent
+  * \return angle in degrees between both vectors.
+  * \see https://graemepottsfolio.wordpress.com/2015/11/26/vectors-programming/
+  */
 static void orthoNormalize(Vector3f& normal, Vector3f& tangent) {
 	/*normal.normalize();
 	tangent.normalize();
@@ -195,12 +265,17 @@ static void orthoNormalize(Vector3f& normal, Vector3f& tangent) {
 	tangent.completeOrthogonalDecomposition();
 
 	return tangent.cross(normal);*/
-
+	
 	tangent = (tangent - project(tangent, normal.normalized())).normalized();
 }
 
 /*!
- * take a vector space basis and transform it into an orthonormal basis
+ * Normalizes normal. Normalizes tangent and makes sure it is orthogonal to normal. Normalizes binormal and makes sure it is orthogonal to both normal and tangent.
+ *
+ * \param normal the normal
+ * \param tangent the tangent
+ * \param binormal the binormal
+ * \return angle in degrees between both vectors.
  * \see https://graemepottsfolio.wordpress.com/2015/11/26/vectors-programming/
  */
 static void orthoNormalize(Vector3f& normal, Vector3f& tangent, Vector3f& binormal) {
@@ -214,9 +289,9 @@ static void orthoNormalize(Vector3f& normal, Vector3f& tangent, Vector3f& binorm
 /*!
  * Returns the angle in degrees between vector from and vector to. This is always the smallest
  *
- * \param from The first vector.
- * \param to The second vector.
- * \return The angle in degrees between both vectors.
+ * \param from first vector.
+ * \param to second vector.
+ * \return angle in degrees between both vectors.
  * \see https://github.com/Unity-Technologies/UnityCsReference/blob/61f92bd79ae862c4465d35270f9d1d57befd1761/Runtime/Export/Math/Vector3.cs#L305
  */
 static float angle(Vector3f from, Vector3f to) {
@@ -237,9 +312,9 @@ static float angle(Vector3f from, Vector3f to) {
  * The smaller of the two possible angles between the two vectors is returned, therefore the result will never be greater than 180 degrees or smaller than -180 degrees.
  * If you imagine the from and to vectors as lines on a piece of paper, both originating from the same point, then the /axis/ vector would point up out of the paper.
  * 
- * \param from The first vector.
- * \param to The second vector.
- * \param axis The axis vector.
+ * \param from first vector.
+ * \param to second vector.
+ * \param axis axis vector.
  * \return The measured angle between the two vectors. positive in a clockwise direction and negative in an anti-clockwise direction.
  * \see https://github.com/Unity-Technologies/UnityCsReference/blob/61f92bd79ae862c4465d35270f9d1d57befd1761/Runtime/Export/Math/Vector3.cs#L319
  */
@@ -259,9 +334,9 @@ static float signedAngle(const Vector3f& from, const Vector3f& to, const Vector3
  * Returns a quaternion representing a rotation around a unit axis by an angle in degree.
  * The rotation direction is clockwise when looking along the rotation axis towards the origin.
  *
- * \param angle The angle of rotation in degree.
- * \param axis The axis of rotation.
- * \return The quaternion representing a rotation around an axis.
+ * \param angle angle of rotation in degree.
+ * \param axis axis of rotation.
+ * \return quaternion representing a rotation around an axis.
  * \see https://github.com/Unity-Technologies/Unity.Mathematics/blob/4915b7afebc50b9c6c9a410b7a86ae5489aa6b9c/src/Unity.Mathematics/quaternion.cs#L99
  */
 static Quaternionf angleAxis(const float& angle, const Vector3f& axis) {
@@ -277,11 +352,11 @@ static Quaternionf angleAxis(const float& angle, const Vector3f& axis) {
 }
 
 /*!
- * Returns the distance between vector a and  vector b.
+ * Calculates the distance between vector a and vector b
  *
- * \param a The first vector.
- * \param b The second vector.
- * \return The distance between both vectors.
+ * \param a first vector
+ * \param b second vector
+ * \return distance between both vectors
  */
 static float distance(const Vector3f& a, const Vector3f& b) {
 	float diff_x = a.x() - b.x();
@@ -290,3 +365,116 @@ static float distance(const Vector3f& a, const Vector3f& b) {
 
 	return sqrt(diff_x * diff_x + diff_y * diff_y + diff_z * diff_z);
 }
+
+/*!
+ * Linearly interpolates between between vector a and b by amount t (unclamped)
+ *
+ * \param a first vector
+ * \param b second vector
+ * \param t interpolant
+ * \return linearly interpolated vector
+ */
+static Vector3f lerpUnclamped(Vector3f a, Vector3f b, float t) {
+	return (b - a) * t + a;
+}
+
+/*!
+ * Linearly interpolates between between vector a and b by amount t
+ * The parameter t is clamped to the range [0, 1].
+ *
+ * \param a first vector
+ * \param b second vector
+ * \param t interpolant
+ * \return linearly interpolated vector
+ */
+static Vector3f lerp(Vector3f a, Vector3f b, float t) {
+	if (t <= 0) return a;
+	else if (t >= 1) return b;
+	return lerpUnclamped(a, b, t);
+}
+
+/*!
+ * Spherically interpolates between between vector a and b by amount t (unclamped)
+ *
+ * \param a first vector
+ * \param b second vector
+ * \param t interpolant
+ * \return spherically interpolated vector
+ */
+static Vector3f slerpUnclamped(Vector3f start, Vector3f end, float delta) {
+	// Dot product - the cosine of the angle between 2 vectors
+	float dot = start.dot(end);
+
+	// Clamp it to be in the range of Acos()
+	// This may be unnecessary, but floating point
+	// precision can be a fickle mistress.
+	dot = clamp(dot, -1.0f, 1.0f);
+
+	// Acos(dot) returns the angle between start and end,
+	// And multiplying that by percent returns the angle between
+	// start and the final result.
+	float theta = acosf(dot) * delta;
+	Vector3f relativeVec = (end - start * dot).normalized();
+
+	// Orthonormal basis
+	// The final result.
+	return ((start * cosf(theta)) + (relativeVec * sinf(theta)));
+}
+
+/*!
+ * Spherically interpolates between between vector a and b by amount t
+ * The parameter t is clamped to the range [0, 1].
+ * The difference between this and linear interpolation (aka, "lerp") is that the vectors are treated as directions rather than points in space.
+ * 
+ * \param a first vector
+ * \param b second vector
+ * \param t interpolant
+ * \return spherically interpolated vector
+ */
+static Vector3f slerp(Vector3f a, Vector3f b, float t) {
+	if (t <= 0) return a;
+	else if (t >= 1) return b;
+	return slerpUnclamped(a, b, t);
+}
+
+/*!
+ * Decompose a rotation into twist components
+ *
+ * \param rotation twisted rotation
+ * \param twistAxis axis vector
+ * \return decomposed rotation
+ * \see http://allenchou.net/2018/05/game-math-swing-twist-interpolation-sterp/
+ */
+static Quaternionf DecomposeTwist(const Quaternionf rotation, const Vector3f twistAxis) {
+	// Create Euler for sqrlength check
+	Vector3f r = Vector3f(rotation.x(), rotation.y(), rotation.z());
+
+	// Singularity: rotation by 0 degree
+	if (r.squaredNorm() < FLT_EPSILON) {
+		return angleAxis(0, twistAxis);
+	}
+	else {
+		// swing-twist decomposition
+		Vector3f p = project(r, twistAxis);
+		return Quaternionf(rotation.w(), rotation.x(), rotation.y(), rotation.z()).normalized();
+	}
+}
+
+/*
+static Vector3f slerpUnclamped(Vector3f a, Vector3f b, float t) {
+	double magA = Magnitude(a);
+	double magB = Magnitude(b);
+	a /= magA;
+	b /= magB;
+
+	double dot = a.dot(b);
+	dot = fmax(dot, -1.0);
+	dot = fmin(dot, 1.0);
+
+	double theta = acos(dot) * t;
+	Vector3f relativeVec = (b - a * dot).normalized();
+	Vector3f newVec = a * cosf(theta) + relativeVec * sinf(theta);
+	return newVec * (magA + (magB - magA) * t);
+}
+*/
+
