@@ -1123,7 +1123,7 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
    <slot>onGuiValueChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>361</x>
+     <x>346</x>
      <y>82</y>
     </hint>
     <hint type="destinationlabel">
@@ -1155,7 +1155,7 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
    <slot>onGuiValueChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>570</x>
+     <x>561</x>
      <y>56</y>
     </hint>
     <hint type="destinationlabel">
@@ -1171,7 +1171,7 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
    <slot>onGuiValueChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>570</x>
+     <x>561</x>
      <y>82</y>
     </hint>
     <hint type="destinationlabel">
@@ -1321,6 +1321,22 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
     <hint type="destinationlabel">
      <x>504</x>
      <y>161</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>le_clipping_far</sender>
+   <signal>editingFinished()</signal>
+   <receiver>RGBDCaptureForGANWindow</receiver>
+   <slot>onGuiValueChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>510</x>
+     <y>125</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>598</x>
+     <y>140</y>
     </hint>
    </hints>
   </connection>
