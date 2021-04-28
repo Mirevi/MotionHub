@@ -65,9 +65,6 @@ private:
 	void initializeFeatureLineColor();
 
 	//threads
-	std::shared_ptr<std::thread> m_taskThread;
-	State m_state;
-
 	void taskThreadMethod();
 	void initiateAzureKinect();
 	void updateUiLineEditBoundaries();
@@ -81,6 +78,7 @@ private:
 	boolean currentCaptureIsValid(k4a::capture* capture);
 	void processColorImage();
 	void processDepthImage();
+	void estimateDepth8Mat();
 	void processInfraredImage();
 	void processFeatureImage();
 	void cropAndResizeMat(std::shared_ptr<cv::Mat>* mat);
@@ -141,6 +139,11 @@ private:
 	bool m_showDepthImagePreview;
 	bool m_showFeatureImagePreview;
 
+	//threads
+	std::shared_ptr<std::thread> m_taskThread;
+	State m_state;
+	bool m_closeAzureDeviceAfterTask;
+
 	//azure kinect
 	k4a::device m_azureKinectSensor;
 	k4a_device_configuration_t m_config;
@@ -154,7 +157,8 @@ private:
 
 	//cv mats
 	std::shared_ptr<cv::Mat> m_colorMat;
-	std::shared_ptr<cv::Mat> m_depthMat;
+	std::shared_ptr<cv::Mat> m_depthMat16;
+	std::shared_ptr<cv::Mat> m_depthMat8;
 	std::shared_ptr<cv::Mat> m_irMat;
 	std::shared_ptr<cv::Mat> m_featureMatrix;
 
