@@ -50,6 +50,10 @@ ${XsensMVNSDK_LIBRARIES_DIR}
 
 file(GLOB_RECURSE TrackerManagement_HEADER "${CMAKE_CURRENT_SRC_DIR}" *.h)
 file(GLOB_RECURSE TrackerManagement_SRC "${CMAKE_CURRENT_SRC_DIR}" *.cpp)
+
+file(GLOB_RECURSE CAPTURY_FILES ${CMAKE_CURRENT_SRC_DIR} PublicStructs.h)
+source_group("captury" FILES ${CAPTURY_FILES})
+
 add_library(TrackerManagement SHARED ${TrackerManagement_HEADER} ${TrackerManagement_SRC})
 
 target_link_libraries(TrackerManagement

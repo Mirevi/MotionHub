@@ -41,17 +41,17 @@ OsgQtWidget::OsgQtWidget(osgQt::GraphicsWindowQt* gw, TrackerManager* trackerMan
 	m_timer.start(10); //TODO1: Hardcoded fps timing
 
 
-	int lineCountGrid = 20;
+	int lineCountGrid = 10;
 	m_configManager->readInt("line_count_for_floor_grid", lineCountGrid);
 	
-	float cellSizeGrid = 5.0;
-	m_configManager->readFloat("line_width_for_rgb_axes_floor_grid", cellSizeGrid);
+	float cellSizeGrid = 0.5;
+	m_configManager->readFloat("cell_size_for_floor_grid", cellSizeGrid);
 
 	float lineWidthForRGBAxesGrid = 2.0;
-	m_configManager->readFloat("line_width_for_grey_axes_floor_grid", lineWidthForRGBAxesGrid);
+	m_configManager->readFloat("line_width_for_rgb_axes_floor_grid", lineWidthForRGBAxesGrid);
 
-	float lineWidthForGreyAxesGrid = 0.1;
-	m_configManager->readFloat("cell_size_for_floor_grid", lineWidthForGreyAxesGrid);
+	float lineWidthForGreyAxesGrid = 0.01;
+	m_configManager->readFloat("line_width_for_grey_axes_floor_grid", lineWidthForGreyAxesGrid);
 
 	
 	

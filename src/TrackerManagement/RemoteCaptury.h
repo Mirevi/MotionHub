@@ -1,7 +1,7 @@
 #pragma once
 
 #include <stdint.h>
-#include "captury/PublicStructs.h"
+#include "PublicStructs.h"
 
 #ifdef WIN32
 #define CAPTURY_DLL_EXPORT __declspec(dllexport)
