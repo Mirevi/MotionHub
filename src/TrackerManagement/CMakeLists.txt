@@ -54,6 +54,9 @@ file(GLOB_RECURSE TrackerManagement_SRC "${CMAKE_CURRENT_SRC_DIR}" *.cpp)
 file(GLOB_RECURSE CAPTURY_FILES ${CMAKE_CURRENT_SRC_DIR} PublicStructs.h)
 source_group("captury" FILES ${CAPTURY_FILES})
 
+file(GLOB_RECURSE XSENS_FILES ${CMAKE_CURRENT_SRC_DIR} xs_*.h xs_*.cpp)
+source_group("xsens" FILES ${XSENS_FILES})
+
 add_library(TrackerManagement SHARED ${TrackerManagement_HEADER} ${TrackerManagement_SRC})
 
 target_link_libraries(TrackerManagement
