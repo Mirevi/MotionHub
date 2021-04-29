@@ -16,12 +16,16 @@ The project [HIVE](https://mirevi.de/research/immersive-digital-technologies-for
 
 # Content
 
-1. [Setup and Building](#1-setup-and-building)
-2. [Class Collaboration Diagram](#2-class-collaboration-diagram)
-3. [Tracking Loop](#3-tracking-loop)
-4. [Implement a new Tracker](#4-implement-a-new-tracker)
-5. [Skeleton OSC Data Structure](#5-skeleton-osc-data-structure)
-6. [Azure Kinect Offset Values](#6-azure-kinect-offset-values)
+- [MIREVI MotionHub Developer Documentation](#mirevi-motionhub-developer-documentation)
+    - [Acknowledgements](#acknowledgements)
+- [Content](#content)
+- [1. Setup and Building](#1-setup-and-building)
+- [2. Class Collaboration Diagram](#2-class-collaboration-diagram)
+- [3. Tracking Loop](#3-tracking-loop)
+- [4. Implement a new Tracker](#4-implement-a-new-tracker)
+- [5. Skeleton OSC Data Structure](#5-skeleton-osc-data-structure)
+- [6. Azure Kinect Offset Values](#6-azure-kinect-offset-values)
+  - [Acknowledgment](#acknowledgment)
 
 # 1. Setup and Building
 
@@ -86,7 +90,8 @@ Follow the listed steps to implement a new tracker in the MMH.
   6.4 note the index of the item in the list *(starting from 0 at the top)*<br>
   6.5 save and close the `CreateTrackerWindow.ui` file<br>
   6.6 add the tracker name with the correct index position in the `TrackerType` enum in `TrackerManager.h`<br>
-  6.7 add the tracker with the correct index position in the `createTracker()` method in `TrackerManager.cpp` and implement the logic *(please see other tracker for implementation reference)*
+  6.7 add the tracker with the correct index position in the `createTracker()` method in `TrackerManager.cpp` and implement the logic *(please see other tracker for implementation reference)*`<br>
+  6.8 add a new case with the correct ID of the aforementioned drop down menu in CreateTrackerWindow.cpp slotCreateTracker() *(please see other specific tracker classes for implementation reference)*
 
 # 5. Skeleton OSC Data Structure
 

@@ -586,17 +586,17 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
         </item>
         <item>
          <property name="text">
-          <string>PerceptionNeuron</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
           <string>.mmh-file Player</string>
          </property>
         </item>
         <item>
          <property name="text">
           <string>CapturyLive</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>XSens</string>
          </property>
         </item>
        </widget>

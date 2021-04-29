@@ -112,6 +112,18 @@ int TrackerManager::createTracker(TrackerType type, std::string filePath)
 
 		}
 
+		case xSens:
+		{
+
+			Console::log("TrackerManager::createTracker(): Creating mmh-Player");
+
+			//create new BVH-Player with current ID
+			tempTracker = new XSTracker(id, m_networkManager, m_configManager);
+
+			break;
+
+		}
+
 		case group:
 		{
 
