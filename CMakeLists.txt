@@ -143,6 +143,17 @@ getsTheDepsNameFromURL("${URL}")
 set(CHECK_IF_DEPS_EXIST "${CURRENT_DEPS_PATH}/include/xstypes.h")
 FIND_PACKAGE( XsensMVNSDK REQUIRED )
 
+# OpenVR
+set( EXPECTED_SHA256 a090f06c07fcb80920ec5fcc0bb2315dd2e08b610c3099c43563eb9e912de4e5 ) 
+set(CURRENT_DEPS_PATH ${CMAKE_BINARY_DIR}/../deps/openvr-1.14.15/) 
+set( URL https://claymore.mirevi.com/mirevimotionhub/openvr-1.14.15.zip )
+getsTheDepsNameFromURL("${URL}")
+set(CHECK_IF_DEPS_EXIST "${CURRENT_DEPS_PATH}/headers/openvr.h")
+FIND_PACKAGE( OpenVR REQUIRED )
+file(COPY ${CURRENT_DEPS_PATH}/bin/win64/openvr_api.dll DESTINATION ${CMAKE_BINARY_DIR}/bin)
+file(COPY ${CURRENT_DEPS_PATH}/bin/win64/openvr_api.dll.sig DESTINATION ${CMAKE_BINARY_DIR}/bin)
+file(COPY ${CURRENT_DEPS_PATH}/bin/win64/openvr_api.pdb DESTINATION ${CMAKE_BINARY_DIR}/bin)
+
 # Add subdir with additional CMakeLists.txt and files
 add_subdirectory("${CMAKE_SOURCE_DIR}/src/MireviMotionHub") # CMake look for further CMakeLists.txt in that directory
 add_subdirectory("${CMAKE_SOURCE_DIR}/src/TrackerManagement")
@@ -181,6 +192,7 @@ file(COPY ${Qt5ForMireviMotionHub_INCLUDE_DIR}/../bin/Qt5OpenGLd.pdb DESTINATION
 file(COPY ${Qt5ForMireviMotionHub_INCLUDE_DIR}/../plugins/platforms/qwindows.pdb DESTINATION ${CMAKE_BINARY_DIR}/bin/platforms)
 file(COPY ${Qt5ForMireviMotionHub_INCLUDE_DIR}/../plugins/platforms/qwindowsd.pdb DESTINATION ${CMAKE_BINARY_DIR}/bin/platforms)
 
+# copy misc dlls
 file(COPY ${K4A_LIBRARIES_DIR}/../bin/k4a.dll							DESTINATION ${CMAKE_BINARY_DIR}/bin)
 file(COPY ${K4A_LIBRARIES_DIR}/../bin/depthengine_2_0.dll 				DESTINATION ${CMAKE_BINARY_DIR}/bin)
 file(COPY ${K4ABT_LIBRARIES_DIR}/../bin/k4abt.dll 						DESTINATION ${CMAKE_BINARY_DIR}/bin)
@@ -189,9 +201,7 @@ file(COPY ${K4ABT_LIBRARIES_DIR}/../bin/dnn_model_2_0.onnx 				DESTINATION ${CMA
 file(COPY ${K4ABT_INCLUDE_DIR}/../../tools/cublas64_100.dll				DESTINATION ${CMAKE_BINARY_DIR}/bin)
 file(COPY ${K4ABT_INCLUDE_DIR}/../../tools/cudart64_100.dll				DESTINATION ${CMAKE_BINARY_DIR}/bin)
 file(COPY deps/cudnn101windows10x64_76224/bin/cudnn64_7.dll 			DESTINATION ${CMAKE_BINARY_DIR}/bin)
-
 file(COPY deps/xsens-mvn-1.0.6/bin/xstypes64.dll						DESTINATION ${CMAKE_BINARY_DIR}/bin)
-
 file(COPY ${OSG_INCLUDE_DIR}/../bin/									DESTINATION ${CMAKE_BINARY_DIR}/bin FILES_MATCHING PATTERN "*.dll")
 file(COPY ${OSG_INCLUDE_DIR}/../bin/									DESTINATION ${CMAKE_BINARY_DIR}/bin FILES_MATCHING PATTERN "*.pdb")
 

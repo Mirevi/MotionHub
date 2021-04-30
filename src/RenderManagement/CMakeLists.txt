@@ -10,6 +10,7 @@ ${EIGEN_INCLUDE_DIR}
 ${XsensMVNSDK_INCLUDE_DIR}
 ${OSG_INCLUDE_DIR}
 ${Qt5ForMireviMotionHub_INCLUDE_DIR}
+${OpenVR_INCLUDE_DIR}
 )
 
 link_directories(${CMAKE_BINARY_DIR}/lib
@@ -21,6 +22,7 @@ ${NATNET_SDK_LIBRARIES_DIR}
 ${OSCp_LIBRARIES_DIR}
 ${OSG_LIBRARIES_DIR}
 ${XsensMVNSDK_LIBRARIES_DIR}
+${OpenVR_LIBRARIES_DIR}
 )
 
 # Find includes in corresponding build directories
@@ -71,4 +73,5 @@ target_link_libraries(RenderManagement
 	debug osgText${CMAKE_DEBUG_POSTFIX} optimized osgText
 	debug osgQOpenGL${CMAKE_DEBUG_POSTFIX} optimized osgQOpenGL
 	debug osgQt5${CMAKE_DEBUG_POSTFIX} optimized osgQt5
+	debug openvr_api optimized openvr_api
 )

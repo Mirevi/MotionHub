@@ -14,6 +14,7 @@
 #include "BVHPlayer.h"
 #include "mmhPlayer.h"
 #include "XSTracker.h"
+#include "OVRTracker.h"
 #include "TrackerGroup.h"
 #include "Recorder.h"
 
@@ -65,7 +66,8 @@ public:
 		mmh = 3,
 		CapturyLive = 4,	// CapturyLive  Tracker
 		xSens = 5,
-		group = 6			//Is not display and counted in the createTrackerWindow.iu. Pls add a new tracker before group
+		openVR = 6,	
+		group = 7			//Is not display and counted in the createTrackerWindow.iu. Pls add a new tracker before group
 
 	};
 

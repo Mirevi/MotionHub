@@ -599,6 +599,11 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
           <string>XSens</string>
          </property>
         </item>
+        <item>
+         <property name="text">
+          <string>OpenVR</string>
+         </property>
+        </item>
        </widget>
        <widget class="QPushButton" name="btn_create">
         <property name="geometry">

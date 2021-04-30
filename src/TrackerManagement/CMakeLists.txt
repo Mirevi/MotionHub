@@ -33,6 +33,7 @@ ${EIGEN_INCLUDE_DIR}
 ${OSCp_INCLUDE_DIR}
 ${OSG_INCLUDE_DIR}
 ${XsensMVNSDK_INCLUDE_DIR}
+${OpenVR_INCLUDE_DIR}
 )
 
 
@@ -46,6 +47,7 @@ ${Cudnn_LIBRARIES_DIR}
 ${NATNET_SDK_LIBRARIES_DIR}
 ${OSCp_LIBRARIES_DIR}
 ${XsensMVNSDK_LIBRARIES_DIR}
+${OpenVR_LIBRARIES_DIR}
 )
 
 file(GLOB_RECURSE TrackerManagement_HEADER "${CMAKE_CURRENT_SRC_DIR}" *.h)
@@ -69,6 +71,7 @@ target_link_libraries(TrackerManagement
     debug legacy_stdio_definitions optimized legacy_stdio_definitions
 	debug oscpack${CMAKE_DEBUG_POSTFIX} optimized oscpack
 	debug xstypes64 optimized xstypes64
+	debug openvr_api optimized openvr_api
 	
 	debug NetworkManagement${CMAKE_DEBUG_POSTFIX} optimized NetworkManagement
 	debug MotionHubUtil${CMAKE_DEBUG_POSTFIX} optimized MotionHubUtil

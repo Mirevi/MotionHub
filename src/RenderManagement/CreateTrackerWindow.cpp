@@ -103,7 +103,7 @@ void CreateTrackerWindow::slotCreateTracker()
 
 		case 4:
 		{
-			// create new azure kinect tracker and add tracker to the tracking manager tracker pool
+			// create new azure 
 			id = m_refTrackerManager->createTracker(TrackerManager::CapturyLive);
 
 			break;
@@ -112,8 +112,17 @@ void CreateTrackerWindow::slotCreateTracker()
 
 		case 5:
 		{
-			// create new azure kinect tracker and add tracker to the tracking manager tracker pool
+			// create
 			id = m_refTrackerManager->createTracker(TrackerManager::xSens);
+
+			break;
+
+		}
+
+		case 6:
+		{
+			// create 
+			id = m_refTrackerManager->createTracker(TrackerManager::openVR);
 
 			break;
 

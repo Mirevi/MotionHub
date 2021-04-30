@@ -10,7 +10,9 @@ ${NATNET_SDK_INCLUDE_DIR}
 ${EIGEN_INCLUDE_DIR}
 ${XsensMVNSDK_INCLUDE_DIR}
 ${OSG_INCLUDE_DIR}
+${OpenVR_INCLUDE_DIR}
 )
+
 link_directories(${CMAKE_BINARY_DIR}/lib
 "${CMAKE_BINARY_DIR}/lib"
 ${K4A_LIBRARIES_DIR}
@@ -21,6 +23,7 @@ ${Qt5ForMireviMotionHub_LIBRARIES_DIR}
 ${NATNET_SDK_LIBRARIES_DIR}
 ${XsensMVNSDK_LIBRARIES_DIR}
 ${OSG_LIBRARIES_DIR}
+${OpenVR_LIBRARIES_DIR}
 )
 #XsensMVNSDK
 include_directories(${CMAKE_BINARY_DIR}/src ${XsensMVNSDK_INCLUDE_DIR})
@@ -72,6 +75,7 @@ target_link_libraries(MireviMotionHub
 	debug osgText${CMAKE_DEBUG_POSTFIX} optimized osgText
 	debug osgQOpenGL${CMAKE_DEBUG_POSTFIX} optimized osgQOpenGL
 	debug osgQt5${CMAKE_DEBUG_POSTFIX} optimized osgQt5
+	debug openvr_api optimized openvr_api
 )
 
 set_target_properties(MireviMotionHub PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/bin")

@@ -43,7 +43,7 @@ int TrackerManager::createTracker(TrackerType type, std::string filePath)
 		case azureKinect:
 		{
 
-			//Console::log("TrackerManager::createTracker(): Creating AKtracker with cam ID = " + toString(m_nextFreeAKCamID) + " ...");
+			Console::log("TrackerManager::createTracker(): Creating Azure Kinect tracker");
 
 			//create new AK Tracker with next free Cam ID
 			tempTracker = new AKTracker(id, m_networkManager, m_configManager);
@@ -70,6 +70,7 @@ int TrackerManager::createTracker(TrackerType type, std::string filePath)
 
 		case optiTrack:
 		{
+			Console::log("TrackerManager::createTracker(): Creating OptiTrack tracker");
 
 			//create new Tracker with current ID
 			tempTracker = new OTTracker(id, m_networkManager, m_configManager);
@@ -115,10 +116,22 @@ int TrackerManager::createTracker(TrackerType type, std::string filePath)
 		case xSens:
 		{
 
-			Console::log("TrackerManager::createTracker(): Creating mmh-Player");
+			Console::log("TrackerManager::createTracker(): Creating xSens tracker");
 
 			//create new BVH-Player with current ID
 			tempTracker = new XSTracker(id, m_networkManager, m_configManager);
+
+			break;
+
+		}
+
+		case openVR:
+		{
+
+			Console::log("TrackerManager::createTracker(): Creating OpenVR tracker");
+
+			//create new BVH-Player with current ID
+			tempTracker = new OVRTracker(id, m_networkManager, m_configManager);
 
 			break;
 
