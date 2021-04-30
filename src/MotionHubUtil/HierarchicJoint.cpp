@@ -1,7 +1,7 @@
 #include "HierarchicJoint.h"
 
 HierarchicJoint::HierarchicJoint(Joint::JointNames jointName, Vector3f localPosition, Quaternionf localRotation)
-: HierarchicJoint(localPosition, localRotation) 
+	: HierarchicJoint(localPosition, localRotation)
 {
 	setJointName(jointName);
 }
@@ -10,6 +10,8 @@ HierarchicJoint::HierarchicJoint(Vector3f localPosition, Quaternionf localRotati
 	parent = nullptr;
 
 	local.setIdentity();
+
+	confidence = Joint::JointConfidence::MEDIUM;
 
 	setLocalPosition(localPosition);
 	setLocalRotation(localRotation);
@@ -47,6 +49,14 @@ void HierarchicJoint::addChild(HierarchicJoint* child) {
 
 std::vector<HierarchicJoint*> HierarchicJoint::getChildren() {
 	return children;
+}
+
+HierarchicJoint* HierarchicJoint::getFirstChild() {
+	if (children.size() >= 1) {
+		children[0];
+	}
+
+	return nullptr;
 }
 
 void HierarchicJoint::setJointName(Joint::JointNames jointName) {
@@ -159,10 +169,61 @@ Vector3f HierarchicJoint::getForward() {
 	return getGlobalRotation() * Vector3f(0, 0, 1);
 }
 
+Joint HierarchicJoint::toJoint(Quaternionf rotation, Joint::JointConfidence confidence) {
+	return Joint(getGlobalPosition4(), rotation, confidence);
+}
+
 Joint HierarchicJoint::toJoint(Joint::JointConfidence confidence) {
-	return Joint(getGlobalPosition4(), getGlobalRotation(), confidence);
+	return toJoint(getGlobalRotation(), confidence);
+}
+
+Joint HierarchicJoint::toJoint(Quaternionf rotation) {
+	return toJoint(rotation, confidence);
 }
 
 Joint HierarchicJoint::toJoint() {
-	return toJoint(Joint::JointConfidence::MEDIUM);
+	return toJoint(confidence);
+}
+
+void HierarchicJoint::setConfidence(Joint::JointConfidence confidence) {
+	this->confidence = confidence;
+}
+
+Vector3f HierarchicJoint::inverseTransformDirection(Vector3f direction) {
+	if (!globalValid) {
+		global = combineParentMatrixRecursive(this);
+	}
+
+	return getLocalPosition(local.inverse()).array() * direction.array();
+	//return getLocalPosition(local.inverse()) * direction;
+}
+
+Matrix4f HierarchicJoint::combineParentMatrixRecursive(HierarchicJoint* hierarchicJoint) {
+	// TODO: globalValid & Cache testen
+
+	if (hierarchicJoint->parent != nullptr) {
+		if (parent->globalValid) {
+			return parent->global * hierarchicJoint->local;
+		}
+		else {
+			Matrix4f newGlobal = combineParentMatrixRecursive(hierarchicJoint->parent) * hierarchicJoint->local;
+
+			hierarchicJoint->global = newGlobal;
+			hierarchicJoint->globalValid = true;
+
+			return newGlobal;
+		}
+
+	}
+	else {
+		return hierarchicJoint->local;
+	}
+}
+
+void HierarchicJoint::invalidateGlobalRecursive(HierarchicJoint* hierarchicJoint) {
+	hierarchicJoint->globalValid = false;
+
+	for (HierarchicJoint* child : hierarchicJoint->children) {
+		invalidateGlobalRecursive(child);
+	}
 }

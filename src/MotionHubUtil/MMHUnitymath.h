@@ -219,7 +219,7 @@ static Quaternionf rotateTowards(Quaternionf from, Quaternionf to, float maxDegr
  }
 
  /*!
-  * Normalizes normal. Normalizes tangent and makes sure it is orthogonal to normal (that is, angle between them is 90 degrees)
+  * Normalizes tangent and makes sure it is orthogonal to normal (that is, angle between them is 90 degrees)
   *
   * \param normal the normal
   * \param tangent the tangent
@@ -238,7 +238,7 @@ static void orthoNormalize(Vector3f& normal, Vector3f& tangent) {
 }
 
 /*!
- * Normalizes normal. Normalizes tangent and makes sure it is orthogonal to normal. Normalizes binormal and makes sure it is orthogonal to both normal and tangent.
+ * Normalizes tangent and makes sure it is orthogonal to normal. Normalizes binormal and makes sure it is orthogonal to both normal and tangent.
  *
  * \param normal the normal
  * \param tangent the tangent

@@ -8,10 +8,6 @@ IKSolver::~IKSolver() {
 
 }
 
-void IKSolver::initialize() {
-
-}
-
 void IKSolver::solve(Vector3f position, Quaternionf rotation) {
 	targetPosition = position;
 	targetRotation = rotation;
