@@ -5,8 +5,6 @@
 
 #include <QVBoxLayout>
 
-
-
 namespace osgQt
 {
 	class GraphicsWindowQt;
@@ -72,6 +70,25 @@ OsgQtWidget::OsgQtWidget(osgQt::GraphicsWindowQt* gw, TrackerManager* trackerMan
 		m_sphereTransforms.at(i)->addChild(m_spheres.at(i));
 		m_sceneRoot->addChild(m_sphereTransforms.at(i));
 	}
+
+
+	////HWM: Skelett reinrbingen -> Bone laden - ist 1m auf der Y hoch
+	//osg::ref_ptr<osg::Node> bone = osgDB::readNodeFile("./data/bone.obj");
+
+	////Dann kopieren - dep oder shallow?
+	//osg::ref_ptr<osg::Geode> geode2 = dynamic_cast<osg::Geode*>(geode1->clone(osg::CopyOp::SHALLOW_COPY));
+	//osg::ref_ptr<osg::Geode> geode3 = dynamic_cast<osg::Geode*>(geode1->clone(osg::CopyOp::DEEP_COPY_ALL));
+	//osg::ref_ptr<osg::Group> root = new osg::Group;
+	//root->addChild(createMatrixTransform(geode1.get(), osg::Vec3(0.0f, 0.0f, 0.0f)));
+	//root->addChild(createMatrixTransform(geode2.get(), osg::Vec3(-2.0f, 0.0f, 0.0f)));
+	//root->addChild(createMatrixTransform(geode3.get(), osg::Vec3(2.0f, 0.0f, 0.0f)));
+
+	////Und dann entsprechend einhängen -> Sind macht es aber, wenn ich hier eine Schnittstelle und Klasse baue, die die LowLevelDaten entgegennimmt
+	////Ich muss beliebig viele Instanzen erzeugen können, ähnlich wie es Eric gemacht hat
+	//g_ARCoreModell->getOrCreateStateSet();
+	//g_ARCoreModellMatrixTransform->addChild(g_ARCoreModell);
+	//g_ARCoreModell->setName("ArCoreAndroidModel");
+	//g_sceneRoot->addChild(g_ARCoreModellMatrixTransform);
 }
 
 
@@ -192,7 +209,6 @@ void OsgQtWidget::updateSkeletonMeshTransform()
 					//currJoint->setPosition(itJoint->second.getJointPosition());
 					//currJoint->setRotation(itJoint->second.getJointRotation());
 
-					//HWM: Ist eine geometry, und die hänge ich an eine Matrix bzw. PosAtt und diese hänge ich an den scenengraph.
 					osg::Matrix transformMatrix;
 					transformMatrix = osg::Matrix::rotate(osg::Quat(itJoint->second.getJointRotation().x(), 
 																	itJoint->second.getJointRotation().y(), 
