@@ -197,9 +197,9 @@ void OpenVRTracking::SetPredictionTime(float secondsFromNow) {
 	predictSecondsFromNow = secondsFromNow;
 }
 
-std::vector<TrackingSystem::Device> OpenVRTracking::GetConnectedDevices() {
+std::vector<OpenVRTracking::Device> OpenVRTracking::GetConnectedDevices() {
 
-	std::vector<TrackingSystem::Device> trackedDeviceVector;
+	std::vector<OpenVRTracking::Device> trackedDeviceVector;
 
 	// Reserve Memory for already known Devices
 	trackedDeviceVector.reserve(trackedPoseCount);
@@ -222,6 +222,6 @@ std::vector<TrackingSystem::Device> OpenVRTracking::GetConnectedDevices() {
 	return trackedDeviceVector;
 }
 
-TrackingSystem::TrackingError OpenVRTracking::GetErrorDescriptor() {
+OpenVRTracking::TrackingError OpenVRTracking::GetErrorDescriptor() {
 	return trackingError;
 }

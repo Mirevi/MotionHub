@@ -62,7 +62,7 @@ void OVRTracker::init() {
 
 	// Errorhandling when Trackingsystem could not be initialized
 	if (!trackingSystem.Valid) {
-		TrackingSystem::TrackingError error = trackingSystem.GetErrorDescriptor();
+		OpenVRTracking::TrackingError error = trackingSystem.GetErrorDescriptor();
 
 		Console::logError(error.Description + " [" + error.Code + "]");
 
@@ -158,23 +158,25 @@ Skeleton* OVRTracker::parseSkeleton(int id, Skeleton* oldSkeletonData) {
 	// skeleton data container
 	Skeleton* currSkeleton = new Skeleton(id);
 
+	if (trackingSystem.Poses.size() > 1) {
+		Vector3f v3pos = trackingSystem.Poses[0].Position;
+		Vector4f pos = Vector4f(v3pos.x(), v3pos.y(), v3pos.z(), 1.0f);
+
+		Quaternionf offset = eulerToQuaternion(Vector3f(0.0f, 90.0f, 0.0f));
+		Quaternionf rot = trackingSystem.Poses[0].Rotation * offset;
+
+		currSkeleton->m_joints.insert({ Joint::HEAD, Joint(pos, rot, Joint::JointConfidence::HIGH) });
+	}
+
 	//confidence values are not transmitted, default confidence is High
 	Joint::JointConfidence medConf = Joint::JointConfidence::MEDIUM;
-
 	Vector4f pos = Vector4f(0, 0, 0, 1);
-
 	Quaternionf rot = Quaternionf::Identity();
 
 	for (int i = 0; i < Joint::TOE_R; i++) {
 		Joint::JointNames joint = Joint::JointNames(i);
 		switch (joint) {
-		case Joint::HIPS:
 		case Joint::HEAD:
-		case Joint::HAND_R:
-		case Joint::HAND_L:
-		case Joint::UPLEG_L:
-		case Joint::LEG_L:
-		case Joint::FOOT_L:
 			break;
 
 		default:

@@ -59,6 +59,9 @@ source_group("captury" FILES ${CAPTURY_FILES})
 file(GLOB_RECURSE XSENS_FILES ${CMAKE_CURRENT_SRC_DIR} xs_*.h xs_*.cpp)
 source_group("xsens" FILES ${XSENS_FILES})
 
+file(GLOB_RECURSE OPENVR_FILES ${CMAKE_CURRENT_SRC_DIR} OpenVR*.h OpenVR*.cpp)
+source_group("OpenVR" FILES ${OPENVR_FILES})
+
 add_library(TrackerManagement SHARED ${TrackerManagement_HEADER} ${TrackerManagement_SRC})
 
 target_link_libraries(TrackerManagement

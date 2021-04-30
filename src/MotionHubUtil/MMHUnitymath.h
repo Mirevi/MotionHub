@@ -169,38 +169,6 @@ static Quaternionf rotateTowards(Quaternionf from, Quaternionf to, float maxDegr
 	return from.slerp(fmin(1.0f, maxDegreesDelta / angle), to);
 }
 
-/*!
- * Clamps a rotation to a identity rotation by the weight of clamp [0, 1]
- * 
- * \param rotation the rotation
- * \param clamp the weight to clamp [0 = rotation, 1 = identity rotation]
- * \param clampSmoothing angular step
- * \return the clamped rotation
- */
-static Quaternionf clamp(Quaternionf rotation, float clamp, int clampSmoothing) {
-	Quaternionf identity = Quaternionf::Identity();
-
-	if (clamp >= 1.0f) {
-		return identity;
-	}
-
-	if (clamp <= 0.0f) {
-		return rotation;
-	}
-
-	float dot = 1.0f - (identity.angularDistance(rotation) / 180.0f);
-
-	float targetClampMlp = clamp01(1.0f - ((clamp - dot) / (1.0f - dot)));
-	float clampMlp = clamp01(dot / clamp);
-
-	for (int i = 0; i < clampSmoothing; i++) {
-		float sinF = clampMlp * M_PI * 0.5f;
-		clampMlp = sinf(sinF);
-	}
-
-	return identity.slerp(clampMlp * targetClampMlp, rotation);
-}
-
  /*!
   * Projects a vector onto another vector
   *
