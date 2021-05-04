@@ -39,10 +39,6 @@ XSTracker::XSTracker(int id, NetworkManager* networkManager, ConfigManager* conf
 	readOffsetFromConfig();
 
 
-	//m_idCam = -1;
-
-
-
 }
 
 XSTracker::~XSTracker()
@@ -68,6 +64,16 @@ void XSTracker::start()
 	m_trackingThread = new std::thread(&XSTracker::update, this);
 	m_trackingThread->detach();
 
+	// still has to be done: check if should record 
+	bool isRecordBvh = true;
+	if (isRecordBvh) {
+		//start bvhStream !! INCLUDE TIMESTAMP
+		bvhWriters = new std::vector<XSBvhWriter*>();
+
+		//setupBvhParameters();
+		//m_recordingThread = new std::thread(&XSTracker::writeMotionDataInBvhStream, this);
+	}
+
 }
 
 // stop tracking loop / thread
@@ -75,7 +81,30 @@ void XSTracker::stop()
 {
 	//is not tracking, so the update loop exits after current loop
 	m_isTracking = false;
-	delete m_UdpServer;
+	
+
+	// check for BVH Writers to finish before deleting udpServer
+	int numBvhWriters = bvhWriters->size();
+
+
+
+	for (int i = 0; i < numBvhWriters; i++) {
+		bvhWriters->at(i)->isRecording = false;
+	}
+
+	for (int i = 0; i < numBvhWriters; i++) {
+		while (bvhWriters->at(i)->isWriting) {
+			XsTime::msleep(50);
+		}
+	}
+
+	delete(m_UdpServer);
+
+	for (int i = 0; i < numBvhWriters; i++) {
+		delete(bvhWriters->at(i));
+
+	}
+	delete(bvhWriters);
 
 }
 
@@ -96,7 +125,7 @@ void XSTracker::stop()
 // get new skeleton data and parse it into the default skeleton
 void XSTracker::track()
 {
-	
+
 	m_skeletonPoolLock.lock();
 
 	m_quaternianDataWithId = m_UdpServer->getQuaternionDatagram();
@@ -177,6 +206,11 @@ void XSTracker::extractSkeleton()
 		m_hasSkeletonPoolChanged = true;
 
 		Console::log("XSTracker::extractSkeleton(): Created new skeleton with id = " + std::to_string(avatarID) + ".");
+
+		// BVH WRITER
+		XSBvhWriter* xsb = new XSBvhWriter(XSBvhWriter::SkeletonType::Xsens, m_UdpServer, avatarID);
+		bvhWriters->push_back(xsb);
+		Console::log("XSTracker::extractSkeleton(): Started recording BVH for skeleton with id = " + std::to_string(avatarID) + ".");
 	}
 }
 
@@ -315,30 +349,30 @@ Skeleton* XSTracker::parseSkeleton(ParserManager::QuaternionDataWithId* quaterni
 // erase all unused skeletons from pool
 void XSTracker::cleanSkeletonPool()
 {
-	//int avatarToBeErased = -1;
+	int avatarToBeErased = -1;
 
-	////loop thorugh all Xsens avatars; if frameCountdown of avatar < 0 -> erase its skeleton
-	//for (auto const& [id, frameCountdown] : m_avatarList)
-	//{
-	//	if (frameCountdown < 0) {
-	//		// erase skeleton with this id
-	//		m_skeletonPool.erase(id);
-	//		// remove from avatarList
-	//		avatarToBeErased = id;
+	//loop thorugh all Xsens avatars; if frameCountdown of avatar < 0 -> erase its skeleton
+	for (auto const& [id, frameCountdown] : m_avatarList)
+	{
+		if (frameCountdown < 0) {
+			// erase skeleton with this id
+			m_skeletonPool.erase(id);
+			// remove from avatarList
+			avatarToBeErased = id;
 
-	//		// skeleton was added/removed, so UI updates
-	//		m_hasSkeletonPoolChanged = true;
+			// skeleton was added/removed, so UI updates
+			m_hasSkeletonPoolChanged = true;
 
-	//		Console::log("XSTracker::cleanSkeletonList(): Removed skeleton with id = " + std::to_string(id) + " from pool!");
+			Console::log("XSTracker::cleanSkeletonList(): Removed skeleton with id = " + std::to_string(id) + " from pool!");
 
-	//	}
+		}
 
-	//}
+	}
 
-	//// remove from avatarList
-	//if (avatarToBeErased != -1) {
-	//	m_avatarList.erase(avatarToBeErased);
-	//}
+	// remove from avatarList
+	if (avatarToBeErased != -1) {
+		m_avatarList.erase(avatarToBeErased);
+	}
 
 }
 

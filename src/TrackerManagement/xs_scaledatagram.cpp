@@ -64,7 +64,7 @@ ScaleDatagram::~ScaleDatagram()
 	- The points will end up with a varying number per datagram with 0 segments (Points Definitation packets).
 	- The last packet is the one that will end up in one datagram with 0 points.
 */
-void ScaleDatagram::deserializeData(Streamer &inputStreamer)
+void ScaleDatagram::deserializeData(Streamer& inputStreamer)
 {
 	Streamer* streamer = &inputStreamer;
 	// The first packet contains the null pose definition.
@@ -73,7 +73,7 @@ void ScaleDatagram::deserializeData(Streamer &inputStreamer)
 	int32_t numberOfSegments = 0;
 	streamer->read((int32_t)numberOfSegments);
 
-	for (int i=0; i < numberOfSegments; i++)
+	for (int i = 0; i < numberOfSegments; i++)
 	{
 		NullPoseDefinition nullPosDef;
 
@@ -92,15 +92,15 @@ void ScaleDatagram::deserializeData(Streamer &inputStreamer)
 		m_tPose.push_back(nullPosDef);
 	}
 
-/* The 0 segments format is used as identifier for "only update, don't discard"
-	The points will end up with a varying number per datagram with 0 segments (Points Definitation packets).
-*/
+	/* The 0 segments format is used as identifier for "only update, don't discard"
+		The points will end up with a varying number per datagram with 0 segments (Points Definitation packets).
+	*/
 	if (numberOfSegments == 0)
 	{
 		// 4 bytes containing an unsigned integer: the number of points
 		int32_t numberOfPoints = 0;
 		streamer->read((int32_t)numberOfPoints);
-		for (int i=0; i < numberOfPoints; i++)
+		for (int i = 0; i < numberOfPoints; i++)
 		{
 			PointDefinition pointDef;
 
@@ -139,7 +139,7 @@ void ScaleDatagram::deserializeData(Streamer &inputStreamer)
 */
 void ScaleDatagram::printData() const
 {
-	for (int i=0; i < m_tPose.size(); i++)
+	for (int i = 0; i < m_tPose.size(); i++)
 	{
 		// For HTC Vive, only show the relevant details
 		if (m_tPose.at(i).segmentName.find("HTC Vive:") != std::string::npos)
@@ -148,7 +148,7 @@ void ScaleDatagram::printData() const
 			printSegmentData(m_tPose.at(i));
 	}
 
-	for (int i=0; i < m_pointDefinitions.size(); i++)
+	for (int i = 0; i < m_pointDefinitions.size(); i++)
 	{
 		// For HTC Vive, only show the relevant details
 		if (m_pointDefinitions.at(i).segmentName.find("HTC Vive:") != std::string::npos)
@@ -190,6 +190,7 @@ void ScaleDatagram::printViveSegmentData(NullPoseDefinition const& s) const
 */
 void ScaleDatagram::printPointData(PointDefinition const& p) const
 {
+
 	// 2 bytes: the id of the segment containing the point
 	std::cout << "Segment ID containing the point: " << p.segmentId << std::endl;
 
@@ -223,3 +224,12 @@ void ScaleDatagram::printVivePointData(PointDefinition const& p) const
 	std::cout << "y: " << p.pos[1] << ", ";
 	std::cout << "z: " << p.pos[2] << ")" << std::endl;
 }
+
+/*! Rest Pose for BVH
+*/
+ScaleDatagram::BvhScaleInformation* ScaleDatagram::getScaleData() {
+	m_bvhScaleInformation.tPose = m_tPose;
+	m_bvhScaleInformation.endSites = m_pointDefinitions;
+	return &m_bvhScaleInformation;
+}
+

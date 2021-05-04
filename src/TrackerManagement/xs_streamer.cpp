@@ -51,7 +51,7 @@ Streamer::Streamer(const XsByteArray& arr)
 
 	// check Endianess
 	int num = 1;
-	if(*(char *)&num == 1)
+	if (*(char*)&num == 1)
 	{
 		m_endianess = Little_Endian;
 	}
@@ -67,12 +67,12 @@ Streamer::~Streamer()
 }
 
 /*! Extract 4 byte from the ByteArray and Store the value into a int32_t (4 byte) variable */
-void Streamer::read(int32_t &destination)
+void Streamer::read(int32_t& destination)
 {
 	char byte_array[4];
 
 	// copy part of the original byte array into a temp array
-	memcpy(byte_array, m_array->data()+m_offset, sizeof(destination));
+	memcpy(byte_array, m_array->data() + m_offset, sizeof(destination));
 
 	if (m_endianess == Little_Endian)
 		destination = (byte_array[0] << 24) | ((byte_array[1] & 0xff) << 16) | ((byte_array[2] & 0xff) << 8) | (byte_array[3] & 0xff);
@@ -84,11 +84,11 @@ void Streamer::read(int32_t &destination)
 }
 
 /*! Extract 1 byte from the ByteArray and Store the value into a int8_t (1 byte) variable */
-void Streamer::read(int8_t &destination)
+void Streamer::read(int8_t& destination)
 {
 	int8_t res;
 
-	memcpy(&res, m_array->data()+m_offset, 1);
+	memcpy(&res, m_array->data() + m_offset, 1);
 	destination = (int)res & 0xFF;
 
 	// increase the index
@@ -96,12 +96,12 @@ void Streamer::read(int8_t &destination)
 }
 
 /*! Extract 2 byte from the ByteArray and Store the value into a int16_t (2 byte) variable */
-void Streamer::read(int16_t &destination)
+void Streamer::read(int16_t& destination)
 {
 	char byte_array[2];
 
 	// copy part of the original byte array into a temp array
-	memcpy(byte_array, m_array->data()+m_offset, 2);
+	memcpy(byte_array, m_array->data() + m_offset, 2);
 
 	if (m_endianess == Little_Endian)
 		destination = ((byte_array[0] & 0xff) << 8) | (byte_array[1] & 0xff);
@@ -113,12 +113,12 @@ void Streamer::read(int16_t &destination)
 }
 
 /*! Extract 2 byte from the ByteArray and Store the value into a uint16_t (2 byte) variable */
-void Streamer::read(uint16_t &destination)
+void Streamer::read(uint16_t& destination)
 {
 	uint8_t byte_array[2];
 
 	// copy part of the original byte array into a temp array
-	memcpy(byte_array, m_array->data()+m_offset, 2);
+	memcpy(byte_array, m_array->data() + m_offset, 2);
 
 	if (m_endianess == Little_Endian)
 		destination = ((byte_array[0] & 0xff) << 8) | (byte_array[1] & 0xff);
@@ -130,11 +130,11 @@ void Streamer::read(uint16_t &destination)
 }
 
 /*! Extract 1 byte from the ByteArray and Store the value into a uint8_t (1 byte) variable */
-void Streamer::read(uint8_t &destination)
+void Streamer::read(uint8_t& destination)
 {
 	uint8_t res;
 
-	memcpy(&res, m_array->data()+m_offset, 1);
+	memcpy(&res, m_array->data() + m_offset, 1);
 	destination = (int)res & 0xFF;
 
 	// increase the index
@@ -142,13 +142,13 @@ void Streamer::read(uint8_t &destination)
 }
 
 /*! Extract 4 byte from the ByteArray and Store the value into a float (4 byte) variable */
-void Streamer::read(float &destination)
+void Streamer::read(float& destination)
 {
 	float output = 0.0;
 
 	unsigned char byte_array[4];
 	// copy part of the original byte array into a temp array
-	memcpy(&byte_array, m_array->data()+m_offset, sizeof(destination));
+	memcpy(&byte_array, m_array->data() + m_offset, sizeof(destination));
 
 	if (m_endianess == Little_Endian)
 	{
@@ -174,9 +174,9 @@ void Streamer::read(float &destination)
 /*! Extract "size" byte from the ByteArray and Store the value into a string variable */
 void Streamer::read(std::string& str, int numChars)
 {
-	char * buffer = new char[numChars + 1];
+	char* buffer = new char[numChars + 1];
 
-	memcpy(buffer, m_array->data()+m_offset, numChars);
+	memcpy(buffer, m_array->data() + m_offset, numChars);
 	buffer[numChars] = '\0';
 
 	str = buffer;

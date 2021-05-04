@@ -53,37 +53,14 @@ ParserManager::~ParserManager()
 
 
 
-/*! Read single datagram from the incoming stream */
-void ParserManager::readDatagram(const XsByteArray& data)
-{
-	StreamingProtocol type = static_cast<StreamingProtocol>(Datagram::messageType(data));
-
-	//	Datagram *datagram = createDgram(type);
-	QuaternionDatagram* datagram = new QuaternionDatagram();
-
-	if (datagram != nullptr)
-	{
-		datagram->deserialize(data);
-		// note that this can cause a lot of console spam
-		datagram->printHeader();
-		datagram->printData();
-
-
-	}
-	else
-	{
-		XsString str(data.size(), (const char*)data.data());
-		std::cout << "Unhandled datagram: " << str.c_str() << std::endl;
-
-	}
-
-}
 
 /*! Get single QuaternionDatagram from the incoming stream with AvatarId */
 ParserManager::QuaternionDataWithId* ParserManager::getDatagram(const XsByteArray& buffer)
 {
-	StreamingProtocol type = static_cast<StreamingProtocol>(Datagram::messageType(buffer));
-
+	//StreamingProtocol type = static_cast<StreamingProtocol>(Datagram::messageType(buffer));
+	//if (type != SPPoseQuaternion) {
+	//	return NULL;
+	//}
 	datagram = new QuaternionDatagram();
 	quaternionDatagramWithId = new ParserManager::QuaternionDataWithId();
 
@@ -103,6 +80,70 @@ ParserManager::QuaternionDataWithId* ParserManager::getDatagram(const XsByteArra
 	}
 
 	return quaternionDatagramWithId;
+
+}
+
+
+/*! Get single ScaleDatagram from the incoming stream */
+ScaleDatagram::BvhScaleInformation* ParserManager::getScaleDatagram(const XsByteArray& buffer)
+{
+
+	// 23 BODYSEGMENTS, 5 endeffectors - MAYBE CONSIDER INCLUDING PROPS
+	if (m_scaleDataFiltered.tPose.size() >= 23 && m_scaleDataFiltered.endSites.size() == 5 && m_scaleDataFiltered.avatarId != -1) {
+		return &m_scaleDataFiltered;
+	}
+
+	//StreamingProtocol type = static_cast<StreamingProtocol>(Datagram::messageType(buffer));
+	//if (type != SPMetaScaling) {
+	//	return NULL;
+	//}
+
+	scaleDatagram = new ScaleDatagram();
+
+
+	scaleData = new ScaleDatagram::BvhScaleInformation();
+
+	if (scaleDatagram != nullptr)
+	{
+		scaleDatagram->deserialize(buffer);
+		scaleData = scaleDatagram->getScaleData();
+
+
+	}
+	else
+	{
+		XsString str(buffer.size(), (const char*)buffer.data());
+		std::cout << "Unhandled datagram: " << str.c_str() << std::endl;
+
+	}
+
+
+
+	if (m_scaleDataFiltered.tPose.size() < scaleData->tPose.size()) {
+
+		for (int i = 0; i < scaleData->tPose.size(); i++) {
+
+			m_scaleDataFiltered.tPose.push_back(scaleData->tPose.at(i));
+
+		}
+	}
+
+	if (m_scaleDataFiltered.endSites.size() < 5) {
+
+		for (int i = 0; i < scaleData->endSites.size(); i++) {
+			if (std::find(endEffectors.begin(), endEffectors.end(), scaleData->endSites.at(i).segmentName) != endEffectors.end())
+			{
+				m_scaleDataFiltered.endSites.push_back(scaleData->endSites.at(i));
+			}
+
+		}
+
+
+	}
+
+	m_scaleDataFiltered.avatarId = (int)scaleDatagram->avatarId();
+
+	return &m_scaleDataFiltered;
 
 }
 

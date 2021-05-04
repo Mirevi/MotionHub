@@ -29,22 +29,27 @@
 
 #include "xs_datagram.h"
 #include "xs_quaterniondatagram.h"
+#include "xs_scaledatagram.h"
 
 class ParserManager
 {
 public:
 	ParserManager();
 	~ParserManager();
-	virtual void readDatagram(const XsByteArray& data);
 	struct QuaternionDataWithId { // Avatar ID with QuaternionDatagram
-		int avatarId; 
+		int avatarId;
 		std::vector<QuaternionDatagram::Kinematics>* kinematics;
 	};
 	ParserManager::QuaternionDataWithId* getDatagram(const XsByteArray& data);
+	ScaleDatagram::BvhScaleInformation* getScaleDatagram(const XsByteArray& data);
 
 private:
 	QuaternionDatagram* datagram;
 	ParserManager::QuaternionDataWithId* quaternionDatagramWithId;
+	ScaleDatagram* scaleDatagram;
+	ScaleDatagram::BvhScaleInformation* scaleData;
+	ScaleDatagram::BvhScaleInformation m_scaleDataFiltered;
+	std::vector<std::string> endEffectors = { "pTopOfHead", "pLeftTopOfHand", "pRightTopOfHand", "pLeftToe", "pRightToe" };
 };
 
 #endif

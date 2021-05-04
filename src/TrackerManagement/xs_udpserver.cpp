@@ -43,6 +43,7 @@ UdpServer::UdpServer(XsString address, uint16_t port)
 	m_port = port;
 	m_hostName = address;
 	m_quaternionDatagram = new ParserManager::QuaternionDataWithId();
+	m_scaleData = new ScaleDatagram::BvhScaleInformation();
 	m_parserManager.reset(new ParserManager());
 	m_socket.reset(new XsSocket(IpProtocol::IP_UDP, NetworkLayerProtocol::NLP_IPV4));
 
@@ -67,23 +68,36 @@ void UdpServer::readMessages()
 
 	while (!m_stopping)
 	{
-	
+
 		int rv = m_socket->read(buffer);
-		//filter random buffer packages with just one joint
+		//filter random buffer packages 
 		if (buffer.size() > 100) {
-			//assign new datagram if not empty
-			if (!m_parserManager->getDatagram(buffer)->kinematics->empty()) {	
-				m_udpLock.lock();
 
-				m_quaternionDatagram = m_parserManager->getDatagram(buffer);
-				
-				m_udpLock.unlock();
 
+			StreamingProtocol type = static_cast<StreamingProtocol>(Datagram::messageType(buffer));
+
+
+			if (type == SPPoseQuaternion) {
+				//assign new datagram if not empty
+				if (m_parserManager->getDatagram(buffer)) {
+					m_udpLock.lock();
+
+					m_quaternionDatagram = m_parserManager->getDatagram(buffer);
+
+					m_udpLock.unlock();
+
+				}
 			}
+			else if (type == SPMetaScaling) {
+				m_scaleData = m_parserManager->getScaleDatagram(buffer);
+			}
+
+
+
 		}
-		else {
-			m_quaternionDatagram = NULL;
-		}
+		//else {
+		//	m_quaternionDatagram = NULL;
+		//}
 
 		buffer.clear();
 		XsTime::msleep(0);
@@ -117,12 +131,26 @@ void UdpServer::stopThread()
 
 // get current quaterion datagram with Avatar ID
 ParserManager::QuaternionDataWithId* UdpServer::getQuaternionDatagram()
-{	
+{
 	//lock skeleton pool for the case, that getQuaternionDatagram() is called while this method reads from the cache
 	m_udpLock.lock();
 	//copy cache to local copy to unlock before return
-	ParserManager::QuaternionDataWithId* copyQuaData =  m_quaternionDatagram;
+	ParserManager::QuaternionDataWithId* copyQuaData = m_quaternionDatagram;
 	m_udpLock.unlock();
 
 	return copyQuaData;
+}
+
+
+// get Scale Datagram
+ScaleDatagram::BvhScaleInformation* UdpServer::getScaleDatagram()
+{
+
+	m_udpLock.lock();
+	//copy cache to local copy to unlock before return
+	ScaleDatagram::BvhScaleInformation* copyScaleData = m_scaleData;
+
+	m_udpLock.unlock();
+
+	return copyScaleData;
 }

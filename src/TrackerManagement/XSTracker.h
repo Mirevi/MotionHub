@@ -2,7 +2,26 @@
 
 #include "Tracker.h"
 #include "xs_udpserver.h"
+#include <xstypes/xsquaternion.h>
+#include <xstypes/xseuler.h>
 #include <map>
+#include <math.h>
+#include "bvh11.h"
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <iomanip>
+#include <fenv.h> 
+#include "xs_scaledatagram.h"
+#include <windows.h>
+#include <mutex>
+#include <chrono>
+#include <thread>
+#include "XSBvhWriter.h"
+
+
+
+
 
 /*!
  * \class XSTracker
@@ -35,16 +54,14 @@ public:
 	* executes the stop() method of the base class which sets m_tracking to false
 	*/
 	void stop() override;
-	/*!
-	 * stops and closes tracker and camera
-	 */
-	//void destroy() override;
 
 	std::string getTrackerType() override;
 
 
 
 private:
+
+
 
 	/*!
 	 * the UDP Server
@@ -72,11 +89,7 @@ private:
 	*/
 	int m_cleanSkeletonCountDown;
 
-	/*!
-	 * empty override method for Tracker::init()
-	 * this tracker does initialization in  createClient()
-	 */
-	//void init() override;
+
 	/*!
 	 * tracking loop
 	 */
@@ -107,4 +120,9 @@ private:
 	void cleanSkeletonPool();
 
 
+	/*
+	* One BVH stream for each skeleton
+	*/
+
+	std::vector<XSBvhWriter*>* bvhWriters;
 };

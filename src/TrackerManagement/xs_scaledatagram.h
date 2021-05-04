@@ -37,10 +37,6 @@ public:
 
 	virtual void printData() const override;
 
-protected:
-	virtual void deserializeData(Streamer &inputStreamer) override;
-
-private:
 	struct PointDefinition {
 		int16_t segmentId;
 		int16_t pointId;
@@ -54,6 +50,18 @@ private:
 		float pos[3];
 	};
 
+	struct BvhScaleInformation {
+		int avatarId = -1;
+		std::vector<NullPoseDefinition> tPose;
+		std::vector<PointDefinition> endSites;
+	};
+
+	virtual BvhScaleInformation* getScaleData();
+
+protected:
+	virtual void deserializeData(Streamer& inputStreamer) override;
+
+private:
 
 	void printSegmentData(NullPoseDefinition const& s) const;
 	void printViveSegmentData(NullPoseDefinition const& s) const;
@@ -62,6 +70,8 @@ private:
 
 	std::vector<NullPoseDefinition> m_tPose;
 	std::vector<PointDefinition> m_pointDefinitions;
+	BvhScaleInformation m_bvhScaleInformation;
+
 };
 
 #endif

@@ -32,6 +32,7 @@
 #include <xstypes/xssocket.h>
 #include <xstypes/xsthread.h>
 #include "xs_quaterniondatagram.h"
+#include "xs_scaledatagram.h"
 #include "functional"
 #include <mutex>
 
@@ -52,6 +53,7 @@ public:
 	void stopThread();
 	ParserManager::QuaternionDataWithId* getQuaternionDatagram();
 	volatile std::atomic_bool m_started, m_stopping;
+	ScaleDatagram::BvhScaleInformation* getScaleDatagram();
 
 
 
@@ -61,6 +63,7 @@ private:
 	XsString m_hostName;
 	std::unique_ptr<ParserManager> m_parserManager;
 	ParserManager::QuaternionDataWithId* m_quaternionDatagram; //the skeleton
+	ScaleDatagram::BvhScaleInformation* m_scaleData;
 	std::mutex m_udpLock;
 
 };
