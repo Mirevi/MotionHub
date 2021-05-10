@@ -1,9 +1,15 @@
 #pragma once
 
-#include <vector>
-#include <Dense>
+#include "MotionHubUtil/Exception.h"
+#include "MotionHubUtil/Console.h"
+#include "MotionHubUtil/Joint.h"
 
+#include <openvr_capi.h>
 #include <openvr.h>
+
+#include <vector>
+#include <map>
+#include <Dense>
 
 using namespace Eigen;
 
@@ -41,21 +47,42 @@ public:
 		Vector3f Position;
 		Quaternionf Rotation;
 		// TODO: Valid nötig? -> Invalide Posen überspringen?
-		bool Valid;
+		//bool Valid;
 
-		DevicePose()
-			: Position(Vector3f::Zero()), Rotation(Quaternionf::Identity()), Valid(false) {
-		}
+		DevicePose() : 
+			Position(Vector3f::Zero()), 
+			Rotation(Quaternionf::Identity()) 
+		{ }
 
 		DevicePose(Vector3f Position, Quaternionf Rotation) {
 			this->Position = Position;
 			this->Rotation = Rotation;
 		}
-	};
 
-	struct TrackingError {
-		std::string Code;
-		std::string Description;
+		void ExtractPose(const vr::HmdMatrix34_t& trackingMatrix) {
+			// Extract Position
+			Position = Vector3f(-trackingMatrix.m[0][3], trackingMatrix.m[1][3], -trackingMatrix.m[2][3]);
+
+			// Extract Rotation 
+			Quaternionf q = Quaternionf(
+				sqrtf(fmaxf(0, 1 + trackingMatrix.m[0][0] + trackingMatrix.m[1][1] + trackingMatrix.m[2][2])) / 2,
+				copysignf(
+					sqrtf(fmaxf(0, 1 + trackingMatrix.m[0][0] - trackingMatrix.m[1][1] - trackingMatrix.m[2][2])) / 2,
+					trackingMatrix.m[2][1] - trackingMatrix.m[1][2]
+				),
+				copysignf(
+					sqrtf(fmaxf(0, 1 - trackingMatrix.m[0][0] + trackingMatrix.m[1][1] - trackingMatrix.m[2][2])) / 2,
+					trackingMatrix.m[0][2] - trackingMatrix.m[2][0]
+				),
+				-copysignf(
+					sqrtf(fmaxf(0, 1 - trackingMatrix.m[0][0] - trackingMatrix.m[1][1] + trackingMatrix.m[2][2])) / 2,
+					trackingMatrix.m[1][0] - trackingMatrix.m[0][1]
+				)
+			);
+
+			// TODO: inverse vermeiden und Rechnung umstellen
+			Rotation = q.inverse();
+		}
 	};
 
 	bool Valid = true;
@@ -68,7 +95,13 @@ public:
 
 	~OpenVRTracking();
 
+	void init();
+
+	void start();
+
 	void LoadDevices();
+
+	Device* GetDevice(unsigned int deviceIndex);
 
 	void ReceiveDevicePoses();
 
@@ -76,7 +109,7 @@ public:
 
 	void SetPredictionTime(float secondsFromNow);
 
-	TrackingError GetErrorDescriptor();
+	void PollEvents();
 
 public:
 
@@ -101,6 +134,10 @@ public:
 	}
 private:
 
+	void tryAddDevice(unsigned int deviceIndex);
+
+	void updateDeviceRoles();
+
 	std::vector<Device> GetConnectedDevices();
 
 	unsigned int trackedPoseCount;
@@ -111,5 +148,5 @@ private:
 
 	vr::TrackedDevicePose_t* devicePoses;
 
-	TrackingError trackingError;
+	std::map<unsigned int, Joint::JointNames> userIndexToJoint;
 };

@@ -8,6 +8,7 @@
 
 #include "MotionHubUtil/Skeleton.h"
 #include "MotionHubUtil/Console.h"
+#include "MotionHubUtil/Exception.h"
 #include "MotionHubUtil/MMHmath.h"
 #include "MotionHubUtil/ConfigManager.h"
 #include "NetworkManagement/NetworkManager.h"

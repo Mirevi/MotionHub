@@ -68,6 +68,10 @@ private:
 	 */
 	QTreeWidget* m_refTreeWidgetTracker;
 
+	/*!
+	 * get file Path from Open File Dialog with caption, dir & filter   
+	 */
+	std::string getFilePath(const char* caption, const char* dir, const char* filter);
 
 	int m_selectedTrackerIdInDropdown = 0;
 };

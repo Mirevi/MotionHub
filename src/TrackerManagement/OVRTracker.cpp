@@ -6,14 +6,7 @@ OVRTracker::OVRTracker() {
 }
 
 OVRTracker::OVRTracker(int id, NetworkManager* networkManager, ConfigManager* configManager) {
-	// Initialize OpenVR
-	init();
-
-	// Abort if initialization fails
-	if (!valid) {
-		return;
-	}
-
+	
 	m_networkManager = networkManager;
 	m_configManager = configManager;
 
@@ -26,6 +19,9 @@ OVRTracker::OVRTracker(int id, NetworkManager* networkManager, ConfigManager* co
 
 	//default is enabled
 	m_isEnabled = true;
+
+	// Initialize OpenVR
+	init();
 }
 
 OVRTracker::~OVRTracker() {
@@ -60,18 +56,20 @@ void OVRTracker::stop() {
 
 void OVRTracker::init() {
 
+	trackingSystem.init();
+
 	// Errorhandling when Trackingsystem could not be initialized
-	if (!trackingSystem.Valid) {
+	/*if (!trackingSystem.Valid) {
 		OpenVRTracking::TrackingError error = trackingSystem.GetErrorDescriptor();
 
 		Console::logError(error.Description + " [" + error.Code + "]");
 
 		valid = false;
 		return;
-	}
+	}*/
 
 	// Load connected Tracking Devices
-	trackingSystem.LoadDevices();
+	//trackingSystem.LoadDevices();
 }
 
 void OVRTracker::update() {
