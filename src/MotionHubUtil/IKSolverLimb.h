@@ -27,6 +27,12 @@ public:
 
 protected:
 
+	IKJoint upperJoint;
+	IKJoint middleJoint;
+	IKJoint lowerJoint;
+
+	std::vector<IKJoint*> joints;
+
 	Vector3f normal;
 	Vector3f _normal;
 

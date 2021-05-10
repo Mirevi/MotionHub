@@ -26,7 +26,7 @@ void IKSolverLimb::solve(Vector3f position, Quaternionf rotation) {
 }
 
 Vector3f IKSolverLimb::getStartPosition() {
-
+	return Vector3f::Zero();
 }
 
 void IKSolverLimb::solve() {

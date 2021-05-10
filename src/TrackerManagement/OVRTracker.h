@@ -79,5 +79,5 @@ private:
 
 	OpenVRTracking trackingSystem;
 
-	IKSolver ikSolver;
+	//IKSolver ikSolver;
 };

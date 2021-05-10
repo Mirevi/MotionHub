@@ -6,6 +6,7 @@
 
 // Todo: Debug entfernen
 #include "MotionHubUtil/Console.h"
+#include "MotionHubUtil/IKJoint.h"
 
 class MotionHubUtil_DLL_import_export IKSolver {
 
