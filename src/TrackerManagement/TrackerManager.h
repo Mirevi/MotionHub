@@ -13,6 +13,8 @@
 #include "CLTracker.h"
 #include "BVHPlayer.h"
 #include "mmhPlayer.h"
+#include "XSTracker.h"
+#include "OVRTracker.h"
 #include "TrackerGroup.h"
 #include "Recorder.h"
 
@@ -58,12 +60,14 @@ public:
 	enum TrackerType 
 	{
 
-		azureKinect,	// Azure Kinect Tracker
-		optiTrack,		// OptiTrack	Tracker
-		bvh,			//BVH-Player
-		mmh,
-		CapturyLive,	// CapturyLive  Tracker
-		group
+		azureKinect = 0,	// Azure Kinect Tracker
+		optiTrack = 1,		// OptiTrack	Tracker
+		bvh = 2,			//BVH-Player
+		mmh = 3,
+		CapturyLive = 4,	// CapturyLive  Tracker
+		xSens = 5,
+		openVR = 6,	
+		group = 7			//Is not display and counted in the createTrackerWindow.iu. Pls add a new tracker before group
 
 	};
 

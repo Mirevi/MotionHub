@@ -106,6 +106,58 @@ public:
 
 	void setInverted(bool x, bool y, bool z);
 
+	/*!
+	 * Returns the Joint Name as const char*
+	 *
+	 * \return Joint Name
+	 */
+	static const char* getJointName(JointNames jointName) {
+		switch (jointName) {
+		case Joint::HIPS:
+			return "Hips";
+		case Joint::SPINE:
+			return "Spine";
+		case Joint::CHEST:
+			return "Chest";
+		case Joint::NECK:
+			return "Neck";
+		case Joint::SHOULDER_L:
+			return "LeftShoulder";
+		case Joint::ARM_L:
+			return "LeftArm";
+		case Joint::FOREARM_L:
+			return "LeftForearm";
+		case Joint::HAND_L:
+			return "LeftHand";
+		case Joint::SHOULDER_R:
+			return "RightShoulder";
+		case Joint::ARM_R:
+			return "RightArm";
+		case Joint::FOREARM_R:
+			return "RightForearm";
+		case Joint::HAND_R:
+			return "RightHand";
+		case Joint::UPLEG_L:
+			return "LeftUpperleg";
+		case Joint::LEG_L:
+			return "LeftLeg";
+		case Joint::FOOT_L:
+			return "LeftFoot";
+		case Joint::TOE_L:
+			return "LeftToe";
+		case Joint::UPLEG_R:
+			return "RightUpperleg";
+		case Joint::LEG_R:
+			return "RightLeg";
+		case Joint::FOOT_R:
+			return "RightFoot";
+		case Joint::TOE_R:
+			return "RightToe";
+		case Joint::HEAD:
+			return "Head";
+		}
+	}
+
 private:
 
 	Vector4f m_position;
