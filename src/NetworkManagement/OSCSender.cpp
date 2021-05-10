@@ -35,7 +35,6 @@ void OSCSender::sendSkeleton(Skeleton* skeleton, const char* uri, int trackerID)
 		int ID = (trackerID * 1000 + skeleton->getSid());
 
 
-
 		//first value in stream is user ID
 		*m_packetStream << osc::BeginBundleImmediate << osc::BeginMessage(uri) << ID;
 

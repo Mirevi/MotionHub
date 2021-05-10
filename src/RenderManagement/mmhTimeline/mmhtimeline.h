@@ -16,7 +16,9 @@ public:
     ~mmhTimeline();
 
     void setValue(float newValue);
+    void setMaxValue(float newMax);
     float getValue();
+    float getMaxValue();
 
 protected:
     void mouseMoveEvent(    QMouseEvent * event) override;
@@ -36,6 +38,7 @@ private:
     void updateTimelinePosition();
 
     float m_percentage = 0;
+    float m_maxValue = 100;
 
     Ui::mmhTimeline *ui;
 };
