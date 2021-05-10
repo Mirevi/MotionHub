@@ -20,147 +20,32 @@ TrackerManager::~TrackerManager()
 
 int TrackerManager::createTracker(TrackerType type, std::string filePath)
 {
-
 	// get the next tracker id
 	int id = m_nextFreeTrackerID;
-
-	//next tracker ID is increased with 1
-	m_nextFreeTrackerID++;
 
 	//create local Tracker*
 	Tracker* tempTracker = nullptr;
 
-
 	//lock the tracker pool
 	m_trackerPoolLock.lock();
 
+	try {
+		// Call Tracker Factory
+		tempTracker = instantiateTracker(type, id, filePath);
+	}
+	catch (const Exception& exception) {
+		//unlock the tracker pool
+		m_trackerPoolLock.unlock();
 
-	// create new tracker based on the tracker type
-	switch (type)
-	{
-
-		// azure kinect
-		case azureKinect:
-		{
-
-			Console::log("TrackerManager::createTracker(): Creating Azure Kinect tracker");
-
-			//create new AK Tracker with next free Cam ID
-			tempTracker = new AKTracker(id, m_networkManager, m_configManager);
-
-
-			if (!tempTracker->valid)
-			{
-
-				delete tempTracker;
-
-				//unlock the tracker pool
-				m_trackerPoolLock.unlock();
-
-				return -1;
-
-			}
-
-			//sendSkeletonDelegate() funcPtr pass through
-			//tempTracker->setSendSkeletonDelegate(m_sendSkeletonDelegate);
-
-			break;
-
-		}
-
-		case optiTrack:
-		{
-			Console::log("TrackerManager::createTracker(): Creating OptiTrack tracker");
-
-			//create new Tracker with current ID
-			tempTracker = new OTTracker(id, m_networkManager, m_configManager);
-
-			break;
-
-		}
-
-		case bvh:
-		{
-
-			Console::log("TrackerManager::createTracker(): Creating BVH-Player");
-
-			//create new BVH-Player with current ID
-			tempTracker = new BVHPlayer(id, m_networkManager, m_configManager, filePath);
-
-			break;
-
-		}
-
-		case CapturyLive:
-		{
-
-			//create new Tracker with current ID
-			tempTracker = new CLTracker(id, m_networkManager, m_configManager);
-
-			break;
-
-		}
-
-		case mmh:
-		{
-
-			Console::log("TrackerManager::createTracker(): Creating mmh-Player");
-
-			//create new BVH-Player with current ID
-			tempTracker = new mmhPlayer(id, m_networkManager, m_configManager, filePath);
-
-			break;
-
-		}
-
-		case xSens:
-		{
-
-			Console::log("TrackerManager::createTracker(): Creating xSens tracker");
-
-			//create new BVH-Player with current ID
-			tempTracker = new XSTracker(id, m_networkManager, m_configManager);
-
-			break;
-
-		}
-
-		case openVR:
-		{
-
-			Console::log("TrackerManager::createTracker(): Creating OpenVR tracker");
-
-			//create new BVH-Player with current ID
-			tempTracker = new OVRTracker(id, m_networkManager, m_configManager);
-
-			break;
-
-		}
-
-		case group:
-		{
-
-			tempTracker = new TrackerGroup(id);
-
-			break;
-
-		}
-
-		default:
-		{
-
-			Console::log("TrackerManager::createTracker(): Can not create tracker. Unknown tracker type");
-
-			//unlock the tracker pool
-			m_trackerPoolLock.unlock();
-
-			return -1;
-
-		}
+		// throw Exception for UI Objects 
+		throw exception;
 	}
 
-	m_networkManager->createOSCSender(id);
+	//next tracker ID is increased with 1
+	m_nextFreeTrackerID++;
 
+	//create OSC Sender for tracker
+	m_networkManager->createOSCSender(id);
 
 	//insert the tracker in the tracker pool
 	m_trackerPool.push_back(tempTracker);
@@ -174,7 +59,6 @@ int TrackerManager::createTracker(TrackerType type, std::string filePath)
 	Console::log("TrackerManager::createTracker(): Created tracker with ID = " + toString(id));
 
 	return id;
-
 }
 
 
@@ -449,4 +333,114 @@ void TrackerManager::writeSkeletonsToRecorder()
 
 	Recorder::instance().nextFrame();
 
+}
+
+Tracker* TrackerManager::instantiateTracker(TrackerType type, int id, std::string filePath) {
+
+	Tracker* tempTracker = nullptr;
+
+	// create new tracker based on the tracker type
+	switch (type)
+	{
+
+	case azureKinect:
+	{
+		Console::log("TrackerManager::createTracker(): Creating Azure Kinect tracker");
+
+		try {
+			//create new AK Tracker with next free Cam ID
+			tempTracker = new AKTracker(id, m_networkManager, m_configManager);
+		}
+		catch (const Exception& exception) {
+			delete tempTracker;
+
+			throw exception;
+		}
+
+		//sendSkeletonDelegate() funcPtr pass through
+		//tempTracker->setSendSkeletonDelegate(m_sendSkeletonDelegate);
+
+		break;
+	}
+
+	case optiTrack:
+	{
+		Console::log("TrackerManager::createTracker(): Creating OptiTrack tracker");
+
+		//create new Tracker with current ID
+		tempTracker = new OTTracker(id, m_networkManager, m_configManager);
+
+		break;
+	}
+
+	case bvh:
+	{
+		Console::log("TrackerManager::createTracker(): Creating BVH-Player");
+
+		//create new BVH-Player with current ID
+		tempTracker = new BVHPlayer(id, m_networkManager, m_configManager, filePath);
+
+		break;
+	}
+
+	case CapturyLive:
+	{
+		//create new Tracker with current ID
+		tempTracker = new CLTracker(id, m_networkManager, m_configManager);
+
+		break;
+	}
+
+	case mmh:
+	{
+		Console::log("TrackerManager::createTracker(): Creating mmh-Player");
+
+		//create new BVH-Player with current ID
+		tempTracker = new mmhPlayer(id, m_networkManager, m_configManager, filePath);
+
+		break;
+	}
+
+	case xSens:
+	{
+		Console::log("TrackerManager::createTracker(): Creating xSens tracker");
+
+		//create new BVH-Player with current ID
+		tempTracker = new XSTracker(id, m_networkManager, m_configManager);
+
+		break;
+	}
+
+	case openVR:
+	{
+		Console::log("TrackerManager::createTracker(): Creating OpenVR tracker");
+
+		try {
+			tempTracker = new OVRTracker(id, m_networkManager, m_configManager);
+		}
+		catch (const Exception& exception) {
+			delete tempTracker;
+
+			throw exception;
+		}
+
+		break;
+	}
+
+	case group:
+	{
+		tempTracker = new TrackerGroup(id);
+
+		break;
+	}
+
+	default:
+	{
+		Console::log("TrackerManager::createTracker(): Can not create tracker. Unknown tracker type");
+
+		throw Exception("Unknown tracker type");
+	}
+	}
+
+	return tempTracker;
 }

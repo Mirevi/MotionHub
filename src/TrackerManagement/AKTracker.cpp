@@ -5,11 +5,12 @@ AKTracker::AKTracker(int id, NetworkManager* networkManager, ConfigManager* conf
 {
 	// initialize azure kinect camera and body tracker
 	if (!init()) {
-		Console::logError("No connected Azure Kinect found.");
+		m_tracker = NULL;
+		m_cam = NULL;
 
-		valid = false;
-		return;
+		throw Exception("No connected Azure Kinect found.");
 	}
+
 	//assign id and name to properties
 	m_properties->id = id;
 	m_properties->name = "tracker_azureKinect_" + std::to_string(id);
@@ -31,14 +32,14 @@ AKTracker::AKTracker(int id, NetworkManager* networkManager, ConfigManager* conf
 
 AKTracker::~AKTracker() 
 {
-	if (valid) {
-		//std::cout << "Tracker shutdown" << std::endl;
-
-		// shutdown and destroy azure kinect tracker
+	// shutdown and destroy azure kinect tracker
+	if (m_tracker != NULL) {
 		k4abt_tracker_shutdown(m_tracker);
 		k4abt_tracker_destroy(m_tracker);
+	}
 
-		// stop and close camera
+	// stop and close camera
+	if(m_cam != NULL) {
 		k4a_device_stop_cameras(m_cam);
 		k4a_device_close(m_cam);
 	}

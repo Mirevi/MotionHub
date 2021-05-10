@@ -33,105 +33,63 @@ void CreateTrackerWindow::slotCreateTracker()
 
 	Console::log("CreateTrackerWindow::slotCreateTracker(): m_selectedTrackerIdInDropdown = " + toString(m_selectedTrackerIdInDropdown));
 
-	switch (m_selectedTrackerIdInDropdown)
-	{
-		//Azure Kinect
-		case 0:
-		{
-			// create new azure kinect tracker and add tracker to the tracking manager tracker pool
-			id = m_refTrackerManager->createTracker(TrackerManager::azureKinect);
-			
+	// Cast dropdown selection to TrackerManager::TrackerType
+	TrackerManager::TrackerType trackerType = static_cast<TrackerManager::TrackerType>(m_selectedTrackerIdInDropdown);
 
+	// Is casted TrackerType valid?
+	if (trackerType < TrackerManager::TrackerType::group) {
 
-			break;
+		// Init empty file path
+		std::string filePath;
 
-		}
-		//OptiTrack
-		case 1:
-		{
-			// create new optiTrack tracker and add tracker to the tracking manager tracker pool
-			id = m_refTrackerManager->createTracker(TrackerManager::optiTrack);
-						
-			break;
+		// Decide if Tracker is a special case and fill file path 
+		switch (trackerType) {
 
-		}
-		//BVH
-		case 2:
-		{
+		case TrackerManager::bvh:
+			// Get file path with caption, dir & filter
+			filePath = getFilePath("choose Mocap file.", "C://", "BVH files (*.bvh)");
 
-
-
-			//open file dialog
-			QString filePath = QFileDialog::getOpenFileName(this, "choose Mocap file.", "C://", tr("BVH files (*.bvh)"));
-
-
-			//BUG: Curser doesn't set to waiting
-
-			// create new BVHPlayer tracker and add tracker to the tracking manager tracker pool
-			if (filePath != NULL)
-			{
-
-				id = m_refTrackerManager->createTracker(TrackerManager::bvh, filePath.toUtf8().constData());
-
+			// File path invalid?
+			if (filePath == std::string()) {
+				return;
 			}
-
 			break;
 
-		}
-		//MMH
-		case 3:
-		{
+		case TrackerManager::mmh:
+			// Get file path with caption, dir & filter
+			filePath = getFilePath("choose MMH-Recorded file.", "./data", "MMH files (*.mmh)");
 
-			//open file dialog
-			QString filePath = QFileDialog::getOpenFileName(this, "choose MMH-Recorded file.", "./data", tr("MMH files (*.mmh)"));
-
-			//BUG: Curser doesn't set to waiting
-
-
-			// create new BVHPlayer tracker and add tracker to the tracking manager tracker pool
-			if (filePath != NULL)
-			{
-
-				id = m_refTrackerManager->createTracker(TrackerManager::mmh, filePath.toUtf8().constData());
-
-	
-
+			// File path invalid?
+			if (filePath == std::string()) {
+				return;
 			}
-
 			break;
 		}
+		
+		Console::log("CreateTrackerWindow::slotCreateTracker(): Creating Tracker with Tracker Index: " + std::to_string(m_selectedTrackerIdInDropdown));
 
-		case 4:
-		{
-			// create new azure 
-			id = m_refTrackerManager->createTracker(TrackerManager::CapturyLive);
-
-			break;
-
+		try {
+			// Create choosen tracker
+			id = m_refTrackerManager->createTracker(trackerType, filePath);
 		}
+		catch (const Exception& exception) {
 
-		case 5:
-		{
-			// create
-			id = m_refTrackerManager->createTracker(TrackerManager::xSens);
+			// Set the curser to default
+			QApplication::restoreOverrideCursor();
+			// Close tracker window
+			close();
 
-			break;
+			std::string error = exception.what();
 
+			Console::logError("CreateTrackerWindow::slotCreateTracker(): " + error);
+			QMessageBox::critical(this, tr("Can not create Tracker"), tr(error.c_str()));
+
+			return;
 		}
-
-		case 6:
-		{
-			// create 
-			id = m_refTrackerManager->createTracker(TrackerManager::openVR);
-
-			break;
-
-		}
-
-		default:
-			Console::logError("CreateTrackerWindow::slotCreateTracker(): Can not create tracker. Tracker type unkown!");
-			break;
-
+		
+	}
+	else {
+		Console::logError("CreateTrackerWindow::slotCreateTracker(): Can not create tracker. Tracker type unkown!");
 	}
 
 	if (id == -1)
@@ -185,4 +143,27 @@ void CreateTrackerWindow::slotSelectTrackerInDropdown(int id)
 
 	m_selectedTrackerIdInDropdown = id;
 
+}
+
+std::string CreateTrackerWindow::getFilePath(const char* caption, const char* dir, const char* filter)
+{
+	// get file Path from Open File Dialog with caption, dir & filter
+	QString filePath = QFileDialog::getOpenFileName(this, caption, dir, tr(filter));
+
+	// is file path valid?
+	if (filePath != NULL) {
+		// Return file path as utf-8 string
+		return filePath.toUtf8().constData();
+	}
+	else {
+		Console::log("CreateTrackerWindow::getFilePath(): empty file path -> close dialog!");
+
+		// Set the curser to default
+		QApplication::restoreOverrideCursor();
+		// Close tracker window
+		close();
+
+		// Return empty string
+		return std::string();
+	}
 }

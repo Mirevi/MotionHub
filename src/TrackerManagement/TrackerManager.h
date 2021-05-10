@@ -158,6 +158,16 @@ public:
 private:
 
 	/*!
+	 * Instatiates a new tracker pointer
+	 *
+	 * \throws Exception
+	 * 
+	 * \param type type of the tracker (Azure Kinect, XSense, ...)
+	 * \param id the trackers ID
+	 */
+	Tracker* instantiateTracker(TrackerType type, int id, std::string filePath);
+
+	/*!
 	 * pool of all created tracker 
 	 */
 	std::vector<Tracker*> m_trackerPool;
@@ -187,9 +197,4 @@ private:
 	std::mutex m_trackerPoolLock;
 
 	ConfigManager* m_configManager;
-
-
-
-
-
 };
