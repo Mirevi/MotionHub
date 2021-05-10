@@ -8,8 +8,6 @@ AKTracker::AKTracker(int id, NetworkManager* networkManager, ConfigManager* conf
 		m_tracker = NULL;
 		m_cam = NULL;
 
-		valid = false;
-
 		throw Exception("No connected Azure Kinect found.");
 	}
 
