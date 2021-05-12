@@ -29,6 +29,8 @@ namespace osgQt {
 
 class TrackerManager;
 class ConfigManager;
+class AxesCross;
+class Line;
 
 //osgQt::GraphicsWindowQt* createGraphicsWindow(int x, int y, int w, int h)
 //{
@@ -44,6 +46,7 @@ public:
     void updateSkeletonMeshPoolSize();
     void updateSkeletonMeshTransform();
     void updateSkeletonMeshCount();
+    void drawLine(osg::Vec3 start, osg::Vec3 end, osg::Vec4 colorStart, osg::Vec4 colorEnd);
 
 protected:
     virtual void paintEvent(QPaintEvent* event)
@@ -56,7 +59,7 @@ protected:
     QTimer m_timer;
     TrackerManager* m_refTrackerManager;
     ConfigManager* m_configManager;
-    
+
     osg::ref_ptr<osg::Group> m_sceneRoot;
 
     /*!
@@ -70,4 +73,6 @@ protected:
 
     std::vector<osg::ref_ptr<osg::ShapeDrawable>> m_spheres;
     std::vector<osg::ref_ptr<osg::MatrixTransform>> m_sphereTransforms;
+    AxesCross* m_axesCrossTest;
+    Line* m_line;
 };
