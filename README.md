@@ -12,7 +12,17 @@ MotionHub is developed at the research lab [MIREVI](https://www.mirevi.de/) from
 
 ### Acknowledgements
 
-This project is sponsored by: [German Federal Ministry of Education and Research](https://www.bmbf.de/en/index.html) (BMBF) under the project numbers **16SV8182** and **13FH022IX6**. Project names: [HIVE-Lab](https://mirevi.de/research/immersive-digital-technologies-for-a-healthy-life-through-exercise-and-well-being-hive-lab) (Health Immersive Virtual Environment Lab) and [Interactive body-near production technology 4.0](https://www.mirevi.de/research/ikpt4-0) (german: ’Interaktive körpernahe Produktionstechnik 4.0’ (iKPT4.0)).
+This project is sponsored by: [German Federal Ministry of Education and Research](https://www.bmbf.de/en/index.html) (BMBF) under the project numbers **16SV8182** and **13FH022IX6**. Project names: [HIVE-Lab](https://mirevi.de/research/hive-lab/) (Health Immersive Virtual Environment Lab) and [Interactive body-near production technology 4.0](https://www.mirevi.de/research/ikpt4-0) (german: ’Interaktive körpernahe Produktionstechnik 4.0’ (iKPT4.0)).
+
+# Conference Video:
+A short presentation about the MotionHub on the 7th International Conference on Movementand Computing (MOCO ’20):
+[Youtube Video](https://youtu.be/GRZqkAN6I9k)
+<p align="center">
+  <a href="https://youtu.be/GRZqkAN6I9k">
+    <img width="50%" src="http://i3.ytimg.com/vi/GRZqkAN6I9k/maxresdefault.jpg" />
+  </a>
+</p>
+
 
 # Requirements
 
@@ -23,7 +33,7 @@ Currently MMH is only supported on Microsoft Windows operating systems.
 ### Minimum Computer Requirements
 
 - Seventh Gen Intel i5 Processor
-- NVidia GeForce GTX 1070
+- NVidia GeForce GTX 1070 (when using Azure Kinect Body Tracking)
 - 4 GB Memory
 - 5 GB Storage
 
@@ -37,12 +47,12 @@ The developer, API and user documentation including a class collaboration diagra
 | ----------------------------------------------------------------------- |
 | [Azure Kinect](https://azure.microsoft.com/en-gb/services/kinect-dk/)   |
 | [OptiTrack](https://optitrack.com/)                                     |
+| [The Captury](https://thecaptury.com/)                                				|
+| [XSens MVN Animate (only compatibel with MVN Pro License due to network streaming capabilities)](https://www.xsens.com/products/mvn-animate)                    |
 
 | Planned                                                                             							|
 | --------------------------------------------------------------------------------------------------------------|
-| [The Captury (planned for ~Januar 2021)](https://thecaptury.com/)                                				|
-| [XSens MVN Animate (only compatibel with MVN Pro License due to network streaming capabilities) (planned for ~Januar 2021)](https://www.xsens.com/products/mvn-animate)                    |
-| [Perception Neuron 2 (planned for ~March 2021)](https://neuronmocap.com/content/product/32-neuron-edition-v2) |
+| [Perception Neuron 2 and 3 (planned for Q4 2021)](https://neuronmocap.com/content/product/32-neuron-edition-v2) |
 
 # Installer (for users, not for developers)
 
@@ -54,7 +64,7 @@ If you want to install the MotionHub, please download the latest release:
 
 The [CMake](https://cmake.org/) system is used to generate project files and for downloading all required dependencies. Please use the `CMakeLists.txt` file for generating.
 
-- MMH is developed with Microsoft **Visual Studio 2017** and **2019**. *([CMake](https://cmake.org/) has only been tested with these IDE versions.)*
+- MMH is developed with Microsoft **Visual Studio 2019**. *([CMake](https://cmake.org/) has only been tested with this IDE version.)*
 
 1.  Download or clone MMH
 2.  Download and install Azure Kinect [Sensor](https://docs.microsoft.com/en-us/azure/kinect-dk/sensor-sdk-download) and [Body Tracking](https://docs.microsoft.com/en-us/azure/kinect-dk/body-sdk-download) SDK
@@ -76,29 +86,33 @@ We recognized an Error, when using a N version of Windows, in which the .exe wou
 # Authors
 
 - **[Philipp Ladwig](https://www.mirevi.de/team/philipp-ladwig)** - Project Manager and Developer
-- **[Kester Evers](https://www.mirevi.de/team/kester-evers)** - Developer
-- **[Eric Jansen](https://www.mirevi.de/team/eric-jansen)** - Developer
-- **[Manuel Zohlen](https://www.mirevi.de/team/manuel-zohlen)** - Developer
+- **Kester Evers** - Developer
+- **Eric Jansen** - Developer
+- **Manuel Zohlen** - Developer
+- **David Nowottnik** - Developer
+- **Ben Fischer**  - Developer
 
 # Build with
 
-- [Qt](https://www.qt.io/)
-- [Eigen](http://eigen.tuxfamily.org/index.php?title=Main_Page)
-- [OSC Pack](http://www.rossbencina.com/code/oscpack)
-- [TinyXML](http://www.grinninglizard.com/tinyxml/)
+- [Qt](https://www.qt.io/) (LGPL - License -> No GPL or commercial modules used)
+- [Eigen](http://eigen.tuxfamily.org/index.php?title=Main_Page) (MPL2 - License)
+- [oscpack](http://www.rossbencina.com/code/oscpack) (oscpack License -> BSD-style License)
+- [TinyXML](http://www.grinninglizard.com/tinyxml/) (zlib - License)
 
 # Game engine plug-in
 
 Currently, we are supporting [Unity](https://unity.com/) with a plugIn, which you can integrate in your project. It receives the tracking data and animates a character.
 You can download the project [here](https://github.com/Mirevi/MotionHub-Unity-Plugin).
 
+Hopefully, we will be able to integrate Unreal Engine 4 and a Live Link connection soon. Unfortunately, this depends on further fundings.
+
 
 # License
+Free for research, education, art and culture. We are glad to receive a reference in your paper or project (reference information below). If you want to use the MMH in a commercial setting, please send a mail to [Philipp Ladwig](https://www.mirevi.de/team/philipp-ladwig). We are very happy to share, but we don't want that anybody rebrand or missuse the MMH. Full license
+[here](https://github.com/Mirevi/MotionHub/blob/master/LICENSE.txt).
 
-[License](https://github.com/Mirevi/MotionHub/blob/master/LICENSE.txt)
 
-
-# Referencing MotionHub
+# Referencing MotionHub (Paper)
 When using MotionHub please reference:
 
 ```
