@@ -26,7 +26,7 @@ public:
 	 * default constructor
 	 *
 	 */
-	OsgSkeleton(osg::ref_ptr<osg::Group> rootNode);
+	OsgSkeleton(osg::ref_ptr<osg::Group> parentNode);
 	~OsgSkeleton();
 	
 	void update(Skeleton skeleton);
@@ -38,7 +38,7 @@ public:
 	 *
 	 */
 private:
-	osg::ref_ptr<osg::Group> m_externalRootNode;
+	osg::ref_ptr<osg::Group> m_parentNode;
 	osg::ref_ptr<osg::Group> m_skeletonRootNode;
 	std::vector<osg::ref_ptr<osg::PositionAttitudeTransform>> m_joints;
 	std::vector<osg::ref_ptr<osg::Node>> m_bones;

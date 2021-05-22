@@ -3,7 +3,7 @@
 #include "OsgLine.h"
 
 
-OsgSkeleton::OsgSkeleton(osg::ref_ptr<osg::Group> rootNode) : m_externalRootNode(rootNode)
+OsgSkeleton::OsgSkeleton(osg::ref_ptr<osg::Group> parentNode) : m_parentNode(parentNode)
 {
 	m_skeletonRootNode = new osg::Group();
 	// create 21 joints as osg::PositionAttitudeTransform
@@ -19,7 +19,7 @@ OsgSkeleton::OsgSkeleton(osg::ref_ptr<osg::Group> rootNode) : m_externalRootNode
 	m_line = new OsgLine(m_skeletonRootNode, false);
 	m_skeletonRootNode->addChild(m_line);
 
-	m_externalRootNode->addChild(m_skeletonRootNode);
+	m_parentNode->addChild(m_skeletonRootNode);
 }
 
 

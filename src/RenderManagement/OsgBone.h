@@ -1,33 +1,34 @@
-//#pragma once
-//#include "ConfigDllExportRenderManagement.h"
-//#include "osg/PositionAttitudeTransform"
+#pragma once
+#include "ConfigDllExportRenderManagement.h"
+#include <osg/PositionAttitudeTransform>
+#include "MotionHubUtil/Joint.h"
 //#include <osg/Geode>
 //#include <osg/geometry>
 //#include <osg/Vec3f>
-//
-////class ConfigManager;
-//
-//class RenderManagement_DLL_import_export Line : public osg::PositionAttitudeTransform
-//{
-//public:
-//	Line(osg::ref_ptr<osg::Group> nodeToAttachTo, bool isOverlay);
-//    ~Line();
-//
-//    void createGeometry(bool isOverlay);
-//	void Line::draw(osg::Vec3 start, osg::Vec3 end, osg::Vec4 colorStart, osg::Vec4 colorEnd);
-//	void Line::redraw();
-//	void clear();
-//
-//private:
-//	float m_scale;
-//	float m_thickness;
-//
-//	osg::ref_ptr<osg::Geode> m_geode;
-//	osg::ref_ptr<osg::Geometry> m_geom;
-//	osg::ref_ptr<osg::Vec4Array> m_colors;
-//	osg::ref_ptr<osg::DrawArrays> m_drawArrays;
-//	osg::ref_ptr<osg::Vec3Array> m_vertices;
-//	bool m_isDirty;
-//	bool m_isDisplayed;
-//
-//};
+
+
+class RenderManagement_DLL_import_export OsgBone : public osg::PositionAttitudeTransform
+{
+public:
+	OsgBone(osg::ref_ptr<osg::Group> parentNode);
+    ~OsgBone();
+
+    void setStartJoint(Joint joint);
+    void setEndJoint(Joint joint);
+    void setOffsetRotation(osg::Vec3 offset);
+    void updateScale(float scale);
+	void createLeafJoint();
+
+private:
+    osg::ref_ptr<osg::Group> m_parentNode;
+
+    Joint m_startJoint;
+    Joint m_endJoint;
+    
+    //Offset rotation to correctly render the bone
+    osg::Vec3f offsetRotation;
+
+    bool hasLeafJoint;
+
+
+};
