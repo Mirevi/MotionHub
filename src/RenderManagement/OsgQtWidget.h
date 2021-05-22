@@ -15,7 +15,7 @@
 #include <osg/ShapeDrawable>
 #include <osg/MatrixTransform>
 
-#include "SkeletonMesh.h"
+#include "OsgSkeleton.h"
 
 
 
@@ -25,8 +25,8 @@ namespace osgQt {
 
 class TrackerManager;
 class ConfigManager;
-class AxesCross;
-class Line;
+class OsgAxesCross;
+class OsgLine;
 
 //osgQt::GraphicsWindowQt* createGraphicsWindow(int x, int y, int w, int h)
 //{
@@ -65,12 +65,12 @@ protected:
      */
     osg::Vec4f m_colorRed, m_colorYellow, m_colorGreen;
 
-    std::map<int, std::vector<SkeletonMesh>> m_skeletonMeshPool;
+    std::map<int, std::vector<OsgSkeleton>> m_skeletonMeshPool;
 
     std::vector<osg::ref_ptr<osg::ShapeDrawable>> m_spheres;
     std::vector<osg::ref_ptr<osg::MatrixTransform>> m_sphereTransforms;
-    std::vector<AxesCross*> m_axesCrosses;
+    std::vector<OsgAxesCross*> m_axesCrosses;
     
     //AxesCross* m_axesCrossTest;
-    Line* m_line;
+    OsgLine* m_line;
 };

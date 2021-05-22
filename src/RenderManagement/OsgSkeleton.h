@@ -14,10 +14,10 @@
  * \author Eric Jansen
  */
 
-class Line;
+class OsgLine;
 
 //TODO Derive from PostAtt or Group?
-class SkeletonMesh
+class OsgSkeleton
 {
 
 public:
@@ -26,8 +26,8 @@ public:
 	 * default constructor
 	 *
 	 */
-	SkeletonMesh(osg::ref_ptr<osg::Group> rootNode);
-	~SkeletonMesh();
+	OsgSkeleton(osg::ref_ptr<osg::Group> rootNode);
+	~OsgSkeleton();
 	
 	void update(Skeleton skeleton);
 
@@ -44,7 +44,7 @@ private:
 	std::vector<osg::ref_ptr<osg::Node>> m_bones;
 
 	//juj löschen:
-	Line* m_line;
+	OsgLine* m_line;
 
 	osg::PositionAttitudeTransform* m_test;
 

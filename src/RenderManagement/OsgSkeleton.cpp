@@ -1,9 +1,9 @@
-#include "SkeletonMesh.h"
+#include "OsgSkeleton.h"
 #include <osgDB/ReadFile>
-#include "Line.h"
+#include "OsgLine.h"
 
 
-SkeletonMesh::SkeletonMesh(osg::ref_ptr<osg::Group> rootNode) : m_externalRootNode(rootNode)
+OsgSkeleton::OsgSkeleton(osg::ref_ptr<osg::Group> rootNode) : m_externalRootNode(rootNode)
 {
 	m_skeletonRootNode = new osg::Group();
 	// create 21 joints as osg::PositionAttitudeTransform
@@ -16,14 +16,14 @@ SkeletonMesh::SkeletonMesh(osg::ref_ptr<osg::Group> rootNode) : m_externalRootNo
 		m_joints.at(indexJoint)->addChild(m_bones.at(indexJoint));
 
 	}
-	m_line = new Line(m_skeletonRootNode, false);
+	m_line = new OsgLine(m_skeletonRootNode, false);
 	m_skeletonRootNode->addChild(m_line);
 
 	m_externalRootNode->addChild(m_skeletonRootNode);
 }
 
 
-SkeletonMesh::~SkeletonMesh()
+OsgSkeleton::~OsgSkeleton()
 {
 	//m_externalRootNode->removeChild(m_skeletonRootNode);
 	//delte m_joints
@@ -33,7 +33,7 @@ SkeletonMesh::~SkeletonMesh()
 }
 
 
-void SkeletonMesh::update(Skeleton skeleton)
+void OsgSkeleton::update(Skeleton skeleton)
 {
 	m_line->clear();
 

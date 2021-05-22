@@ -8,15 +8,15 @@
 //class ConfigManager;
 //TODO: Rename to osgLine, when all branches merged again
 
-class RenderManagement_DLL_import_export Line : public osg::PositionAttitudeTransform
+class RenderManagement_DLL_import_export OsgLine : public osg::PositionAttitudeTransform
 {
 public:
-	Line(osg::ref_ptr<osg::Group> nodeToAttachTo, bool isOverlay);
-    ~Line();
+	OsgLine(osg::ref_ptr<osg::Group> nodeToAttachTo, bool isOverlay);
+    ~OsgLine();
 
     void createGeometry(bool isOverlay);
-	void Line::draw(osg::Vec3 start, osg::Vec3 end, osg::Vec4 colorStart, osg::Vec4 colorEnd);
-	void Line::redraw();
+	void draw(osg::Vec3 start, osg::Vec3 end, osg::Vec4 colorStart, osg::Vec4 colorEnd);
+	void redraw();
 	void clear();
 
 private:

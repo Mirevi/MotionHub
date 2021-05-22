@@ -15,12 +15,12 @@ enum GridMode
 };
 
 
-class Grid
+class OsgGrid
 {
 	// #### CONSTRUCTOR & DESTRUCTOR ###############
 	public:
-		Grid(unsigned short lineCount = 5, GridMode mode = SHOW_ALL, float scaleIn = 1.0f, float lineWidthInRGBAxis = 5.0f, float lineWidthGreyAxis = 3.0f);
-		~Grid();
+		OsgGrid(unsigned short lineCount = 5, GridMode mode = SHOW_ALL, float scaleIn = 1.0f, float lineWidthInRGBAxis = 5.0f, float lineWidthGreyAxis = 3.0f);
+		~OsgGrid();
 
 	// #### PUBLIC METHODS ###############
 		void initialize(int lineCount, float lineWidthInRGBAxis, float lineWidthGreyAxis);

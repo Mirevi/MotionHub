@@ -1,14 +1,14 @@
 #include "OsgQtWidget.h"
 #include "MotionHubUtil/ConfigManager.h"
 #include "TrackerManagement/TrackerManager.h"
-#include "Grid.h"
+#include "OsgGrid.h"
 
 #include <osg/PositionAttitudeTransform>
 
 #include <QVBoxLayout>
 
-#include "AxesCross.h"
-#include "Line.h"
+#include "OsgAxesCross.h"
+#include "OsgLine.h"
 
 namespace osgQt
 {
@@ -56,7 +56,7 @@ OsgQtWidget::OsgQtWidget(osgQt::GraphicsWindowQt* gw, TrackerManager* trackerMan
 	float lineWidthForGreyAxesGrid = 0.01;
 	m_configManager->readFloat("line_width_for_grey_axes_floor_grid", lineWidthForGreyAxesGrid);
 
-	Grid grid(lineCountGrid, SHOW_X_Z, cellSizeGrid, lineWidthForRGBAxesGrid, lineWidthForGreyAxesGrid);
+	OsgGrid grid(lineCountGrid, SHOW_X_Z, cellSizeGrid, lineWidthForRGBAxesGrid, lineWidthForGreyAxesGrid);
 	grid.attachToSceneGraph(m_sceneRoot);
 
 	//setup confidence colors
@@ -68,7 +68,7 @@ OsgQtWidget::OsgQtWidget(osgQt::GraphicsWindowQt* gw, TrackerManager* trackerMan
 	for (int i = 0; i <= 20; i++)
 	{
 		//m_spheres.push_back(new osg::ShapeDrawable());
-		m_axesCrosses.push_back(new AxesCross(m_sceneRoot));
+		m_axesCrosses.push_back(new OsgAxesCross(m_sceneRoot));
 		//m_spheres.at(i)->setShape(new osg::Sphere(osg::Vec3(0.0f, 0.0f, 0.0f), 0.035f));
 		//m_spheres.at(i)->setColor(osg::Vec4(1.0f, 0.0f, 0.0f, 1.0f));
 		//m_sphereTransforms.push_back(new osg::MatrixTransform());
@@ -76,9 +76,9 @@ OsgQtWidget::OsgQtWidget(osgQt::GraphicsWindowQt* gw, TrackerManager* trackerMan
 		//m_sceneRoot->addChild(m_sphereTransforms.at(i));
 	}
 
-	// #### START debug draws: AxesCross and Lines 1/2 ####
+	// #### START debug draws: OsgAxesCross and Lines 1/2 ####
 	//create axesCross
-	//m_axesCrossTest = new AxesCross(m_sceneRoot);
+	//m_axesCrossTest = new OsgAxesCross(m_sceneRoot);
 	// create a simple line
 	//m_line = new Line(m_sceneRoot, true);
 	//m_line->draw(osg::Vec3f(0.0, 0.0, 0.0), osg::Vec3f(1.0, 1.0, 1.0), osg::Vec4f(1.0, 0.0, 0.0, 1.0), osg::Vec4f(0.0, 1.0, 0.0, 1.0));
@@ -138,7 +138,7 @@ void OsgQtWidget::updateSkeletonMeshPoolSize()
 				Console::log("GlWidget::updateSkeletonMeshPoolSize(): insert");
 
 				// add the tracker reference id as a key and create an new SkeletonMesh vector
-				m_skeletonMeshPool.insert(std::make_pair((*itTracker)->getProperties()->id, std::vector<SkeletonMesh>()));
+				m_skeletonMeshPool.insert(std::make_pair((*itTracker)->getProperties()->id, std::vector<OsgSkeleton>()));
 
 			}
 		}
@@ -215,7 +215,7 @@ void OsgQtWidget::updateSkeletonMeshCount()
 				while (m_skeletonMeshPool.find((*itTracker)->getProperties()->id)->second.size() < skeletonPoolTempCopy.size())
 				{
 					// add new skeletonMesh to skeltonMeshPool
-					m_skeletonMeshPool.find((*itTracker)->getProperties()->id)->second.push_back(SkeletonMesh(m_sceneRoot));
+					m_skeletonMeshPool.find((*itTracker)->getProperties()->id)->second.push_back(OsgSkeleton(m_sceneRoot));
 
 				}
 			}
