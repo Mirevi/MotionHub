@@ -1,8 +1,10 @@
 #pragma once
-
-#include "Entity.h"
-#include "Cube.h"
 #include "MotionHubUtil/Console.h"
+#include "MotionHubUtil/Skeleton.h"
+#include <osg/Group>
+#include <osg/PositionAttitudeTransform>
+
+//TODO: Rename to osgSkeleton, when all branches merged again
 
 /*!
  * \class SkeletonMesh
@@ -11,22 +13,40 @@
  *
  * \author Eric Jansen
  */
-class SkeletonMesh : public Entity
+
+class Line;
+
+//TODO Derive from PostAtt or Group?
+class SkeletonMesh
 {
 
-	public:
-		/*!
-		 * 
-		 * default constructor
-		 * 
-		 */
-		SkeletonMesh();
-		~SkeletonMesh();
-		/*!
-		 * 
-		 * joint mesh array representing all 21 skeleton joints
-		 * 
-		 */
-		Cube* m_joints[21];
+public:
+	/*!
+	 *
+	 * default constructor
+	 *
+	 */
+	SkeletonMesh(osg::ref_ptr<osg::Group> rootNode);
+	~SkeletonMesh();
+	
+	void update(Skeleton skeleton);
+
+
+	/*!
+	 *
+	 * joint mesh array representing all 21 skeleton joints
+	 *
+	 */
+private:
+	osg::ref_ptr<osg::Group> m_externalRootNode;
+	osg::ref_ptr<osg::Group> m_skeletonRootNode;
+	std::vector<osg::ref_ptr<osg::PositionAttitudeTransform>> m_joints;
+	std::vector<osg::ref_ptr<osg::Node>> m_bones;
+
+	//juj löschen:
+	Line* m_line;
+
+	osg::PositionAttitudeTransform* m_test;
+
 
 };

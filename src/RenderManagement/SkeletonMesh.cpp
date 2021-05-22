@@ -1,20 +1,478 @@
 #include "SkeletonMesh.h"
+#include <osgDB/ReadFile>
+#include "Line.h"
 
-SkeletonMesh::SkeletonMesh()
+
+SkeletonMesh::SkeletonMesh(osg::ref_ptr<osg::Group> rootNode) : m_externalRootNode(rootNode)
 {
-
-	// create 21 joints
+	m_skeletonRootNode = new osg::Group();
+	// create 21 joints as osg::PositionAttitudeTransform
 	for (int indexJoint = 0; indexJoint < 21; indexJoint++)
 	{
 
-		m_joints[indexJoint] = new Cube();
+		m_joints.push_back(new osg::PositionAttitudeTransform());
+		m_skeletonRootNode->addChild(m_joints.at(indexJoint));
+		m_bones.push_back(osgDB::readNodeFile("./data/mesh_models/bone.obj"));
+		m_joints.at(indexJoint)->addChild(m_bones.at(indexJoint));
 
 	}
+	m_line = new Line(m_skeletonRootNode, false);
+	m_skeletonRootNode->addChild(m_line);
+
+	m_externalRootNode->addChild(m_skeletonRootNode);
 }
+
 
 SkeletonMesh::~SkeletonMesh()
 {
+	//m_externalRootNode->removeChild(m_skeletonRootNode);
+	//delte m_joints
+	//delte m_bones
+	//Avoid ref ptrs? Better readable for novices!
+
+}
 
 
+void SkeletonMesh::update(Skeleton skeleton)
+{
+	m_line->clear();
+
+	int indexJoint = 0;
+
+	// update each joint
+	for (auto itJoint = skeleton.m_joints.begin(); itJoint != skeleton.m_joints.end(); itJoint++)
+	{
+		m_joints.at(indexJoint)->setPosition(osg::Vec3(
+			itJoint->second.getJointPosition().x(),
+			itJoint->second.getJointPosition().y(),
+			itJoint->second.getJointPosition().z()));
+
+		m_joints.at(indexJoint)->setAttitude(osg::Quat(itJoint->second.getJointRotation().x(),
+			itJoint->second.getJointRotation().y(),
+			itJoint->second.getJointRotation().z(),
+			itJoint->second.getJointRotation().w()));
+
+		m_joints.at(indexJoint)->setScale(osg::Vec3f(0.1f, 0.1f, 0.1f));
+
+		switch (itJoint->first) {
+		case Joint::HIPS:
+		{
+			m_joints.at(indexJoint)->setAttitude(osg::Quat(osg::DegreesToRadians(-90.0), osg::Z_AXIS) * osg::Quat(itJoint->second.getJointRotation().x(),
+				itJoint->second.getJointRotation().y(),
+				itJoint->second.getJointRotation().z(),
+				itJoint->second.getJointRotation().w()));
+
+			osg::Vec3f boneVector = osg::Vec3(itJoint->second.getJointPosition().x(),
+				itJoint->second.getJointPosition().y(),
+				itJoint->second.getJointPosition().z())
+				-
+				osg::Vec3((std::next(itJoint))->second.getJointPosition().x(),
+					std::next(itJoint)->second.getJointPosition().y(),
+					std::next(itJoint)->second.getJointPosition().z());
+			float boneLength = boneVector.length();
+
+			m_joints.at(indexJoint)->setScale(osg::Vec3(boneLength, boneLength, boneLength));
+		}
+
+		break;
+		case Joint::SPINE:
+		{
+			m_joints.at(indexJoint)->setAttitude(osg::Quat(osg::DegreesToRadians(-90.0), osg::Z_AXIS) * osg::Quat(itJoint->second.getJointRotation().x(),
+				itJoint->second.getJointRotation().y(),
+				itJoint->second.getJointRotation().z(),
+				itJoint->second.getJointRotation().w()));
+
+			osg::Vec3f boneVector = osg::Vec3(itJoint->second.getJointPosition().x(),
+				itJoint->second.getJointPosition().y(),
+				itJoint->second.getJointPosition().z())
+				-
+				osg::Vec3((std::next(itJoint))->second.getJointPosition().x(),
+					std::next(itJoint)->second.getJointPosition().y(),
+					std::next(itJoint)->second.getJointPosition().z());
+			float boneLength = boneVector.length();
+
+			m_joints.at(indexJoint)->setScale(osg::Vec3(boneLength, boneLength, boneLength));
+		}
+
+		break;
+		case Joint::CHEST:
+		{
+			m_joints.at(indexJoint)->setAttitude(osg::Quat(osg::DegreesToRadians(-90.0), osg::Z_AXIS) * osg::Quat(itJoint->second.getJointRotation().x(),
+				itJoint->second.getJointRotation().y(),
+				itJoint->second.getJointRotation().z(),
+				itJoint->second.getJointRotation().w()));
+
+			osg::Vec3f boneVector = osg::Vec3(itJoint->second.getJointPosition().x(),
+				itJoint->second.getJointPosition().y(),
+				itJoint->second.getJointPosition().z())
+				-
+				osg::Vec3((std::next(itJoint))->second.getJointPosition().x(),
+					std::next(itJoint)->second.getJointPosition().y(),
+					std::next(itJoint)->second.getJointPosition().z());
+			float boneLength = boneVector.length();
+
+			m_joints.at(indexJoint)->setScale(osg::Vec3(boneLength, boneLength, boneLength));
+		}
+
+		break;
+		case Joint::NECK:
+		{
+			osg::Vec3f boneVector = osg::Vec3(itJoint->second.getJointPosition().x(),
+				itJoint->second.getJointPosition().y(),
+				itJoint->second.getJointPosition().z())
+				-
+				osg::Vec3((std::next(itJoint))->second.getJointPosition().x(),
+					std::next(itJoint)->second.getJointPosition().y(),
+					std::next(itJoint)->second.getJointPosition().z());
+			float boneLength = boneVector.length();
+
+			m_joints.at(indexJoint)->setScale(osg::Vec3(boneLength, boneLength, boneLength));
+		}
+		break;
+		case Joint::SHOULDER_L:
+		{
+			osg::Vec3f boneVector = osg::Vec3(itJoint->second.getJointPosition().x(),
+				itJoint->second.getJointPosition().y(),
+				itJoint->second.getJointPosition().z())
+				-
+				osg::Vec3((std::next(itJoint))->second.getJointPosition().x(),
+					std::next(itJoint)->second.getJointPosition().y(),
+					std::next(itJoint)->second.getJointPosition().z());
+			float boneLength = boneVector.length();
+
+			m_joints.at(indexJoint)->setScale(osg::Vec3(boneLength, boneLength, boneLength));
+
+
+		}
+		break;
+		case Joint::ARM_L:
+		{
+			osg::Vec3f boneVector = osg::Vec3(itJoint->second.getJointPosition().x(),
+				itJoint->second.getJointPosition().y(),
+				itJoint->second.getJointPosition().z())
+				-
+				osg::Vec3((std::next(itJoint))->second.getJointPosition().x(),
+					std::next(itJoint)->second.getJointPosition().y(),
+					std::next(itJoint)->second.getJointPosition().z());
+			float boneLength = boneVector.length();
+
+			m_joints.at(indexJoint)->setScale(osg::Vec3(boneLength, boneLength, boneLength));
+
+
+		}
+		break;
+		case Joint::FOREARM_L:
+		{
+			osg::Vec3f boneVector = osg::Vec3(itJoint->second.getJointPosition().x(),
+				itJoint->second.getJointPosition().y(),
+				itJoint->second.getJointPosition().z())
+				-
+				osg::Vec3((std::next(itJoint))->second.getJointPosition().x(),
+					std::next(itJoint)->second.getJointPosition().y(),
+					std::next(itJoint)->second.getJointPosition().z());
+			float boneLength = boneVector.length();
+
+			m_joints.at(indexJoint)->setScale(osg::Vec3(boneLength, boneLength, boneLength));
+		}
+		break;
+		case Joint::HAND_L:
+		{
+
+		}
+
+		break;
+		case Joint::SHOULDER_R:
+		{
+			osg::Vec3f boneVector = osg::Vec3(itJoint->second.getJointPosition().x(),
+				itJoint->second.getJointPosition().y(),
+				itJoint->second.getJointPosition().z())
+				-
+				osg::Vec3((std::next(itJoint))->second.getJointPosition().x(),
+					std::next(itJoint)->second.getJointPosition().y(),
+					std::next(itJoint)->second.getJointPosition().z());
+			float boneLength = boneVector.length();
+
+			m_joints.at(indexJoint)->setScale(osg::Vec3(boneLength, boneLength, boneLength));
+
+			m_joints.at(indexJoint)->setAttitude(osg::Quat(osg::DegreesToRadians(180.0), osg::Z_AXIS) * osg::Quat(itJoint->second.getJointRotation().x(),
+				itJoint->second.getJointRotation().y(),
+				itJoint->second.getJointRotation().z(),
+				itJoint->second.getJointRotation().w()));
+		}
+		break;
+		case Joint::ARM_R:
+		{
+			osg::Vec3f boneVector = osg::Vec3(itJoint->second.getJointPosition().x(),
+				itJoint->second.getJointPosition().y(),
+				itJoint->second.getJointPosition().z())
+				-
+				osg::Vec3((std::next(itJoint))->second.getJointPosition().x(),
+					std::next(itJoint)->second.getJointPosition().y(),
+					std::next(itJoint)->second.getJointPosition().z());
+			float boneLength = boneVector.length();
+
+			m_joints.at(indexJoint)->setScale(osg::Vec3(boneLength, boneLength, boneLength));
+
+			m_joints.at(indexJoint)->setAttitude(osg::Quat(osg::DegreesToRadians(180.0), osg::Z_AXIS) * osg::Quat(itJoint->second.getJointRotation().x(),
+				itJoint->second.getJointRotation().y(),
+				itJoint->second.getJointRotation().z(),
+				itJoint->second.getJointRotation().w()));
+		}
+		break;
+		case Joint::FOREARM_R:
+		{
+			osg::Vec3f boneVector = osg::Vec3(itJoint->second.getJointPosition().x(),
+				itJoint->second.getJointPosition().y(),
+				itJoint->second.getJointPosition().z())
+				-
+				osg::Vec3((std::next(itJoint))->second.getJointPosition().x(),
+					std::next(itJoint)->second.getJointPosition().y(),
+					std::next(itJoint)->second.getJointPosition().z());
+			float boneLength = boneVector.length();
+
+			m_joints.at(indexJoint)->setScale(osg::Vec3(boneLength, boneLength, boneLength));
+
+			m_joints.at(indexJoint)->setAttitude(osg::Quat(osg::DegreesToRadians(180.0), osg::Z_AXIS) * osg::Quat(itJoint->second.getJointRotation().x(),
+				itJoint->second.getJointRotation().y(),
+				itJoint->second.getJointRotation().z(),
+				itJoint->second.getJointRotation().w()));
+		}
+		break;
+		case Joint::HAND_R:
+		{
+
+		}
+		break;
+		case Joint::UPLEG_L:
+		{
+			osg::Vec3f boneVector = osg::Vec3(itJoint->second.getJointPosition().x(),
+				itJoint->second.getJointPosition().y(),
+				itJoint->second.getJointPosition().z())
+				-
+				osg::Vec3((std::next(itJoint))->second.getJointPosition().x(),
+					std::next(itJoint)->second.getJointPosition().y(),
+					std::next(itJoint)->second.getJointPosition().z());
+			float boneLength = boneVector.length();
+
+			m_joints.at(indexJoint)->setScale(osg::Vec3(boneLength, boneLength, boneLength));
+		}
+		break;
+		case Joint::LEG_L:
+		{
+			osg::Vec3f boneVector = osg::Vec3(itJoint->second.getJointPosition().x(),
+				itJoint->second.getJointPosition().y(),
+				itJoint->second.getJointPosition().z())
+				-
+				osg::Vec3((std::next(itJoint))->second.getJointPosition().x(),
+					std::next(itJoint)->second.getJointPosition().y(),
+					std::next(itJoint)->second.getJointPosition().z());
+			float boneLength = boneVector.length();
+
+			m_joints.at(indexJoint)->setScale(osg::Vec3(boneLength, boneLength, boneLength));
+		}
+		break;
+		case Joint::FOOT_L:
+		{
+			osg::Vec3f boneVector = osg::Vec3(itJoint->second.getJointPosition().x(),
+				itJoint->second.getJointPosition().y(),
+				itJoint->second.getJointPosition().z())
+				-
+				osg::Vec3((std::next(itJoint))->second.getJointPosition().x(),
+					std::next(itJoint)->second.getJointPosition().y(),
+					std::next(itJoint)->second.getJointPosition().z());
+			float boneLength = boneVector.length();
+
+			m_joints.at(indexJoint)->setScale(osg::Vec3(boneLength, boneLength, boneLength));
+		}
+		break;
+		case Joint::TOE_L:
+
+			break;
+		case Joint::UPLEG_R:
+		{
+			osg::Vec3f boneVector = osg::Vec3(itJoint->second.getJointPosition().x(),
+				itJoint->second.getJointPosition().y(),
+				itJoint->second.getJointPosition().z())
+				-
+				osg::Vec3((std::next(itJoint))->second.getJointPosition().x(),
+					std::next(itJoint)->second.getJointPosition().y(),
+					std::next(itJoint)->second.getJointPosition().z());
+			float boneLength = boneVector.length();
+
+			m_joints.at(indexJoint)->setScale(osg::Vec3(boneLength, boneLength, boneLength));
+		}
+		break;
+		case Joint::LEG_R:
+		{
+			osg::Vec3f boneVector = osg::Vec3(itJoint->second.getJointPosition().x(),
+				itJoint->second.getJointPosition().y(),
+				itJoint->second.getJointPosition().z())
+				-
+				osg::Vec3((std::next(itJoint))->second.getJointPosition().x(),
+					std::next(itJoint)->second.getJointPosition().y(),
+					std::next(itJoint)->second.getJointPosition().z());
+			float boneLength = boneVector.length();
+
+			m_joints.at(indexJoint)->setScale(osg::Vec3(boneLength, boneLength, boneLength));
+		}
+		break;
+		case Joint::FOOT_R:
+		{
+			osg::Vec3f boneVector = osg::Vec3(itJoint->second.getJointPosition().x(),
+				itJoint->second.getJointPosition().y(),
+				itJoint->second.getJointPosition().z())
+				-
+				osg::Vec3((std::next(itJoint))->second.getJointPosition().x(),
+					std::next(itJoint)->second.getJointPosition().y(),
+					std::next(itJoint)->second.getJointPosition().z());
+			float boneLength = boneVector.length();
+
+			m_joints.at(indexJoint)->setScale(osg::Vec3(boneLength, boneLength, boneLength));
+		}
+		break;
+		case Joint::TOE_R:
+		{
+
+		}
+		break;
+		case Joint::HEAD:
+		{
+
+		}
+		break;
+
+		default:
+			break;
+		}
+
+		//if (indexJoint == 16)
+		//{
+		//	osg::Vec3f boneVector = osg::Vec3(itJoint->second.getJointPosition().x(),
+		//		itJoint->second.getJointPosition().y(),
+		//		itJoint->second.getJointPosition().z()) 
+		//		-
+		//		osg::Vec3((std::next(itJoint))->second.getJointPosition().x(),
+		//			std::next(itJoint)->second.getJointPosition().y(),
+		//				std::next(itJoint)->second.getJointPosition().z());
+		//	float boneLength = boneVector.length();
+		//	
+		//	m_line->draw(osg::Vec3(itJoint->second.getJointPosition().x(),
+		//		itJoint->second.getJointPosition().y(),
+		//		itJoint->second.getJointPosition().z()),
+		//		osg::Vec3((std::next(itJoint))->second.getJointPosition().x(),
+		//			std::next(itJoint)->second.getJointPosition().y(),
+		//			std::next(itJoint)->second.getJointPosition().z()),
+		//		osg::Vec4f(1.0, 0.0, 0.0, 1.0),
+		//		osg::Vec4f(0.0, 1.0, 0.0, 1.0));
+
+			//osg::Matrix test;
+			//test.makeLookAt(osg::Vec3(itJoint->second.getJointPosition().x(),
+			//	itJoint->second.getJointPosition().y(),
+			//	itJoint->second.getJointPosition().z()),
+			//	osg::Vec3((std::next(itJoint))->second.getJointPosition().x(),
+			//		std::next(itJoint)->second.getJointPosition().y(),
+			//		std::next(itJoint)->second.getJointPosition().z()), osg::X_AXIS);
+			//m_joints.at(indexJoint)->setAttitude(test.getRotate());
+
+
+		//}
+		m_line->redraw();
+
+
+
+
+
+
+
+
+		//Console::log("GlWidget::updateSkeletonMeshTransform(): pool size = " + toString(m_skeletonMeshPool.size()));
+
+		// get current skeleton
+		//auto currMeshTracker = m_skeletonMeshPool.find((*itTracker)->getProperties()->id);
+
+		//juj: Was ist hiermit???
+		//if (currMeshTracker->second.size() == 0)
+		//{
+		//	return;
+		//}
+
+		// get current joint
+		//Cube* currJoint = currMeshTracker->second.at(indexSkeleton).m_joints[indexJoint];
+
+		// set joint position and rotation
+		//currJoint->setPosition(itJoint->second.getJointPosition());
+		//currJoint->setRotation(itJoint->second.getJointRotation());
+
+		//osg::Matrix transformMatrix;
+		//transformMatrix = osg::Matrix::rotate(osg::Quat(itJoint->second.getJointRotation().x(),
+		//	itJoint->second.getJointRotation().y(),
+		//	itJoint->second.getJointRotation().z(),
+		//	itJoint->second.getJointRotation().w()))
+		//	* osg::Matrix::translate(osg::Vec3f(itJoint->second.getJointPosition().x(),
+		//		itJoint->second.getJointPosition().y(),
+		//		itJoint->second.getJointPosition().z()));
+		//m_sphereTransforms.at(indexJoint)->setMatrix(transformMatrix);
+
+
+	//	m_axesCrosses.at(indexJoint)->setAttitude(osg::Quat(itJoint->second.getJointRotation().x(),
+	//		itJoint->second.getJointRotation().y(),
+	//		itJoint->second.getJointRotation().z(),
+	//		itJoint->second.getJointRotation().w()));
+	//m_axesCrosses.at(indexJoint)->setPosition(osg::Vec3f(itJoint->second.getJointPosition().x(),
+	//	itJoint->second.getJointPosition().y(),
+	//	itJoint->second.getJointPosition().z()));
+
+
+
+
+	// #### START debug draws: AxesCross and Lines 2/2 ####
+	//// set attitude sets a rotation. Can also be used for the line
+	//m_axesCrossTest->setAttitude(osg::Quat(itJoint->second.getJointRotation().x(),
+	//	itJoint->second.getJointRotation().y(),
+	//	itJoint->second.getJointRotation().z(),
+	//	itJoint->second.getJointRotation().w()));
+	//// set position
+	//m_axesCrossTest->setPosition(osg::Vec3f(itJoint->second.getJointPosition().x(),
+	//	itJoint->second.getJointPosition().y(),
+	//	itJoint->second.getJointPosition().z()));
+	//// each time, the line has changed, redraw() must be called. Here are no changes in this loop, so it would be ok to only call redraw() once after creation
+	////However, if changes will be made here in the loop, redraw(9 must be called. Otherwise, no changes are displayed
+	//m_line->redraw();
+	// ---- END debug draws ----
+
+
+
+	// set joint confidence in the shader
+		switch (itJoint->second.getJointConfidence())
+		{
+
+		case Joint::HIGH:
+			//currJoint->setDiffuseColor(m_colorGreen);
+			//m_spheres.at(indexJoint)->setColor(osg::Vec4f(m_colorGreen.m_xyz.x, m_colorGreen.m_xyz.y, m_colorGreen.m_xyz.z, 1.0f));
+			break;
+
+		case Joint::MEDIUM:
+			//currJoint->setDiffuseColor(m_colorYellow);
+			//m_spheres.at(indexJoint)->setColor(osg::Vec4f(m_colorYellow.m_xyz.x, m_colorYellow.m_xyz.y, m_colorYellow.m_xyz.z, 1.0f));
+			break;
+
+		case Joint::LOW:
+			//currJoint->setDiffuseColor(m_colorRed);
+			//m_spheres.at(indexJoint)->setColor(osg::Vec4f(m_colorRed.m_xyz.x, m_colorRed.m_xyz.y, m_colorRed.m_xyz.z, 1.0f));
+			break;
+
+		case Joint::NONE:
+			//currJoint->setDiffuseColor(Vector3::one());
+			//m_spheres.at(indexJoint)->setColor(osg::Vec4f(1.0f, 1.0f, 1.0f, 1.0f));
+			break;
+
+		default:
+			break;
+
+		}
+
+		indexJoint++;
+
+	}
 
 }

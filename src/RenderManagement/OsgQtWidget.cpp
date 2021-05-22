@@ -3,7 +3,7 @@
 #include "TrackerManagement/TrackerManager.h"
 #include "Grid.h"
 
-#include "osg/PositionAttitudeTransform"
+#include <osg/PositionAttitudeTransform>
 
 #include <QVBoxLayout>
 
@@ -43,7 +43,7 @@ OsgQtWidget::OsgQtWidget(osgQt::GraphicsWindowQt* gw, TrackerManager* trackerMan
 	connect(&m_timer, SIGNAL(timeout()), this, SLOT(update()));
 	m_timer.start(10); //TODO1: Hardcoded fps timing
 
-
+	// setup grid
 	int lineCountGrid = 10;
 	m_configManager->readInt("line_count_for_floor_grid", lineCountGrid);
 
@@ -56,39 +56,44 @@ OsgQtWidget::OsgQtWidget(osgQt::GraphicsWindowQt* gw, TrackerManager* trackerMan
 	float lineWidthForGreyAxesGrid = 0.01;
 	m_configManager->readFloat("line_width_for_grey_axes_floor_grid", lineWidthForGreyAxesGrid);
 
-
-
 	Grid grid(lineCountGrid, SHOW_X_Z, cellSizeGrid, lineWidthForRGBAxesGrid, lineWidthForGreyAxesGrid);
 	grid.attachToSceneGraph(m_sceneRoot);
 
+	//setup confidence colors
+	m_colorRed = osg::Vec4f(0.75f, 0.0f, 0.0f, 1.0f);
+	m_colorYellow = osg::Vec4f(0.75f, 0.75f, 0.0f, 1.0f);
+	m_colorGreen = osg::Vec4f(0.0f, 0.75f, 0.0f, 1.0f);
 
-	m_colorRed = Vector3(0.75f, 0.0f, 0.0f);
-	m_colorYellow = Vector3(0.75f, 0.75f, 0.0f);
-	m_colorGreen = Vector3(0.0f, 0.75f, 0.0f);
-
+	//setup skelett rendering
 	for (int i = 0; i <= 20; i++)
 	{
-		m_spheres.push_back(new osg::ShapeDrawable());
-		m_spheres.at(i)->setShape(new osg::Sphere(osg::Vec3(0.0f, 0.0f, 0.0f), 0.035f));
-		m_spheres.at(i)->setColor(osg::Vec4(1.0f, 0.0f, 0.0f, 1.0f));
-		m_sphereTransforms.push_back(new osg::MatrixTransform());
-		m_sphereTransforms.at(i)->addChild(m_spheres.at(i));
-		m_sceneRoot->addChild(m_sphereTransforms.at(i));
+		//m_spheres.push_back(new osg::ShapeDrawable());
+		m_axesCrosses.push_back(new AxesCross(m_sceneRoot));
+		//m_spheres.at(i)->setShape(new osg::Sphere(osg::Vec3(0.0f, 0.0f, 0.0f), 0.035f));
+		//m_spheres.at(i)->setColor(osg::Vec4(1.0f, 0.0f, 0.0f, 1.0f));
+		//m_sphereTransforms.push_back(new osg::MatrixTransform());
+		//m_sphereTransforms.at(i)->addChild(m_spheres.at(i));
+		//m_sceneRoot->addChild(m_sphereTransforms.at(i));
 	}
+
+	// #### START debug draws: AxesCross and Lines 1/2 ####
 	//create axesCross
-	m_axesCrossTest = new AxesCross(m_sceneRoot);
+	//m_axesCrossTest = new AxesCross(m_sceneRoot);
 	// create a simple line
-	m_line = new Line(m_sceneRoot, true);
-	m_line->draw(osg::Vec3f(0.0, 0.0, 0.0), osg::Vec3f(1.0, 1.0, 1.0), osg::Vec4f(1.0, 0.0, 0.0, 1.0), osg::Vec4f(0.0, 1.0, 0.0, 1.0));
+	//m_line = new Line(m_sceneRoot, true);
+	//m_line->draw(osg::Vec3f(0.0, 0.0, 0.0), osg::Vec3f(1.0, 1.0, 1.0), osg::Vec4f(1.0, 0.0, 0.0, 1.0), osg::Vec4f(0.0, 1.0, 0.0, 1.0));
 	// adding another line - a new draw()-call adds a new line to the line object
-	m_line->draw(osg::Vec3f(0.0, 2.0, 0.0), osg::Vec3f(0.0, 1.0, 1.0), osg::Vec4f(0.0, 0.0, 1.0, 1.0), osg::Vec4f(0.0, 1.0, 0.0, 1.0));
+	//m_line->draw(osg::Vec3f(0.0, 2.0, 0.0), osg::Vec3f(0.0, 1.0, 1.0), osg::Vec4f(0.0, 0.0, 1.0, 1.0), osg::Vec4f(0.0, 1.0, 0.0, 1.0));
 	// to reset the line count to 0, use clear(). After this, Line is empty and new lines can be added
 	//m_line->clear(); 
 
 	//m_sceneRoot->addChild(m_axesCrossTest);
+	// ---- END debug draws ----
 
 	////HWM: Skelett reinrbingen -> Bone laden - ist 1m auf der Y hoch
-	//osg::ref_ptr<osg::Node> bone = osgDB::readNodeFile("./data/bone.obj");
+	//osg::ref_ptr<osg::Node> bone = osgDB::readNodeFile("./data/mesh_models/bone.obj");
+	//m_sceneRoot->addChild(bone);
+
 
 	////Dann kopieren - dep oder shallow?
 	//osg::ref_ptr<osg::Geode> geode2 = dynamic_cast<osg::Geode*>(geode1->clone(osg::CopyOp::SHALLOW_COPY));
@@ -106,7 +111,7 @@ OsgQtWidget::OsgQtWidget(osgQt::GraphicsWindowQt* gw, TrackerManager* trackerMan
 	//g_sceneRoot->addChild(g_ARCoreModellMatrixTransform);
 }
 
-
+//Is envoked, when no (global) tracking is active and a new tracker is added
 void OsgQtWidget::updateSkeletonMeshPoolSize()
 {
 	std::cout << "Test aus updateSkeletonMeshPoolSize" << std::endl;
@@ -132,7 +137,7 @@ void OsgQtWidget::updateSkeletonMeshPoolSize()
 
 				Console::log("GlWidget::updateSkeletonMeshPoolSize(): insert");
 
-				// add the tracker refference id as a key and create an new SkeletonMesh vector
+				// add the tracker reference id as a key and create an new SkeletonMesh vector
 				m_skeletonMeshPool.insert(std::make_pair((*itTracker)->getProperties()->id, std::vector<SkeletonMesh>()));
 
 			}
@@ -178,118 +183,7 @@ void OsgQtWidget::updateSkeletonMeshPoolSize()
 }
 
 
-void OsgQtWidget::updateSkeletonMeshTransform()
-{
-	//std::cout << "Test aus updateSkeletonMeshTransform" << std::endl;
-	// get tracker pool from the tracker manager
-	std::vector<Tracker*> trackerTempCopy = m_refTrackerManager->getPoolTracker();
-
-	// loop over all tracker in the pool
-	for (auto itTracker = trackerTempCopy.begin(); itTracker != trackerTempCopy.end(); itTracker++)
-	{
-
-		// update skeleton joint position and rotation if new data is available
-		if ((*itTracker)->isTracking() && (*itTracker)->isDataAvailable())
-		{
-
-			// get skeletonPoolCache from tracker and create skeletonPoolTempCopy
-			std::map<int, Skeleton> skeletonPoolTempCopy = (*itTracker)->getSkeletonPoolCache();
-
-			int indexSkeleton = 0;
-
-			// update each skeleton
-			for (auto itSkeleton = skeletonPoolTempCopy.begin(); itSkeleton != skeletonPoolTempCopy.end(); itSkeleton++)
-			{
-
-				int indexJoint = 0;
-
-				// update each joint
-				for (auto itJoint = itSkeleton->second.m_joints.begin(); itJoint != itSkeleton->second.m_joints.end(); itJoint++)
-				{
-
-					//Console::log("GlWidget::updateSkeletonMeshTransform(): pool size = " + toString(m_skeletonMeshPool.size()));
-
-					// get current skeleton
-					auto currMeshTracker = m_skeletonMeshPool.find((*itTracker)->getProperties()->id);
-
-					if (currMeshTracker->second.size() == 0)
-					{
-						return;
-					}
-
-					// get current joint
-					//Cube* currJoint = currMeshTracker->second.at(indexSkeleton).m_joints[indexJoint];
-
-					// set joint position and rotation
-					//currJoint->setPosition(itJoint->second.getJointPosition());
-					//currJoint->setRotation(itJoint->second.getJointRotation());
-
-					osg::Matrix transformMatrix;
-					transformMatrix = osg::Matrix::rotate(osg::Quat(itJoint->second.getJointRotation().x(),
-						itJoint->second.getJointRotation().y(),
-						itJoint->second.getJointRotation().z(),
-						itJoint->second.getJointRotation().w()))
-						* osg::Matrix::translate(osg::Vec3f(itJoint->second.getJointPosition().x(),
-							itJoint->second.getJointPosition().y(),
-							itJoint->second.getJointPosition().z()));
-					m_sphereTransforms.at(indexJoint)->setMatrix(transformMatrix);
-
-					// set attitude sets a rotation. Can also be used for the line
-					m_axesCrossTest->setAttitude(osg::Quat(itJoint->second.getJointRotation().x(),
-						itJoint->second.getJointRotation().y(),
-						itJoint->second.getJointRotation().z(),
-						itJoint->second.getJointRotation().w()));
-					// set position
-					m_axesCrossTest->setPosition(osg::Vec3f(itJoint->second.getJointPosition().x(),
-						itJoint->second.getJointPosition().y(),
-						itJoint->second.getJointPosition().z()));
-					// each time, the line has changed, redraw() must be called. Here are no changes in this loop, so it would be ok to only call redraw() once after creation
-					//However, if changes will be made here in the loop, redraw(9 must be called. Otherwise, no changes are displayed
-					m_line->redraw();
-
-
-
-					// set joint confidence in the shader
-					switch (itJoint->second.getJointConfidence())
-					{
-
-					case Joint::HIGH:
-						//currJoint->setDiffuseColor(m_colorGreen);
-						m_spheres.at(indexJoint)->setColor(osg::Vec4f(m_colorGreen.m_xyz.x, m_colorGreen.m_xyz.y, m_colorGreen.m_xyz.z, 1.0f));
-						break;
-
-					case Joint::MEDIUM:
-						//currJoint->setDiffuseColor(m_colorYellow);
-						m_spheres.at(indexJoint)->setColor(osg::Vec4f(m_colorYellow.m_xyz.x, m_colorYellow.m_xyz.y, m_colorYellow.m_xyz.z, 1.0f));
-						break;
-
-					case Joint::LOW:
-						//currJoint->setDiffuseColor(m_colorRed);
-						m_spheres.at(indexJoint)->setColor(osg::Vec4f(m_colorRed.m_xyz.x, m_colorRed.m_xyz.y, m_colorRed.m_xyz.z, 1.0f));
-						break;
-
-					case Joint::NONE:
-						//currJoint->setDiffuseColor(Vector3::one());
-						m_spheres.at(indexJoint)->setColor(osg::Vec4f(1.0f, 1.0f, 1.0f, 1.0f));
-						break;
-
-					default:
-						break;
-
-					}
-
-					indexJoint++;
-
-				}
-
-				indexSkeleton++;
-
-			}
-		}
-	}
-}
-
-
+//Is envoked, when (global) tracking is active and a new skeleton of a tracker (for example spawned by Azure Kinect) appears in the tracking data
 void OsgQtWidget::updateSkeletonMeshCount()
 {
 	std::cout << "updateSkeletonMeshCount" << std::endl;
@@ -321,7 +215,7 @@ void OsgQtWidget::updateSkeletonMeshCount()
 				while (m_skeletonMeshPool.find((*itTracker)->getProperties()->id)->second.size() < skeletonPoolTempCopy.size())
 				{
 					// add new skeletonMesh to skeltonMeshPool
-					m_skeletonMeshPool.find((*itTracker)->getProperties()->id)->second.push_back(SkeletonMesh());
+					m_skeletonMeshPool.find((*itTracker)->getProperties()->id)->second.push_back(SkeletonMesh(m_sceneRoot));
 
 				}
 			}
@@ -333,6 +227,7 @@ void OsgQtWidget::updateSkeletonMeshCount()
 				{
 					// remove skeletonMesh from skeletonMeshPool
 					m_skeletonMeshPool.find((*itTracker)->getProperties()->id)->second.pop_back();
+					//TODO juj Call DTOR of skeleton!!
 
 				}
 			}
@@ -343,6 +238,138 @@ void OsgQtWidget::updateSkeletonMeshCount()
 	m_refTrackerManager->getTrackerPoolLock()->unlock();
 }
 
+
+// Loop every MotionHub GLWindow frame
+void OsgQtWidget::updateSkeletonMeshTransform()
+{
+	std::cout << "updateSkeletonMeshTransform" << std::endl;
+	// get tracker pool from the tracker manager
+	std::vector<Tracker*> trackerTempCopy = m_refTrackerManager->getPoolTracker();
+
+	// loop over all tracker in the pool
+	for (auto itTracker = trackerTempCopy.begin(); itTracker != trackerTempCopy.end(); itTracker++)
+	{
+
+		// update skeleton joint position and rotation if new data is available
+		if ((*itTracker)->isTracking() && (*itTracker)->isDataAvailable())
+		{
+
+			// get skeletonPoolCache from tracker and create skeletonPoolTempCopy
+			std::map<int, Skeleton> skeletonPoolTempCopy = (*itTracker)->getSkeletonPoolCache();
+
+			int indexSkeleton = 0;
+
+			// update each skeleton
+			for (auto itSkeleton = skeletonPoolTempCopy.begin(); itSkeleton != skeletonPoolTempCopy.end(); itSkeleton++)
+			{
+
+				//juj 
+				//itSkeleton
+				m_skeletonMeshPool.find((*itTracker)->getProperties()->id)->second.at(indexSkeleton).update(itSkeleton->second);
+
+				//juj
+				//alles weitere in Skeleton verschieben
+				int indexJoint = 0;
+
+				// update each joint
+				for (auto itJoint = itSkeleton->second.m_joints.begin(); itJoint != itSkeleton->second.m_joints.end(); itJoint++)
+				{
+
+					//Console::log("GlWidget::updateSkeletonMeshTransform(): pool size = " + toString(m_skeletonMeshPool.size()));
+
+					// get current skeleton
+					auto currMeshTracker = m_skeletonMeshPool.find((*itTracker)->getProperties()->id);
+
+					if (currMeshTracker->second.size() == 0)
+					{
+						return;
+					}
+
+					// get current joint
+					//Cube* currJoint = currMeshTracker->second.at(indexSkeleton).m_joints[indexJoint];
+
+					// set joint position and rotation
+					//currJoint->setPosition(itJoint->second.getJointPosition());
+					//currJoint->setRotation(itJoint->second.getJointRotation());
+
+					//osg::Matrix transformMatrix;
+					//transformMatrix = osg::Matrix::rotate(osg::Quat(itJoint->second.getJointRotation().x(),
+					//	itJoint->second.getJointRotation().y(),
+					//	itJoint->second.getJointRotation().z(),
+					//	itJoint->second.getJointRotation().w()))
+					//	* osg::Matrix::translate(osg::Vec3f(itJoint->second.getJointPosition().x(),
+					//		itJoint->second.getJointPosition().y(),
+					//		itJoint->second.getJointPosition().z()));
+					//m_sphereTransforms.at(indexJoint)->setMatrix(transformMatrix);
+
+
+					m_axesCrosses.at(indexJoint)->setAttitude(osg::Quat(itJoint->second.getJointRotation().x(),
+						itJoint->second.getJointRotation().y(),
+						itJoint->second.getJointRotation().z(),
+						itJoint->second.getJointRotation().w()));
+					m_axesCrosses.at(indexJoint)->setPosition(osg::Vec3f(itJoint->second.getJointPosition().x(),
+						itJoint->second.getJointPosition().y(),
+						itJoint->second.getJointPosition().z()));
+
+
+
+
+					// #### START debug draws: AxesCross and Lines 2/2 ####
+					//// set attitude sets a rotation. Can also be used for the line
+					//m_axesCrossTest->setAttitude(osg::Quat(itJoint->second.getJointRotation().x(),
+					//	itJoint->second.getJointRotation().y(),
+					//	itJoint->second.getJointRotation().z(),
+					//	itJoint->second.getJointRotation().w()));
+					//// set position
+					//m_axesCrossTest->setPosition(osg::Vec3f(itJoint->second.getJointPosition().x(),
+					//	itJoint->second.getJointPosition().y(),
+					//	itJoint->second.getJointPosition().z()));
+					//// each time, the line has changed, redraw() must be called. Here are no changes in this loop, so it would be ok to only call redraw() once after creation
+					////However, if changes will be made here in the loop, redraw(9 must be called. Otherwise, no changes are displayed
+					//m_line->redraw();
+					// ---- END debug draws ----
+
+
+
+					// set joint confidence in the shader
+					switch (itJoint->second.getJointConfidence())
+					{
+
+					case Joint::HIGH:
+						//currJoint->setDiffuseColor(m_colorGreen);
+						//m_spheres.at(indexJoint)->setColor(osg::Vec4f(m_colorGreen.m_xyz.x, m_colorGreen.m_xyz.y, m_colorGreen.m_xyz.z, 1.0f));
+						break;
+
+					case Joint::MEDIUM:
+						//currJoint->setDiffuseColor(m_colorYellow);
+						//m_spheres.at(indexJoint)->setColor(osg::Vec4f(m_colorYellow.m_xyz.x, m_colorYellow.m_xyz.y, m_colorYellow.m_xyz.z, 1.0f));
+						break;
+
+					case Joint::LOW:
+						//currJoint->setDiffuseColor(m_colorRed);
+						//m_spheres.at(indexJoint)->setColor(osg::Vec4f(m_colorRed.m_xyz.x, m_colorRed.m_xyz.y, m_colorRed.m_xyz.z, 1.0f));
+						break;
+
+					case Joint::NONE:
+						//currJoint->setDiffuseColor(Vector3::one());
+						//m_spheres.at(indexJoint)->setColor(osg::Vec4f(1.0f, 1.0f, 1.0f, 1.0f));
+						break;
+
+					default:
+						break;
+
+					}
+
+					indexJoint++;
+
+				}
+
+				indexSkeleton++;
+
+			}
+		}
+	}
+}
 
 
 void OsgQtWidget::drawLine(const osg::Vec3 start, const osg::Vec3 end, const osg::Vec4 colorStart, const osg::Vec4 colorEnd) {

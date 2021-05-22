@@ -90,8 +90,6 @@ void MotionHub::update()
 					// send skeleton pool reference to gesture manager in order to update all postures
 					//m_gestureManager->updateAllSkeletonPostures(&((*itTracker)->getSkeletonPoolCache())									  );
 
-
-
 					// update ui if skeleton was added or removed from pool
 					if ((*itTracker)->hasSkeletonPoolChanged())
 					{

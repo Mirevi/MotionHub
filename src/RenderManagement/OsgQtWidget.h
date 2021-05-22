@@ -6,19 +6,15 @@
 #include <QtGui/QtGui>
 #include <QTimer>
 
-#include <osg/ShapeDrawable>
-#include <osg/MatrixTransform>
-
 #include <osgQt/GraphicsWindowQt>
 
 #include <osgDB/ReadFile>
 #include <osgGA/TrackballManipulator>
 #include <osgViewer/ViewerEventHandlers>
 #include <osgViewer/Viewer>
+#include <osg/ShapeDrawable>
+#include <osg/MatrixTransform>
 
-#include "Mesh.h"
-//#include "Plane.h"
-//#include "Cube.h"
 #include "SkeletonMesh.h"
 
 
@@ -67,12 +63,14 @@ protected:
      * color components for the background color
      *
      */
-    Vector3 m_colorRed, m_colorYellow, m_colorGreen;
+    osg::Vec4f m_colorRed, m_colorYellow, m_colorGreen;
 
     std::map<int, std::vector<SkeletonMesh>> m_skeletonMeshPool;
 
     std::vector<osg::ref_ptr<osg::ShapeDrawable>> m_spheres;
     std::vector<osg::ref_ptr<osg::MatrixTransform>> m_sphereTransforms;
-    AxesCross* m_axesCrossTest;
+    std::vector<AxesCross*> m_axesCrosses;
+    
+    //AxesCross* m_axesCrossTest;
     Line* m_line;
 };

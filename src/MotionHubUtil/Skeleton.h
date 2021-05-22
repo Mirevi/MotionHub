@@ -44,6 +44,7 @@ public:
 	 */
 	int getSid();
 
+	//TODO: Make a setter and getter method
 	/*!
 	 * map of all skeleton joints with JointNames as keys
 	 * 

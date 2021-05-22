@@ -22,7 +22,7 @@
 #include <math.h>
 #include <MotionHubUtil/MMHmath.h>
 
-
+//TODO: rename this as RenderManager or add a RenderManager and incorparate MainWindow
 
 #define GET_VARIABLE_NAME(Variable) (#Variable)
 

@@ -6,6 +6,8 @@
 #include <osg/PolygonMode>
 #include <osg/MatrixTransform>
 
+//TODO: Rename to osgGrid, when all branches merged again
+
 enum GridMode
 {
 	SHOW_ALL,

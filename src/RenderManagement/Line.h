@@ -6,6 +6,7 @@
 #include <osg/Vec3f>
 
 //class ConfigManager;
+//TODO: Rename to osgLine, when all branches merged again
 
 class RenderManagement_DLL_import_export Line : public osg::PositionAttitudeTransform
 {
