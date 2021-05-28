@@ -1177,6 +1177,7 @@ void MainWindow::setTimelineValue(float totalTime, int frameIdx, int numFrames)
 
 	if (m_timelineActive)
 	{
+		m_mmhTimeline->setMaxValue(numFrames);
 		m_mmhTimeline->setValue((frameIdx * 100) / numFrames);
 	}
 

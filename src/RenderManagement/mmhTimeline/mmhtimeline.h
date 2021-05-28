@@ -2,6 +2,9 @@
 #define MMHTIMELINE_H
 
 #include <QWidget>
+#include <QFrame>
+
+#include "MotionHubUtil/Console.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class mmhTimeline; }
@@ -17,6 +20,9 @@ public:
 
     void setValue(float newValue);
     float getValue();
+
+    void setMaxValue(int maxValue);
+    int getMaxValue();
 
 protected:
     void mouseMoveEvent(    QMouseEvent * event) override;
@@ -34,8 +40,19 @@ signals:
 
 private:
     void updateTimelinePosition();
+    void updateHelperLines();
+    void updateFrame();
+
+
+    void clearHelperLines();
+
+
 
     float m_percentage = 0;
+    int m_maxValue = 500;
+    int m_helperDistance = 100;
+
+    std::vector<QFrame*> m_helpLines;
 
     Ui::mmhTimeline *ui;
 };
