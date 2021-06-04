@@ -3,7 +3,12 @@
 #include "TrackerManagement/TrackerManager.h"
 #include "Grid.h"
 
+#include "osg/PositionAttitudeTransform"
+
 #include <QVBoxLayout>
+
+#include "AxesCross.h"
+#include "Line.h"
 
 namespace osgQt
 {
@@ -41,7 +46,7 @@ OsgQtWidget::OsgQtWidget(osgQt::GraphicsWindowQt* gw, TrackerManager* trackerMan
 
 	int lineCountGrid = 10;
 	m_configManager->readInt("line_count_for_floor_grid", lineCountGrid);
-	
+
 	float cellSizeGrid = 0.5;
 	m_configManager->readFloat("cell_size_for_floor_grid", cellSizeGrid);
 
@@ -51,8 +56,8 @@ OsgQtWidget::OsgQtWidget(osgQt::GraphicsWindowQt* gw, TrackerManager* trackerMan
 	float lineWidthForGreyAxesGrid = 0.01;
 	m_configManager->readFloat("line_width_for_grey_axes_floor_grid", lineWidthForGreyAxesGrid);
 
-	
-	
+
+
 	Grid grid(lineCountGrid, SHOW_X_Z, cellSizeGrid, lineWidthForRGBAxesGrid, lineWidthForGreyAxesGrid);
 	grid.attachToSceneGraph(m_sceneRoot);
 
@@ -70,7 +75,17 @@ OsgQtWidget::OsgQtWidget(osgQt::GraphicsWindowQt* gw, TrackerManager* trackerMan
 		m_sphereTransforms.at(i)->addChild(m_spheres.at(i));
 		m_sceneRoot->addChild(m_sphereTransforms.at(i));
 	}
+	//create axesCross
+	m_axesCrossTest = new AxesCross(m_sceneRoot);
+	// create a simple line
+	m_line = new Line(m_sceneRoot, true);
+	m_line->draw(osg::Vec3f(0.0, 0.0, 0.0), osg::Vec3f(1.0, 1.0, 1.0), osg::Vec4f(1.0, 0.0, 0.0, 1.0), osg::Vec4f(0.0, 1.0, 0.0, 1.0));
+	// adding another line - a new draw()-call adds a new line to the line object
+	m_line->draw(osg::Vec3f(0.0, 2.0, 0.0), osg::Vec3f(0.0, 1.0, 1.0), osg::Vec4f(0.0, 0.0, 1.0, 1.0), osg::Vec4f(0.0, 1.0, 0.0, 1.0));
+	// to reset the line count to 0, use clear(). After this, Line is empty and new lines can be added
+	//m_line->clear(); 
 
+	//m_sceneRoot->addChild(m_axesCrossTest);
 
 	////HWM: Skelett reinrbingen -> Bone laden - ist 1m auf der Y hoch
 	//osg::ref_ptr<osg::Node> bone = osgDB::readNodeFile("./data/bone.obj");
@@ -210,14 +225,29 @@ void OsgQtWidget::updateSkeletonMeshTransform()
 					//currJoint->setRotation(itJoint->second.getJointRotation());
 
 					osg::Matrix transformMatrix;
-					transformMatrix = osg::Matrix::rotate(osg::Quat(itJoint->second.getJointRotation().x(), 
-																	itJoint->second.getJointRotation().y(), 
-																	itJoint->second.getJointRotation().z(), 
-																	itJoint->second.getJointRotation().w()))
-									* osg::Matrix::translate(osg::Vec3f(itJoint->second.getJointPosition().x(),
-																		itJoint->second.getJointPosition().y(),
-																		itJoint->second.getJointPosition().z()));
+					transformMatrix = osg::Matrix::rotate(osg::Quat(itJoint->second.getJointRotation().x(),
+						itJoint->second.getJointRotation().y(),
+						itJoint->second.getJointRotation().z(),
+						itJoint->second.getJointRotation().w()))
+						* osg::Matrix::translate(osg::Vec3f(itJoint->second.getJointPosition().x(),
+							itJoint->second.getJointPosition().y(),
+							itJoint->second.getJointPosition().z()));
 					m_sphereTransforms.at(indexJoint)->setMatrix(transformMatrix);
+
+					// set attitude sets a rotation. Can also be used for the line
+					m_axesCrossTest->setAttitude(osg::Quat(itJoint->second.getJointRotation().x(),
+						itJoint->second.getJointRotation().y(),
+						itJoint->second.getJointRotation().z(),
+						itJoint->second.getJointRotation().w()));
+					// set position
+					m_axesCrossTest->setPosition(osg::Vec3f(itJoint->second.getJointPosition().x(),
+						itJoint->second.getJointPosition().y(),
+						itJoint->second.getJointPosition().z()));
+					// each time, the line has changed, redraw() must be called. Here are no changes in this loop, so it would be ok to only call redraw() once after creation
+					//However, if changes will be made here in the loop, redraw(9 must be called. Otherwise, no changes are displayed
+					m_line->redraw();
+
+
 
 					// set joint confidence in the shader
 					switch (itJoint->second.getJointConfidence())
@@ -311,4 +341,15 @@ void OsgQtWidget::updateSkeletonMeshCount()
 
 	// unlock the trackerPool
 	m_refTrackerManager->getTrackerPoolLock()->unlock();
+}
+
+
+
+void OsgQtWidget::drawLine(const osg::Vec3 start, const osg::Vec3 end, const osg::Vec4 colorStart, const osg::Vec4 colorEnd) {
+	//m_vertices->push_back(start);
+	//m_vertices->push_back(end);
+	//m_colors->push_back(colorStart);
+	//m_colors->push_back(colorEnd);
+	////RedrawLines();
+	//m_isDirty = true;
 }

@@ -19,7 +19,9 @@ public:
     ~mmhTimeline();
 
     void setValue(float newValue);
+    void setMaxValue(float newMax);
     float getValue();
+    float getMaxValue();
 
     void setMaxValue(int maxValue);
     int getMaxValue();
@@ -49,6 +51,7 @@ private:
 
 
     float m_percentage = 0;
+    float m_maxValue = 100;
 
     int m_maxValue = 500;
     int m_helperDistance = 100;
