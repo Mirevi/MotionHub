@@ -166,13 +166,13 @@ void mmhTimeline::resizeEvent(QResizeEvent* event)
 
 
 
-float mmhTimeline::getMaxValue()
-{
-    return m_maxValue;
-}
-
-void mmhTimeline::setMaxValue(float newMax)
-{
-    m_maxValue = newMax;
-    updateTimelinePosition();
-}
+//float mmhTimeline::getMaxValue()
+//{
+//    return m_maxValue;
+//}
+//
+//void mmhTimeline::setMaxValue(float newMax)
+//{
+//    m_maxValue = newMax;
+//    updateTimelinePosition();
+//}
