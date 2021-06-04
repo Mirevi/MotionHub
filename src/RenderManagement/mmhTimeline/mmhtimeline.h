@@ -49,10 +49,12 @@ private:
 
 
     float m_percentage = 0;
+
     int m_maxValue = 500;
     int m_helperDistance = 100;
 
     std::vector<QFrame*> m_helpLines;
+
 
     Ui::mmhTimeline *ui;
 };

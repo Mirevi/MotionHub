@@ -22,7 +22,7 @@ void Skeleton::parseJoint(Joint::JointNames name, Vector4f position, Quaternionf
 	//creates Joint with given values
 	Joint curr_joint = Joint(position, rotation, confidence);
 	//inserts created joint in m_joints
-	m_joints.insert({ name, curr_joint });	
+	m_joints.insert({ name, curr_joint });
 
 }
 
