@@ -224,8 +224,8 @@ static Quaternionf ConvertToRotation(const vr::HmdMatrix34_t& trackingMatrix) {
 #pragma endregion
 
 OpenVRTracking::OpenVRTracking() :
-	trackedPoseCount(0), 
-	predictSecondsFromNow(0) 
+	trackedPoseCount(0),
+	predictSecondsFromNow(0)
 {
 
 }
@@ -299,7 +299,7 @@ void OpenVRTracking::init() {
 	for (vr::TrackedDeviceIndex_t deviceIndex = 0; deviceIndex < vr::k_unMaxTrackedDeviceCount; deviceIndex++) {
 
 		// Skip not connected Devices
-		if (!IsDeviceConnected(deviceIndex)) {
+		if (!isDeviceConnected(deviceIndex)) {
 			continue;
 		}
 
@@ -328,15 +328,14 @@ void OpenVRTracking::init() {
 	updateDeviceRoles();
 }
 
-void OpenVRTracking::start()
-{
-	// TODO: Bei start Poses & Devices aktualisieren?
+void OpenVRTracking::start() {
 
+	// TODO: Bei start Poses & Devices aktualisieren?
 	updateDeviceRoles();
 }
 
 // TODO: Methode wird durch init() ersetzt
-void OpenVRTracking::LoadDevices() {
+void OpenVRTracking::loadDevices() {
 
 	// Initialize Device Vector
 	Devices = GetConnectedDevices();
@@ -370,7 +369,8 @@ void OpenVRTracking::LoadDevices() {
 	updateDeviceRoles();
 }
 
-OpenVRTracking::Device* OpenVRTracking::GetDevice(unsigned int deviceIndex) {
+OpenVRTracking::Device* OpenVRTracking::getDevice(unsigned int deviceIndex) {
+
 	for (int i = 0; i < Devices.size(); i++) {
 		if (Devices[i].Index == deviceIndex) {
 			return &Devices[i];
@@ -380,7 +380,18 @@ OpenVRTracking::Device* OpenVRTracking::GetDevice(unsigned int deviceIndex) {
 	return nullptr;
 }
 
-void OpenVRTracking::ReceiveDevicePoses() {
+OpenVRTracking::DevicePose* OpenVRTracking::getPose(unsigned int deviceIndex) {
+
+	for (int i = 0; i < Devices.size(); i++) {
+		if (Devices[i].Index == deviceIndex) {
+			return &Poses[i];
+		}
+	}
+
+	return nullptr;
+}
+
+void OpenVRTracking::receiveDevicePoses() {
 
 	float predictedSecondsFromNow = 0.0f;
 	if (predictSecondsFromNow > 0.0f) {
@@ -422,17 +433,20 @@ void OpenVRTracking::ReceiveDevicePoses() {
 	}
 }
 
-bool OpenVRTracking::IsDeviceConnected(unsigned int deviceIndex) {
+bool OpenVRTracking::isDeviceConnected(unsigned int deviceIndex) {
+
 	return pVRSystem->IsTrackedDeviceConnected(deviceIndex);
 }
 
-void OpenVRTracking::SetPredictionTime(float secondsFromNow) {
+void OpenVRTracking::setPredictionTime(float secondsFromNow) {
+
 	predictSecondsFromNow = secondsFromNow;
 }
 
 void OpenVRTracking::tryAddDevice(unsigned int deviceIndex) {
+
 	// Skip already added Devices
-	if (GetDevice(deviceIndex) != nullptr) {
+	if (getDevice(deviceIndex) != nullptr) {
 		return;
 	}
 
@@ -458,6 +472,7 @@ void OpenVRTracking::tryAddDevice(unsigned int deviceIndex) {
 }
 
 void OpenVRTracking::updateDeviceRoles() {
+
 	Console::logWarning("OpenVRTracking::updateDeviceRoles()");
 
 	// You have to call UpdateActionState to get all Device Roles
@@ -466,6 +481,8 @@ void OpenVRTracking::updateDeviceRoles() {
 
 	std::map<unsigned int, Joint::JointNames> newIndexToJoint;
 
+	std::map<Joint::JointNames, unsigned int> newJointToIndex;
+
 	bool headFound = false;
 
 	// Loop over all Joints in Joint::JointNames
@@ -473,6 +490,9 @@ void OpenVRTracking::updateDeviceRoles() {
 		int deviceIndex = GetDeviceIndexForJoint(joint);
 
 		if (deviceIndex >= 0) {
+
+			newJointToIndex[joint] = deviceIndex;
+
 			newIndexToJoint[deviceIndex] = joint;
 
 			if (joint == Joint::HEAD) {
@@ -497,7 +517,7 @@ void OpenVRTracking::updateDeviceRoles() {
 		}
 
 		Joint::JointNames joint = newIndexToJoint.at(device.Index);
-		Console::log("Device #" + toString((int)device.Index) + " " + GetDeviceClassType(device.Class) + " " + device.Identifier + " = " + Joint::getJointName(joint));
+		Console::log("Device #" + toString((int)device.Index) + " " + getDeviceClassType(device.Class) + " " + device.Identifier + " = " + Joint::getJointName(joint));
 	}
 }
 
@@ -526,7 +546,8 @@ std::vector<OpenVRTracking::Device> OpenVRTracking::GetConnectedDevices() {
 	return trackedDeviceVector;
 }
 
-void OpenVRTracking::PollEvents() {
+void OpenVRTracking::pollEvents() {
+
 	vr::VREvent_t event;
 
 	// Poll all Events from Queue
@@ -540,11 +561,15 @@ void OpenVRTracking::PollEvents() {
 		case vr::EVREventType::VREvent_TrackedDeviceActivated:
 		case vr::EVREventType::VREvent_TrackedDeviceUpdated:
 
+			Console::logWarning("event.trackedDeviceIndex: " + toString((int)event.trackedDeviceIndex));
+
 			//updateDevice(event.trackedDeviceIndex);
 			break;
 
 			// Device deactivated
 		case vr::EVREventType::VREvent_TrackedDeviceDeactivated:
+			Console::logWarning("event.trackedDeviceIndex: " + toString((int)event.trackedDeviceIndex));
+
 			break;
 
 			// Tracker
@@ -579,4 +604,9 @@ void OpenVRTracking::PollEvents() {
 			break;
 		}
 	}
+}
+
+
+
+void OpenVRTracking::calibrateDeviceRoles() {
 }

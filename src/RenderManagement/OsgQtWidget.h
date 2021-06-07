@@ -73,6 +73,9 @@ protected:
 
     std::vector<osg::ref_ptr<osg::ShapeDrawable>> m_spheres;
     std::vector<osg::ref_ptr<osg::MatrixTransform>> m_sphereTransforms;
+
+    std::vector<AxesCross*> m_axesCrosses;
+
     AxesCross* m_axesCrossTest;
     Line* m_line;
 };

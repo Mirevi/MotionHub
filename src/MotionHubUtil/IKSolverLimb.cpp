@@ -233,6 +233,10 @@ void IKSolverLimb::untwist() {
 	// Untwist middle joint if configured
 	if (middleUntwistWeight > 0) {
 
+		clearDebugLines();
+
+		debugDrawLine(middlePosition, middlePosition + middleJoint.joint->getForward(), Vector3f(1.0f, 1.0f, 1.0f));
+
 		// Store inverse middle rotation
 		Quaternionf invMiddleRotation = middleRotation.inverse();
 

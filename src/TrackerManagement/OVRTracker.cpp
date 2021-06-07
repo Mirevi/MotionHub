@@ -7,7 +7,7 @@ OVRTracker::OVRTracker() {
 }
 
 OVRTracker::OVRTracker(int id, NetworkManager* networkManager, ConfigManager* configManager) {
-	
+
 	m_networkManager = networkManager;
 	m_configManager = configManager;
 
@@ -26,13 +26,16 @@ OVRTracker::OVRTracker(int id, NetworkManager* networkManager, ConfigManager* co
 }
 
 OVRTracker::~OVRTracker() {
-
+	// TODO: free memory for pointers
 }
 
 void OVRTracker::start() {
 
+	// TODO: Refresh Devices
+	// TODO: Link Tracking System -> IK Solver
+
 	// start tracking in tracking system
-	trackingSystem.start();
+	trackingSystem->start();
 
 	// set tracking to true
 	m_isTracking = true;
@@ -42,9 +45,6 @@ void OVRTracker::start() {
 
 	//skeleton was added/removed, so UI updates
 	m_hasSkeletonPoolChanged = true;
-
-	// TODO: Init & LINK IK Sekelton
-
 
 	// start tracking thread and detach the thread from method scope runtime
 	m_trackingThread = new std::thread(&OVRTracker::update, this);
@@ -60,17 +60,15 @@ void OVRTracker::stop() {
 void OVRTracker::init() {
 
 	// Initialize Open
-	trackingSystem.init();
+	trackingSystem = new OpenVRTracking();
 
-	// Errorhandling when Trackingsystem could not be initialized
-	/*if (!trackingSystem.Valid) {
-		OpenVRTracking::TrackingError error = trackingSystem.GetErrorDescriptor();
-
-		Console::logError(error.Description + " [" + error.Code + "]");
-
-		valid = false;
-		return;
-	}*/
+	try {
+		trackingSystem->init();
+	}
+	catch (Exception exception) {
+		delete trackingSystem;
+		throw exception;
+	}
 
 	// Load connected Tracking Devices
 	//trackingSystem.LoadDevices();
@@ -102,16 +100,16 @@ void OVRTracker::update() {
 }
 
 void OVRTracker::track() {
-	
+
 	// Poll Events in the Tracking System
-	trackingSystem.PollEvents();
+	trackingSystem->pollEvents();
 
 	// Update prediction time
 	float mmhDelay = 0.0f; // 0.05f;
-	trackingSystem.SetPredictionTime(mmhDelay);
+	trackingSystem->setPredictionTime(mmhDelay);
 
 	// Update device poses
-	trackingSystem.ReceiveDevicePoses();
+	trackingSystem->receiveDevicePoses();
 
 	extractSkeleton();
 
@@ -173,22 +171,59 @@ Skeleton* OVRTracker::parseSkeleton(int id, Skeleton* oldSkeletonData) {
 	Joint::JointConfidence highConf = Joint::JointConfidence::HIGH;
 	Joint::JointConfidence lowConf = Joint::JointConfidence::LOW;
 
-	hierarchicSkeleton->insert(currSkeleton);
-
-	return currSkeleton;
+	//hierarchicSkeleton->insert(currSkeleton);
+	//return currSkeleton;
 
 
 	// TODO: Loop Joints
 
-	if (trackingSystem.Poses.size() > 1) {
-		Vector3f v3pos = trackingSystem.Poses[0].Position;
+
+
+
+	if (trackingSystem->Poses.size() > 1) {
+		Vector3f v3pos = trackingSystem->Poses[0].Position;
 		Vector4f pos = Vector4f(v3pos.x(), v3pos.y(), v3pos.z(), 1.0f);
 
 		Quaternionf offset = eulerToQuaternion(Vector3f(0.0f, 90.0f, 0.0f));
-		Quaternionf rot = trackingSystem.Poses[0].Rotation * offset;
+		Quaternionf rot = trackingSystem->Poses[0].Rotation * offset;
 
 		currSkeleton->m_joints.insert({ Joint::HEAD, Joint(pos, rot, Joint::JointConfidence::HIGH) });
 	}
+
+	//OpenVRTracking::DevicePose* hipPose = getAssignedPose(Joint::HIPS);
+	//hipPose->Position = Vector3f(0, 1.0f, 0);
+	//hipPose->Rotation = Quaternionf::Identity();
+
+	ikSolverHip->solve(Vector3f(0, 1.0f, 0), Quaternionf::Identity());
+	hierarchicSkeleton->hips.setConfidence(Joint::JointConfidence::HIGH);
+
+	//OpenVRTracking::DevicePose* headPose = getAssignedPose(Joint::HEAD);
+	//headPose->Position = Vector3f(0, 1.8f, 0);
+	//headPose->Rotation = Quaternionf::Identity();
+
+	ikSolverSpine->solve(Vector3f(0, 1.8f, 0), Quaternionf::Identity());
+	hierarchicSkeleton->head.setConfidence(Joint::JointConfidence::HIGH);
+
+	Vector3f position = m_properties->positionOffset;
+
+	//ikSolverLeftLeg->middleUntwistWeight = m_properties->scaleOffset.x();
+	//ikSolverLeftLeg->upperUntwistWeight = m_properties->scaleOffset.y();
+	ikSolverLeftLeg->DebugFloat1 = m_properties->scaleOffset.z();
+
+	ikSolverLeftLeg->solve(position + Vector3f(0.1f, 0, 0), eulerToQuaternion(m_properties->rotationOffset));
+	hierarchicSkeleton->leftFoot.setConfidence(Joint::JointConfidence::HIGH);
+
+	//ikSolverRightLeg->middleUntwistWeight = m_properties->scaleOffset.x();
+	//ikSolverRightLeg->upperUntwistWeight = m_properties->scaleOffset.y();
+	ikSolverRightLeg->DebugFloat1 = m_properties->scaleOffset.z();
+
+	// TODO: Right untwisted nicht
+	ikSolverRightLeg->solve(position - Vector3f(0.1f, 0, 0), eulerToQuaternion(m_properties->rotationOffset));
+	hierarchicSkeleton->rightFoot.setConfidence(Joint::JointConfidence::HIGH);
+
+
+	hierarchicSkeleton->insert(currSkeleton);
+	return currSkeleton;
 
 	//confidence values are not transmitted, default confidence is High
 	Joint::JointConfidence medConf = Joint::JointConfidence::MEDIUM;
@@ -214,7 +249,6 @@ void OVRTracker::initIKSolvers() {
 
 	// Init Hip IKSolver
 	ikSolverHip = new IKSolverHip(&hierarchicSkeleton->hips);
-
 	ikSolverHip->init();
 
 	// Init Spine IKSolver
@@ -224,18 +258,53 @@ void OVRTracker::initIKSolvers() {
 	//ikSolverSpine->setChest(&hierarchicSkeleton->chest);
 	//ikSolverSpine->setNeck(&hierarchicSkeleton->neck);
 	//ikSolverSpine->setHead(&hierarchicSkeleton->head);
-
 	ikSolverSpine->init();
 
 	// Init LeftLeg IKSolver
 	ikSolverLeftLeg = new IKSolverLimb(&hierarchicSkeleton->leftUpLeg, &hierarchicSkeleton->leftLeg, &hierarchicSkeleton->leftFoot);
-
 	ikSolverLeftLeg->init();
 
 	// Init RightLeg IKSolver
 	ikSolverRightLeg = new IKSolverLimb(&hierarchicSkeleton->rightUpLeg, &hierarchicSkeleton->rightLeg, &hierarchicSkeleton->rightFoot);
-
 	ikSolverRightLeg->init();
+
+	// Init LeftArm IKSolver
+	ikSolverLeftArm = new IKSolverArm(&hierarchicSkeleton->leftShoulder, &hierarchicSkeleton->leftArm, &hierarchicSkeleton->leftForeArm, &hierarchicSkeleton->leftHand);
+	ikSolverLeftArm->init();
+
+	// Init RightArm IKSolver
+	ikSolverRightArm = new IKSolverArm(&hierarchicSkeleton->rightShoulder, &hierarchicSkeleton->rightArm, &hierarchicSkeleton->rightForeArm, &hierarchicSkeleton->rightHand);
+	ikSolverRightArm->init();
+}
+
+OpenVRTracking::DevicePose* OVRTracker::getAssignedPose(Joint::JointNames joint) {
+	switch (joint) {
+	case Joint::HIPS:
+		break;
+	case Joint::FOREARM_L:
+		break;
+	case Joint::HAND_L:
+		break;
+	case Joint::FOREARM_R:
+		break;
+	case Joint::HAND_R:
+		break;
+	case Joint::LEG_L:
+		break;
+	case Joint::FOOT_L:
+		break;
+	case Joint::LEG_R:
+		break;
+	case Joint::FOOT_R:
+		break;
+	case Joint::HEAD:
+		break;
+	}
+
+	return nullptr;
+}
+
+void OVRTracker::calibrate() {
 }
 
 std::string OVRTracker::getTrackerType() {

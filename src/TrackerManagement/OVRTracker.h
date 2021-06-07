@@ -11,9 +11,7 @@
 /*!
  * \class OVRTracker
  *
- * \brief Manages TODO: Kommentare
- *
- * \author David Nowottnik
+ * \brief Manages Open VR Tracking and uses IK Solvers to realize Body Tracking
  */
 class OVRTracker : public Tracker {
 
@@ -48,10 +46,23 @@ public:
 
 	std::string getTrackerType() override;
 
+	std::vector<IKSolver::DebugLine> GetDebugLineLists() {
+		std::vector<IKSolver::DebugLine> lineList;
+
+		lineList.insert(lineList.end(), ikSolverHip->debugLineList.begin(), ikSolverHip->debugLineList.end());
+		lineList.insert(lineList.end(), ikSolverSpine->debugLineList.begin(), ikSolverSpine->debugLineList.end());
+		lineList.insert(lineList.end(), ikSolverLeftLeg->debugLineList.begin(), ikSolverLeftLeg->debugLineList.end());
+		lineList.insert(lineList.end(), ikSolverRightLeg->debugLineList.begin(), ikSolverRightLeg->debugLineList.end());
+		lineList.insert(lineList.end(), ikSolverLeftArm->debugLineList.begin(), ikSolverLeftArm->debugLineList.end());
+		lineList.insert(lineList.end(), ikSolverRightArm->debugLineList.begin(), ikSolverRightArm->debugLineList.end());
+
+		return lineList;
+	}
+
 private:
 
 	/*!
-	 * empty override method for Tracker::init()
+	 * override method for Tracker::init()
 	 */
 	void init();
 
@@ -74,7 +85,7 @@ private:
 	/*!
 	 * converts OpenVR tracking to default skeleton type
 	 *
-	 * \param skeleton input OptiTrack skeleto
+	 * \param skeleton input OptiTrack skeleton
 	 * \param id the skeletons ID
 	 * \return converted default skeleton
 	 */
@@ -85,9 +96,17 @@ private:
 	 */
 	void initIKSolvers();
 
-private:
 
-	OpenVRTracking trackingSystem;
+	OpenVRTracking::DevicePose* getAssignedPose(Joint::JointNames joint);
+
+	void calibrate();
+
+// TODO: private
+public:
+//private:
+
+	// TODO: Pointer?
+	OpenVRTracking* trackingSystem;
 
 	HierarchicSkeleton* hierarchicSkeleton;
 
@@ -97,4 +116,8 @@ private:
 	IKSolverLimb* ikSolverRightLeg;
 	IKSolverArm* ikSolverLeftArm;
 	IKSolverArm* ikSolverRightArm;
+
+	bool shouldCalibrate = false;
+
+	std::map<Joint::JointNames, unsigned int> jointToPose;
 };

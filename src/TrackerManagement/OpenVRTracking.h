@@ -8,12 +8,14 @@
 #include <openvr.h>
 
 #include <vector>
+#include <algorithm> // Sort
 #include <map>
 #include <Dense>
 
 using namespace Eigen;
 
 class OpenVRTracking {
+
 public:
 
 	enum DeviceClass {
@@ -29,6 +31,8 @@ public:
 		DeviceClass Class;
 		// TODO: const char* ? string mem allocation > 15 chars
 		std::string Identifier;
+
+		Joint::JointNames joint;
 
 		Device()
 			: Index(0), Class(DeviceClass::Invalid), Identifier("") {
@@ -85,11 +89,7 @@ public:
 		}
 	};
 
-	bool Valid = true;
-
-	std::vector<Device> Devices;
-
-	std::vector<DevicePose> Poses;
+public:
 
 	OpenVRTracking();
 
@@ -99,21 +99,23 @@ public:
 
 	void start();
 
-	void LoadDevices();
+	void loadDevices();
 
-	Device* GetDevice(unsigned int deviceIndex);
+	Device* getDevice(unsigned int deviceIndex);
 
-	void ReceiveDevicePoses();
+	DevicePose* getPose(unsigned int deviceIndex);
 
-	bool IsDeviceConnected(unsigned int deviceIndex);
+	void receiveDevicePoses();
 
-	void SetPredictionTime(float secondsFromNow);
+	bool isDeviceConnected(unsigned int deviceIndex);
 
-	void PollEvents();
+	void setPredictionTime(float secondsFromNow);
 
-public:
+	void pollEvents();
 
-	static std::string GetDeviceClassType(DeviceClass deviceClass) {
+	void calibrateDeviceRoles();
+
+	static std::string getDeviceClassType(DeviceClass deviceClass) {
 		std::string type = "Invalid";
 
 		switch (deviceClass) {
@@ -132,6 +134,13 @@ public:
 
 		return type;
 	}
+
+public:
+
+	std::vector<Device> Devices;
+
+	std::vector<DevicePose> Poses;
+
 private:
 
 	void tryAddDevice(unsigned int deviceIndex);

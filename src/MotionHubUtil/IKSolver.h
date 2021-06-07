@@ -15,6 +15,32 @@
  */
 class MotionHubUtil_DLL_import_export IKSolver {
 
+
+public:
+
+	struct DebugLine
+	{
+		Vector3f start;
+		Vector3f end;
+		Vector3f color;
+
+		DebugLine(Vector3f start, Vector3f end, Vector3f color) {
+			this->start = start;
+			this->end = end;
+			this->color = color;
+		}
+	};
+
+	std::vector<DebugLine> debugLineList;
+
+	void debugDrawLine(Vector3f start, Vector3f end, Vector3f color) {
+		debugLineList.push_back(DebugLine(start, end, color));
+	}
+
+	void clearDebugLines() {
+		debugLineList.clear();
+	}
+
 public:
 
 	/*!

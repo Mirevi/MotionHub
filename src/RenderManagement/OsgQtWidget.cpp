@@ -74,6 +74,8 @@ OsgQtWidget::OsgQtWidget(osgQt::GraphicsWindowQt* gw, TrackerManager* trackerMan
 		m_sphereTransforms.push_back(new osg::MatrixTransform());
 		m_sphereTransforms.at(i)->addChild(m_spheres.at(i));
 		m_sceneRoot->addChild(m_sphereTransforms.at(i));
+
+		m_axesCrosses.push_back(new AxesCross(m_sceneRoot));
 	}
 	//create axesCross
 	m_axesCrossTest = new AxesCross(m_sceneRoot);
@@ -184,6 +186,34 @@ void OsgQtWidget::updateSkeletonMeshTransform()
 	// get tracker pool from the tracker manager
 	std::vector<Tracker*> trackerTempCopy = m_refTrackerManager->getPoolTracker();
 
+
+	Tracker* tracker = m_refTrackerManager->getTrackerByType(TrackerManager::TrackerType::openVR);
+	if (tracker != nullptr) {
+		OVRTracker* ovrTracker = dynamic_cast<OVRTracker*>(tracker);
+		
+		std::vector<IKSolver::DebugLine> lineList = ovrTracker->GetDebugLineLists();
+
+		if(!lineList.empty()) {
+
+			m_line->clear();
+
+			osg::Vec3f zero = osg::Vec3f(0, 0,0);
+
+			for (auto line : lineList) {
+
+				osg::Vec3f start = osg::Vec3f(line.start.x(), line.start.y(), line.start.z());
+				osg::Vec3f end = osg::Vec3f(line.end.x(), line.end.y(), line.end.z());
+				osg::Vec4f color = osg::Vec4f(line.color.x(), line.color.y(), line.color.z(), 1.0f);
+
+				m_line->draw(start, end, color, color);
+			}
+
+			//osg::Vec4f color = osg::Vec4f(0, 1.0f, 0, 1.0f);
+			//m_line->draw(osg::Vec3f(0,0,0), osg::Vec3f(0, 10, 0), color, color);
+		}
+	}
+
+
 	// loop over all tracker in the pool
 	for (auto itTracker = trackerTempCopy.begin(); itTracker != trackerTempCopy.end(); itTracker++)
 	{
@@ -234,13 +264,14 @@ void OsgQtWidget::updateSkeletonMeshTransform()
 							itJoint->second.getJointPosition().z()));
 					m_sphereTransforms.at(indexJoint)->setMatrix(transformMatrix);
 
+					
 					// set attitude sets a rotation. Can also be used for the line
-					m_axesCrossTest->setAttitude(osg::Quat(itJoint->second.getJointRotation().x(),
+					m_axesCrosses.at(indexJoint)->setAttitude(osg::Quat(itJoint->second.getJointRotation().x(),
 						itJoint->second.getJointRotation().y(),
 						itJoint->second.getJointRotation().z(),
 						itJoint->second.getJointRotation().w()));
 					// set position
-					m_axesCrossTest->setPosition(osg::Vec3f(itJoint->second.getJointPosition().x(),
+					m_axesCrosses.at(indexJoint)->setPosition(osg::Vec3f(itJoint->second.getJointPosition().x(),
 						itJoint->second.getJointPosition().y(),
 						itJoint->second.getJointPosition().z()));
 					// each time, the line has changed, redraw() must be called. Here are no changes in this loop, so it would be ok to only call redraw() once after creation
