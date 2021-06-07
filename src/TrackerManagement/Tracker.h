@@ -13,7 +13,6 @@
 #include "MotionHubUtil/ConfigManager.h"
 #include "NetworkManagement/NetworkManager.h"
 
-
 /*!
  * \class Tracker
  *
@@ -276,6 +275,15 @@ public:
 
 	virtual int getFrameCount();
 
+	int getType() {
+		return type;
+	}
+
+	void setType(int trackerType) {
+		type = trackerType;
+	}
+
+
 protected:
 	/*!
 	* returns a unique number as identifier in addition to the tracker type.
@@ -355,6 +363,9 @@ protected:
 	 *
 	 */
 	std::mutex m_skeletonPoolLock;
+
+
+	int type;
 
 
 	NetworkManager* m_networkManager = nullptr;

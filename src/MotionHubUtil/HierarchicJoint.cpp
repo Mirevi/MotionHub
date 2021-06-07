@@ -199,8 +199,6 @@ Vector3f HierarchicJoint::inverseTransformDirection(Vector3f direction) {
 }
 
 Matrix4f HierarchicJoint::combineParentMatrixRecursive(HierarchicJoint* hierarchicJoint) {
-	// TODO: globalValid & Cache testen
-
 	if (hierarchicJoint->parent != nullptr) {
 		if (parent->globalValid) {
 			return parent->global * hierarchicJoint->local;

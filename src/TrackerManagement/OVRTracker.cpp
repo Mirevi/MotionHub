@@ -1,7 +1,8 @@
 #include "OVRTracker.h"
 
 OVRTracker::OVRTracker() {
-	// Initialize OpenVR
+
+	// Initialize OpenVR & IK Solvers
 	init();
 }
 
@@ -20,7 +21,7 @@ OVRTracker::OVRTracker(int id, NetworkManager* networkManager, ConfigManager* co
 	//default is enabled
 	m_isEnabled = true;
 
-	// Initialize OpenVR
+	// Initialize OpenVR & IK Solvers
 	init();
 }
 
@@ -29,6 +30,9 @@ OVRTracker::~OVRTracker() {
 }
 
 void OVRTracker::start() {
+
+	// start tracking in tracking system
+	trackingSystem.start();
 
 	// set tracking to true
 	m_isTracking = true;
@@ -51,11 +55,11 @@ void OVRTracker::stop() {
 
 	//is not tracking, so the update loop exits after current loop
 	m_isTracking = false;
-
 }
 
 void OVRTracker::init() {
 
+	// Initialize Open
 	trackingSystem.init();
 
 	// Errorhandling when Trackingsystem could not be initialized
@@ -70,6 +74,13 @@ void OVRTracker::init() {
 
 	// Load connected Tracking Devices
 	//trackingSystem.LoadDevices();
+
+	// Init IK Sekelton
+	hierarchicSkeleton = new HierarchicSkeleton();
+	hierarchicSkeleton->init();
+
+	// Init IKSolvers
+	initIKSolvers();
 }
 
 void OVRTracker::update() {
@@ -91,13 +102,16 @@ void OVRTracker::update() {
 }
 
 void OVRTracker::track() {
+	
+	// Poll Events in the Tracking System
+	trackingSystem.PollEvents();
 
+	// Update prediction time
 	float mmhDelay = 0.0f; // 0.05f;
 	trackingSystem.SetPredictionTime(mmhDelay);
 
+	// Update device poses
 	trackingSystem.ReceiveDevicePoses();
-
-	//ikSolver.solve(trackingSystem.Poses[0].Position, trackingSystem.Poses[0].Rotation);
 
 	extractSkeleton();
 
@@ -149,12 +163,22 @@ void OVRTracker::extractSkeleton() {
 	}
 
 	m_skeletonPoolLock.unlock();
-
 }
 
 Skeleton* OVRTracker::parseSkeleton(int id, Skeleton* oldSkeletonData) {
+
 	// skeleton data container
 	Skeleton* currSkeleton = new Skeleton(id);
+
+	Joint::JointConfidence highConf = Joint::JointConfidence::HIGH;
+	Joint::JointConfidence lowConf = Joint::JointConfidence::LOW;
+
+	hierarchicSkeleton->insert(currSkeleton);
+
+	return currSkeleton;
+
+
+	// TODO: Loop Joints
 
 	if (trackingSystem.Poses.size() > 1) {
 		Vector3f v3pos = trackingSystem.Poses[0].Position;
@@ -186,6 +210,35 @@ Skeleton* OVRTracker::parseSkeleton(int id, Skeleton* oldSkeletonData) {
 	return currSkeleton;
 }
 
+void OVRTracker::initIKSolvers() {
+
+	// Init Hip IKSolver
+	ikSolverHip = new IKSolverHip(&hierarchicSkeleton->hips);
+
+	ikSolverHip->init();
+
+	// Init Spine IKSolver
+	ikSolverSpine = new IKSolverSpine();
+	////ikSolverSpine->setHip(&hierarchicSkeleton->hips);
+	//ikSolverSpine->setSpine(&hierarchicSkeleton->spine);
+	//ikSolverSpine->setChest(&hierarchicSkeleton->chest);
+	//ikSolverSpine->setNeck(&hierarchicSkeleton->neck);
+	//ikSolverSpine->setHead(&hierarchicSkeleton->head);
+
+	ikSolverSpine->init();
+
+	// Init LeftLeg IKSolver
+	ikSolverLeftLeg = new IKSolverLimb(&hierarchicSkeleton->leftUpLeg, &hierarchicSkeleton->leftLeg, &hierarchicSkeleton->leftFoot);
+
+	ikSolverLeftLeg->init();
+
+	// Init RightLeg IKSolver
+	ikSolverRightLeg = new IKSolverLimb(&hierarchicSkeleton->rightUpLeg, &hierarchicSkeleton->rightLeg, &hierarchicSkeleton->rightFoot);
+
+	ikSolverRightLeg->init();
+}
+
 std::string OVRTracker::getTrackerType() {
+
 	return "OpenVR";
 }

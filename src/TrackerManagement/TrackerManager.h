@@ -130,6 +130,14 @@ public:
 	Tracker* getTrackerRefAt(int id);
 
 	/*!
+	 * getter for a specific tracker type
+	 *
+	 * \param type the type of the tracker which should be returned
+	 * \return pointer to the tracker with given type
+	 */
+	Tracker* getTrackerByType(TrackerType type);
+
+	/*!
 	 * getter for the tracker pool lock
 	 * 
 	 * \return m_trackerPoolLock

@@ -2,8 +2,11 @@
 
 #include "Tracker.h"
 #include "OpenVRTracking.h"
-#include "MotionHubUtil/HierarchicJoint.h"
-#include "MotionHubUtil/IKSolver.h"
+#include "MotionHubUtil/HierarchicSkeleton.h"
+#include "MotionHubUtil/IKSolverHip.h"
+#include "MotionHubUtil/IKSolverSpine.h"
+#include "MotionHubUtil/IKSolverLimb.h"
+#include "MotionHubUtil/IKSolverArm.h"
 
 /*!
  * \class OVRTracker
@@ -48,7 +51,7 @@ public:
 private:
 
 	/*!
-	 * 
+	 * empty override method for Tracker::init()
 	 */
 	void init();
 
@@ -77,7 +80,21 @@ private:
 	 */
 	Skeleton* parseSkeleton(int id, Skeleton* oldSkeletonData);
 
+	/*!
+	 * initializes IK chains
+	 */
+	void initIKSolvers();
+
+private:
+
 	OpenVRTracking trackingSystem;
 
-	//IKSolver ikSolver;
+	HierarchicSkeleton* hierarchicSkeleton;
+
+	IKSolverHip* ikSolverHip;
+	IKSolverSpine* ikSolverSpine;
+	IKSolverLimb* ikSolverLeftLeg;
+	IKSolverLimb* ikSolverRightLeg;
+	IKSolverArm* ikSolverLeftArm;
+	IKSolverArm* ikSolverRightArm;
 };

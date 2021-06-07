@@ -1,12 +1,12 @@
 #include "MotionHubUtil/HierarchicSkeleton.h"
-// TODO: Debug
+// TODO: Debug: Console entfernen
 #include "MotionHubUtil/Console.h"
 
 void HierarchicSkeleton::init() {
 
 	// TODO: Gröbere/Genauere Position und/oder Rotation?
 	// TODO: Koordinatensystem flipped?
-	
+
 	// Hips
 	hips = HierarchicJoint(Vector3f(0, 1, 0), Quaternionf::Identity());
 	addJoint(&hips, Joint::JointNames::HIPS);
@@ -150,19 +150,11 @@ void HierarchicSkeleton::insert(Skeleton* currSkeleton) {
 		// rot = Quaternionf(rot.y(), rot.z(), rot.w(), rot.x());
 		// simplified: (-y, -z, w, x)
 
-		//Quaternionf rotation = joint->getGlobalRotation();
-		//rotation = Quaternionf(-rotation.y(), -rotation.z(), rotation.w(), rotation.x());
-
-
-
 		// TODO: In HierachicJoint / IKSolver auslagern?
-		
 		Quaternionf rotation = joint->getGlobalRotation();
 		rotation = Quaternionf(-rotation.y(), -rotation.z(), rotation.w(), rotation.x());
 
 		currSkeleton->m_joints.insert({ joint->getJointName(), joint->toJoint(rotation) });
-		
-
 		//currSkeleton->m_joints.insert({ joint->getJointName(), joint->toJoint() });
 	}
 }

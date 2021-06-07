@@ -5,9 +5,41 @@
 #include "MotionHubUtil/HierarchicJoint.h"
 #include <MotionHubUtil/Skeleton.h>
 
+/*!
+ * \class HierarchicSkeleton
+ *
+ * \brief Wrapper for multiple HierarchicJoints with fields to access them directly
+ */
 class MotionHubUtil_DLL_import_export HierarchicSkeleton {
 
 public:
+
+	/*!
+	 * Initializes the HierarchicSkeleton with default values
+	 */
+	void init();
+
+	/*!
+	 * Inserts all Joints from HierarchicSkeleton into given Skeleton
+	 * 
+	 * \param currSkeleton pointer to Skeleton
+	 */
+	void insert(Skeleton* currSkeleton);
+
+protected:
+
+	/*!
+	 * Adds a Joint to the Joint collection vector
+	 * 
+	 * \param joint the Joint to add
+	 * \param jointName the Joint::JointName
+	 */
+	void addJoint(HierarchicJoint* joint, Joint::JointNames jointName);
+
+public:
+
+	// joint collection
+	std::vector<HierarchicJoint*> joints;
 
 	HierarchicJoint hips;
 
@@ -36,16 +68,4 @@ public:
 	HierarchicJoint rightArm;
 	HierarchicJoint rightForeArm;
 	HierarchicJoint rightHand;
-
-	std::vector<HierarchicJoint*> joints;
-
-public:
-
-	void init();
-
-	void insert(Skeleton* currSkeleton);
-
-protected:
-
-	void addJoint(HierarchicJoint* joint, Joint::JointNames jointName);
 };
