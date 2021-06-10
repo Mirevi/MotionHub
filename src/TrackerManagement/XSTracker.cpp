@@ -230,6 +230,10 @@ Skeleton* XSTracker::parseSkeleton(ParserManager::QuaternionDataWithId* quaterni
 			Vector4f(m_kinematics->at(i).position[1], m_kinematics->at(i).position[2], m_kinematics->at(i).position[0], 1.0f);
 		Quaternionf rot = Quaternionf(m_kinematics->at(i).orientation[0], m_kinematics->at(i).orientation[1], m_kinematics->at(i).orientation[2], m_kinematics->at(i).orientation[3]);
 
+		// rotate x-Axis by 180 degrees
+		Quaternionf rotXAxis = Quaternionf(1, 0, 0, 180 * M_PI / 2);
+		rot = rotXAxis * rot;
+
 		//confidence values are not transmitted, default confidence is High
 		Joint::JointConfidence confidence = Joint::JointConfidence::HIGH;
 
