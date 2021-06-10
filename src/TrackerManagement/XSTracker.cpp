@@ -214,6 +214,24 @@ void XSTracker::extractSkeleton()
 	}
 }
 
+
+Quaternionf XSTracker::rotateAxis(const double& a, const double& xx, const double& yy, const double& zz)
+{
+	// Here we calculate the sin( theta / 2) once for optimization
+	double factor = sin(a / 2.0);
+
+	// Calculate the x, y and z of the quaternion
+	double x = xx * factor;
+	double y = yy * factor;
+	double z = zz * factor;
+
+	// Calcualte the w value by cos( theta / 2 )
+	double w = cos(a / 2.0);
+	Quaternionf rotQuat = Quaternionf(w, x, y, z);
+	rotQuat.normalize();
+	return rotQuat;
+}
+
 //takes data from a Xsens skeleton and pushes it into the list
 Skeleton* XSTracker::parseSkeleton(ParserManager::QuaternionDataWithId* quaternianDataWithId, int id, Skeleton* oldSkeletonData)
 {
@@ -227,12 +245,12 @@ Skeleton* XSTracker::parseSkeleton(ParserManager::QuaternionDataWithId* quaterni
 		m_kinematics = quaternianDataWithId->kinematics;
 
 		Vector4f pos = //m_offsetMatrix * 
-			Vector4f(m_kinematics->at(i).position[1], m_kinematics->at(i).position[2], m_kinematics->at(i).position[0], 1.0f);
-		Quaternionf rot = Quaternionf(m_kinematics->at(i).orientation[0], m_kinematics->at(i).orientation[1], m_kinematics->at(i).orientation[2], m_kinematics->at(i).orientation[3]);
+			Vector4f(m_kinematics->at(i).position[0], m_kinematics->at(i).position[2], m_kinematics->at(i).position[1], 1.0f);
+		Quaternionf rot = Quaternionf(m_kinematics->at(i).orientation[0], m_kinematics->at(i).orientation[1], m_kinematics->at(i).orientation[3], m_kinematics->at(i).orientation[2]);
 
-		// rotate x-Axis by 180 degrees
-		Quaternionf rotXAxis = Quaternionf(1, 0, 0, 180 * M_PI / 2);
-		rot = rotXAxis * rot;
+		// rotate y-Axis by 180 degrees
+		Quaternionf rotYAxis = rotateAxis(-90 * M_PI / 180, 0 , 1, 0);
+		rot = rot * rotYAxis;
 
 		//confidence values are not transmitted, default confidence is High
 		Joint::JointConfidence confidence = Joint::JointConfidence::HIGH;
