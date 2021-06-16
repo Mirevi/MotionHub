@@ -120,6 +120,13 @@ private:
 	void cleanSkeletonPool();
 
 
+	/*!
+	* rotate Axis
+	*/
+
+	Quaternionf XSTracker::rotateAxis(const double& a, const double& xx, const double& yy, const double& zz);
+
+
 	/*
 	* One BVH stream for each skeleton
 	*/
