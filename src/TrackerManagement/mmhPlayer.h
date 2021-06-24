@@ -26,7 +26,7 @@ public:
 
 	void controlTime(bool stop);
 
-	void setCurrentFrame(int newValue);
+	void setCurrentFrame(float newValue);
 
 	float getTotalTime() override;
 

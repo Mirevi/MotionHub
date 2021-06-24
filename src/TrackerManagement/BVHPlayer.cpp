@@ -283,9 +283,11 @@ void BVHPlayer::controlTime(bool stop)
 	m_timelineDragging = stop;
 }
 
-void BVHPlayer::setCurrentFrame(int newValue)
+void BVHPlayer::setCurrentFrame(float newValue)
 {
-	m_currFrame = (int)round(m_frameCount * newValue / 100);
+	m_currFrame = (int)round(m_frameCount * newValue / 100.0f);
+
+	Console::log("BVHPlayer::setCurrentFrame(): (int)round(" + toString(m_frameCount) + " * " + toString(newValue) + " / 100.0f) = " + toString(m_currFrame));
 
 	if (m_isTracking)
 	{

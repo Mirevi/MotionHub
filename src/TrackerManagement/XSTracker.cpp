@@ -65,7 +65,8 @@ void XSTracker::start()
 	m_trackingThread->detach();
 
 	// still has to be done: check if should record 
-	bool isRecordBvh = true;
+	// CHANGE HERE FOR RECORD
+	//bool isRecordBvh = true;
 	if (isRecordBvh) {
 		//start bvhStream !! INCLUDE TIMESTAMP
 		bvhWriters = new std::vector<XSBvhWriter*>();
@@ -81,10 +82,13 @@ void XSTracker::stop()
 {
 	//is not tracking, so the update loop exits after current loop
 	m_isTracking = false;
-	
+
 
 	// check for BVH Writers to finish before deleting udpServer
-	int numBvhWriters = bvhWriters->size();
+	int numBvhWriters = 0;
+	if (isRecordBvh) {
+		numBvhWriters = bvhWriters->size();
+	}
 
 
 
@@ -104,7 +108,10 @@ void XSTracker::stop()
 		delete(bvhWriters->at(i));
 
 	}
-	delete(bvhWriters);
+	if (isRecordBvh) {
+		delete(bvhWriters);
+	}
+
 
 }
 
@@ -208,9 +215,11 @@ void XSTracker::extractSkeleton()
 		Console::log("XSTracker::extractSkeleton(): Created new skeleton with id = " + std::to_string(avatarID) + ".");
 
 		// BVH WRITER
-		XSBvhWriter* xsb = new XSBvhWriter(XSBvhWriter::SkeletonType::Xsens, m_UdpServer, avatarID);
-		bvhWriters->push_back(xsb);
-		Console::log("XSTracker::extractSkeleton(): Started recording BVH for skeleton with id = " + std::to_string(avatarID) + ".");
+		if (isRecordBvh) {
+			XSBvhWriter* xsb = new XSBvhWriter(XSBvhWriter::SkeletonType::Xsens, m_UdpServer, avatarID);
+			bvhWriters->push_back(xsb);
+			Console::log("XSTracker::extractSkeleton(): Started recording BVH for skeleton with id = " + std::to_string(avatarID) + ".");
+		}
 	}
 }
 
@@ -245,15 +254,17 @@ Skeleton* XSTracker::parseSkeleton(ParserManager::QuaternionDataWithId* quaterni
 		m_kinematics = quaternianDataWithId->kinematics;
 
 		Vector4f pos = //m_offsetMatrix * 
-			Vector4f(m_kinematics->at(i).position[0], m_kinematics->at(i).position[2], m_kinematics->at(i).position[1], 1.0f);
-		Quaternionf rot = Quaternionf(m_kinematics->at(i).orientation[0], m_kinematics->at(i).orientation[1], m_kinematics->at(i).orientation[3], m_kinematics->at(i).orientation[2]);
+			Vector4f(m_kinematics->at(i).position[1], m_kinematics->at(i).position[2], m_kinematics->at(i).position[0], 1.0f);
+		Quaternionf rot = Quaternionf(m_kinematics->at(i).orientation[0], -m_kinematics->at(i).orientation[2], m_kinematics->at(i).orientation[3], -m_kinematics->at(i).orientation[1]);
 
 		// rotate y-Axis by 180 degrees
-		Quaternionf rotYAxis = rotateAxis(-90 * M_PI / 180, 0 , 1, 0);
-		rot = rot * rotYAxis;
+		Quaternionf rotYAxis = rotateAxis(180 * M_PI / 180, 0, 1, 0);
+		rot = rotYAxis * rot;
 
 		//confidence values are not transmitted, default confidence is High
 		Joint::JointConfidence confidence = Joint::JointConfidence::HIGH;
+
+
 
 		//map the Xsens poses to the MMH skeleton joints
 		switch (i)

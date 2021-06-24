@@ -138,7 +138,7 @@ public:
 
 	void controlTimeline(bool stop);
 
-	void timelineValueChange(int newValue);
+	void timelineValueChange(float newValue);
 
 	FrameData getRecCurrFrameData();
 

@@ -246,9 +246,9 @@ void mmhPlayer::controlTime(bool stop)
 	m_timelineDragging = stop;
 }
 
-void mmhPlayer::setCurrentFrame(int newValue)
+void mmhPlayer::setCurrentFrame(float newValue)
 {
-	m_currFrameIdx = (int)round(m_frameCount * newValue / 100);
+	m_currFrameIdx = (int)round(m_frameCount * newValue / 100.0f);
 
 	if (m_isTracking)
 	{
