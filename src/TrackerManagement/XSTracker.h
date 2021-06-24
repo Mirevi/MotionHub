@@ -132,4 +132,13 @@ private:
 	*/
 
 	std::vector<XSBvhWriter*>* bvhWriters;
+
+
+	/*
+	* One BVH stream for each skeleton
+	*/
+
+	bool isRecordBvh = false;
+
+
 };
