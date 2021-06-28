@@ -17,14 +17,14 @@ Skeleton::Skeleton(int sid)
 
 }
 
-void Skeleton::parseJoint(Joint::JointNames name, Vector4f position, Quaternionf rotation, Joint::JointConfidence confidence)
-{
-	//creates Joint with given values
-	Joint curr_joint = Joint(position, rotation, confidence);
-	//inserts created joint in m_joints
-	m_joints.insert({ name, curr_joint });
-
-}
+//void Skeleton::parseJoint(Joint::JointNames name, Vector4f position, Quaternionf rotation, Joint::JointConfidence confidence)
+//{
+//	//creates Joint with given values
+//	Joint curr_joint = Joint(position, rotation, confidence);
+//	//inserts created joint in m_joints
+//	m_joints.insert({ name, curr_joint });
+//
+//}
 
 int Skeleton::getSid()
 {

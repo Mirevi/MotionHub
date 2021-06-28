@@ -1,23 +1,136 @@
 #include "OsgSkeleton.h"
-#include <osgDB/ReadFile>
-#include "OsgLine.h"
 
+//#include "OsgLine.h"
+//#include "OsgBone.h"
+#include "OsgBone.h"
+
+//HWM: Look in Desktop/p../skel.PNG and skel2.PNG and DEVDOC
 
 OsgSkeleton::OsgSkeleton(osg::ref_ptr<osg::Group> parentNode) : m_parentNode(parentNode)
 {
 	m_skeletonRootNode = new osg::Group();
-	// create 21 joints as osg::PositionAttitudeTransform
+	// create 21 joints
+	osg::ref_ptr<osg::PositionAttitudeTransform> tempJoint; // = new osg::PositionAttitudeTransform();
 	for (int indexJoint = 0; indexJoint < 21; indexJoint++)
 	{
 
 		m_joints.push_back(new osg::PositionAttitudeTransform());
-		m_skeletonRootNode->addChild(m_joints.at(indexJoint));
-		m_bones.push_back(osgDB::readNodeFile("./data/mesh_models/bone.obj"));
-		m_joints.at(indexJoint)->addChild(m_bones.at(indexJoint));
+		m_skeletonRootNode->addChild(m_joints.at(indexJoint));	
+
+
+			switch (indexJoint)
+			{
+			case 0:
+				tempJoint = m_joints.at(indexJoint);
+				break;
+			case 1:
+				m_bones.push_back(new OsgBone(tempJoint, m_joints.at(indexJoint)));
+				tempJoint = m_joints.at(indexJoint);
+				break;
+			case 2:
+				m_bones.push_back(new OsgBone(tempJoint, m_joints.at(indexJoint)));
+				tempJoint = m_joints.at(indexJoint);
+				break;
+			case 3:
+				m_bones.push_back(new OsgBone(tempJoint, m_joints.at(indexJoint)));
+				tempJoint = m_joints.at(indexJoint);
+				break;
+			case 4:
+				m_bones.push_back(new OsgBone(tempJoint, m_joints.at(indexJoint)));
+				tempJoint = m_joints.at(indexJoint);
+				break;
+			case 5:
+				m_bones.push_back(new OsgBone(tempJoint, m_joints.at(indexJoint)));
+				tempJoint = m_joints.at(indexJoint);
+				break;
+			case 6:
+				m_bones.push_back(new OsgBone(tempJoint, m_joints.at(indexJoint)));
+				tempJoint = m_joints.at(indexJoint);
+				break;
+			case 7: //Leaf
+				m_bones.push_back(new OsgBone(tempJoint, m_joints.at(indexJoint)));
+
+
+				m_bones.push_back(new OsgBone(m_joints.at(indexJoint), 1.0f));
+				break;
+			case 8:
+				m_bones.push_back(new OsgBone(m_joints.at(3), m_joints.at(indexJoint)));
+				tempJoint = m_joints.at(indexJoint);
+				break;
+			case 9:
+				m_bones.push_back(new OsgBone(m_joints.at(indexJoint), m_joints.at(indexJoint)));
+				m_joints.at(indexJoint)->addChild(m_bones.at(indexJoint));
+				tempJoint = m_joints.at(indexJoint);
+				break;
+			case 10:
+				m_bones.push_back(new OsgBone(tempJoint, m_joints.at(indexJoint)));
+				tempJoint = m_joints.at(indexJoint);
+				break;
+			case 11://Leaf
+				m_bones.push_back(new OsgBone(tempJoint, m_joints.at(indexJoint)));
+				tempJoint = m_joints.at(indexJoint);
+
+				m_bones.push_back(new OsgBone(m_joints.at(indexJoint), 1.0f));
+				break;
+				break;
+			case 12:
+				m_bones.push_back(new OsgBone(m_joints.at(0), m_joints.at(indexJoint), osg::Quat(osg::DegreesToRadians(90.0), osg::Z_AXIS)));
+				tempJoint = m_joints.at(indexJoint);
+				break;
+			case 13:
+				m_bones.push_back(new OsgBone(tempJoint, m_joints.at(indexJoint), osg::Quat(osg::DegreesToRadians(90.0), osg::Z_AXIS)));
+				tempJoint = m_joints.at(indexJoint);
+				break;
+			case 14:
+				m_bones.push_back(new OsgBone(tempJoint, m_joints.at(indexJoint), osg::Quat(osg::DegreesToRadians(90.0), osg::Z_AXIS)));
+				tempJoint = m_joints.at(indexJoint);
+				break;
+			case 15: //Leaf
+				m_bones.push_back(new OsgBone(tempJoint, m_joints.at(indexJoint)));
+				tempJoint = m_joints.at(indexJoint);
+
+
+				m_bones.push_back(new OsgBone(m_joints.at(indexJoint), 1.0f));
+				break;
+			case 16:
+				m_bones.push_back(new OsgBone(m_joints.at(0), m_joints.at(indexJoint), osg::Quat(osg::DegreesToRadians(90.0), osg::Z_AXIS)));
+				tempJoint = m_joints.at(indexJoint);
+				break;
+			case 17:
+				m_bones.push_back(new OsgBone(tempJoint, m_joints.at(indexJoint), osg::Quat(osg::DegreesToRadians(90.0), osg::Z_AXIS)));
+				tempJoint = m_joints.at(indexJoint);
+				
+				break;
+			case 18:
+				m_bones.push_back(new OsgBone(tempJoint, m_joints.at(indexJoint), osg::Quat(osg::DegreesToRadians(90.0), osg::Z_AXIS)));
+				tempJoint = m_joints.at(indexJoint);
+				break;
+			case 19: //Leaf
+				m_bones.push_back(new OsgBone(tempJoint, m_joints.at(indexJoint)));
+
+
+				m_bones.push_back(new OsgBone(m_joints.at(indexJoint), 1.0f));
+				break;
+			case 20: //Leaf
+				m_bones.push_back(new OsgBone(m_joints.at(3), m_joints.at(indexJoint)));
+
+
+				m_bones.push_back(new OsgBone(m_joints.at(indexJoint), 1.0f));
+				m_joints.at(indexJoint)->addChild(m_bones.at(indexJoint - 1));
+				break;
+			dafault:
+				break;
+			}
+
+
+
+		//OsgBone* bone = new OsgBone(, );
+		//m_bones.push_back(bone);
+		//m_joints.at(indexJoint)->addChild(m_bones.at(indexJoint));
 
 	}
-	m_line = new OsgLine(m_skeletonRootNode, false);
-	m_skeletonRootNode->addChild(m_line);
+	//m_line = new OsgLine(m_skeletonRootNode, false);
+	//m_skeletonRootNode->addChild(m_line);
 
 	m_parentNode->addChild(m_skeletonRootNode);
 }
@@ -35,7 +148,8 @@ OsgSkeleton::~OsgSkeleton()
 
 void OsgSkeleton::update(Skeleton skeleton)
 {
-	m_line->clear();
+	std::cout << "update() von OsgSkeleton" << std::endl;
+	//m_line->clear();
 
 	int indexJoint = 0;
 
@@ -57,6 +171,8 @@ void OsgSkeleton::update(Skeleton skeleton)
 		switch (itJoint->first) {
 		case Joint::HIPS:
 		{
+			// HWM
+			//m_bones			
 			m_joints.at(indexJoint)->setAttitude(osg::Quat(osg::DegreesToRadians(-90.0), osg::Z_AXIS) * osg::Quat(itJoint->second.getJointRotation().x(),
 				itJoint->second.getJointRotation().y(),
 				itJoint->second.getJointRotation().z(),
@@ -376,7 +492,7 @@ void OsgSkeleton::update(Skeleton skeleton)
 
 
 		//}
-		m_line->redraw();
+		//m_line->redraw();
 
 
 
@@ -476,3 +592,10 @@ void OsgSkeleton::update(Skeleton skeleton)
 	}
 
 }
+
+//void MmhSkeleton::setMesh(osg::Node* node)
+//{
+//	//push back X bones
+//	//m_bones.push_back(osgDB::readNodeFile("./data/mesh_models/bone.obj"));
+//
+//}

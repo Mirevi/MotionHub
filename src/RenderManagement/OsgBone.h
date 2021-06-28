@@ -2,15 +2,18 @@
 #include "ConfigDllExportRenderManagement.h"
 #include <osg/PositionAttitudeTransform>
 #include "MotionHubUtil/Joint.h"
-//#include <osg/Geode>
+#include <osg/Node>
 //#include <osg/geometry>
 //#include <osg/Vec3f>
 
-
-class RenderManagement_DLL_import_export OsgBone : public osg::PositionAttitudeTransform
+//TODO: Check if derivation from Node is necessary
+class RenderManagement_DLL_import_export OsgBone : public osg::Node
 {
+
 public:
-	OsgBone(osg::ref_ptr<osg::Group> parentNode);
+    OsgBone();
+	OsgBone(osg::ref_ptr<osg::PositionAttitudeTransform> startJoint, osg::ref_ptr<osg::PositionAttitudeTransform> endJoint, osg::Quat rotationOffset = osg::Quat(0, 0, 0, 1)); //Bone, connected with two known joints
+	OsgBone(osg::ref_ptr<osg::PositionAttitudeTransform> startJoint, float lengthToVirtualEndJoint); //Leaf bone
     ~OsgBone();
 
     void setStartJoint(Joint joint);
@@ -20,10 +23,13 @@ public:
 	void createLeafJoint();
 
 private:
-    osg::ref_ptr<osg::Group> m_parentNode;
+    //osg::ref_ptr<osg::Group> m_parentNode;
 
-    Joint m_startJoint;
-    Joint m_endJoint;
+    osg::ref_ptr<osg::Node> m_boneNode;
+    osg::ref_ptr<osg::PositionAttitudeTransform> m_startJoint;
+    osg::ref_ptr<osg::PositionAttitudeTransform> m_startJointOffset;
+    osg::ref_ptr<osg::PositionAttitudeTransform> m_endJoint;
+    osg::ref_ptr<osg::PositionAttitudeTransform> m_endJointOffset; //TODO: Necessary?
     
     //Offset rotation to correctly render the bone
     osg::Vec3f offsetRotation;

@@ -9,6 +9,9 @@
 
 #include "OsgAxesCross.h"
 #include "OsgLine.h"
+#include "OsgBone.h"
+#include "OsgSkeleton.h"
+
 
 namespace osgQt
 {
@@ -264,7 +267,7 @@ void OsgQtWidget::updateSkeletonMeshTransform()
 			{
 
 				//juj 
-				//itSkeleton
+				//Update skeleton
 				m_skeletonMeshPool.find((*itTracker)->getProperties()->id)->second.at(indexSkeleton).update(itSkeleton->second);
 
 				//juj
