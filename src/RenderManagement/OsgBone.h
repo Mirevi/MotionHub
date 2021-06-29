@@ -21,6 +21,7 @@ public:
     void setStartJoint(Joint joint);
     void setEndJoint(Joint joint);
     void setOffsetRotation(osg::Vec3 offset);
+    void updateScale();
     void updateScale(float scale);
 	void createLeafJoint();
 

@@ -71,7 +71,7 @@ OsgQtWidget::OsgQtWidget(osgQt::GraphicsWindowQt* gw, TrackerManager* trackerMan
 	for (int i = 0; i <= 20; i++)
 	{
 		//m_spheres.push_back(new osg::ShapeDrawable());
-		m_axesCrosses.push_back(new OsgAxesCross(m_sceneRoot));
+		//m_axesCrosses.push_back(new OsgAxesCross(m_sceneRoot));
 		//m_spheres.at(i)->setShape(new osg::Sphere(osg::Vec3(0.0f, 0.0f, 0.0f), 0.035f));
 		//m_spheres.at(i)->setColor(osg::Vec4(1.0f, 0.0f, 0.0f, 1.0f));
 		//m_sphereTransforms.push_back(new osg::MatrixTransform());
@@ -306,13 +306,27 @@ void OsgQtWidget::updateSkeletonMeshTransform()
 					//m_sphereTransforms.at(indexJoint)->setMatrix(transformMatrix);
 
 
-					m_axesCrosses.at(indexJoint)->setAttitude(osg::Quat(itJoint->second.getJointRotation().x(),
-						itJoint->second.getJointRotation().y(),
-						itJoint->second.getJointRotation().z(),
-						itJoint->second.getJointRotation().w()));
-					m_axesCrosses.at(indexJoint)->setPosition(osg::Vec3f(itJoint->second.getJointPosition().x(),
-						itJoint->second.getJointPosition().y(),
-						itJoint->second.getJointPosition().z()));
+
+
+
+
+
+
+
+
+					//m_axesCrosses.at(indexJoint)->setAttitude(osg::Quat(itJoint->second.getJointRotation().x(),
+					//	itJoint->second.getJointRotation().y(),
+					//	itJoint->second.getJointRotation().z(),
+					//	itJoint->second.getJointRotation().w()));
+					//m_axesCrosses.at(indexJoint)->setPosition(osg::Vec3f(itJoint->second.getJointPosition().x(),
+					//	itJoint->second.getJointPosition().y(),
+					//	itJoint->second.getJointPosition().z()));
+
+
+
+
+
+
 
 
 

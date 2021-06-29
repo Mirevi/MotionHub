@@ -14,18 +14,19 @@ OsgBone::OsgBone(osg::ref_ptr<osg::PositionAttitudeTransform> startJoint, osg::r
 	m_startJointOffset = new osg::PositionAttitudeTransform();
 	m_startJointOffset->addChild(m_boneNode);
 	m_startJointOffset->setAttitude(rotationOffset);
-	startJoint->addChild(m_startJointOffset);
+	m_startJoint->addChild(m_startJointOffset);
 }
 
 //CTOR for Leaf Joint with only one joint
-OsgBone::OsgBone(osg::ref_ptr<osg::PositionAttitudeTransform> startJoint, float lengthToVirtualEndJoint, osg::Quat rotationOffset) : m_startJoint(startJoint)
+OsgBone::OsgBone(osg::ref_ptr<osg::PositionAttitudeTransform> startJoint, float lengthToVirtualEndJoint, osg::Quat rotationOffset) 
+	: m_startJoint(startJoint)
 {
 	m_boneNode = osgDB::readNodeFile("./data/mesh_models/bone.obj");
 	m_startJointOffset = new osg::PositionAttitudeTransform();
 	m_startJointOffset->addChild(m_boneNode);
 	m_startJointOffset->setAttitude(rotationOffset);
-	startJoint->addChild(m_startJointOffset);
-} 
+	m_startJoint->addChild(m_startJointOffset);
+}
 
 OsgBone::~OsgBone()
 {
@@ -43,6 +44,21 @@ void OsgBone::setEndJoint(Joint joint)
 
 void OsgBone::setOffsetRotation(osg::Vec3 offset)
 {
+}
+
+void OsgBone::updateScale()
+{
+	//Check if a leaf bine, then do not use the endJoint, because it is not initialized
+	if (m_endJoint)
+	{
+		osg::Vec3f boneVector = m_startJoint->getPosition() - m_endJoint->getPosition();
+		float boneLength = boneVector.length();
+		m_startJointOffset->setScale(osg::Vec3(boneLength, boneLength, boneLength));
+	}
+	else
+	{
+		m_startJointOffset->setScale(osg::Vec3(0.1f, 0.1f, 0.1f));
+	}
 }
 
 void OsgBone::updateScale(float scale)
