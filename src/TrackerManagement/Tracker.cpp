@@ -187,6 +187,20 @@ std::map<int, Skeleton> Tracker::getSkeletonPool()
 
 }
 
+PointCollection Tracker::getPointCollection()
+{
+	// lock point collection bevoce accessing point collection
+	m_pointCollectionLock.lock();
+
+	// local copy, so we can unlock the skeleton pool befor return
+	PointCollection pointCollectionCopy = m_pointCollection;
+
+	// unlock point collection
+	m_pointCollectionLock.unlock();
+
+	return pointCollectionCopy;
+}
+
 float Tracker::getTotalTime()
 {
 	return -1.0;

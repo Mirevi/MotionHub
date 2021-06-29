@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "MotionHubUtil/Skeleton.h"
+#include "MotionHubUtil/PointCollection.h"
 #include "MotionHubUtil/Console.h"
 #include "MotionHubUtil/Exception.h"
 #include "MotionHubUtil/MMHmath.h"
@@ -196,6 +197,12 @@ public:
 	virtual std::map<int, Skeleton> getSkeletonPool();
 
 	/*!
+	  * getter for the trackers point collection
+	  * \return the point collection by value
+	  */
+	virtual PointCollection getPointCollection();
+
+	/*!
 	 * recalculates the update matrix
 	 *
 	 */
@@ -331,6 +338,10 @@ protected:
 	std::map<int, Skeleton> m_skeletonPool;
 
 	std::map<int, Skeleton> m_skeletonPoolCache;
+	/*!
+	 * collection containing all points detected by this Tracker
+	 */
+	PointCollection m_pointCollection;
 
 	/*!
 	 * updade method used for tracker thread
@@ -356,6 +367,11 @@ protected:
 	 */
 	std::mutex m_skeletonPoolLock;
 
+	/*!
+	 * lock for save acces to point collection
+	 *
+	 */
+	std::mutex m_pointCollectionLock;
 
 	NetworkManager* m_networkManager = nullptr;
 

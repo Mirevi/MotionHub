@@ -30,9 +30,6 @@ OVRTracker::~OVRTracker() {
 
 void OVRTracker::start() {
 
-	// set tracking to true
-	m_isTracking = true;
-
 	//there schould only be one skeleton in the file
 	m_countDetectedSkeleton = m_skeletonPool.size();
 
@@ -41,17 +38,31 @@ void OVRTracker::start() {
 
 	// TODO: Init & LINK IK Sekelton
 
+	// Clear point collection
+	m_pointCollection.clear();
+
+	// Loop over all devices and convert them to points
+	for (OpenVRTracking::Device &device : trackingSystem.Devices) {
+
+		// Cast device class to point type
+		Point::PointType pointType = static_cast<Point::PointType>(device.Class);
+
+		// Add point to collection
+		m_pointCollection.addPoint(device.Index, pointType);
+
+		// TODO: Set Joint Name
+		//m_pointCollection.updatePoint(device.Index, device.)
+	}
 
 	// start tracking thread and detach the thread from method scope runtime
-	m_trackingThread = new std::thread(&OVRTracker::update, this);
-	m_trackingThread->detach();
+	//m_trackingThread = new std::thread(&OVRTracker::update, this);
+	//m_trackingThread->detach();
+	Tracker::start();
 }
 
 void OVRTracker::stop() {
 
-	//is not tracking, so the update loop exits after current loop
-	m_isTracking = false;
-
+	Tracker::stop();
 }
 
 void OVRTracker::init() {
@@ -95,10 +106,19 @@ void OVRTracker::track() {
 	float mmhDelay = 0.0f; // 0.05f;
 	trackingSystem.SetPredictionTime(mmhDelay);
 
+	// Update device poses
 	trackingSystem.ReceiveDevicePoses();
 
-	//ikSolver.solve(trackingSystem.Poses[0].Position, trackingSystem.Poses[0].Rotation);
+	// Loop over all devices and update points
+	for (int i = 0; i < trackingSystem.Devices.size(); i++) {
+		
+		// Read pose from device index
+		const OpenVRTracking::DevicePose& pose = trackingSystem.Poses[i];
 
+		// Update point position & rotation
+		m_pointCollection.updatePoint(trackingSystem.Devices[i].Index, pose.Position, pose.Rotation);
+	}
+	
 	extractSkeleton();
 
 	m_isDataAvailable = true;
