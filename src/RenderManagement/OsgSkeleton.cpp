@@ -108,6 +108,10 @@ OsgSkeleton::~OsgSkeleton()
 	//delte m_joints
 	//delte m_bones
 	//Avoid ref ptrs? Better readable for novices!
+	//m_skeletonRootNode->removeChildren(0, m_skeletonRootNode->getNumChildren());
+
+
+	std::cout << "DTOR OsgSkeleton" << std::endl;
 
 }
 
@@ -611,6 +615,20 @@ void OsgSkeleton::update(Skeleton skeleton)
 
 	}
 
+}
+
+void OsgSkeleton::removeAndDelete()
+{
+	m_skeletonRootNode->removeChildren(0, m_skeletonRootNode->getNumChildren());
+	//std::cout << "m_skeletonRootNode->referenceCount"<< m_skeletonRootNode->referenceCount() << std::endl;
+	//std::cout << "m_bones" << m_skeletonRootNode->referenceCount() << std::endl;
+	//std::cout << "remove and delete called from OsgSkeleton" << std::endl;
+	m_skeletonRootNode = NULL; // Should be removed by OSG
+
+	for (int i = 0; i < m_bones.size(); i++)
+	{
+		delete m_bones.at(i);
+	}
 }
 
 //void MmhSkeleton::setMesh(osg::Node* node)

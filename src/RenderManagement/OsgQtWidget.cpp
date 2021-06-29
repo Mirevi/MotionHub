@@ -114,7 +114,7 @@ OsgQtWidget::OsgQtWidget(osgQt::GraphicsWindowQt* gw, TrackerManager* trackerMan
 	//g_sceneRoot->addChild(g_ARCoreModellMatrixTransform);
 }
 
-//Is envoked, when no (global) tracking is active and a new tracker is added
+//Is envoked, when no (global) tracking is active and a new tracker is added or removed
 void OsgQtWidget::updateSkeletonMeshPoolSize()
 {
 	std::cout << "Test aus updateSkeletonMeshPoolSize" << std::endl;
@@ -134,7 +134,7 @@ void OsgQtWidget::updateSkeletonMeshPoolSize()
 		// loop over all tracker in the tracker pool in order to find the missing one
 		for (auto itTracker = trackerTempCopy.begin(); itTracker != trackerTempCopy.end(); itTracker++)
 		{
-			// if the current tracker is not an refferenced item in m_skeletonMeshPool add a new one
+			// if the current tracker is not a referenced item in m_skeletonMeshPool, then add a new one
 			if (m_skeletonMeshPool.find((*itTracker)->getProperties()->id) == m_skeletonMeshPool.end())
 			{
 
@@ -154,10 +154,9 @@ void OsgQtWidget::updateSkeletonMeshPoolSize()
 		while (m_skeletonMeshPool.size() > trackerTempCopy.size())
 		{
 
-			// loop over all m_skeletonMeshPool items and remove the one which cant be found in trackerTempCopy
+			// loop over all m_skeletonMeshPool items and remove the one which can't be found in trackerTempCopy
 			for (auto itRefTracker = m_skeletonMeshPool.begin(); itRefTracker != m_skeletonMeshPool.end(); itRefTracker++)
 			{
-
 				bool isTrackerInPool = false;
 
 				for (int indexTrackerCopy = 0; indexTrackerCopy < trackerTempCopy.size(); indexTrackerCopy++)
@@ -174,6 +173,14 @@ void OsgQtWidget::updateSkeletonMeshPoolSize()
 
 				if (isTrackerInPool == false)
 				{
+
+					//itRefTracker->second.size
+					std::cout << "updateSkeletonMeshPoolSize ganz unten" << std::endl;
+
+					for (int i = 0; i < m_skeletonMeshPool.at(itRefTracker->first).size(); i++)
+					{
+						m_skeletonMeshPool.at(itRefTracker->first).at(i).removeAndDelete();
+					}
 
 					m_skeletonMeshPool.erase(itRefTracker->first);
 					break;
@@ -218,6 +225,7 @@ void OsgQtWidget::updateSkeletonMeshCount()
 				while (m_skeletonMeshPool.find((*itTracker)->getProperties()->id)->second.size() < skeletonPoolTempCopy.size())
 				{
 					// add new skeletonMesh to skeltonMeshPool
+					std::cout << "add new skeletonMesh to skeltonMeshPool in updateSkeletonMeshCount" << std::endl;
 					m_skeletonMeshPool.find((*itTracker)->getProperties()->id)->second.push_back(OsgSkeleton(m_sceneRoot));
 
 				}
@@ -229,6 +237,11 @@ void OsgQtWidget::updateSkeletonMeshCount()
 				while (m_skeletonMeshPool.find((*itTracker)->getProperties()->id)->second.size() > skeletonPoolTempCopy.size())
 				{
 					// remove skeletonMesh from skeletonMeshPool
+					std::cout << "remove the last skeletonMesh from skeltonMeshPool in updateSkeletonMeshCount" << std::endl;
+					for (int i = 0; i < m_skeletonMeshPool.find((*itTracker)->getProperties()->id)->second.size(); i++)
+					{
+						m_skeletonMeshPool.find((*itTracker)->getProperties()->id)->second.at(i).removeAndDelete();
+					}
 					m_skeletonMeshPool.find((*itTracker)->getProperties()->id)->second.pop_back();
 					//TODO juj Call DTOR of skeleton!!
 
@@ -245,7 +258,7 @@ void OsgQtWidget::updateSkeletonMeshCount()
 // Loop every MotionHub GLWindow frame
 void OsgQtWidget::updateSkeletonMeshTransform()
 {
-	std::cout << "updateSkeletonMeshTransform" << std::endl;
+	std::cout << "updateSkeletonMeshTransform every Frame" << std::endl;
 	// get tracker pool from the tracker manager
 	std::vector<Tracker*> trackerTempCopy = m_refTrackerManager->getPoolTracker();
 

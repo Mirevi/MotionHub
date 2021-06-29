@@ -30,6 +30,7 @@ OsgBone::OsgBone(osg::ref_ptr<osg::PositionAttitudeTransform> startJoint, float 
 
 OsgBone::~OsgBone()
 {
+	std::cout << "DTOR OsgBone" << std::endl;
 }
 
 void OsgBone::setStartJoint(Joint joint)

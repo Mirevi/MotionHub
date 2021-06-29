@@ -24,7 +24,7 @@ public:
 	~OsgSkeleton();
 	
 	void update(Skeleton skeleton);
-	//void setMesh(OsgBone* node); //???????????????
+	void removeAndDelete();
 
 
 	/*!

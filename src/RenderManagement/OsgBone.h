@@ -32,12 +32,12 @@ private:
     osg::ref_ptr<osg::PositionAttitudeTransform> m_startJoint;
     osg::ref_ptr<osg::PositionAttitudeTransform> m_startJointOffset;
     osg::ref_ptr<osg::PositionAttitudeTransform> m_endJoint;
-    osg::ref_ptr<osg::PositionAttitudeTransform> m_endJointOffset; //TODO: Necessary?
+    //osg::ref_ptr<osg::PositionAttitudeTransform> m_endJointOffset; //TODO: Necessary?
     
     //Offset rotation to correctly render the bone
     osg::Vec3f offsetRotation;
 
-    bool hasLeafJoint;
+    //bool isLeafJoint;
 
 
 };
