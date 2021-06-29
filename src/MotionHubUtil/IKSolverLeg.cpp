@@ -1,10 +1,10 @@
-#include "IKSolverLimb.h"
+#include "IKSolverLeg.h"
 
-IKSolverLimb::IKSolverLimb() {
+IKSolverLeg::IKSolverLeg() {
 
 }
 
-IKSolverLimb::IKSolverLimb(HierarchicJoint* upper, HierarchicJoint* middle, HierarchicJoint* lower) {
+IKSolverLeg::IKSolverLeg(HierarchicJoint* upper, HierarchicJoint* middle, HierarchicJoint* lower) {
 
 	// Create IKJoint objects from given joints
 	upperJoint = IKJoint(upper);
@@ -17,7 +17,7 @@ IKSolverLimb::IKSolverLimb(HierarchicJoint* upper, HierarchicJoint* middle, Hier
 	joints.push_back(&lowerJoint);
 }
 
-void IKSolverLimb::init() {
+void IKSolverLeg::init() {
 
 	// Store middle & lower position
 	Vector3f middlePosition = middleJoint.getPosition();
@@ -27,21 +27,23 @@ void IKSolverLimb::init() {
 	Vector3f upperToMiddle = middlePosition - upperJoint.getPosition();
 	Vector3f middleToLower = lowerPosition - middlePosition;
 
-	// Store normal (upwards on both direction vectors) for bending
-	normal = upperToMiddle.cross(middleToLower);
-
 	// Set target to current position & rotation
 	targetPosition = lowerPosition;
 	targetRotation = lowerJoint.getRotation();
 
-	// Initiate joints
-	upperJoint.init(upperToMiddle, normal);
-	middleJoint.init(middleToLower, normal);
+	// Store default normal & default normal in joint space
+	defaultNormal = upperToMiddle.cross(middleToLower);
+	defaultLocalNormal = upperJoint.getRotation().inverse() * defaultNormal;
 
+	// Initiate joints
+	upperJoint.init(upperToMiddle, defaultNormal);
+	middleJoint.init(middleToLower, defaultNormal);
+
+	// Save default state for joints
 	saveDefaultState();
 }
 
-void IKSolverLimb::saveDefaultState() {
+void IKSolverLeg::saveDefaultState() {
 
 	// Save default state for all joints
 	upperJoint.saveDefaultState();
@@ -49,10 +51,10 @@ void IKSolverLimb::saveDefaultState() {
 	lowerJoint.saveDefaultState();
 
 	// Save lower default rotation
-	lowerDefaultRotation = lowerJoint.joint->getGlobalRotation();
+	lowerDefaultRotation = lowerJoint.joint->getGlobalRotation();	
 }
 
-void IKSolverLimb::loadDefaultState() {
+void IKSolverLeg::loadDefaultState() {
 
 	// Load default state for all joints
 	upperJoint.loadDefaultState();
@@ -60,7 +62,7 @@ void IKSolverLimb::loadDefaultState() {
 	lowerJoint.loadDefaultState();
 }
 
-void IKSolverLimb::solve(Vector3f position, Quaternionf rotation) {
+void IKSolverLeg::solve(Vector3f position, Quaternionf rotation) {
 
 	// Call solve from base class
 	IKSolver::solve(position, rotation);
@@ -73,8 +75,25 @@ void IKSolverLimb::solve(Vector3f position, Quaternionf rotation) {
 		joint->saveSolvedPosition();
 	}
 
-	// Store normal (so it can be manipulated and restored)
-	_normal = normal;
+	// Update normal from current rotation 
+	normal = upperJoint.getRotation() * defaultLocalNormal;
+
+	// TODO: Fallunterscheidung mit und ohne Bend Goal
+	//if (bend == nullptr) {
+
+	//Quaternionf rotation = targetRotation * lowerDefaultRotation.inverse();
+	//normal = Quaternionf::Identity().slerp(bendToTargetRotationWeight, rotation) * normal;
+
+	Quaternionf targetRotation = rotation * lowerDefaultRotation.inverse();
+	Vector3f targetNormal = targetRotation * defaultNormal;
+	normal = slerp(normal, targetNormal, bendToTargetRotationWeight);
+
+
+	//else {
+	//}
+
+	// normalize normal
+	normal = normal.normalized();
 
 	// Solve IK
 	solve();
@@ -85,31 +104,16 @@ void IKSolverLimb::solve(Vector3f position, Quaternionf rotation) {
 	// Apply solution to joints
 	apply();
 
-	// Untwist lower joint based target rotation
+	// Untwist lower joints based on target rotation
 	untwist();
-
-	// Restore normal
-	normal = _normal;
 }
 
-Vector3f IKSolverLimb::getStartPosition() {
+Vector3f IKSolverLeg::getStartPosition() {
 
 	return upperJoint.joint->getGlobalPosition();
 }
 
-void IKSolverLimb::solve() {
-
-	// TODO: Fallunterscheidung mit und ohne Bend Goal
-	//if (bend == nullptr) {
-
-	Quaternionf rotation = targetRotation * lowerDefaultRotation.inverse();
-	normal = Quaternionf::Identity().slerp(bendToTargetRotationWeight, rotation) * normal;
-
-	//else {
-	//}
-
-	// normalize normal
-	normal = normal.normalized();
+void IKSolverLeg::solve() {
 
 	// store start position
 	startPosition = getStartPosition();
@@ -147,7 +151,7 @@ void IKSolverLimb::solve() {
 	}
 }
 
-void IKSolverLimb::constraint() {
+void IKSolverLeg::constraint() {
 
 	// TODO: bend Direction 
 
@@ -158,7 +162,28 @@ void IKSolverLimb::constraint() {
 
 	// Store direction from upper joint to mid joint & bend from normal
 	Vector3f targetDirection = targetPosition - upperPosition;
-	Vector3f direction = targetDirection.cross(normal);
+	Vector3f bendDirection = targetDirection.cross(normal);
+
+	// Store squared Norm & Magnitude of direction
+	float targetDirSqrdNorm = targetDirection.squaredNorm();
+	float targetDirMagnitude = sqrtf(targetDirSqrdNorm);
+	float sqrdNormUpper = upperJoint.squaredNorm;
+	float sqrdNormMiddle = middleJoint.squaredNorm;
+
+	// Calculate forward and up values based on to target & joint lengths
+	float forward = (sqrdNormUpper - sqrdNormMiddle + targetDirSqrdNorm) / (2.0f * targetDirMagnitude);
+	float up = sqrdNormUpper - forward * forward;
+
+	//up = up >= 0.0f ? sqrtf(up) : 0.0f;
+	if (up >= 0.0f) {
+		up = sqrtf(up);
+	}
+	else {
+		up = 0.0f;
+	}
+
+	// Get direction the limb should point to
+	Vector3f direction = lookRotation(targetDirection, bendDirection) * Vector3f(0.0f, up, forward);
 
 	if (lowerJoint.joint->getJointName() == Joint::FOOT_R) {
 		// TODO: Testen!
@@ -190,7 +215,7 @@ void IKSolverLimb::constraint() {
 	middleJoint.setSolvedPosition(newMiddlePosition);
 }
 
-void IKSolverLimb::apply() {
+void IKSolverLeg::apply() {
 
 	// TODO: Use Actual Position (IKSolverArm)
 
@@ -211,7 +236,7 @@ void IKSolverLimb::apply() {
 	lowerJoint.setRotation(targetRotation);
 }
 
-void IKSolverLimb::untwist() {
+void IKSolverLeg::untwist() {
 
 	// TODO: confident angle? 180° flips
 

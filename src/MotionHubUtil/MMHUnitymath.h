@@ -153,6 +153,18 @@ static Quaternionf fromToRotation(Vector3f from, Vector3f to) {
 }
 
 /*!
+ * Returns the angle in degrees between quaternion from and quaternion to
+ *
+ * \param from first quaternion.
+ * \param to second quaternion.
+ * \return angle in degrees between both quaternions.
+ */
+static float angleBetween(Quaternionf from, Quaternionf to) {
+
+	return from.angularDistance(to) * M_Rad2Deg;
+}
+
+/*!
  * Rotates a rotation from towards to
  * The from quaternion is rotated towards to by an angular step of maxDegreesDelta (but note that the rotation will not overshoot)
  * Negative values of maxDegreesDelta will move away from to until the rotation is exactly the opposite direction.
@@ -163,42 +175,10 @@ static Quaternionf fromToRotation(Vector3f from, Vector3f to) {
  * \return the transformed rotation
  */
 static Quaternionf rotateTowards(Quaternionf from, Quaternionf to, float maxDegreesDelta) {
-	float angle = from.angularDistance(to);
+	float angle = angleBetween(from, to);
 	if (angle == 0.0f) return to;
 
 	return from.slerp(fmin(1.0f, maxDegreesDelta / angle), to);
-}
-
-/*!
- * Clamps a rotation to a identity rotation by the weight of clamp [0, 1]
- * 
- * \param rotation the rotation
- * \param clamp the weight to clamp [0 = rotation, 1 = identity rotation]
- * \param clampSmoothing angular step
- * \return the clamped rotation
- */
-static Quaternionf clamp(Quaternionf rotation, float clamp, int clampSmoothing) {
-	Quaternionf identity = Quaternionf::Identity();
-
-	if (clamp >= 1.0f) {
-		return identity;
-	}
-
-	if (clamp <= 0.0f) {
-		return rotation;
-	}
-
-	float dot = 1.0f - (identity.angularDistance(rotation) / 180.0f);
-
-	float targetClampMlp = clamp01(1.0f - ((clamp - dot) / (1.0f - dot)));
-	float clampMlp = clamp01(dot / clamp);
-
-	for (int i = 0; i < clampSmoothing; i++) {
-		float sinF = clampMlp * M_PI * 0.5f;
-		clampMlp = sinf(sinF);
-	}
-
-	return identity.slerp(clampMlp * targetClampMlp, rotation);
 }
 
  /*!
@@ -294,7 +274,7 @@ static void orthoNormalize(Vector3f& normal, Vector3f& tangent, Vector3f& binorm
  * \return angle in degrees between both vectors.
  * \see https://github.com/Unity-Technologies/UnityCsReference/blob/61f92bd79ae862c4465d35270f9d1d57befd1761/Runtime/Export/Math/Vector3.cs#L305
  */
-static float angle(Vector3f from, Vector3f to) {
+static float angleBetween(Vector3f from, Vector3f to) {
 	// sqrt(a) * sqrt(b) = sqrt(a * b) -- valid for real numbers
 	float denominator = sqrtf(from.squaredNorm() * to.squaredNorm());
 
@@ -319,7 +299,7 @@ static float angle(Vector3f from, Vector3f to) {
  * \see https://github.com/Unity-Technologies/UnityCsReference/blob/61f92bd79ae862c4465d35270f9d1d57befd1761/Runtime/Export/Math/Vector3.cs#L319
  */
 static float signedAngle(const Vector3f& from, const Vector3f& to, const Vector3f& axis) {
-	float unsignedAngle = angle(from, to);
+	float unsignedAngle = angleBetween(from, to);
 
 	float cross_x = from.y() * to.z() - from.z() * to.y();
 	float cross_y = from.z() * to.x() - from.x() * to.z();

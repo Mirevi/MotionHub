@@ -19,6 +19,21 @@ public:
 	IKSolverSpine();
 
 	/*!
+	 * Constructor with given spine, chest, neck and head joints
+	 *
+	 * \param spine the spine joint
+	 * \param chest the chest joint
+	 * \param neck the neck joint
+	 * \param head the head joint
+	 */
+	IKSolverSpine(HierarchicJoint* spine, HierarchicJoint* chest, HierarchicJoint* neck, HierarchicJoint* head);
+
+	/*!
+	 * Stores a reference to hip joint
+	 */
+	void setHip(HierarchicJoint* joint);
+
+	/*!
 	 * Initializes the IKSolver and stores default values
 	 */
 	virtual void init() override;
@@ -43,9 +58,37 @@ protected:
 	 */
 	virtual void loadDefaultState() override;
 
+	/*!
+	 * Bends Joints towards head position
+	 */
+	void solveCCD();
+
+	/*!
+	 * Twists Joints towards head rotation
+	 */
+	void solveTwist();
+
 protected:
 
-	Vector3f headLocalPosition;
+	IKJoint spine;
+	IKJoint chest;
+	IKJoint neck;
+	IKJoint head;
 
-	Quaternionf headLocalRotation;
+	HierarchicJoint* hip;
+
+	Quaternionf headRelativeToHip;
+
+	std::vector<Quaternionf> defaultRotations;
+
+	std::vector<IKJoint*> twistJoints;
+	std::vector<float> twistWeights;
+
+	float twistWeight = 0.5f;
+
+	std::vector<IKJoint*> ccdJoints;
+
+	float ccdWeight = 1.0f;
+	float ccdBendWeight = 0.1f;
+	float ccdAngleDamp = 360.0f;
 };

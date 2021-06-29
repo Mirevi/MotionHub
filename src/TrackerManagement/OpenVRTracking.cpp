@@ -223,6 +223,396 @@ static Quaternionf ConvertToRotation(const vr::HmdMatrix34_t& trackingMatrix) {
 }
 #pragma endregion
 
+#pragma region DeviceRoleAssigner
+
+struct DeviceRoleAssigner {
+
+	DeviceRoleAssigner(OpenVRTracking* trackingSystem) {
+
+		this->trackingSystem = trackingSystem;
+	}
+
+	void assignWithinDistance(float allowedDistanceToCenter) {
+
+		// Sum all positions from all device poses
+		Vector3f centerPosition = calculateCenterPosition();
+
+		// Init vectors for storing distances with pose count
+		int poseCount = trackingSystem->Poses.size();
+		distancesToCenter = std::vector<float>(poseCount, -1);
+		distancesToHead = std::vector<float>(poseCount, -1);
+
+		// Init vector for sorting devices
+		std::vector<unsigned int> sortedDeviceIndexes;
+		
+		// Store distances to mean & sort out invalid devices
+		for (int i = 0; i < trackingSystem->Devices.size(); i++) {
+
+			float distanceToCenter = distance(centerPosition, trackingSystem->Poses[i].Position);
+
+			// is in allowed distance?
+			if (distanceToCenter < allowedDistanceToCenter) {
+				distancesToCenter[i] = distanceToCenter;
+
+				//unsigned int deviceIndex = trackingSystem->Devices[i].Index;
+				sortedDeviceIndexes.push_back(i);
+			}
+		}
+
+		// Find and assign head 
+		assignHead(sortedDeviceIndexes);
+
+		// Store distances to head
+		for (unsigned int& deviceIndex : sortedDeviceIndexes) {
+
+			float distanceToHead = distance(headPosition, trackingSystem->Poses[deviceIndex].Position);
+			
+			distancesToHead[deviceIndex] = distanceToHead;
+		}
+
+		// Sort remaining devices by distance to head descending
+		std::sort(sortedDeviceIndexes.begin(), sortedDeviceIndexes.end()
+			, [this](unsigned int a, unsigned int b) {
+
+				return distancesToHead[a] > distancesToHead[b];
+		});
+
+		// Find and assign both feet
+		assignFeet(sortedDeviceIndexes);
+
+		// Sort remaining devices by distance to center descending
+		std::sort(sortedDeviceIndexes.begin(), sortedDeviceIndexes.end()
+			, [this](unsigned int a, unsigned int b) {
+
+			return distancesToCenter[a] > distancesToCenter[b];
+		});
+
+		// Find and assign both hands
+		assignHands(sortedDeviceIndexes);
+
+		// Hip = closest point to center
+		if (sortedDeviceIndexes.size() > 0) {
+			int hipIndex = sortedDeviceIndexes[sortedDeviceIndexes.size() - 1];
+
+			// Remove hip indexes from sorted devices
+			removeFromVector(sortedDeviceIndexes, hipIndex);
+
+			// assign hip joint to device
+			assignRoleToDevice(Joint::HIPS, hipIndex);
+
+			Console::log("Hip:" + trackingSystem->Devices[hipIndex].Identifier);
+		}
+
+		// Assign remainign devices
+		assignRemaining(sortedDeviceIndexes);
+	}
+
+private:
+
+	Vector3f calculateCenterPosition() {
+		// Sum all positions from all device poses
+		Vector3f centerPosition = Vector3f::Zero();
+		for (const OpenVRTracking::DevicePose& pose : trackingSystem->Poses) {
+			centerPosition += pose.Position;
+		}
+
+		// Divide by Pose count 
+		int poseCount = trackingSystem->Poses.size();
+		return Vector3f(centerPosition.x() / poseCount, centerPosition.y() / poseCount, centerPosition.z() / poseCount);
+	}
+
+	void assignRoleToDevice(Joint::JointNames role, unsigned int deviceIndex) {
+
+		trackingSystem->Devices[deviceIndex].joint = role;
+	}
+
+	void removeFromVector(std::vector<unsigned int>& trargetVector, unsigned int value) {
+
+		trargetVector.erase(std::remove(trargetVector.begin(), trargetVector.end(), value), trargetVector.end());
+	}
+
+	void assignHead(std::vector<unsigned int>& sortedDeviceIndexes) {
+
+		// Enough devices left?
+		if (sortedDeviceIndexes.size() < 1) {
+			Console::logWarning("assignHead: sortedDevices.size() < 1");
+			return;
+		}
+
+		// Search for HeadIndex == highest y position in T-Pose
+		unsigned int headIndex = sortedDeviceIndexes[0];
+		for (unsigned int& deviceIndex : sortedDeviceIndexes) {
+
+			// Is device position higher than stored device?
+			if (trackingSystem->Poses[deviceIndex].Position.y() > trackingSystem->Poses[headIndex].Position.y()) {
+				headIndex = deviceIndex;
+			}
+		}
+
+		// Remove head index from sorted devices
+		removeFromVector(sortedDeviceIndexes, headIndex);
+
+		// assign head joint to device
+		assignRoleToDevice(Joint::HEAD, headIndex);
+
+		// Store head position & forward +
+		const auto& headPose = trackingSystem->Poses[headIndex];
+		headPosition = headPose.Position;
+		headForward = headPose.Rotation * Vector3f(0, 0, 1);
+
+		Console::log("Head:" + trackingSystem->Devices[headIndex].Identifier);
+	}
+
+	void assignFeet(std::vector<unsigned int>& sortedDeviceIndexes) {
+
+		// Enough devices left?
+		if (sortedDeviceIndexes.size() < 2) {
+			Console::logWarning("assignFeet: sortedDeviceIndexes.size() < 2");
+			return;
+		}
+
+		// Farest devices from head are feet
+		unsigned int leftFootIndex = sortedDeviceIndexes[0];
+		unsigned int rightFootIndex = sortedDeviceIndexes[1];
+
+		// Remove feet indexes from sorted devices
+		removeFromVector(sortedDeviceIndexes, leftFootIndex);
+		removeFromVector(sortedDeviceIndexes, rightFootIndex);
+
+		// Add feet indexes to limbs
+		limbDevices.push_back(leftFootIndex);
+		limbDevices.push_back(rightFootIndex);
+
+		// Calculate point between feet
+		const auto& leftFootPose = trackingSystem->Poses[leftFootIndex];
+		const auto& rightFootPose = trackingSystem->Poses[rightFootIndex];
+		betweenFeet = lerp(leftFootPose.Position, rightFootPose.Position, 0.5f);
+
+		// Generate up axis from between feet to head
+		upAxis = (headPosition - betweenFeet).normalized();
+
+		// Ortho normalize head forward on up axis
+		orthoNormalize(upAxis, headForward);
+
+		// Create vectors from point between feet to feet
+		Vector3f centerToLeftFoot = (leftFootPose.Position - betweenFeet);
+		Vector3f centerToRightFoot = (rightFootPose.Position - betweenFeet);
+
+		// ortho normalize both feet vectors on up axis
+		orthoNormalize(upAxis, centerToLeftFoot);
+		orthoNormalize(upAxis, centerToRightFoot);
+
+		// Calculate angles between feet vectors and head forward
+		float leftFootAngle = signedAngle(centerToLeftFoot, headForward, upAxis);
+		float rightFootAngle = signedAngle(centerToRightFoot, headForward, upAxis);
+
+		// Swap indexes if angle is negative
+		if ((leftFootAngle - rightFootAngle) < 0) {
+			float tempIndex = leftFootIndex;
+			leftFootIndex = rightFootIndex;
+			rightFootIndex = tempIndex;
+		}
+
+		// assign joints to devices
+		assignRoleToDevice(Joint::FOOT_L, leftFootIndex);
+		assignRoleToDevice(Joint::FOOT_R, rightFootIndex);
+
+		Console::log("Left Foot:" + trackingSystem->Devices[leftFootIndex].Identifier);
+		Console::log("Right Foot:" + trackingSystem->Devices[rightFootIndex].Identifier);
+	}
+
+	void assignHands(std::vector<unsigned int>& sortedDeviceIndexes) {
+		
+		// Enough devices left?
+		if (sortedDeviceIndexes.size() < 2) {
+			Console::logWarning("assignHands: sortedDeviceIndexes.size() < 2");
+			return;
+		}
+
+		// Farest devices from ceare are hands
+		unsigned int leftHandIndex = sortedDeviceIndexes[0];
+		unsigned int rightHandIndex = sortedDeviceIndexes[1];
+
+		// Remove feet indexes from sorted devices
+		removeFromVector(sortedDeviceIndexes, leftHandIndex);
+		removeFromVector(sortedDeviceIndexes, rightHandIndex);
+
+		// Add feet indexes to limbs
+		limbDevices.push_back(leftHandIndex);
+		limbDevices.push_back(rightHandIndex);
+
+		// Create vectors from point between feet to hands
+		Vector3f centerToLeftHand = (trackingSystem->Poses[leftHandIndex].Position - betweenFeet);
+		Vector3f centerToRightHand = (trackingSystem->Poses[rightHandIndex].Position - betweenFeet);
+
+		// ortho normalize both hand vectors on up axis
+		orthoNormalize(upAxis, centerToLeftHand);
+		orthoNormalize(upAxis, centerToRightHand);
+
+		// Calculate angles between hand vectors and head forward
+		float leftHandAngle = signedAngle(centerToLeftHand, headForward, upAxis);
+		float rightHandAngle = signedAngle(centerToRightHand, headForward, upAxis);
+
+		// Swap indexes if angle is negative
+		if ((leftHandAngle - rightHandAngle) < 0) {
+			float tempIndex = leftHandIndex;
+			leftHandIndex = rightHandIndex;
+			rightHandIndex = tempIndex;
+		}
+
+		// assign joints to devices
+		assignRoleToDevice(Joint::HAND_L, leftHandIndex);
+		assignRoleToDevice(Joint::HAND_R, rightHandIndex);
+
+		Console::log("Left Hand:" + trackingSystem->Devices[leftHandIndex].Identifier);
+		Console::log("Right Hand:" + trackingSystem->Devices[rightHandIndex].Identifier);
+	}
+
+	void assignRemaining(std::vector<unsigned int>& sortedDeviceIndexes) {
+		
+		// Exit when no devices left
+		if (sortedDeviceIndexes.size() == 0) {
+			return;
+		}
+
+		// Init vector to store assigned limb indexes
+		std::vector<unsigned int> assignedLimbIndexes;
+
+		// Loop over remaining devices and find closest limb device
+		for (unsigned int& deviceIndex : sortedDeviceIndexes) {
+
+			// Init distance & limb index
+			float minDistance = FLT_MAX;
+			int assignedLimbIndex = 0;
+
+			// Loop over limb devices and find closest one
+			for (unsigned int& limbDeviceIndex : limbDevices) {
+
+				// Calculate distance from current device to limb device
+				float distanceToDevice = distance(trackingSystem->Poses[deviceIndex].Position, trackingSystem->Poses[limbDeviceIndex].Position);
+
+				// Is current distance closer? Override index & min distance
+				if (distanceToDevice < minDistance) {
+					assignedLimbIndex = limbDeviceIndex;
+					minDistance = distanceToDevice;
+				}
+			}
+
+			// Add index to limb index vector
+			assignedLimbIndexes.push_back(assignedLimbIndex);
+		}
+
+		// std::unique removes equivalent elements from vector
+		std::vector<unsigned int>::iterator uniqueIterator = std::unique(assignedLimbIndexes.begin(), assignedLimbIndexes.end());
+
+		// Is iterator unique?
+		bool isUnique = (uniqueIterator == assignedLimbIndexes.end());
+
+		// Has vector duplicates? -> reassign duplicates
+		if (!isUnique) {
+
+			bool limbDeviceAssigned = false;
+
+			// Loop over remaining devices
+			for (int x = 0; x < sortedDeviceIndexes.size(); x++) {
+
+				// Break if device was already assigned
+				if (limbDeviceAssigned) {
+					break;
+				}
+
+				// Assign current device index
+				unsigned int deviceIndex = sortedDeviceIndexes[x];
+
+				// Assign current limb device index
+				unsigned int limbDeviceIndex = assignedLimbIndexes[x];
+
+				// Loop over remaining devices, starting with current index + 1
+				for (int z = (x + 1); z < sortedDeviceIndexes.size(); z++) {
+
+					// Break if device was already assigned
+					if (limbDeviceAssigned) {
+						break;
+					}
+
+					// Continue if both limb device indexes dont match
+					if (limbDeviceIndex != assignedLimbIndexes[z]) {
+						continue;
+					}
+
+					// Assign other device index
+					unsigned int otherDeviceIndex = sortedDeviceIndexes[z];					
+
+					// Init target joint with left foot
+					Joint::JointNames targetJoint = Joint::FOOT_L;
+					// Is limb device already left foot? -> switch to right foot
+					if (trackingSystem->Devices[limbDeviceIndex].joint == targetJoint) {
+						targetJoint = Joint::FOOT_R;
+					}
+
+					// Calculate distance from device & other device to limb
+					float distanceToDevice = distance(trackingSystem->Poses[deviceIndex].Position, trackingSystem->Poses[limbDeviceIndex].Position);
+					float otherDistanceToDevice = distance(trackingSystem->Poses[otherDeviceIndex].Position, trackingSystem->Poses[limbDeviceIndex].Position);
+
+					// Init index for change with current device
+					int changeIndex = x;
+
+					// Current device is closer -> Change other device
+					if (distanceToDevice < otherDistanceToDevice) {
+						changeIndex = z;	
+					}
+
+					// Find limb with target joint and switch limb assignment
+					for (unsigned int currentDeviceIndex = 0; currentDeviceIndex < trackingSystem->Devices.size(); currentDeviceIndex++) {
+						if (trackingSystem->Devices[currentDeviceIndex].joint == targetJoint) {
+							assignedLimbIndexes[changeIndex] = currentDeviceIndex;
+
+							limbDeviceAssigned = true;
+							break;
+						}
+					}
+				}
+
+			}
+		}
+
+		// Loop throug all assigned devices and assign them
+		for (unsigned int i = 0; i < assignedLimbIndexes.size(); i++) {
+
+			// Assigne device & limb indexes
+			unsigned int deviceIndex = sortedDeviceIndexes[i];
+			unsigned int limbIndex = assignedLimbIndexes[i];
+
+			// Get current target joint from limb device index
+			Joint::JointNames targetJoint = trackingSystem->Devices[limbIndex].joint;
+			// and get previous joint in hierarchy
+			int prevJointIndex = static_cast<int>(targetJoint) - 1;
+			Joint::JointNames previousJoint = static_cast<Joint::JointNames>(prevJointIndex);
+
+			// Assign previous joint to device
+			assignRoleToDevice(previousJoint, deviceIndex);
+
+			Console::log(std::string(Joint::getJointName(previousJoint)) + ": " + trackingSystem->Devices[deviceIndex].Identifier);
+		}
+	}
+
+private:
+
+	OpenVRTracking* trackingSystem;
+
+	std::vector<float> distancesToCenter;
+	std::vector<float> distancesToHead;
+
+	Vector3f betweenFeet;
+	Vector3f upAxis;
+
+	Vector3f headPosition;
+	Vector3f headForward;
+
+	std::vector<unsigned int> limbDevices;
+};
+#pragma endregion
+
 OpenVRTracking::OpenVRTracking() :
 	trackedPoseCount(0),
 	predictSecondsFromNow(0)
@@ -416,12 +806,10 @@ void OpenVRTracking::receiveDevicePoses() {
 		vr::TrackedDevicePose_t& trackedPose = devicePoses[Devices[i].Index];
 
 		// TODO: Nur valide Posen übernehmen?
-		/*if (trackedPose.bPoseIsValid) {
-
-		}*/
-
-		// Call copy constructor
-		Poses[i].ExtractPose(trackedPose.mDeviceToAbsoluteTracking);
+		if (trackedPose.bPoseIsValid) {
+			// Call copy constructor
+			Poses[i].ExtractPose(trackedPose.mDeviceToAbsoluteTracking);
+		}
 
 		/*
 		// Convert Data to MMH Format
@@ -609,4 +997,44 @@ void OpenVRTracking::pollEvents() {
 
 
 void OpenVRTracking::calibrateDeviceRoles() {
+
+	Poses[0].Position = Vector3f(0, 1.76f, 0);
+
+	Devices.push_back(Device(1, DeviceClass::Controller, "Left Controller"));
+	Poses.push_back(DevicePose(Vector3f(-0.67f, 1.43f, 0), Quaternionf::Identity()));
+
+	Devices.push_back(Device(3, DeviceClass::Controller, "Right Controller"));
+	Poses.push_back(DevicePose(Vector3f(0.64f, 1.42f, 0), Quaternionf::Identity()));
+
+	Devices.push_back(Device(4, DeviceClass::Tracker, "Hip"));
+	Poses.push_back(DevicePose(Vector3f(0, 1, 0), Quaternionf::Identity()));
+
+	Devices.push_back(Device(5, DeviceClass::Tracker, "Left Foot"));
+	Poses.push_back(DevicePose(Vector3f(-0.08f, 0.1f, 0), Quaternionf::Identity()));
+
+	Devices.push_back(Device(6, DeviceClass::Tracker, "Right Foot"));
+	Poses.push_back(DevicePose(Vector3f(0.08f, 0.1f, 0), Quaternionf::Identity()));
+
+
+
+	Devices.push_back(Device(8, DeviceClass::Tracker, "Right Leg"));
+	Poses.push_back(DevicePose(Vector3f(0.1f, 0.5f, 0), Quaternionf::Identity()));
+
+	Devices.push_back(Device(9, DeviceClass::Tracker, "Left Leg"));
+	Poses.push_back(DevicePose(Vector3f(-0.09f, 0.51f, 0), Quaternionf::Identity()));
+
+	Devices.push_back(Device(10, DeviceClass::Tracker, "Right Arm"));
+	Poses.push_back(DevicePose(Vector3f(0.4f, 1.3f, 0), Quaternionf::Identity()));
+
+	if (Devices.size() >= 6) {
+		DeviceRoleAssigner* deviceRoleAssigner = new DeviceRoleAssigner(this);
+		deviceRoleAssigner->assignWithinDistance(1.5f);
+
+		delete deviceRoleAssigner;
+	}
+	else {
+		Console::logError("Device Count < 6");
+	}
+
+	Console::log("Calibrated");
 }

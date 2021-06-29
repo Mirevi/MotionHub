@@ -5,7 +5,7 @@
 #include "MotionHubUtil/HierarchicSkeleton.h"
 #include "MotionHubUtil/IKSolverHip.h"
 #include "MotionHubUtil/IKSolverSpine.h"
-#include "MotionHubUtil/IKSolverLimb.h"
+#include "MotionHubUtil/IKSolverLeg.h"
 #include "MotionHubUtil/IKSolverArm.h"
 
 /*!
@@ -112,8 +112,8 @@ public:
 
 	IKSolverHip* ikSolverHip;
 	IKSolverSpine* ikSolverSpine;
-	IKSolverLimb* ikSolverLeftLeg;
-	IKSolverLimb* ikSolverRightLeg;
+	IKSolverLeg* ikSolverLeftLeg;
+	IKSolverLeg* ikSolverRightLeg;
 	IKSolverArm* ikSolverLeftArm;
 	IKSolverArm* ikSolverRightArm;
 

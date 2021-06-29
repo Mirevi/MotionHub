@@ -41,7 +41,7 @@ public:
 		Quaternionf jointRotation = joint->getGlobalRotation();
 
 		// Store default normal in joint space
-		defaultNormal = jointRotation.inverse() * normal;
+		defaultLocalNormal = jointRotation.inverse() * normal;
 
 		// Store Quaternion for tansforming rotations to joint space
 		Quaternionf jointToChildRotation = lookRotation(jointToChild, normal);
@@ -104,9 +104,10 @@ public:
 	 * \param direction the look direction
 	 */
 	void setRotationTowards(Vector3f direction) {
-		Quaternionf rotation = joint->getGlobalRotation();
 
-		setRotationTowards(direction, rotation * defaultNormal);
+		Vector3f normal = joint->getGlobalRotation() * defaultLocalNormal;
+
+		setRotationTowards(direction, normal);
 	}
 
 	/*!
@@ -178,7 +179,7 @@ protected:
 	Quaternionf defaultRotation;
 
 	Quaternionf toJointSpace;
-	Vector3f defaultNormal;
+	Vector3f defaultLocalNormal;
 
 	Quaternionf childRotation;
 	Quaternionf savedChildRotation;

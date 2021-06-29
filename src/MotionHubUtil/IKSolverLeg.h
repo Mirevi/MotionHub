@@ -5,19 +5,19 @@
 #include "IKSolver.h"
 
 /*!
- * \class IKSolverLimb
+ * \class IKSolverLeg
  *
  * \brief Extends IKSolver and implements a IK Solver based on the FABRIK algorithm.
  * Solves chains from UpperLeg to Foot / UpperArm to Hand
  */
-class MotionHubUtil_DLL_import_export IKSolverLimb : public IKSolver {
+class MotionHubUtil_DLL_import_export IKSolverLeg : public IKSolver {
 
 public:
 
 	/*!
 	 * Default Constructor
 	 */
-	IKSolverLimb();
+	IKSolverLeg();
 
 	/*!
 	 * Constructor with given upper, middle and lower joints
@@ -26,7 +26,7 @@ public:
 	 * \param middle the middle joint
 	 * \param lower the lower joint
 	 */
-	IKSolverLimb(HierarchicJoint* upper, HierarchicJoint* middle, HierarchicJoint* lower);
+	IKSolverLeg(HierarchicJoint* upper, HierarchicJoint* middle, HierarchicJoint* lower);
 
 	/*!
 	 * Initializes the IKSolver and stores default values
@@ -180,7 +180,9 @@ protected:
 	std::vector<IKJoint*> joints;
 
 	Vector3f normal;
-	Vector3f _normal;
+
+	Vector3f defaultNormal;
+	Vector3f defaultLocalNormal;
 
 	Quaternionf lowerDefaultRotation;
 
