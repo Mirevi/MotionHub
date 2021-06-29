@@ -66,7 +66,7 @@ OsgSkeleton::OsgSkeleton(osg::ref_ptr<osg::Group> parentNode) : m_parentNode(par
 	//HAND_L ### leaf bone ###
 	m_bones.push_back(new OsgBone(m_joints.at(7), 1.0f));
 	//NECK to SHOULDER_R bone
-	m_bones.push_back(new OsgBone(m_joints.at(3), m_joints.at(8), osg::Quat(osg::DegreesToRadians(45.0), osg::Z_AXIS)));
+	m_bones.push_back(new OsgBone(m_joints.at(3), m_joints.at(8), osg::Quat(osg::DegreesToRadians(135.0), osg::Z_AXIS))); // 
 	//SHOULDER_R to ARM_R bone
 	m_bones.push_back(new OsgBone(m_joints.at(8), m_joints.at(9), osg::Quat(osg::DegreesToRadians(180.0), osg::Z_AXIS)));
 	//ARM_R to FOREARM_R bone
@@ -76,7 +76,7 @@ OsgSkeleton::OsgSkeleton(osg::ref_ptr<osg::Group> parentNode) : m_parentNode(par
 	//HAND_R ### leaf bone ###
 	m_bones.push_back(new OsgBone(m_joints.at(11), 1.0f, osg::Quat(osg::DegreesToRadians(180.0), osg::Z_AXIS)));
 	//HIPS to UPLEG_L
-	m_bones.push_back(new OsgBone(m_joints.at(0), m_joints.at(12), osg::Quat(osg::DegreesToRadians(-180.0), osg::Z_AXIS)));
+	m_bones.push_back(new OsgBone(m_joints.at(0), m_joints.at(12))); //-180 // , osg::Quat(osg::DegreesToRadians(90.0), osg::Z_AXIS)
 	//UPLEG_L to LEG_L 
 	m_bones.push_back(new OsgBone(m_joints.at(12), m_joints.at(13), osg::Quat(osg::DegreesToRadians(90.0), osg::Z_AXIS)));
 	//LEG_L to FOOT_L

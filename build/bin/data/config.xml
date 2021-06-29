@@ -4,4 +4,8 @@
     <MMH>
         <position>0.000000 2.000000 0.000000</position>
     </MMH>
+    <Azure id="000771692412">
+        <rotation>0.000000 0.000000 1.000000</rotation>
+        <position>0.000000 1.000000 1.000000</position>
+    </Azure>
 </config>
