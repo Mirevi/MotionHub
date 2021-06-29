@@ -1,6 +1,10 @@
 #ifndef SETTINGSWINDOW_H
 #define SETTINGSWINDOW_H
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <filesystem>
+
 #include <QtWidgets/QDialog>
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QFileDialog>

@@ -709,7 +709,7 @@ void MainWindow::slotTimelineReleased(float newValue)
 
 void MainWindow::slotTimelineValueChanged(float newValue)
 {
-	m_refTrackerManager->timelineValueChange((int)m_mmhTimeline->getValue());	
+	m_refTrackerManager->timelineValueChange(m_mmhTimeline->getValue());	
 }
 
 void MainWindow::slotRecord()
@@ -1177,7 +1177,8 @@ void MainWindow::setTimelineValue(float totalTime, int frameIdx, int numFrames)
 
 	if (m_timelineActive)
 	{
-		m_mmhTimeline->setValue((frameIdx * 100) / numFrames);
+		m_mmhTimeline->setMaxValue(numFrames);
+		m_mmhTimeline->setValue((frameIdx * 100.0f) / numFrames);
 	}
 
 	//also set lable

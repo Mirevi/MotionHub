@@ -73,8 +73,12 @@ void MotionHub::update()
 		// send skeleton pools to other managers
 		if (m_trackerManager->isTracking())
 		{
-
+			// get tracker pool from the tracker manager
 			std::vector<Tracker*> trackerPoolTempCopy = m_trackerManager->getPoolTracker();
+
+			// Init flag for data available & skeleton pool changes
+			bool isDataAvailable = false;
+			bool hasSkeletonPoolChanged = false;
 
 			// iterates through all tracker located in the tracker manager tracker pool 
 			for (auto itTracker = trackerPoolTempCopy.begin(); itTracker != trackerPoolTempCopy.end(); itTracker++)
@@ -87,32 +91,46 @@ void MotionHub::update()
 					//cache skeleton data of current tracker, so gesture- and network manager use current data
 					(*itTracker)->cacheSkeletonData();
 
+					// set data available falg
+					isDataAvailable = true;
+
 					// send skeleton pool reference to gesture manager in order to update all postures
 					//m_gestureManager->updateAllSkeletonPostures(&((*itTracker)->getSkeletonPoolCache())									  );
 
-
-
-					// update ui if skeleton was added or removed from pool
+					// set sekelton changed flag if skeleton was added or removed from pool
 					if ((*itTracker)->hasSkeletonPoolChanged())
 					{
-						Console::log("skeleton pool has changed!");
-
-						//update UI
-						m_uiManager->getMainWindow()->update();	
-
-						m_uiManager->getMainWindow()->getRenderWindow()->updateSkeletonMeshCount();
-
+						hasSkeletonPoolChanged = true;
 					}
-
-					m_uiManager->getMainWindow()->getRenderWindow()->updateSkeletonMeshTransform();
-
-					// reset bool and start new tracking cycle
-					(*itTracker)->resetIsDataAvailable();
-
 				}
+			}
+
+			// update ui if skeleton was added or removed from pool
+			if (hasSkeletonPoolChanged) 
+			{
+				Console::log("skeleton pool has changed!");
+
+				//update UI
+				m_uiManager->getMainWindow()->update();
+
+				m_uiManager->getMainWindow()->getRenderWindow()->updateSkeletonMeshCount();
+			}
+
+			// update skeleton mesh if data changed
+			if (isDataAvailable) 
+			{
+				m_uiManager->getMainWindow()->getRenderWindow()->updateSkeletonMeshTransform();
+
+				m_uiManager->getMainWindow()->getRenderWindow()->updatePointCollectionTransform();
 
 			}
 
+			// loop over all tracker and reset the data available flag
+			for (auto itTracker = trackerPoolTempCopy.begin(); itTracker != trackerPoolTempCopy.end(); itTracker++)
+			{
+				// reset bool and start new tracking cycle
+				(*itTracker)->resetIsDataAvailable();
+			}
 
 			//Recorder::instance().nextFrame();
 

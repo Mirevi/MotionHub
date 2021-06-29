@@ -320,6 +320,65 @@ void OsgQtWidget::updateSkeletonMeshTransform()
 	}
 }
 
+void OsgQtWidget::updatePointCollectionTransform()
+{
+	// get tracker pool from the tracker manager
+	std::vector<Tracker*> trackerTempCopy = m_refTrackerManager->getPoolTracker();
+
+	// loop over all tracker in the pool
+	for (auto itTracker = trackerTempCopy.begin(); itTracker != trackerTempCopy.end(); itTracker++)
+	{
+		// update skeleton joint position and rotation if new data is available
+		if ((*itTracker)->isTracking() && (*itTracker)->isDataAvailable())
+		{
+			// get pointCollection from tracker 
+			PointCollection pointCollection = (*itTracker)->getPointCollection();
+
+			if (m_points.size() != pointCollection.points.size()) {
+
+				int start = std::max(0, (int)m_points.size() - 1);
+
+				for (int i = start; i < pointCollection.points.size(); i++) {
+					m_points.push_back(new osg::ShapeDrawable());
+
+					//m_points.at(i)->setShape(new osg::Sphere(osg::Vec3(0.0f, 0.0f, 0.0f), 0.035f));
+					m_points.at(i)->setShape(new osg::Box(osg::Vec3(0.0f, 0.0f, 0.0f), 0.05f));
+					m_points.at(i)->setColor(osg::Vec4(0.0f, 1.0f, 1.0f, 1.0f)); // cyan
+
+					m_pointTransforms.push_back(new osg::MatrixTransform());
+					m_pointTransforms.at(i)->addChild(m_points.at(i));
+					m_sceneRoot->addChild(m_pointTransforms.at(i));
+				}
+			}
+
+			
+			for (int i = 0; i < pointCollection.points.size(); i++) {
+				Point point = pointCollection.points[i];
+
+				osg::Matrix transformMatrix = osg::Matrix::rotate(osg::Quat(point.getRotation().x(),
+					point.getRotation().y(),
+					point.getRotation().z(),
+					point.getRotation().w()))
+					* osg::Matrix::translate(osg::Vec3f(point.getPosition().x(),
+						point.getPosition().y(),
+						point.getPosition().z()));
+				m_pointTransforms.at(i)->setMatrix(transformMatrix);
+
+				// set attitude sets a rotation
+				m_axesCrossTest->setAttitude(osg::Quat(point.getRotation().x(),
+					point.getRotation().y(),
+					point.getRotation().z(),
+					point.getRotation().w()));
+				// set position
+				m_axesCrossTest->setPosition(osg::Vec3f(point.getPosition().x(),
+					point.getPosition().y(),
+					point.getPosition().z()));
+			}
+
+		}
+	}
+}
+
 
 void OsgQtWidget::updateSkeletonMeshCount()
 {

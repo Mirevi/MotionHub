@@ -253,7 +253,7 @@ void TrackerManager::controlTimeline(bool stop)
 
 }
 
-void TrackerManager::timelineValueChange(int newValue)
+void TrackerManager::timelineValueChange(float newValue)
 {
 	for (auto itTracker = m_trackerPool.begin(); itTracker != m_trackerPool.end(); itTracker++)
 	{

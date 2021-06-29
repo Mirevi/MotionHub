@@ -1,12 +1,6 @@
 #include "Recorder.h"
 
 
-
-
-
-
-
-
 void Recorder::addSkeletonsToFrame(std::map<int, Skeleton> currSkeletons)
 {
 
@@ -50,7 +44,6 @@ void Recorder::nextFrame()
 		m_currFrame = RecordingFrame();
 	}
 }
-
 
 void Recorder::startRecording()
 {

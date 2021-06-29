@@ -21,16 +21,12 @@ SettingsWindow::SettingsWindow(NetworkManager* networkManager, ConfigManager* co
 	connect(m_LineEditIP, &QLineEdit::textChanged, this, &SettingsWindow::ipAddressTextChanged);
 }
 
-
-
 SettingsWindow::~SettingsWindow()
 {
 
 	delete ui;
 
 }
-
-
 
 void SettingsWindow::accept()
 {
@@ -44,16 +40,46 @@ void SettingsWindow::accept()
 		m_configManager->writeString("ipAddress", newAddress);
 	}
 
-	RecordingSession::RECORD_PATH = std::string(ui->lineEdit_recorder_path->text().toLocal8Bit().data());
-	m_configManager->writeString("recordPath", RecordingSession::RECORD_PATH);
+	std::string pathname(ui->lineEdit_recorder_path->text().toLocal8Bit().data());
+
+
+
+	//add slash if nessecary
+	if (std::string(1, pathname.at(pathname.length() - 1)) != "/")
+	{
+		pathname.append("/");
+	}
+
+	bool newFolderIsAvailable = true;
+	//check if path is valid
+	struct stat info;
+	if (stat(pathname.c_str(), &info) != 0)
+	{
+		Console::logError("cannot access " + pathname + ". Creating new folder.");
+
+		if (std::filesystem::create_directory(pathname))
+		{
+			Console::log("successfully created new folder.");
+		}
+		else
+		{
+			Console::logError("ERROR creating new folder! Path reset to old one.");
+			newFolderIsAvailable = false;
+		}
+
+	}
+
+	if (newFolderIsAvailable)
+	{
+		RecordingSession::RECORD_PATH = pathname;
+		m_configManager->writeString("recordPath", RecordingSession::RECORD_PATH);
+	}
+
 
 
 	delete this;
 
 }
-
-
-
 
 void SettingsWindow::setLocalhost()
 {

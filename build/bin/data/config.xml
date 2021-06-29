@@ -1,7 +1,10 @@
 <config>
     <ipAddress>127.0.0.1</ipAddress>
-    <recordPath>./data/recording/</recordPath>
+    <recordPath>C:/dev/projects/MotionHub/build/bin/data/recording/</recordPath>
     <MMH>
-        <position>0.000000 2.000000 0.000000</position>
+        <position>0.000000 1.000000 0.000000</position>
     </MMH>
+    <Azure id="000040394012">
+        <position>0.000000 1.000000 0.000000</position>
+    </Azure>
 </config>
