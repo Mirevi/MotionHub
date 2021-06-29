@@ -10,21 +10,21 @@ OsgBone::OsgBone()
 OsgBone::OsgBone(osg::ref_ptr<osg::PositionAttitudeTransform> startJoint, osg::ref_ptr<osg::PositionAttitudeTransform> endJoint, osg::Quat rotationOffset)
 	: m_startJoint(startJoint), m_endJoint(endJoint)
 {
-	m_startJointOffset = new osg::PositionAttitudeTransform();
-	//m_endJointPosAtt = new osg::PositionAttitudeTransform();
-
 	m_boneNode = osgDB::readNodeFile("./data/mesh_models/bone.obj");
+	m_startJointOffset = new osg::PositionAttitudeTransform();
 	m_startJointOffset->addChild(m_boneNode);
 	m_startJointOffset->setAttitude(rotationOffset);
 	startJoint->addChild(m_startJointOffset);
 }
 
 //CTOR for Leaf Joint with only one joint
-OsgBone::OsgBone(osg::ref_ptr<osg::PositionAttitudeTransform> startJoint, float lengthToVirtualEndJoint) : m_startJoint(startJoint)
+OsgBone::OsgBone(osg::ref_ptr<osg::PositionAttitudeTransform> startJoint, float lengthToVirtualEndJoint, osg::Quat rotationOffset) : m_startJoint(startJoint)
 {
-	//HWM: Logik für Leaf Bone
 	m_boneNode = osgDB::readNodeFile("./data/mesh_models/bone.obj");
-	startJoint->addChild(m_boneNode);
+	m_startJointOffset = new osg::PositionAttitudeTransform();
+	m_startJointOffset->addChild(m_boneNode);
+	m_startJointOffset->setAttitude(rotationOffset);
+	startJoint->addChild(m_startJointOffset);
 } 
 
 OsgBone::~OsgBone()
