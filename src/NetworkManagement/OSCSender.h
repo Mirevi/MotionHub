@@ -52,6 +52,14 @@ public:
 	void sendSkeleton(Skeleton* skeleton, const char* uri, int trackerID) override;
 
 	/*!
+	 * sends point collection
+	 *
+	 * \param pointCollection input point data
+	 * \param uri messages title
+	 */
+	void sendPoints(PointCollection* pointCollection, const char* uri, int trackerID) override;
+
+	/*!
 	 * overrides the receivers address
 	 *
 	 * \param address the receivers address
