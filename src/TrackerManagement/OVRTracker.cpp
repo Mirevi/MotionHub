@@ -81,6 +81,9 @@ void OVRTracker::init() {
 
 	// Load connected Tracking Devices
 	//trackingSystem.LoadDevices();
+
+	hierarchicSkeleton = new HierarchicSkeleton();
+	hierarchicSkeleton->init();
 }
 
 void OVRTracker::update() {
@@ -203,6 +206,7 @@ Skeleton* OVRTracker::parseSkeleton(int id, Skeleton* oldSkeletonData) {
 		}
 	}
 
+	hierarchicSkeleton->insert(currSkeleton);
 	return currSkeleton;
 }
 

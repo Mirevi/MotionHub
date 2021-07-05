@@ -2,7 +2,7 @@
 
 #include "Tracker.h"
 #include "OpenVRTracking.h"
-#include "MotionHubUtil/HierarchicJoint.h"
+#include "MotionHubUtil/HierarchicSkeleton.h"
 #include "MotionHubUtil/IKSolver.h"
 
 /*!
@@ -78,6 +78,8 @@ private:
 	Skeleton* parseSkeleton(int id, Skeleton* oldSkeletonData);
 
 	OpenVRTracking trackingSystem;
+
+	HierarchicSkeleton* hierarchicSkeleton;
 
 	//IKSolver ikSolver;
 };
