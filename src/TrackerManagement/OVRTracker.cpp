@@ -95,6 +95,9 @@ void OVRTracker::update() {
 
 		//send Skeleton Pool to NetworkManager
 		m_networkManager->sendSkeletonPool(&getSkeletonPoolCache(), m_properties->id);
+
+		// send Point Pool to NetworkManager
+		m_networkManager->sendPointPool(&getPointCollection(), m_properties->id);
 	}
 
 	//clean skeleton pool after tracking
@@ -114,12 +117,19 @@ void OVRTracker::track() {
 
 	// Loop over all devices and update points
 	for (int i = 0; i < trackingSystem.Devices.size(); i++) {
-		
+
 		// Read pose from device index
 		const OpenVRTracking::DevicePose& pose = trackingSystem.Poses[i];
 
+		// Convert Rotation
+		Quaternionf rotation = pose.Rotation;
+		//Quaternionf rotation = eulerToQuaternion(m_properties->rotationOffset);
+		//rotation = Quaternionf(-rotation.y(), -rotation.z(), rotation.w(), rotation.x());
+		//rotation = Quaternionf(-rotation.y(), -rotation.z(), -rotation.w(), -rotation.x());
+		rotation = Quaternionf(-rotation.y(), -rotation.z(), rotation.w(), rotation.x());
+
 		// Update point position & rotation
-		m_pointCollection.updatePoint(trackingSystem.Devices[i].Index, pose.Position, pose.Rotation);
+		m_pointCollection.updatePoint(trackingSystem.Devices[i].Index, pose.Position, rotation);
 	}
 	
 	extractSkeleton();

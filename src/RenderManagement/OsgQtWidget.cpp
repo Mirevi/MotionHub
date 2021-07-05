@@ -307,7 +307,7 @@ void OsgQtWidget::updatePointCollectionTransform()
 
 				int start = std::max(0, (int)m_points.size() - 1);
 
-				for (int i = start; i < pointCollection.points.size(); i++) {
+				for (int i = start; i <= pointCollection.points.size(); i++) {
 					m_points.push_back(new osg::ShapeDrawable());
 
 					//m_points.at(i)->setShape(new osg::Sphere(osg::Vec3(0.0f, 0.0f, 0.0f), 0.035f));
