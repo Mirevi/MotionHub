@@ -1,7 +1,14 @@
 #include "CLTracker.h"
 
-CLTracker::CLTracker(int id, NetworkManager* networkManager, ConfigManager* configManager)
-{
+bool CLTracker::m_validTrackerExists;
+
+CLTracker::CLTracker(int id, NetworkManager* networkManager, ConfigManager* configManager) {
+	// check if another CLTracker already exists. If yes throw exception
+	if (m_validTrackerExists) {
+		throw Exception("Another CapturyLive Tracker was already created. Only one should be active at any time.");
+	}
+	m_validTrackerExists = true;
+
 	// assign id and name to properties
 	m_properties->id = id;
 	m_properties->name = "tracker_CapturyLive_" + std::to_string(id);
@@ -28,10 +35,10 @@ CLTracker::CLTracker(int id, NetworkManager* networkManager, ConfigManager* conf
 
 CLTracker::~CLTracker() {
 	if (m_isTracking) stop();
+	m_validTrackerExists = false;
 }
 
-void CLTracker::start()
-{
+void CLTracker::start() {
 	// connect to CapturyLive
 	connect();
 
@@ -39,8 +46,7 @@ void CLTracker::start()
 	Tracker::start();
 }
 
-void CLTracker::stop()
-{
+void CLTracker::stop() {
 	// is not tracking, so the update loop exits 
 	Tracker::stop();
 
@@ -48,12 +54,11 @@ void CLTracker::stop()
 	disconnect();
 }
 
-void CLTracker::track()
-{
+void CLTracker::track() {
 	if (m_connected) {
 		CapturyActor* actors = nullptr;
-		m_countDetectedSkeleton = Captury_getActors((const CapturyActor**)&actors);
-		
+		m_countDetectedSkeleton = Captury_getActors((const CapturyActor**) &actors);
+
 		m_skeletonPoolLock.lock();
 		for (int i = 0; i < m_countDetectedSkeleton; i++) {
 			CapturyPose* pose = Captury_getCurrentPose(actors[i].id);
@@ -91,7 +96,7 @@ void CLTracker::track()
 }
 
 bool CLTracker::connect() {
-	m_connected = Captury_connect(m_ipAddress->c_str(), (unsigned short)*m_port) && Captury_startStreaming(CAPTURY_STREAM_POSES);
+	m_connected = Captury_connect(m_ipAddress->c_str(), (unsigned short) *m_port) && Captury_startStreaming(CAPTURY_STREAM_POSES);
 	return m_connected;
 }
 
