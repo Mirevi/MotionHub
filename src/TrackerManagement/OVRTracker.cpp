@@ -94,7 +94,7 @@ void OVRTracker::update() {
 		track();
 
 		//send Skeleton Pool to NetworkManager
-		m_networkManager->sendSkeletonPool(&getSkeletonPoolCache(), m_properties->id);
+		m_networkManager->sendSkeletonPool(&getSkeletonPool(), m_properties->id);
 
 		// send Point Pool to NetworkManager
 		m_networkManager->sendPointPool(&getPointCollection(), m_properties->id);
@@ -115,6 +115,8 @@ void OVRTracker::track() {
 	// Update device poses
 	trackingSystem.ReceiveDevicePoses();
 
+	m_pointCollectionLock.lock();
+
 	// Loop over all devices and update points
 	for (int i = 0; i < trackingSystem.Devices.size(); i++) {
 
@@ -132,6 +134,8 @@ void OVRTracker::track() {
 		m_pointCollection.updatePoint(trackingSystem.Devices[i].Index, pose.Position, rotation);
 	}
 	
+	m_pointCollectionLock.unlock();
+
 	extractSkeleton();
 
 	m_isDataAvailable = true;

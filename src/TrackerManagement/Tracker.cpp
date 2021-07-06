@@ -189,7 +189,7 @@ std::map<int, Skeleton> Tracker::getSkeletonPool()
 
 PointCollection Tracker::getPointCollection()
 {
-	// lock point collection bevoce accessing point collection
+	// lock point collection bevore accessing point collection
 	m_pointCollectionLock.lock();
 
 	// local copy, so we can unlock the skeleton pool befor return
@@ -286,7 +286,15 @@ void Tracker::update()
 			track();
 
 			// send Skeleton Pool to NetworkManager
-			if (m_networkManager != nullptr) m_networkManager->sendSkeletonPool(&m_skeletonPool, m_properties->id);
+			if (m_networkManager != nullptr) {
+
+				//send Skeleton Pool to NetworkManager
+				m_networkManager->sendSkeletonPool(&getSkeletonPool(), m_properties->id);
+
+				// send Point Pool to NetworkManager
+				m_networkManager->sendPointPool(&getPointCollection(), m_properties->id);
+
+			}
 		}
 	}
 	//clean skeleton pool after tracking

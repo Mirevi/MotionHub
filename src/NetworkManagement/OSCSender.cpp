@@ -106,6 +106,12 @@ void OSCSender::sendPoints(PointCollection* pointCollection, const char* uri, in
 	// begin packet stream & add tracker ID as first value
 	*m_packetStream << osc::BeginBundleImmediate << osc::BeginMessage(uri);
 
+	// add point count to message stream
+	*m_packetStream << (int)pointCollection->points.size();
+
+	int sendLimit = 30;
+	int sendCounter = 0;
+
 	// create new var's for id, position, rotation 
 	int id;
 	Point point;
@@ -117,9 +123,6 @@ void OSCSender::sendPoints(PointCollection* pointCollection, const char* uri, in
 
 	int customInt;
 	float customFloat;
-
-	// add point count to message stream
-	*m_packetStream << (int)pointCollection->points.size();
 
 	// loop through all Points to write data into the stream
 	for (const std::pair<int, Point>& item : pointCollection->points) {
@@ -158,6 +161,26 @@ void OSCSender::sendPoints(PointCollection* pointCollection, const char* uri, in
 			// Add custom data to stream
 			<< customInt
 			<< customFloat;
+
+		// Limit reached? -> begin new stream
+		if (sendCounter++ == sendLimit) {
+			sendCounter = 0;
+
+			// close the stream
+			*m_packetStream << osc::EndMessage << osc::EndBundle;
+
+			// send packet with data
+			m_transmitSocket->Send(m_packetStream->Data(), m_packetStream->Size());
+
+			// clear packet stream to prevent buffer overflow
+			m_packetStream->Clear();
+
+			// begin packet stream & add tracker ID as first value
+			*m_packetStream << osc::BeginBundleImmediate << osc::BeginMessage(uri);
+
+			// add point count to message stream
+			*m_packetStream << (int)pointCollection->points.size();
+		}
 	}
 
 	// close the stream
