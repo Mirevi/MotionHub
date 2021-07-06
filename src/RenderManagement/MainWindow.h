@@ -106,6 +106,10 @@ private slots:
 	 */
 	void on_actionExit_triggered();
 	/*!
+ *  called when user clicks on File->Exit
+ */
+	void on_actionToggle_JointAxes();
+	/*!
 	 * called when user clicks on tracker in list 
 	 * \param index id of clicked tracker
 	 */
@@ -244,7 +248,6 @@ private:
 	void progressionBarThread();
 
 	int m_recordSaveProgression;
-
 
 
 };

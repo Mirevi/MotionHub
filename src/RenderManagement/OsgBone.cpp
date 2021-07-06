@@ -6,6 +6,7 @@ OsgBone::OsgBone()
 {
 }
 
+
 //CTOR for start and end joint
 OsgBone::OsgBone(osg::ref_ptr<osg::PositionAttitudeTransform> startJoint, osg::ref_ptr<osg::PositionAttitudeTransform> endJoint, osg::Quat rotationOffset)
 	: m_startJoint(startJoint), m_endJoint(endJoint)
@@ -17,7 +18,8 @@ OsgBone::OsgBone(osg::ref_ptr<osg::PositionAttitudeTransform> startJoint, osg::r
 	m_startJoint->addChild(m_startJointOffset);
 }
 
-//CTOR for Leaf Joint with only one joint
+
+//CTOR for leaf joint with only one joint
 OsgBone::OsgBone(osg::ref_ptr<osg::PositionAttitudeTransform> startJoint, float lengthToVirtualEndJoint, osg::Quat rotationOffset) 
 	: m_startJoint(startJoint)
 {
@@ -26,12 +28,17 @@ OsgBone::OsgBone(osg::ref_ptr<osg::PositionAttitudeTransform> startJoint, float 
 	m_startJointOffset->addChild(m_boneNode);
 	m_startJointOffset->setAttitude(rotationOffset);
 	m_startJoint->addChild(m_startJointOffset);
+
+	// m_endJoint -> To be defined?
 }
+
 
 OsgBone::~OsgBone()
 {
-	std::cout << "DTOR OsgBone" << std::endl;
+	//Every member is a osg::ref_ptr and should be cleaned by OSG gabarage collector
+	//std::cout << "DTOR OsgBone" << std::endl;
 }
+
 
 void OsgBone::setStartJoint(Joint joint)
 {
@@ -60,23 +67,24 @@ void OsgBone::updateScale()
 	{
 		m_startJointOffset->setScale(osg::Vec3(0.1f, 0.1f, 0.1f));
 	}
+
+
+	//Test for rotation
+	//m_startJointOffset;
+
+
+	//osg::Vec3f dir = osg::Vec3f(0.0, 0.0, 50.0) - m_startJointOffset->getPosition();
+	//dir = m_startJointOffset->getAttitude() * dir;
+	//osg::Vec3f lineEndPosition = dir + m_startJointOffset->getPosition();
+
+	//osg::Matrix matrix;
+	//matrix.makeLookAt(m_startJointOffset->getPosition(), lineEndPosition, osg::Y_AXIS);
+	//m_startJointOffset->setAttitude(matrix.getRotate());
 }
 
 void OsgBone::updateScale(float scale)
 {
-	////HWM: Decomment the following (is from OsgQtWidget and adapt it to this class
-	//// After that, try to implement a bone in osgQtWidget with the same effect as already done with the old way
-	//osg::Vec3f boneVector = osg::Vec3(m_startJoint.getJointPosition().x(),
-	//	m_startJoint.getJointPosition().y(),
-	//	m_startJoint.getJointPosition().z())
-	//	-
-	//	osg::Vec3(m_endJoint.getJointPosition().x(),
-	//		m_endJoint.getJointPosition().y(),
-	//		m_endJoint.getJointPosition().z());
-	//
-	//float boneLength = boneVector.length();
-
-	//setScale(osg::Vec3(boneLength, boneLength, boneLength));
+	m_startJointOffset->setScale(osg::Vec3(scale, scale, scale));
 }
 
 void OsgBone::createLeafJoint()

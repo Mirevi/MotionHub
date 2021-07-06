@@ -4,9 +4,20 @@
 #include <osg/ShapeDrawable>
 #include <osg/Geode>
 
+OsgAxesCross::OsgAxesCross() 
+{
+	initialize();
+
+}
+
 OsgAxesCross::OsgAxesCross(osg::ref_ptr<osg::Group> nodeToAttachTo) {
 
 	nodeToAttachTo->addChild(this);
+	initialize();
+}
+
+void OsgAxesCross::initialize()
+{
 	m_scale = 1.0;
 	m_heightX = 0.1;
 	m_heightY = 0.1;
@@ -16,8 +27,8 @@ OsgAxesCross::OsgAxesCross(osg::ref_ptr<osg::Group> nodeToAttachTo) {
 	m_thicknessZ = 0.005;
 
 	createGeometry();
-	
 }
+
 
 void OsgAxesCross::createGeometry()
 {

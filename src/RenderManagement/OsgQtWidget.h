@@ -42,6 +42,7 @@ public:
     void updateSkeletonMeshPoolSize();
     void updateSkeletonMeshTransform();
     void updateSkeletonMeshCount();
+    void toggleJointAxes();
     void drawLine(osg::Vec3 start, osg::Vec3 end, osg::Vec4 colorStart, osg::Vec4 colorEnd);
 
 protected:
@@ -69,8 +70,6 @@ protected:
 
     std::vector<osg::ref_ptr<osg::ShapeDrawable>> m_spheres;
     std::vector<osg::ref_ptr<osg::MatrixTransform>> m_sphereTransforms;
-    std::vector<OsgAxesCross*> m_axesCrosses;
-    
-    //AxesCross* m_axesCrossTest;
+
     OsgLine* m_line;
 };

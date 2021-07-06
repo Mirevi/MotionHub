@@ -7,6 +7,7 @@
 class RenderManagement_DLL_import_export OsgAxesCross : public osg::PositionAttitudeTransform
 {
 public:
+	OsgAxesCross();
 	OsgAxesCross(osg::ref_ptr<osg::Group> nodeToAttachTo);
     ~OsgAxesCross();
 
@@ -36,6 +37,7 @@ public:
 	float getThicknessZ();
 
 private:
+	void initialize();
 	float m_scale;
 	float m_heightX;
 	float m_heightY;

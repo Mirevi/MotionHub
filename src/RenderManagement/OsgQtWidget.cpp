@@ -7,7 +7,6 @@
 
 #include <QVBoxLayout>
 
-#include "OsgAxesCross.h"
 #include "OsgLine.h"
 #include "OsgBone.h"
 #include "OsgSkeleton.h"
@@ -67,17 +66,14 @@ OsgQtWidget::OsgQtWidget(osgQt::GraphicsWindowQt* gw, TrackerManager* trackerMan
 	m_colorYellow = osg::Vec4f(0.75f, 0.75f, 0.0f, 1.0f);
 	m_colorGreen = osg::Vec4f(0.0f, 0.75f, 0.0f, 1.0f);
 
-	//setup skelett rendering
-	for (int i = 0; i <= 20; i++)
-	{
-		//m_spheres.push_back(new osg::ShapeDrawable());
-		//m_axesCrosses.push_back(new OsgAxesCross(m_sceneRoot));
-		//m_spheres.at(i)->setShape(new osg::Sphere(osg::Vec3(0.0f, 0.0f, 0.0f), 0.035f));
-		//m_spheres.at(i)->setColor(osg::Vec4(1.0f, 0.0f, 0.0f, 1.0f));
-		//m_sphereTransforms.push_back(new osg::MatrixTransform());
-		//m_sphereTransforms.at(i)->addChild(m_spheres.at(i));
-		//m_sceneRoot->addChild(m_sphereTransforms.at(i));
-	}
+
+
+	//m_spheres.push_back(new osg::ShapeDrawable());
+//m_spheres.at(i)->setShape(new osg::Sphere(osg::Vec3(0.0f, 0.0f, 0.0f), 0.035f));
+//m_spheres.at(i)->setColor(osg::Vec4(1.0f, 0.0f, 0.0f, 1.0f));
+//m_sphereTransforms.push_back(new osg::MatrixTransform());
+//m_sphereTransforms.at(i)->addChild(m_spheres.at(i));
+//m_sceneRoot->addChild(m_sphereTransforms.at(i));
 
 	// #### START debug draws: OsgAxesCross and Lines 1/2 ####
 	//create axesCross
@@ -173,10 +169,6 @@ void OsgQtWidget::updateSkeletonMeshPoolSize()
 
 				if (isTrackerInPool == false)
 				{
-
-					//itRefTracker->second.size
-					std::cout << "updateSkeletonMeshPoolSize ganz unten" << std::endl;
-
 					for (int i = 0; i < m_skeletonMeshPool.at(itRefTracker->first).size(); i++)
 					{
 						m_skeletonMeshPool.at(itRefTracker->first).at(i).removeAndDelete();
@@ -243,7 +235,6 @@ void OsgQtWidget::updateSkeletonMeshCount()
 						m_skeletonMeshPool.find((*itTracker)->getProperties()->id)->second.at(i).removeAndDelete();
 					}
 					m_skeletonMeshPool.find((*itTracker)->getProperties()->id)->second.pop_back();
-					//TODO juj Call DTOR of skeleton!!
 
 				}
 			}
@@ -258,7 +249,6 @@ void OsgQtWidget::updateSkeletonMeshCount()
 // Loop every MotionHub GLWindow frame
 void OsgQtWidget::updateSkeletonMeshTransform()
 {
-	std::cout << "updateSkeletonMeshTransform every Frame" << std::endl;
 	// get tracker pool from the tracker manager
 	std::vector<Tracker*> trackerTempCopy = m_refTrackerManager->getPoolTracker();
 
@@ -279,12 +269,9 @@ void OsgQtWidget::updateSkeletonMeshTransform()
 			for (auto itSkeleton = skeletonPoolTempCopy.begin(); itSkeleton != skeletonPoolTempCopy.end(); itSkeleton++)
 			{
 
-				//juj 
 				//Update skeleton
 				m_skeletonMeshPool.find((*itTracker)->getProperties()->id)->second.at(indexSkeleton).update(itSkeleton->second);
 
-				//juj
-				//alles weitere in Skeleton verschieben
 				int indexJoint = 0;
 
 				// update each joint
@@ -301,67 +288,7 @@ void OsgQtWidget::updateSkeletonMeshTransform()
 						return;
 					}
 
-					// get current joint
-					//Cube* currJoint = currMeshTracker->second.at(indexSkeleton).m_joints[indexJoint];
-
-					// set joint position and rotation
-					//currJoint->setPosition(itJoint->second.getJointPosition());
-					//currJoint->setRotation(itJoint->second.getJointRotation());
-
-					//osg::Matrix transformMatrix;
-					//transformMatrix = osg::Matrix::rotate(osg::Quat(itJoint->second.getJointRotation().x(),
-					//	itJoint->second.getJointRotation().y(),
-					//	itJoint->second.getJointRotation().z(),
-					//	itJoint->second.getJointRotation().w()))
-					//	* osg::Matrix::translate(osg::Vec3f(itJoint->second.getJointPosition().x(),
-					//		itJoint->second.getJointPosition().y(),
-					//		itJoint->second.getJointPosition().z()));
-					//m_sphereTransforms.at(indexJoint)->setMatrix(transformMatrix);
-
-
-
-
-
-
-
-
-
-
-					//m_axesCrosses.at(indexJoint)->setAttitude(osg::Quat(itJoint->second.getJointRotation().x(),
-					//	itJoint->second.getJointRotation().y(),
-					//	itJoint->second.getJointRotation().z(),
-					//	itJoint->second.getJointRotation().w()));
-					//m_axesCrosses.at(indexJoint)->setPosition(osg::Vec3f(itJoint->second.getJointPosition().x(),
-					//	itJoint->second.getJointPosition().y(),
-					//	itJoint->second.getJointPosition().z()));
-
-
-
-
-
-
-
-
-
-
-					// #### START debug draws: AxesCross and Lines 2/2 ####
-					//// set attitude sets a rotation. Can also be used for the line
-					//m_axesCrossTest->setAttitude(osg::Quat(itJoint->second.getJointRotation().x(),
-					//	itJoint->second.getJointRotation().y(),
-					//	itJoint->second.getJointRotation().z(),
-					//	itJoint->second.getJointRotation().w()));
-					//// set position
-					//m_axesCrossTest->setPosition(osg::Vec3f(itJoint->second.getJointPosition().x(),
-					//	itJoint->second.getJointPosition().y(),
-					//	itJoint->second.getJointPosition().z()));
-					//// each time, the line has changed, redraw() must be called. Here are no changes in this loop, so it would be ok to only call redraw() once after creation
-					////However, if changes will be made here in the loop, redraw(9 must be called. Otherwise, no changes are displayed
-					//m_line->redraw();
-					// ---- END debug draws ----
-
-
-
-					// set joint confidence in the shader
+					// TODO2: set joint confidence in the shader
 					switch (itJoint->second.getJointConfidence())
 					{
 
@@ -409,4 +336,32 @@ void OsgQtWidget::drawLine(const osg::Vec3 start, const osg::Vec3 end, const osg
 	//m_colors->push_back(colorEnd);
 	////RedrawLines();
 	//m_isDirty = true;
+}
+
+
+void OsgQtWidget::toggleJointAxes()
+{
+	std::cout << "toggleJointAxes in OsgQtWidget" << std::endl;
+	// get tracker pool from the tracker manager
+	std::vector<Tracker*> trackerTempCopy = m_refTrackerManager->getPoolTracker();
+
+	// loop over all tracker in the pool
+	for (auto itTracker = trackerTempCopy.begin(); itTracker != trackerTempCopy.end(); itTracker++)
+	{
+		// get skeletonPoolCache from tracker and create skeletonPoolTempCopy
+		std::map<int, Skeleton> skeletonPoolTempCopy = (*itTracker)->getSkeletonPoolCache();
+
+		int indexSkeleton = 0;
+
+		// update each skeleton
+		for (auto itSkeleton = skeletonPoolTempCopy.begin(); itSkeleton != skeletonPoolTempCopy.end(); itSkeleton++)
+		{
+
+			//Toggle RGB joint axes for each skeleton
+			m_skeletonMeshPool.find((*itTracker)->getProperties()->id)->second.at(indexSkeleton).toggleJointAxes();
+
+			indexSkeleton++;
+
+		}
+	}
 }
