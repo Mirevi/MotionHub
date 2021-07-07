@@ -50,13 +50,13 @@ void OVRTracker::start() {
 	m_pointCollection.clear();
 
 	// Loop over all devices and convert them to points
-	for (OpenVRTracking::Device &device : trackingSystem.Devices) {
+	for (const auto& device : trackingSystem->Devices) {
 
 		// Cast device class to point type
-		Point::PointType pointType = static_cast<Point::PointType>(device.Class);
+		Point::PointType pointType = static_cast<Point::PointType>(device.deviceClass);
 
 		// Add point to collection
-		m_pointCollection.addPoint(device.Index, pointType);
+		m_pointCollection.addPoint(device.index, pointType);
 
 		// TODO: Set Joint Name
 		//m_pointCollection.updatePoint(device.Index, device.)
@@ -136,13 +136,13 @@ void OVRTracker::track() {
 	}
 	
 	// Loop over all devices and update points
-	for (int i = 0; i < trackingSystem.Devices.size(); i++) {
+	for (int i = 0; i < trackingSystem->Devices.size(); i++) {
 		
 		// Read pose from device index
-		const OpenVRTracking::DevicePose& pose = trackingSystem.Poses[i];
+		const auto& pose = trackingSystem->Poses[i];
 		
 		// Update point position & rotation
-		m_pointCollection.updatePoint(trackingSystem.Devices[i].Index, pose.Position, pose.Rotation);
+		m_pointCollection.updatePoint(trackingSystem->Devices[i].index, pose.position, pose.rotation);
 	}
 	
 	extractSkeleton();
@@ -205,21 +205,12 @@ Skeleton* OVRTracker::parseSkeleton(int id, Skeleton* oldSkeletonData) {
 	Joint::JointConfidence highConf = Joint::JointConfidence::HIGH;
 	Joint::JointConfidence lowConf = Joint::JointConfidence::LOW;
 
-	//hierarchicSkeleton->insert(currSkeleton);
-	//return currSkeleton;
-
-
-	// TODO: Loop Joints
-
-
-
-
-	if (trackingSystem->Poses.size() > 1) {
-		Vector3f v3pos = trackingSystem->Poses[0].Position;
+	if (1 == 0 && trackingSystem->Poses.size() > 1) {
+		Vector3f v3pos = trackingSystem->Poses[0].position;
 		Vector4f pos = Vector4f(v3pos.x(), v3pos.y(), v3pos.z(), 1.0f);
 
 		Quaternionf offset = eulerToQuaternion(Vector3f(0.0f, 90.0f, 0.0f));
-		Quaternionf rot = trackingSystem->Poses[0].Rotation * offset;
+		Quaternionf rot = trackingSystem->Poses[0].rotation * offset;
 
 		currSkeleton->m_joints.insert({ Joint::HEAD, Joint(pos, rot, Joint::JointConfidence::HIGH) });
 	}
@@ -308,7 +299,37 @@ void OVRTracker::initIKSolvers() {
 	ikSolverRightArm->init();
 }
 
-OpenVRTracking::DevicePose* OVRTracker::getAssignedPose(Joint::JointNames joint) {
+OpenVRTracking::DevicePose OVRTracker::getAssignedPose(Joint::JointNames joint) {
+
+	return getAssignedPose(joint, true);
+}
+
+OpenVRTracking::DevicePose OVRTracker::getAssignedPose(Joint::JointNames joint, bool applyOffset) {
+
+	auto pose = OpenVRTracking::DevicePose();
+
+	auto devicePose = trackingSystem->getPose(joint);
+
+	// Add 
+	if (devicePose != nullptr) {
+		pose.position = devicePose->position;
+		pose.rotation = devicePose->rotation;
+	}
+
+	if (!applyOffset) {
+		return pose;
+	}
+
+	auto offset = getOffset(joint);
+
+	pose.position += pose.rotation * offset.position;
+	pose.rotation *= offset.rotation;
+	// TODO: Offset zusammenrechnen und cachen
+	// TODO: Offset in bezug auf Joint
+	// TODO: Offset in bezug auf Device Class
+
+	
+
 	switch (joint) {
 	case Joint::HIPS:
 		break;
@@ -332,7 +353,11 @@ OpenVRTracking::DevicePose* OVRTracker::getAssignedPose(Joint::JointNames joint)
 		break;
 	}
 
-	return nullptr;
+	return pose;
+}
+
+OpenVRTracking::DevicePose OVRTracker::getOffset(Joint::JointNames joint) {
+	return OpenVRTracking::DevicePose();
 }
 
 void OVRTracker::calibrate() {

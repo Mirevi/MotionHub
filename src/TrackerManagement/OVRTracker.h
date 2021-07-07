@@ -97,7 +97,11 @@ private:
 	void initIKSolvers();
 
 
-	OpenVRTracking::DevicePose* getAssignedPose(Joint::JointNames joint);
+	OpenVRTracking::DevicePose getAssignedPose(Joint::JointNames joint);
+
+	OpenVRTracking::DevicePose getAssignedPose(Joint::JointNames joint, bool applyOffset);
+
+	OpenVRTracking::DevicePose getOffset(Joint::JointNames joint);
 
 	void calibrate();
 
