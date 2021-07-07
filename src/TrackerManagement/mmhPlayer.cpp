@@ -168,7 +168,7 @@ void mmhPlayer::track()
 
 
 
-	m_currFrame = m_session.getFrame(m_currFrameIdx++);
+	m_currFrame = m_session.getFrame(m_currFrameIdx);
 
 	int skelIdx = 0;
 
@@ -215,6 +215,8 @@ void mmhPlayer::track()
 
 	}
 
+	m_currFrameIdx++;
+
 	m_skeletonPoolLock.unlock();
 
 	//Console::log("mmhPlayer::track(): skeleton count = " + toString(m_skeletonPool.size()));
@@ -248,7 +250,9 @@ void mmhPlayer::controlTime(bool stop)
 
 void mmhPlayer::setCurrentFrame(float newValue)
 {
-	m_currFrameIdx = (int)round(m_frameCount * newValue / 100.0f);
+
+	float frameIdx = (m_frameCount - 1) * newValue / 100.0f;
+	m_currFrameIdx = (int)round(frameIdx);
 
 	if (m_isTracking)
 	{

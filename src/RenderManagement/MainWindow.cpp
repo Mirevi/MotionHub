@@ -699,17 +699,23 @@ void MainWindow::slotTimelinePressed(float newValue)
 {
 	m_refTrackerManager->controlTimeline(true);
 	m_timelineActive = false;
+	m_refTrackerManager->timelineValueChange(m_mmhTimeline->getValue());
+
 }
 
 void MainWindow::slotTimelineReleased(float newValue)
 {
 	m_refTrackerManager->controlTimeline(false);
 	m_timelineActive = true;
+	m_refTrackerManager->timelineValueChange(m_mmhTimeline->getValue());
+
 }
 
 void MainWindow::slotTimelineValueChanged(float newValue)
 {
 	m_refTrackerManager->timelineValueChange(m_mmhTimeline->getValue());	
+	//Console::log("MainWindow::setTimelineValue(): value = " + toString(m_mmhTimeline->getValue()));
+
 }
 
 void MainWindow::slotRecord()
@@ -1185,9 +1191,6 @@ void MainWindow::setTimelineValue(float totalTime, int frameIdx, int numFrames)
 
 	std::string currStr;
 
-	//Console::log("MainWindow::setTimelineValue(): totalTime = " + toString(totalTime));
-
-
 	switch (m_timelineLableState)
 	{
 	case percentage:
@@ -1197,7 +1200,7 @@ void MainWindow::setTimelineValue(float totalTime, int frameIdx, int numFrames)
 	case elTime:
 		//currStr = toString((roundf(totalTime * (float)percent) / 100));
 		char chr[10];
-		sprintf(chr, "%.2f", totalTime * (float)percent / 100);
+		sprintf(chr, "%.2f", totalTime * frameIdx / numFrames);
 		currStr = chr;
 		currStr += "s";
 		break;
