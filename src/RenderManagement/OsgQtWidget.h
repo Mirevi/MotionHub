@@ -80,6 +80,8 @@ protected:
     std::vector<osg::ref_ptr<osg::ShapeDrawable>> m_points;
     std::vector<osg::ref_ptr<osg::MatrixTransform>> m_pointTransforms;
 
+    std::vector<AxesCross*> m_axesCrossesPoints;
+
     AxesCross* m_axesCrossTest;
     Line* m_line;
 };

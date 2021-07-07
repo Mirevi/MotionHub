@@ -348,6 +348,8 @@ void OsgQtWidget::updatePointCollectionTransform()
 					m_pointTransforms.push_back(new osg::MatrixTransform());
 					m_pointTransforms.at(i)->addChild(m_points.at(i));
 					m_sceneRoot->addChild(m_pointTransforms.at(i));
+
+					m_axesCrossesPoints.push_back(new AxesCross(m_sceneRoot));
 				}
 			}
 
@@ -365,12 +367,12 @@ void OsgQtWidget::updatePointCollectionTransform()
 				m_pointTransforms.at(i)->setMatrix(transformMatrix);
 
 				// set attitude sets a rotation
-				m_axesCrossTest->setAttitude(osg::Quat(point.getRotation().x(),
+				m_axesCrossesPoints.at(i)->setAttitude(osg::Quat(point.getRotation().x(),
 					point.getRotation().y(),
 					point.getRotation().z(),
 					point.getRotation().w()));
 				// set position
-				m_axesCrossTest->setPosition(osg::Vec3f(point.getPosition().x(),
+				m_axesCrossesPoints.at(i)->setPosition(osg::Vec3f(point.getPosition().x(),
 					point.getPosition().y(),
 					point.getPosition().z()));
 			}
