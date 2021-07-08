@@ -151,8 +151,25 @@ void XSTracker::track()
 
 	cleanSkeletonPool();
 
-	//increase tracking cycle counter
-	m_trackingCycles = m_quaternianDataWithId->frameTime;
+	/*!
+	 * Important:
+	 * 
+	 * m_trackingCycles is overwritten for Rainer Schiller's master's thesis 
+	 * change isFrameTimeNecessary to false if not needed
+	 *
+	 */
+
+	bool isFrameTimeNecessary = true;
+
+	if (isFrameTimeNecessary) {
+		// overwrite cycle counter with Xsens frameTime for 
+		m_trackingCycles = m_quaternianDataWithId->frameTime;
+	}
+	else {
+		//increase tracking cycle counter
+		m_trackingCycles++;
+	}
+
 
 	//new data is ready 
 	m_isDataAvailable = true;
