@@ -38,6 +38,7 @@ public:
 	~ParserManager();
 	struct QuaternionDataWithId { // Avatar ID with QuaternionDatagram
 		int avatarId;
+		int32_t frameTime;
 		std::vector<QuaternionDatagram::Kinematics>* kinematics;
 	};
 	ParserManager::QuaternionDataWithId* getDatagram(const XsByteArray& data);

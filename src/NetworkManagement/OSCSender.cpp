@@ -25,7 +25,7 @@ OSCSender::OSCSender(std::string address, int port) : NetworkSender(address, por
 }
 
 // send single skeleton
-void OSCSender::sendSkeleton(Skeleton* skeleton, const char* uri, int trackerID)
+void OSCSender::sendSkeleton(Skeleton* skeleton, const char* uri, int trackerID, int frameIndex)
 {
 
 	// check if skeleton exists
@@ -83,6 +83,9 @@ void OSCSender::sendSkeleton(Skeleton* skeleton, const char* uri, int trackerID)
 
 		// add skeleton posture
 		*m_packetStream << (int)skeleton->getPosture();
+
+		// add frameIndex
+		*m_packetStream << frameIndex;
 
 		// close the stream
 		*m_packetStream << osc::EndMessage << osc::EndBundle;

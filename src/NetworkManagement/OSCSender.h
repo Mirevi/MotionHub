@@ -49,7 +49,7 @@ public:
 	 * \param skeleton input skeleton data
 	 * \param uri messages title
 	 */
-	void sendSkeleton(Skeleton* skeleton, const char* uri, int trackerID) override;
+	void sendSkeleton(Skeleton* skeleton, const char* uri, int trackerID, int frameIndex) override;
 
 	/*!
 	 * overrides the receivers address

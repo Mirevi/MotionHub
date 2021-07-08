@@ -140,5 +140,7 @@ private:
 
 	bool isRecordBvh = false;
 
+	
+
 
 };

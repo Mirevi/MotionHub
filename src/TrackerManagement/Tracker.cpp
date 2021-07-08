@@ -272,7 +272,7 @@ void Tracker::update()
 			track();
 
 			// send Skeleton Pool to NetworkManager
-			if (m_networkManager != nullptr) m_networkManager->sendSkeletonPool(&m_skeletonPool, m_properties->id);
+			if (m_networkManager != nullptr) m_networkManager->sendSkeletonPool(&m_skeletonPool, m_properties->id, m_trackingCycles);
 		}
 	}
 	//clean skeleton pool after tracking

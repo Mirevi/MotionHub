@@ -80,7 +80,7 @@ void OVRTracker::update() {
 		track();
 
 		//send Skeleton Pool to NetworkManager
-		m_networkManager->sendSkeletonPool(&getSkeletonPoolCache(), m_properties->id);
+		m_networkManager->sendSkeletonPool(&getSkeletonPoolCache(), m_properties->id, m_trackingCycles);
 	}
 
 	//clean skeleton pool after tracking

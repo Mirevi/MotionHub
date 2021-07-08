@@ -152,12 +152,10 @@ void XSTracker::track()
 	cleanSkeletonPool();
 
 	//increase tracking cycle counter
-	m_trackingCycles++;
+	m_trackingCycles = m_quaternianDataWithId->frameTime;
 
 	//new data is ready 
 	m_isDataAvailable = true;
-
-	m_networkManager->sendSkeletonPool(&m_skeletonPool, m_properties->id);
 
 	m_skeletonPoolLock.unlock();
 
@@ -167,6 +165,7 @@ void XSTracker::extractSkeleton()
 {
 
 	int avatarID = m_quaternianDataWithId->avatarId;
+	
 
 	// add avatarID to avatar list
 	m_avatarList[avatarID] = m_cleanSkeletonCountDown;
