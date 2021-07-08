@@ -75,7 +75,7 @@ void OVRTracker::stop() {
 
 void OVRTracker::init() {
 
-	// Initialize Open
+	// Create & init OpenVR Tracking
 	trackingSystem = new OpenVRTracking();
 
 	try {
@@ -105,7 +105,10 @@ void OVRTracker::update() {
 		track();
 
 		//send Skeleton Pool to NetworkManager
-		m_networkManager->sendSkeletonPool(&getSkeletonPoolCache(), m_properties->id);
+		m_networkManager->sendSkeletonPool(&getSkeletonPool(), m_properties->id);
+		
+		// send Point Pool to NetworkManager
+		m_networkManager->sendPointPool(&getPointCollection(), m_properties->id);
 	}
 
 	//clean skeleton pool after tracking
@@ -134,17 +137,32 @@ void OVRTracker::track() {
 	if (GetAsyncKeyState(0x20) & 0x8000) {
 		calibrate();
 	}
-	
+		
+	// Lock point collection mutex
+	m_pointCollectionLock.lock();
+
 	// Loop over all devices and update points
 	for (int i = 0; i < trackingSystem->Devices.size(); i++) {
-		
+
 		// Read pose from device index
 		const auto& pose = trackingSystem->Poses[i];
-		
+
+		// Convert Rotation
+		Quaternionf rotation = pose.rotation;
+		//Quaternionf rotation = eulerToQuaternion(m_properties->rotationOffset);
+		//rotation = Quaternionf(-rotation.y(), -rotation.z(), rotation.w(), rotation.x());
+		//rotation = Quaternionf(-rotation.y(), -rotation.z(), -rotation.w(), -rotation.x());
+
+		rotation = Quaternionf(-rotation.y(), -rotation.z(), rotation.w(), rotation.x());
+
 		// Update point position & rotation
-		m_pointCollection.updatePoint(trackingSystem->Devices[i].index, pose.position, pose.rotation);
+		m_pointCollection.updatePoint(trackingSystem->Devices[i].index, pose.position, rotation);
+
 	}
 	
+	// Unlock point collection mutex
+	m_pointCollectionLock.unlock();
+
 	extractSkeleton();
 
 	m_isDataAvailable = true;
@@ -268,6 +286,7 @@ Skeleton* OVRTracker::parseSkeleton(int id, Skeleton* oldSkeletonData) {
 		}
 	}
 
+	hierarchicSkeleton->insert(currSkeleton);
 	return currSkeleton;
 }
 

@@ -248,7 +248,7 @@ struct DeviceRoleAssigner {
 		// Store distances to mean & sort out invalid devices
 		for (int i = 0; i < trackingSystem->Devices.size(); i++) {
 
-			float distanceToCenter = distance(centerPosition, trackingSystem->Poses[i].Position);
+			float distanceToCenter = distance(centerPosition, trackingSystem->Poses[i].position);
 
 			// is in allowed distance?
 			if (distanceToCenter < allowedDistanceToCenter) {
@@ -357,10 +357,10 @@ private:
 
 		// Store head position & forward +
 		const auto& headPose = trackingSystem->Poses[headIndex];
-		headPosition = headPose.Position;
-		headForward = headPose.Rotation * Vector3f(0, 0, 1);
+		headPosition = headPose.position;
+		headForward = headPose.rotation * Vector3f(0, 0, 1);
 
-		Console::log("Head:" + trackingSystem->Devices[headIndex].Identifier);
+		Console::log("Head:" + trackingSystem->Devices[headIndex].identifier);
 	}
 
 	void assignFeet(std::vector<unsigned int>& sortedDeviceIndexes) {
@@ -891,21 +891,21 @@ void OpenVRTracking::updateDeviceRoles() {
 
 	// Head could not be found -> Add Head to HMD Index
 	if (!headFound) {
-		for (const Device& device : Devices) {
-			if (device.Class == DeviceClass::HMD) {
-				newIndexToJoint[device.Index] = Joint::HEAD;
+		for (const auto& device : Devices) {
+			if (device.deviceClass == DeviceClass::HMD) {
+				newIndexToJoint[device.index] = Joint::HEAD;
 				break;
 			}
 		}
 	}
 
-	for (Device& device : Devices) {
-		if (newIndexToJoint.count(device.Index) == 0) {
+	for (const auto& device : Devices) {
+		if (newIndexToJoint.count(device.index) == 0) {
 			continue;
 		}
 
-		Joint::JointNames joint = newIndexToJoint.at(device.Index);
-		Console::log("Device #" + toString((int)device.Index) + " " + getDeviceClassType(device.Class) + " " + device.Identifier + " = " + Joint::getJointName(joint));
+		Joint::JointNames joint = newIndexToJoint.at(device.index);
+		Console::log("Device #" + toString((int)device.index) + " " + getDeviceClassType(device.deviceClass) + " " + device.identifier + " = " + Joint::getJointName(joint));
 	}
 }
 
@@ -927,7 +927,10 @@ std::vector<OpenVRTracking::Device> OpenVRTracking::GetConnectedDevices() {
 			continue;
 		}
 
+		// Assign serial number as identifier
 		std::string identifier = GetTrackedDevicePorpertyString(pVRSystem, deviceIndex, vr::ETrackedDeviceProperty::Prop_SerialNumber_String);
+
+		// Add Device to Vector
 		trackedDeviceVector.emplace_back(deviceIndex, deviceClass, identifier);
 	}
 
@@ -994,11 +997,9 @@ void OpenVRTracking::pollEvents() {
 	}
 }
 
-
-
 void OpenVRTracking::calibrateDeviceRoles() {
 
-	Poses[0].Position = Vector3f(0, 1.76f, 0);
+	Poses[0].position = Vector3f(0, 1.76f, 0);
 
 	Devices.push_back(Device(1, DeviceClass::Controller, "Left Controller"));
 	Poses.push_back(DevicePose(Vector3f(-0.67f, 1.43f, 0), Quaternionf::Identity()));
@@ -1034,6 +1035,14 @@ void OpenVRTracking::calibrateDeviceRoles() {
 	}
 	else {
 		Console::logError("Device Count < 6");
+	}
+
+	jointToDevice.clear();
+
+	for (int i = 0; i < Devices.size(); i++) {
+		if (Devices[i].joint != Joint::NDEF) {
+			jointToDevice[Devices[i].joint] = i;
+		}
 	}
 
 	Console::log("Calibrated");

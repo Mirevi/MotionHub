@@ -122,6 +122,6 @@ public:
 	IKSolverArm* ikSolverRightArm;
 
 	bool shouldCalibrate = false;
-
+	
 	std::map<Joint::JointNames, unsigned int> jointToPose;
 };
