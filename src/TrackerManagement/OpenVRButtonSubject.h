@@ -1,7 +1,7 @@
 #pragma once
 
 #include "MotionHubUtil/Subject.h"
-#include "OpenVRObserver.h"
+#include "openvr.h"
 
 /*!
  * \class OpenVRButtonSubject
@@ -41,7 +41,7 @@ public:
     * \return current device index
     */
     vr::TrackedDeviceIndex_t getDeviceIndexState() {
-        return deviceIndex;
+        return deviceIndexState;
     }
 
     /*!
@@ -50,12 +50,23 @@ public:
     * \param deviceIndex the device index
     */
     void setDeviceIndexState(const vr::TrackedDeviceIndex_t deviceIndex) {
-        this->deviceIndex = deviceIndex;
+        this->deviceIndexState = deviceIndex;
+    }
+
+    /*!
+    * setter for device index & button
+    *
+    * \param deviceIndex the device index
+    * \param button the button
+    */
+    void setState(const vr::TrackedDeviceIndex_t deviceIndex, const vr::EVRButtonId button) {
+        setButtonState(button);
+        setDeviceIndexState(deviceIndex);
     }
 
 private:
 
     vr::EVRButtonId buttonState;
 
-    vr::TrackedDeviceIndex_t deviceIndex;
+    vr::TrackedDeviceIndex_t deviceIndexState;
 };

@@ -62,6 +62,9 @@ void OVRTracker::start() {
 		//m_pointCollection.updatePoint(device.Index, device.)
 	}
 
+	// register tracker as observers
+	trackingSystem->registerButtonPressObserver(this);
+
 	// start tracking thread and detach the thread from method scope runtime
 	//m_trackingThread = new std::thread(&OVRTracker::update, this);
 	//m_trackingThread->detach();
@@ -69,6 +72,9 @@ void OVRTracker::start() {
 }
 
 void OVRTracker::stop() {
+
+	// remove tracker from observers
+	trackingSystem->removeButtonPressObserver(this);
 
 	Tracker::stop();
 }
@@ -390,6 +396,18 @@ void OVRTracker::calibrate() {
 	shouldCalibrate = false;
 
 	trackingSystem->calibrateDeviceRoles();
+}
+
+void OVRTracker::notify(Subject* subject) {
+
+	OpenVRButtonSubject* ovrButtonSubject = dynamic_cast<OpenVRButtonSubject*>(subject);
+
+	if (ovrButtonSubject != nullptr) {
+		Console::log("Is Trigger: " + toString(ovrButtonSubject->getButtonState() == vr::EVRButtonId::k_EButton_SteamVR_Trigger));
+	}
+
+	//Console::log("updateObserver");
+	//calibrate();
 }
 
 std::string OVRTracker::getTrackerType() {

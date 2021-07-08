@@ -986,6 +986,11 @@ void OpenVRTracking::pollEvents() {
 			// Button pressed
 		case vr::EVREventType::VREvent_ButtonPress:
 
+			// Set OpenVRButtonSubject states & notify Observers
+			ovrButtonSubject.setDeviceIndexState(event.trackedDeviceIndex);
+			ovrButtonSubject.setButtonState(static_cast<vr::EVRButtonId>(event.data.controller.button));
+			ovrButtonSubject.notifyObservers();
+
 			if (vr::EVRButtonId::k_EButton_SteamVR_Trigger == event.data.controller.button) {
 				Console::log("Trigger PRESSED on DeviceIndex: " + toString((int)event.trackedDeviceIndex));
 			}

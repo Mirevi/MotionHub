@@ -3,6 +3,7 @@
 #include "MotionHubUtil/Exception.h"
 #include "MotionHubUtil/Console.h"
 #include "MotionHubUtil/Joint.h"
+#include "OpenVRButtonSubject.h"
 
 #include <openvr_capi.h>
 #include <openvr.h>
@@ -146,6 +147,24 @@ public:
 		return type;
 	}
 
+	/*!
+	* Register an observer for button presses
+	*
+	* \param observer the observer object to be registered
+	*/
+	void registerButtonPressObserver(Observer* observer) {
+		ovrButtonSubject.registerObserver(observer);
+	}
+
+	/*!
+	* Unregister an observer for button presses
+	*
+	* \param observer the observer object to be unregistered
+	*/
+	void removeButtonPressObserver(Observer* observer) {
+		ovrButtonSubject.removeObserver(observer);
+	}
+
 public:
 
 	std::vector<Device> Devices;
@@ -173,4 +192,6 @@ private:
 	std::unordered_map<unsigned int, Joint::JointNames> userIndexToJoint;
 
 	std::unordered_map<Joint::JointNames, int> jointToDevice;
+
+	OpenVRButtonSubject ovrButtonSubject;
 };

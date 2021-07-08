@@ -7,13 +7,14 @@
 #include "MotionHubUtil/IKSolverSpine.h"
 #include "MotionHubUtil/IKSolverLeg.h"
 #include "MotionHubUtil/IKSolverArm.h"
+#include "OpenVRButtonSubject.h"
 
 /*!
  * \class OVRTracker
  *
  * \brief Manages Open VR Tracking and uses IK Solvers to realize Body Tracking
  */
-class OVRTracker : public Tracker {
+class OVRTracker : public Tracker, public Observer {
 
 public:
 
@@ -104,6 +105,11 @@ private:
 	OpenVRTracking::DevicePose getOffset(Joint::JointNames joint);
 
 	void calibrate();
+
+	/*!
+	 * update the state of this observer
+	 */
+	virtual void notify(Subject* subject) override;
 
 // TODO: private
 public:

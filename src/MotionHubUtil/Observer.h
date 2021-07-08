@@ -11,6 +11,9 @@ class Observer {
 
 public:
 
+    /*!
+    * Destructor for subclasses
+    */
     virtual ~Observer() {}
 
     /*!
