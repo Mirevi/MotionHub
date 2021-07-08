@@ -265,7 +265,7 @@ struct DeviceRoleAssigner {
 		// Store distances to head
 		for (unsigned int& deviceIndex : sortedDeviceIndexes) {
 
-			float distanceToHead = distance(headPosition, trackingSystem->Poses[deviceIndex].Position);
+			float distanceToHead = distance(headPosition, trackingSystem->Poses[deviceIndex].position);
 			
 			distancesToHead[deviceIndex] = distanceToHead;
 		}
@@ -300,7 +300,7 @@ struct DeviceRoleAssigner {
 			// assign hip joint to device
 			assignRoleToDevice(Joint::HIPS, hipIndex);
 
-			Console::log("Hip:" + trackingSystem->Devices[hipIndex].Identifier);
+			Console::log("Hip:" + trackingSystem->Devices[hipIndex].identifier);
 		}
 
 		// Assign remainign devices
@@ -313,7 +313,7 @@ private:
 		// Sum all positions from all device poses
 		Vector3f centerPosition = Vector3f::Zero();
 		for (const OpenVRTracking::DevicePose& pose : trackingSystem->Poses) {
-			centerPosition += pose.Position;
+			centerPosition += pose.position;
 		}
 
 		// Divide by Pose count 
@@ -344,7 +344,7 @@ private:
 		for (unsigned int& deviceIndex : sortedDeviceIndexes) {
 
 			// Is device position higher than stored device?
-			if (trackingSystem->Poses[deviceIndex].Position.y() > trackingSystem->Poses[headIndex].Position.y()) {
+			if (trackingSystem->Poses[deviceIndex].position.y() > trackingSystem->Poses[headIndex].position.y()) {
 				headIndex = deviceIndex;
 			}
 		}
@@ -386,7 +386,7 @@ private:
 		// Calculate point between feet
 		const auto& leftFootPose = trackingSystem->Poses[leftFootIndex];
 		const auto& rightFootPose = trackingSystem->Poses[rightFootIndex];
-		betweenFeet = lerp(leftFootPose.Position, rightFootPose.Position, 0.5f);
+		betweenFeet = lerp(leftFootPose.position, rightFootPose.position, 0.5f);
 
 		// Generate up axis from between feet to head
 		upAxis = (headPosition - betweenFeet).normalized();
@@ -395,8 +395,8 @@ private:
 		orthoNormalize(upAxis, headForward);
 
 		// Create vectors from point between feet to feet
-		Vector3f centerToLeftFoot = (leftFootPose.Position - betweenFeet);
-		Vector3f centerToRightFoot = (rightFootPose.Position - betweenFeet);
+		Vector3f centerToLeftFoot = (leftFootPose.position - betweenFeet);
+		Vector3f centerToRightFoot = (rightFootPose.position - betweenFeet);
 
 		// ortho normalize both feet vectors on up axis
 		orthoNormalize(upAxis, centerToLeftFoot);
@@ -417,8 +417,8 @@ private:
 		assignRoleToDevice(Joint::FOOT_L, leftFootIndex);
 		assignRoleToDevice(Joint::FOOT_R, rightFootIndex);
 
-		Console::log("Left Foot:" + trackingSystem->Devices[leftFootIndex].Identifier);
-		Console::log("Right Foot:" + trackingSystem->Devices[rightFootIndex].Identifier);
+		Console::log("Left Foot:" + trackingSystem->Devices[leftFootIndex].identifier);
+		Console::log("Right Foot:" + trackingSystem->Devices[rightFootIndex].identifier);
 	}
 
 	void assignHands(std::vector<unsigned int>& sortedDeviceIndexes) {
@@ -442,8 +442,8 @@ private:
 		limbDevices.push_back(rightHandIndex);
 
 		// Create vectors from point between feet to hands
-		Vector3f centerToLeftHand = (trackingSystem->Poses[leftHandIndex].Position - betweenFeet);
-		Vector3f centerToRightHand = (trackingSystem->Poses[rightHandIndex].Position - betweenFeet);
+		Vector3f centerToLeftHand = (trackingSystem->Poses[leftHandIndex].position - betweenFeet);
+		Vector3f centerToRightHand = (trackingSystem->Poses[rightHandIndex].position - betweenFeet);
 
 		// ortho normalize both hand vectors on up axis
 		orthoNormalize(upAxis, centerToLeftHand);
@@ -464,8 +464,8 @@ private:
 		assignRoleToDevice(Joint::HAND_L, leftHandIndex);
 		assignRoleToDevice(Joint::HAND_R, rightHandIndex);
 
-		Console::log("Left Hand:" + trackingSystem->Devices[leftHandIndex].Identifier);
-		Console::log("Right Hand:" + trackingSystem->Devices[rightHandIndex].Identifier);
+		Console::log("Left Hand:" + trackingSystem->Devices[leftHandIndex].identifier);
+		Console::log("Right Hand:" + trackingSystem->Devices[rightHandIndex].identifier);
 	}
 
 	void assignRemaining(std::vector<unsigned int>& sortedDeviceIndexes) {
@@ -489,7 +489,7 @@ private:
 			for (unsigned int& limbDeviceIndex : limbDevices) {
 
 				// Calculate distance from current device to limb device
-				float distanceToDevice = distance(trackingSystem->Poses[deviceIndex].Position, trackingSystem->Poses[limbDeviceIndex].Position);
+				float distanceToDevice = distance(trackingSystem->Poses[deviceIndex].position, trackingSystem->Poses[limbDeviceIndex].position);
 
 				// Is current distance closer? Override index & min distance
 				if (distanceToDevice < minDistance) {
@@ -551,8 +551,8 @@ private:
 					}
 
 					// Calculate distance from device & other device to limb
-					float distanceToDevice = distance(trackingSystem->Poses[deviceIndex].Position, trackingSystem->Poses[limbDeviceIndex].Position);
-					float otherDistanceToDevice = distance(trackingSystem->Poses[otherDeviceIndex].Position, trackingSystem->Poses[limbDeviceIndex].Position);
+					float distanceToDevice = distance(trackingSystem->Poses[deviceIndex].position, trackingSystem->Poses[limbDeviceIndex].position);
+					float otherDistanceToDevice = distance(trackingSystem->Poses[otherDeviceIndex].position, trackingSystem->Poses[limbDeviceIndex].position);
 
 					// Init index for change with current device
 					int changeIndex = x;
@@ -572,7 +572,6 @@ private:
 						}
 					}
 				}
-
 			}
 		}
 
@@ -592,7 +591,7 @@ private:
 			// Assign previous joint to device
 			assignRoleToDevice(previousJoint, deviceIndex);
 
-			Console::log(std::string(Joint::getJointName(previousJoint)) + ": " + trackingSystem->Devices[deviceIndex].Identifier);
+			Console::log(std::string(Joint::getJointName(previousJoint)) + ": " + trackingSystem->Devices[deviceIndex].identifier);
 		}
 	}
 
@@ -685,11 +684,34 @@ void OpenVRTracking::init() {
 	vr::EVRInputError inputError = vr::VRInput()->SetActionManifestPath(path.c_str());
 	*/
 
+	updateDevices();
+
+	updateDeviceRoles();
+}
+
+void OpenVRTracking::start() {
+	
+	updateDevices();
+
+	// TODO: Bei start Poses & Devices aktualisieren?
+	updateDeviceRoles();
+}
+
+void OpenVRTracking::updateDevices() {
+
 	// Loop over all valid DeviceIndexes and try to add valid Devices
 	for (vr::TrackedDeviceIndex_t deviceIndex = 0; deviceIndex < vr::k_unMaxTrackedDeviceCount; deviceIndex++) {
 
-		// Skip not connected Devices
+		// Skip/Remove not connected Devices
 		if (!isDeviceConnected(deviceIndex)) {
+
+			// Remove device if disconnected
+			Device* device = getDevice(deviceIndex);
+			if (device != nullptr) {
+				removeDevice(deviceIndex);
+			}
+
+			// Skip device index
 			continue;
 		}
 
@@ -697,13 +719,17 @@ void OpenVRTracking::init() {
 		tryAddDevice(deviceIndex);
 	}
 
-	for (Device& device : Devices) {
+	// Clear poses
+	Poses.clear();
+
+	// Loop over all Devices and create poses for each
+	for (const auto& device : Devices) {
 		// Create Empty Pose and insert at back
 		Poses.emplace_back();
 
 		// Check for higher DeviceIndex
-		if (device.Index >= trackedPoseCount) {
-			trackedPoseCount = device.Index + 1;
+		if (device.index >= trackedPoseCount) {
+			trackedPoseCount = device.index + 1;
 		}
 	}
 
@@ -714,55 +740,12 @@ void OpenVRTracking::init() {
 
 	// Initialize OpenVR Pose Array for each device
 	devicePoses = new vr::TrackedDevicePose_t[trackedPoseCount];
-
-	updateDeviceRoles();
-}
-
-void OpenVRTracking::start() {
-
-	// TODO: Bei start Poses & Devices aktualisieren?
-	updateDeviceRoles();
-}
-
-// TODO: Methode wird durch init() ersetzt
-void OpenVRTracking::loadDevices() {
-
-	// Initialize Device Vector
-	Devices = GetConnectedDevices();
-
-	// Reserve a Pose for each Device
-	Poses.reserve(Devices.size());
-
-	// Initialize Poses Vector for each device
-	// Find out highest DeviceIndex
-	trackedPoseCount = 0;
-
-	for (Device& device : Devices) {
-
-		// Create Empty Pose and insert at back
-		Poses.emplace_back();
-
-		// Check for higher DeviceIndex
-		if (device.Index >= trackedPoseCount) {
-			trackedPoseCount = device.Index + 1;
-		}
-	}
-
-	// Delete old Device Poses
-	if (devicePoses) {
-		delete[] devicePoses;
-	}
-
-	// Initialize OpenVR Pose Array for each device
-	devicePoses = new vr::TrackedDevicePose_t[trackedPoseCount];
-
-	updateDeviceRoles();
 }
 
 OpenVRTracking::Device* OpenVRTracking::getDevice(unsigned int deviceIndex) {
 
 	for (int i = 0; i < Devices.size(); i++) {
-		if (Devices[i].Index == deviceIndex) {
+		if (Devices[i].index == deviceIndex) {
 			return &Devices[i];
 		}
 	}
@@ -770,12 +753,32 @@ OpenVRTracking::Device* OpenVRTracking::getDevice(unsigned int deviceIndex) {
 	return nullptr;
 }
 
+void OpenVRTracking::removeDevice(unsigned int deviceIndex) {
+	for (int i = 0; i < Devices.size(); i++) {
+		if (Devices[i].index == deviceIndex) {
+
+			Devices.erase(Devices.begin() + i);
+			break;
+		}
+	}
+}
+
 OpenVRTracking::DevicePose* OpenVRTracking::getPose(unsigned int deviceIndex) {
 
 	for (int i = 0; i < Devices.size(); i++) {
-		if (Devices[i].Index == deviceIndex) {
+		if (Devices[i].index == deviceIndex) {
 			return &Poses[i];
 		}
+	}
+
+	return nullptr;
+}
+
+OpenVRTracking::DevicePose* OpenVRTracking::getPose(Joint::JointNames joint) {
+	auto deviceIndexIterator = jointToDevice.find(joint);
+
+	if (deviceIndexIterator != jointToDevice.end()) {
+		return &Poses[deviceIndexIterator->second];
 	}
 
 	return nullptr;
@@ -803,7 +806,7 @@ void OpenVRTracking::receiveDevicePoses() {
 	for (int i = 0; i < Devices.size(); i++) {
 
 		// Get tracked Pose Matrix in relation to DeviceIndex
-		vr::TrackedDevicePose_t& trackedPose = devicePoses[Devices[i].Index];
+		vr::TrackedDevicePose_t& trackedPose = devicePoses[Devices[i].index];
 
 		// TODO: Nur valide Posen übernehmen?
 		if (trackedPose.bPoseIsValid) {
@@ -867,9 +870,9 @@ void OpenVRTracking::updateDeviceRoles() {
 	vr::VRActiveActionSet_t actionSet = { 0 };
 	vr::VRInput()->UpdateActionState(&actionSet, sizeof(actionSet), 1);
 
-	std::map<unsigned int, Joint::JointNames> newIndexToJoint;
+	std::unordered_map<unsigned int, Joint::JointNames> newIndexToJoint;
 
-	std::map<Joint::JointNames, unsigned int> newJointToIndex;
+	std::unordered_map<Joint::JointNames, unsigned int> newJointToIndex;
 
 	bool headFound = false;
 

@@ -9,7 +9,7 @@
 
 #include <vector>
 #include <algorithm> // Sort
-#include <map>
+#include <unordered_map>
 #include <Dense>
 
 using namespace Eigen;
@@ -27,65 +27,74 @@ public:
 
 	struct Device {
 
-		unsigned int Index;
-		DeviceClass Class;
+		unsigned int index;
+		DeviceClass deviceClass;
 		// TODO: const char* ? string mem allocation > 15 chars
-		std::string Identifier;
+		std::string identifier;
 
 		Joint::JointNames joint;
 
 		Device()
-			: Index(0), Class(DeviceClass::Invalid), Identifier("") {
+			: index(0), deviceClass(DeviceClass::Invalid), identifier(""), joint(Joint::NDEF){
 		}
 
-		Device(unsigned int index, DeviceClass deviceClass, std::string identifier) {
-			this->Index = index;
-			this->Class = deviceClass;
-			this->Identifier = identifier;
+		Device(unsigned int index, DeviceClass deviceClass, std::string identifier)
+			: joint(Joint::NDEF) {
+
+			this->index = index;
+			this->deviceClass = deviceClass;
+			this->identifier = identifier;
 		}
 	};
 
 	// TODO: Pose auslagern? Und bei ReceiveDevicePoses übergeben?
 	struct DevicePose {
 
-		Vector3f Position;
-		Quaternionf Rotation;
+		Vector3f position;
+		Quaternionf rotation;
 		// TODO: Valid nötig? -> Invalide Posen überspringen?
 		//bool Valid;
 
 		DevicePose() : 
-			Position(Vector3f::Zero()), 
-			Rotation(Quaternionf::Identity()) 
+			position(Vector3f::Zero()), 
+			rotation(Quaternionf::Identity()) 
 		{ }
 
-		DevicePose(Vector3f Position, Quaternionf Rotation) {
-			this->Position = Position;
-			this->Rotation = Rotation;
+		DevicePose(Vector3f position, Quaternionf rotation) {
+			this->position = position;
+			this->rotation = rotation;
 		}
 
 		void ExtractPose(const vr::HmdMatrix34_t& trackingMatrix) {
 			// Extract Position
-			Position = Vector3f(-trackingMatrix.m[0][3], trackingMatrix.m[1][3], -trackingMatrix.m[2][3]);
+			position = Vector3f(-trackingMatrix.m[0][3], trackingMatrix.m[1][3], -trackingMatrix.m[2][3]);
 
 			// Extract Rotation 
-			Quaternionf q = Quaternionf(
-				sqrtf(fmaxf(0, 1 + trackingMatrix.m[0][0] + trackingMatrix.m[1][1] + trackingMatrix.m[2][2])) / 2,
+			rotation = Quaternionf(
+				//q.w = sqrt(fmax(0, 1 + trackingMatrix.m[0][0] + trackingMatrix.m[1][1] + trackingMatrix.m[2][2])) / 2;
+				- sqrt(fmax(0, 1 + trackingMatrix.m[0][0] + trackingMatrix.m[1][1] + trackingMatrix.m[2][2])) / 2,
+
+				//q.x = sqrt(fmax(0, 1 + trackingMatrix.m[0][0] - trackingMatrix.m[1][1] - trackingMatrix.m[2][2])) / 2;
+				//q.x = copysignf(q.x, trackingMatrix.m[2][1] - trackingMatrix.m[1][2]);
 				copysignf(
-					sqrtf(fmaxf(0, 1 + trackingMatrix.m[0][0] - trackingMatrix.m[1][1] - trackingMatrix.m[2][2])) / 2,
+					sqrt(fmax(0, 1 + trackingMatrix.m[0][0] - trackingMatrix.m[1][1] - trackingMatrix.m[2][2])) / 2,
 					trackingMatrix.m[2][1] - trackingMatrix.m[1][2]
 				),
-				copysignf(
-					sqrtf(fmaxf(0, 1 - trackingMatrix.m[0][0] + trackingMatrix.m[1][1] - trackingMatrix.m[2][2])) / 2,
+
+				//q.y = sqrt(fmax(0, 1 - trackingMatrix.m[0][0] + trackingMatrix.m[1][1] - trackingMatrix.m[2][2])) / 2;
+				//q.y = copysignf(q.y, trackingMatrix.m[0][2] - trackingMatrix.m[2][0]);
+				- copysignf(
+					sqrt(fmax(0, 1 - trackingMatrix.m[0][0] + trackingMatrix.m[1][1] - trackingMatrix.m[2][2])) / 2,
 					trackingMatrix.m[0][2] - trackingMatrix.m[2][0]
 				),
-				-copysignf(
-					sqrtf(fmaxf(0, 1 - trackingMatrix.m[0][0] - trackingMatrix.m[1][1] + trackingMatrix.m[2][2])) / 2,
+
+				//q.z = sqrt(fmax(0, 1 - trackingMatrix.m[0][0] - trackingMatrix.m[1][1] + trackingMatrix.m[2][2])) / 2;
+				//q.z = copysignf(q.z, trackingMatrix.m[1][0] - trackingMatrix.m[0][1]);
+				copysignf(
+					sqrt(fmax(0, 1 - trackingMatrix.m[0][0] - trackingMatrix.m[1][1] + trackingMatrix.m[2][2])) / 2,
 					trackingMatrix.m[1][0] - trackingMatrix.m[0][1]
 				)
 			);
-
-			// TODO: inverse vermeiden und Rechnung umstellen
-			Rotation = q.inverse();
 		}
 	};
 
@@ -99,11 +108,13 @@ public:
 
 	void start();
 
-	void loadDevices();
-
 	Device* getDevice(unsigned int deviceIndex);
 
+	void removeDevice(unsigned int deviceIndex);
+
 	DevicePose* getPose(unsigned int deviceIndex);
+
+	DevicePose* getPose(Joint::JointNames joint);
 
 	void receiveDevicePoses();
 
@@ -145,6 +156,8 @@ private:
 
 	void tryAddDevice(unsigned int deviceIndex);
 
+	void updateDevices();
+
 	void updateDeviceRoles();
 
 	std::vector<Device> GetConnectedDevices();
@@ -157,5 +170,7 @@ private:
 
 	vr::TrackedDevicePose_t* devicePoses;
 
-	std::map<unsigned int, Joint::JointNames> userIndexToJoint;
+	std::unordered_map<unsigned int, Joint::JointNames> userIndexToJoint;
+
+	std::unordered_map<Joint::JointNames, int> jointToDevice;
 };
