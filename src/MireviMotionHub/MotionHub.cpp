@@ -9,13 +9,15 @@ MotionHub::MotionHub(int argc, char** argv)
 	// save arguments
 	m_argc = argc;
 
-	
+
 
 	m_argv = argv;
 
 
 
 	Console::log("MotionHub::MotionHub(): Starting Mirevi MotionHub");
+
+
 
 	// create new config reader
 	m_configManager = new ConfigManager();
@@ -26,6 +28,7 @@ MotionHub::MotionHub(int argc, char** argv)
 	m_networkManager = new NetworkManager(m_configManager);
 	m_trackerManager = new TrackerManager(m_networkManager, m_configManager);
 
+
 	//m_oscListener = OSCListener();
 
 	//create OSC listener to receive remote commands
@@ -33,6 +36,16 @@ MotionHub::MotionHub(int argc, char** argv)
 	m_recordingThread->detach();
 
 	m_uiManager		 = new UIManager(m_argc, m_argv, m_trackerManager, m_configManager);
+
+
+	if (argc > 1)
+	{
+		Console::log("MotionHub::MotionHub(): Argument: " + std::string(argv[1]));
+		m_trackerManager->createTracker(TrackerManager::mmh, std::string(argv[1]));
+		addTrackerToWidget(0, m_trackerManager, m_uiManager->getMainWindow()->getTreeWidgetTrackerRef());
+
+
+	}
 
 	m_recordingThread = new std::thread(&MotionHub::updateRecorderThread, this);
 	m_recordingThread->detach();

@@ -183,7 +183,7 @@ void RecordingSession::saveBVH()
 }
 
 
-void RecordingSession::load(std::string filePath)
+bool RecordingSession::load(std::string filePath)
 {
 	tinyxml2::XMLDocument doc;
 
@@ -196,6 +196,8 @@ void RecordingSession::load(std::string filePath)
 	else
 	{
 		Console::logError("RecordingSession::load(): Error loading file. tinyxml Error code " + toString(res));
+
+		return false;
 	}
 
 
@@ -362,7 +364,7 @@ void RecordingSession::load(std::string filePath)
 
 	Console::log("RecordingSession::load(): done loading data");
 	//Console::log("RecordingSession::load(): frame 0, skeleton 0, Hips rotation: " + toString(m_frames[0].m_skeletons[0].m_joints[Joint::HIPS].getJointRotation()));
-
+	return true;
 }
 
 int RecordingSession::getFrameCount()

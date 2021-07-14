@@ -83,7 +83,7 @@ public:
 
 	void Record(bool showProgressionBar = true);
 
-
+	QTreeWidget* getTreeWidgetTrackerRef();
 
 private slots:
 	/*!
@@ -139,6 +139,8 @@ private slots:
 	void slotRecord();
 
 	void slotTimelineLableModeChanged(int idx);
+
+
 
 private:
 	/*!

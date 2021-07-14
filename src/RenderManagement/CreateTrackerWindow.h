@@ -40,7 +40,7 @@ public:
 	/*!
 	 * default constructor 
 	 */
-	explicit CreateTrackerWindow(TrackerManager* trackerManager, QTreeWidget* listWidgetTracker, QWidget *parent = 0);
+	explicit CreateTrackerWindow(TrackerManager* trackerManager, QTreeWidget* listWidgetTracker, QWidget* parent = 0);
 	~CreateTrackerWindow();
 
 private slots:

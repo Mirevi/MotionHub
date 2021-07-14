@@ -750,6 +750,11 @@ void MainWindow::slotTimelineLableModeChanged(int idx)
 	}
 }
 
+QTreeWidget* MainWindow::getTreeWidgetTrackerRef()
+{
+	return ui->treeWidget_tracker;
+}
+
 
 #pragma endregion Slots
 

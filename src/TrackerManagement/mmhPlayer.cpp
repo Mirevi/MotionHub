@@ -8,6 +8,7 @@ mmhPlayer::mmhPlayer(int id, NetworkManager* networkManager, ConfigManager* conf
 
 	m_filePath = filePath;
 
+	m_isInitiated = false;
 	init();
 
 	//create new Properties object
@@ -77,7 +78,11 @@ void mmhPlayer::init()
 	m_timelineDragging = false;
 
 	m_session = RecordingSession();
-	m_session.load(m_filePath);
+
+	if (!m_session.load(m_filePath))
+	{
+		return;
+	}
 
 	//Console::log("mmhPlayer::init(): totalTime = " + toString(m_session.getTotalTime()));
 
@@ -112,6 +117,7 @@ void mmhPlayer::init()
 	m_nameTranslationTable["RightHand"]		= Joint::HAND_R;
 	m_nameTranslationTable["Hips"]			= Joint::HIPS;
 
+	m_isInitiated = true;
 }
 
 void mmhPlayer::update()

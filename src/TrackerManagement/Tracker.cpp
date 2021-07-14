@@ -202,6 +202,11 @@ int Tracker::getFrameCount()
 	return -1;
 }
 
+bool Tracker::isInitiated()
+{
+	return m_isInitiated;
+}
+
 #pragma endregion
 
 #pragma region tracker_Offset_handling

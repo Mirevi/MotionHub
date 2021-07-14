@@ -271,10 +271,11 @@ public:
 	virtual inline std::string getTrackerType() = 0;
 
 	virtual float getTotalTime();
-
 	virtual int getCurrFrameIdx();
-
 	virtual int getFrameCount();
+
+	bool isInitiated();
+
 
 protected:
 	/*!
@@ -360,5 +361,7 @@ protected:
 	NetworkManager* m_networkManager = nullptr;
 
 	ConfigManager* m_configManager = nullptr;
+	bool m_isInitiated;
+
 
 };
