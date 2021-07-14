@@ -138,7 +138,6 @@ void mmhPlayer::update()
 
 		}
 
-		m_trackingCycles = 222;
 
 		//send Skeleton Pool to NetworkManager
 		m_networkManager->sendSkeletonPool(&getSkeletonPoolCache(), m_properties->id, m_trackingCycles);
@@ -150,9 +149,6 @@ void mmhPlayer::update()
 		double elapsed = (double)Timer::getDuration();
 		long long sleepTime = (m_currFrame->m_duration - elapsed) * 1000;
 		std::this_thread::sleep_for(std::chrono::milliseconds(sleepTime));
-
-
-		
 
 
 	}
