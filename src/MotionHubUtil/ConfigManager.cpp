@@ -382,6 +382,19 @@ tinyxml2::XMLElement* ConfigManager::findOrCreateElement(std::string name, std::
 	return element;
 }
 
+bool ConfigManager::exists(std::string parent, std::string identifier)
+{
+	tinyxml2::XMLElement* parentElement = findElement(parent, identifier);
+	return parentElement != nullptr;
+}
+
+bool ConfigManager::exists(std::string name, std::string parent, std::string identifier)
+{
+	tinyxml2::XMLElement* parentElement = findElement(parent, identifier);
+	if (parent != "" && parentElement == nullptr) return false;
+	tinyxml2::XMLElement* element = findElement(name, "", parentElement);
+	return element != nullptr;
+}
 
 bool ConfigManager::readString(std::string name, std::string& out, std::string parent, std::string identifier)
 {
