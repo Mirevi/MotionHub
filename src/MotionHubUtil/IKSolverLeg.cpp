@@ -86,7 +86,9 @@ void IKSolverLeg::solve(Vector3f position, Quaternionf rotation) {
 
 	Quaternionf targetRotation = rotation * lowerDefaultRotation.inverse();
 	Vector3f targetNormal = targetRotation * defaultNormal;
-	normal = slerp(normal, targetNormal, bendToTargetRotationWeight);
+	normal = lerp(normal, targetNormal, bendToTargetRotationWeight);
+
+	normal = normal.normalized();
 
 
 	//else {

@@ -6,7 +6,7 @@ IKSolverArm::IKSolverArm() {
 
 IKSolverArm::IKSolverArm(HierarchicJoint* shoulder, HierarchicJoint* upper, HierarchicJoint* middle, HierarchicJoint* lower) 
 	// Base Constructor
-	: IKSolverLimb(upper, middle, lower) {
+	: IKSolverLeg(upper, middle, lower) {
 
 	// Create IKJoint object from shoulder
 	shoulderJoint = IKJoint(shoulder);
@@ -17,14 +17,15 @@ IKSolverArm::IKSolverArm(HierarchicJoint* shoulder, HierarchicJoint* upper, Hier
 
 void IKSolverArm::init() {
 
-	IKSolverLimb::init();
+	IKSolverLeg::init();
 
 	// Initiate joint
 	Vector3f shoulderToUpper = upperJoint.getPosition() - shoulderJoint.getPosition();
 	shoulderJoint.init(shoulderToUpper, normal);
 
-	//wristToPalmAxis = GuessWristToPalmAxis(lowerBone.transform, middleBone.transform);
-	//palmToThumbAxis = GuessPalmToThumbAxis(lowerBone.transform, chest);
+	// TODO: Achsen bestimmen
+	// - Handflaeche zu Mittelfinger
+	// - Handflaeche zu Daumen
 
 	saveDefaultState();
 }
@@ -35,7 +36,7 @@ void IKSolverArm::saveDefaultState() {
 	shoulderJoint.saveDefaultState();
 
 	// Call save on base class
-	IKSolverLimb::saveDefaultState();
+	IKSolverLeg::saveDefaultState();
 }
 
 void IKSolverArm::loadDefaultState() {
@@ -44,13 +45,13 @@ void IKSolverArm::loadDefaultState() {
 	shoulderJoint.loadDefaultState();
 
 	// Call load on base class
-	IKSolverLimb::loadDefaultState();
+	IKSolverLeg::loadDefaultState();
 }
 
 
 void IKSolverArm::solve(Vector3f position, Quaternionf rotation) {
 
-	IKSolverLimb::solve(position, rotation);
+	IKSolverLeg::solve(position, rotation);
 }
 
 Vector3f IKSolverArm::getStartPosition() {
@@ -60,10 +61,10 @@ Vector3f IKSolverArm::getStartPosition() {
 	if (solveShoulder) {
 		//return targetArm.position;
 		// TODO: Trackerposition
-		return IKSolverLimb::getStartPosition();
+		return IKSolverLeg::getStartPosition();
 	}
 	else {
-		return IKSolverLimb::getStartPosition();
+		return IKSolverLeg::getStartPosition();
 	}
 }
 
@@ -73,7 +74,7 @@ void IKSolverArm::solve() {
 		upperJoint.setSolvedPosition(getStartPosition());
 	}
 
-	IKSolverLimb::solve();
+	IKSolverLeg::solve();
 }
 
 void IKSolverArm::constraint() {
@@ -83,6 +84,8 @@ void IKSolverArm::constraint() {
 
 void IKSolverArm::apply() {
 
+	// TODO: Schulter apply
+
 	// Rotate shoulder Joint
 	if (solveShoulder) {
 		Vector3f upperDirection = upperJoint.getSolvedPosition() - shoulderJoint.getPosition();
@@ -90,10 +93,10 @@ void IKSolverArm::apply() {
 		shoulderJoint.setRotationTowards(upperDirection);
 	}
 
-	IKSolverLimb::apply();
+	IKSolverLeg::apply();
 }
 
 void IKSolverArm::untwist() {
 
-	IKSolverLimb::untwist();
+	IKSolverLeg::untwist();
 }

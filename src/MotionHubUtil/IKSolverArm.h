@@ -2,15 +2,15 @@
 
 #include "ConfigDllExportMotionHubUtil.h"
 
-#include "IKSolverLimb.h"
+#include "IKSolverLeg.h"
 
 /*!
  * \class IKSolverArm
  *
- * \brief Extends IKSolverLimb and implements a IK Solver based on the FABRIK algorithm.
+ * \brief Extends IKSolverLeg and implements a IK Solver based on the FABRIK algorithm.
  * Solves chains from Shoulder to Hand
  */
-class MotionHubUtil_DLL_import_export IKSolverArm : public IKSolverLimb {
+class MotionHubUtil_DLL_import_export IKSolverArm : public IKSolverLeg {
 
 public:
 

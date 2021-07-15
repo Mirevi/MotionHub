@@ -26,13 +26,33 @@ OVRTracker::OVRTracker(int id, NetworkManager* networkManager, ConfigManager* co
 }
 
 OVRTracker::~OVRTracker() {
-	// TODO: free memory for pointers
+
+	// Free memory for TrackingSystem
+	if (trackingSystem != NULL) delete trackingSystem;
+
+	// Free memory for HierarchicSkeleton
+	if (hierarchicSkeleton != NULL) delete hierarchicSkeleton;
+
+	// Free memory for IKSolverHip
+	if (ikSolverHip != NULL) delete ikSolverHip;
+
+	// Free memory for IKSolverSpine
+	if (ikSolverSpine != NULL) delete ikSolverSpine;
+
+	// Free memory for IKSolverLeg
+	if (ikSolverLeftLeg != NULL) delete ikSolverLeftLeg;
+
+	// Free memory for IKSolverLeg
+	if (ikSolverRightLeg != NULL) delete ikSolverRightLeg;
+
+	// Free memory for IKSolverArm
+	if (ikSolverLeftArm != NULL) delete ikSolverLeftArm;
+
+	// Free memory for IKSolverArm
+	if (ikSolverRightArm != NULL) delete ikSolverRightArm;
 }
 
 void OVRTracker::start() {
-
-	// TODO: Refresh Devices
-	// TODO: Link Tracking System -> IK Solver
 
 	// start tracking in tracking system
 	trackingSystem->start();
@@ -92,36 +112,12 @@ void OVRTracker::init() {
 		throw exception;
 	}
 
-	// Load connected Tracking Devices
-	//trackingSystem.LoadDevices();
-
 	// Init IK Sekelton
 	hierarchicSkeleton = new HierarchicSkeleton();
 	hierarchicSkeleton->init();
 
 	// Init IKSolvers
 	initIKSolvers();
-}
-
-void OVRTracker::update() {
-
-	// track while tracking is true
-	while (m_isTracking) {
-		// get new data
-		track();
-
-		//send Skeleton Pool to NetworkManager
-		m_networkManager->sendSkeletonPool(&getSkeletonPool(), m_properties->id);
-		
-		// send Point Pool to NetworkManager
-		m_networkManager->sendPointPool(&getPointCollection(), m_properties->id);
-	}
-
-	//clean skeleton pool after tracking
-	clean();
-
-	//skeleton was added/removed, so UI updates
-	m_hasSkeletonPoolChanged = true;
 }
 
 void OVRTracker::track() {
@@ -136,14 +132,14 @@ void OVRTracker::track() {
 	// Update device poses
 	trackingSystem->receiveDevicePoses();
 
-	// Calbiration
-	if (GetAsyncKeyState('C') & 0x8000) {
+	// Calibration toggle & Calibration
+	if (GetAsyncKeyState('C') & 0x8000) { // C
 		shouldCalibrate = true;
 	}
-	if (GetAsyncKeyState(0x20) & 0x8000) {
+	else if (GetAsyncKeyState(0x20) & 0x8000) { // Space
 		calibrate();
 	}
-		
+
 	// Lock point collection mutex
 	m_pointCollectionLock.lock();
 
@@ -331,29 +327,26 @@ OpenVRTracking::DevicePose OVRTracker::getAssignedPose(Joint::JointNames joint) 
 
 OpenVRTracking::DevicePose OVRTracker::getAssignedPose(Joint::JointNames joint, bool applyOffset) {
 
+	// Init empty device pose
 	auto pose = OpenVRTracking::DevicePose();
 
+	// Try to get a pose from tracking system
 	auto devicePose = trackingSystem->getPose(joint);
 
-	// Add 
+	// Apply transform if pose is not null
 	if (devicePose != nullptr) {
 		pose.position = devicePose->position;
 		pose.rotation = devicePose->rotation;
 	}
-
-	if (!applyOffset) {
+	// Return empty pose if null
+	else {
 		return pose;
 	}
 
-	auto offset = getOffset(joint);
-
-	pose.position += pose.rotation * offset.position;
-	pose.rotation *= offset.rotation;
-	// TODO: Offset zusammenrechnen und cachen
-	// TODO: Offset in bezug auf Joint
-	// TODO: Offset in bezug auf Device Class
-
-	
+	// Return pose if offset is not requested
+	if (!applyOffset) {
+		return pose;
+	}
 
 	switch (joint) {
 	case Joint::HIPS:
@@ -376,12 +369,35 @@ OpenVRTracking::DevicePose OVRTracker::getAssignedPose(Joint::JointNames joint, 
 		break;
 	case Joint::HEAD:
 		break;
+
+	// Try to get a offset from config
+	auto offset = getOffset(joint);
+
+	// Add offset if not null
+	if (!offset.isNull()) {
+		Console::logError(toString(offset.position));
+
+		pose.position += pose.rotation * offset.position;
+		pose.rotation *= offset.rotation;
 	}
+
+	// TODO: Offset zusammenrechnen und cachen
+	// TODO: Offset in bezug auf Joint
+	// TODO: Offset in bezug auf Device Class
 
 	return pose;
 }
 
 OpenVRTracking::DevicePose OVRTracker::getOffset(Joint::JointNames joint) {
+
+	// find offset for specific joint
+	auto deviceOffsetIterator = jointToDeviceOffset.find(joint);
+
+	// offset could be found -> return pose
+	if (deviceOffsetIterator != jointToDeviceOffset.end()) {
+		return deviceOffsetIterator->second;
+	}
+
 	return OpenVRTracking::DevicePose();
 }
 
@@ -400,10 +416,17 @@ void OVRTracker::calibrate() {
 
 void OVRTracker::notify(Subject* subject) {
 
+	// Cast subject to OpenVR button subject
 	OpenVRButtonSubject* ovrButtonSubject = dynamic_cast<OpenVRButtonSubject*>(subject);
 
+	// subject == OpenVRButtonSubject?
 	if (ovrButtonSubject != nullptr) {
 		Console::log("Is Trigger: " + toString(ovrButtonSubject->getButtonState() == vr::EVRButtonId::k_EButton_SteamVR_Trigger));
+
+		// Calibrate on trigger pressed
+		if (ovrButtonSubject->getButtonState() == vr::EVRButtonId::k_EButton_SteamVR_Trigger) {
+			calibrate();
+		}
 	}
 
 	//Console::log("updateObserver");

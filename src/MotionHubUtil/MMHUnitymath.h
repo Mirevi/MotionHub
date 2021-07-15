@@ -305,7 +305,7 @@ static float signedAngle(const Vector3f& from, const Vector3f& to, const Vector3
 	float cross_y = from.z() * to.x() - from.x() * to.z();
 	float cross_z = from.x() * to.y() - from.y() * to.x();
 
-	float sign = sgn(axis.x() * cross_x + axis.y() * cross_y + axis.z() * cross_z);
+	int sign = sgn(axis.x() * cross_x + axis.y() * cross_y + axis.z() * cross_z);
 
 	return unsignedAngle * sign;
 }

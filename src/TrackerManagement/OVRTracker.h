@@ -18,15 +18,17 @@ class OVRTracker : public Tracker, public Observer {
 
 public:
 
-	/*!
+	/*!	
 	 * default constructor
 	 */
 	OVRTracker();
 
 	/*!
-	 * constructor wit initialization
+	 * constructor with initialization
 	 *
 	 * \param id Tracker ID
+	 * \param networkManager reference to NetworkManager
+	 * \param configManager reference to ConfigManager
 	 */
 	OVRTracker(int id, NetworkManager* networkManager, ConfigManager* configManager);
 
@@ -45,8 +47,12 @@ public:
 	*/
 	void stop() override;
 
+	/*!
+	* returns a unique name to clearly identify the type of tracker
+	*/
 	std::string getTrackerType() override;
 
+	// TODO: Debug entfernen
 	std::vector<IKSolver::DebugLine> GetDebugLineLists() {
 		std::vector<IKSolver::DebugLine> lineList;
 
@@ -66,11 +72,6 @@ private:
 	 * override method for Tracker::init()
 	 */
 	void init();
-
-	/*!
-	 * updade method used for tracker thread
-	 */
-	void update() override;
 
 	/*!
 	 * main tracking method
@@ -115,11 +116,11 @@ private:
 public:
 //private:
 
-	// TODO: Pointer?
 	OpenVRTracking* trackingSystem;
 
 	HierarchicSkeleton* hierarchicSkeleton;
 
+	// IKSolvers
 	IKSolverHip* ikSolverHip;
 	IKSolverSpine* ikSolverSpine;
 	IKSolverLeg* ikSolverLeftLeg;
@@ -128,6 +129,6 @@ public:
 	IKSolverArm* ikSolverRightArm;
 
 	bool shouldCalibrate = false;
-	
-	std::map<Joint::JointNames, unsigned int> jointToPose;
+
+	std::unordered_map<Joint::JointNames, OpenVRTracking::DevicePose> jointToDeviceOffset;
 };

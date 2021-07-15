@@ -15,10 +15,16 @@
 
 using namespace Eigen;
 
+/*!
+ * \class OpenVRTracking
+ *
+ * \brief Manages VR Tracking with the Open VR API
+ */
 class OpenVRTracking {
 
 public:
 
+	// enum for the various devices
 	enum DeviceClass {
 		Invalid,
 		HMD,
@@ -26,14 +32,22 @@ public:
 		Tracker
 	};
 
+	/*!
+	 * \struct Device
+	 *
+	 * \brief Container for tracking devices
+	 */
 	struct Device {
 
+		// represents the device index from the Open VR API
 		unsigned int index;
-		DeviceClass deviceClass;
-		// TODO: const char* ? string mem allocation > 15 chars
+
+		// unnique identifier (e.g. serial number)
 		std::string identifier;
 
 		Joint::JointNames joint;
+
+		DeviceClass deviceClass;
 
 		Device()
 			: index(0), deviceClass(DeviceClass::Invalid), identifier(""), joint(Joint::NDEF){
@@ -48,13 +62,17 @@ public:
 		}
 	};
 
-	// TODO: Pose auslagern? Und bei ReceiveDevicePoses übergeben?
+
+	/*!
+	 * \struct DevicePose
+	 *
+	 * \brief Container for tracking poses
+	 */
 	struct DevicePose {
 
 		Vector3f position;
+
 		Quaternionf rotation;
-		// TODO: Valid nötig? -> Invalide Posen überspringen?
-		//bool Valid;
 
 		DevicePose() : 
 			position(Vector3f::Zero()), 
@@ -66,7 +84,7 @@ public:
 			this->rotation = rotation;
 		}
 
-		void ExtractPose(const vr::HmdMatrix34_t& trackingMatrix) {
+		void extractPose(const vr::HmdMatrix34_t& trackingMatrix) {
 			// Extract Position
 			position = Vector3f(-trackingMatrix.m[0][3], trackingMatrix.m[1][3], -trackingMatrix.m[2][3]);
 
@@ -97,36 +115,134 @@ public:
 				)
 			);
 		}
+
+		bool isNull() {
+			return position.isApprox(Vector3f::Zero()) && rotation.isApprox(Quaternionf::Identity());
+		}
 	};
 
 public:
 
+	/*!
+	 * default constructor
+	 */
 	OpenVRTracking();
 
+	/*!
+	 * destructor
+	 */
 	~OpenVRTracking();
 
+	/*!
+	 * initializes the VR System
+	 */
 	void init();
 
+	/*!
+	 * refreshes the devices vector & starts the tracking
+	 */
 	void start();
 
+	/*!
+	 * returns a pointer to device with a specific device index
+	 *
+	 * \param deviceIndex the device index
+	 * 
+	 * \return pointer to a device, null if index was not found
+	 */
 	Device* getDevice(unsigned int deviceIndex);
 
+	/*!
+	 * removes a device from the collection by device index
+	 *
+	 * \param deviceIndex the device index
+	 */
 	void removeDevice(unsigned int deviceIndex);
 
+	/*!
+	 * returns a pointer to pose from a specific device by device index
+	 *
+	 * \param deviceIndex the device index
+	 *
+	 * \return pointer to a pose, null if index was not found
+	 */
 	DevicePose* getPose(unsigned int deviceIndex);
 
+	/*!
+	 * returns a pointer to pose from a specific device by joint
+	 *
+	 * \param joint the joint
+	 *
+	 * \return pointer to a pose, null if joint was not found
+	 */
 	DevicePose* getPose(Joint::JointNames joint);
 
+	/*!
+	 * updates the devices poses from the VR System
+	 */
 	void receiveDevicePoses();
 
+	/*!
+	 * chekcs if the device is currently connected
+	 * 
+	 * \param deviceIndex the device index
+	 *
+	 * \return true if connected, false if not
+	 */
 	bool isDeviceConnected(unsigned int deviceIndex);
 
+	/*!
+	 * sets the prediction time of the VR System
+	 * 
+	 * \param secondsFromNow the prediction time in seconds
+	 */
 	void setPredictionTime(float secondsFromNow);
 
+	/*!
+	 * polls all events from the VR System
+	 */
 	void pollEvents();
 
+	/*!
+	 * Assigns device roles within a T-Pose
+	 */
 	void calibrateDeviceRoles();
 
+	void refreshJointToDevice();
+
+	
+
+	/*!
+	* assigns a role to a device index
+	*
+	* \param role the joint role
+	* \param deviceIndex the device index
+	*/
+	void assignJointToDevice(Joint::JointNames role, unsigned int deviceIndex);
+
+	void assignJointToDevice(int joint, unsigned int deviceIndex);
+
+	/*!
+	* Register an observer for button presses
+	*
+	* \param observer the observer object to be registered
+	*/
+	void registerButtonPressObserver(Observer* observer) {
+		ovrButtonSubject.registerObserver(observer);
+	}
+
+	/*!
+	* Unregister an observer for button presses
+	*
+	* \param observer the observer object to be unregistered
+	*/
+	void removeButtonPressObserver(Observer* observer) {
+		ovrButtonSubject.removeObserver(observer);
+	}
+
+	/*!
+	 * Converts a device class to string
+	 */
 	static std::string getDeviceClassType(DeviceClass deviceClass) {
 		std::string type = "Invalid";
 
@@ -147,28 +263,12 @@ public:
 		return type;
 	}
 
-	/*!
-	* Register an observer for button presses
-	*
-	* \param observer the observer object to be registered
-	*/
-	void registerButtonPressObserver(Observer* observer) {
-		ovrButtonSubject.registerObserver(observer);
-	}
-
-	/*!
-	* Unregister an observer for button presses
-	*
-	* \param observer the observer object to be unregistered
-	*/
-	void removeButtonPressObserver(Observer* observer) {
-		ovrButtonSubject.removeObserver(observer);
-	}
-
 public:
 
+	// collection for Devices
 	std::vector<Device> Devices;
 
+	// collection for Devices transforms
 	std::vector<DevicePose> Poses;
 
 private:
@@ -179,7 +279,7 @@ private:
 
 	void updateDeviceRoles();
 
-	std::vector<Device> GetConnectedDevices();
+	std::vector<Device> getConnectedDevices();
 
 	unsigned int trackedPoseCount;
 
@@ -189,7 +289,9 @@ private:
 
 	vr::TrackedDevicePose_t* devicePoses;
 
-	std::unordered_map<unsigned int, Joint::JointNames> userIndexToJoint;
+	std::unordered_map<unsigned int, Joint::JointNames> userDeviceToJoint;
+
+	std::unordered_map<Joint::JointNames, unsigned int> userJointToDevice;
 
 	std::unordered_map<Joint::JointNames, int> jointToDevice;
 
