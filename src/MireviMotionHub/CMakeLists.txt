@@ -40,7 +40,11 @@ link_directories(${CMAKE_BINARY_DIR}/lib)
 
 file(GLOB_RECURSE MotionHub_HEADER "${CMAKE_CURRENT_SRC_DIR}" *.h)
 file(GLOB_RECURSE MotionHub_SRC "${CMAKE_CURRENT_SRC_DIR}" *.cpp)
-add_executable(MireviMotionHub ${MotionHub_HEADER} ${MotionHub_SRC})
+file(GLOB_RECURSE MotionHub_RC "${CMAKE_CURRENT_SRC_DIR}" *.rc)
+file(GLOB_RECURSE MotionHub_QRC "${CMAKE_CURRENT_SRC_DIR}/../RenderManagement/" *.qrc)
+
+
+add_executable(MireviMotionHub ${MotionHub_HEADER} ${MotionHub_SRC} ${MotionHub_QRC} ${MotionHub_RC})
 
 target_link_libraries(MireviMotionHub
     debug k4a optimized k4a

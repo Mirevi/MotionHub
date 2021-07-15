@@ -24,7 +24,7 @@ int TrackerManager::createTracker(TrackerType type, std::string filePath)
 	int id = m_nextFreeTrackerID;
 
 	Console::log("TrackerManager::createTracker(): filePath = " + filePath);
-
+	
 	//create local Tracker*
 	Tracker* tempTracker = nullptr;
 
