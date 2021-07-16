@@ -45,16 +45,13 @@ public:
 		// unnique identifier (e.g. serial number)
 		std::string identifier;
 
-		Joint::JointNames joint;
-
 		DeviceClass deviceClass;
 
 		Device()
-			: index(0), deviceClass(DeviceClass::Invalid), identifier(""), joint(Joint::NDEF){
+			: index(0), deviceClass(DeviceClass::Invalid), identifier("") {
 		}
 
-		Device(unsigned int index, DeviceClass deviceClass, std::string identifier)
-			: joint(Joint::NDEF) {
+		Device(unsigned int index, DeviceClass deviceClass, std::string identifier) {
 
 			this->index = index;
 			this->deviceClass = deviceClass;
@@ -117,7 +114,15 @@ public:
 		}
 
 		bool isNull() {
-			return position.isApprox(Vector3f::Zero()) && rotation.isApprox(Quaternionf::Identity());
+			return isPositionNull() && isRotationNull();
+		}
+
+		bool isPositionNull() {
+			return position.isApprox(Vector3f::Zero());
+		}
+
+		bool isRotationNull() {
+			return rotation.isApprox(Quaternionf::Identity());
 		}
 	};
 
@@ -169,15 +174,6 @@ public:
 	DevicePose* getPose(unsigned int deviceIndex);
 
 	/*!
-	 * returns a pointer to pose from a specific device by joint
-	 *
-	 * \param joint the joint
-	 *
-	 * \return pointer to a pose, null if joint was not found
-	 */
-	DevicePose* getPose(Joint::JointNames joint);
-
-	/*!
 	 * updates the devices poses from the VR System
 	 */
 	void receiveDevicePoses();
@@ -208,19 +204,7 @@ public:
 	 */
 	void calibrateDeviceRoles();
 
-	void refreshJointToDevice();
-
-	
-
-	/*!
-	* assigns a role to a device index
-	*
-	* \param role the joint role
-	* \param deviceIndex the device index
-	*/
-	void assignJointToDevice(Joint::JointNames role, unsigned int deviceIndex);
-
-	void assignJointToDevice(int joint, unsigned int deviceIndex);
+	int readDeviceIndexForJoint(Joint::JointNames jointName);
 
 	/*!
 	* Register an observer for button presses
@@ -243,7 +227,7 @@ public:
 	/*!
 	 * Converts a device class to string
 	 */
-	static std::string getDeviceClassType(DeviceClass deviceClass) {
+	static std::string toString(DeviceClass deviceClass) {
 		std::string type = "Invalid";
 
 		switch (deviceClass) {
@@ -277,8 +261,6 @@ private:
 
 	void updateDevices();
 
-	void updateDeviceRoles();
-
 	std::vector<Device> getConnectedDevices();
 
 	unsigned int trackedPoseCount;
@@ -288,12 +270,6 @@ private:
 	vr::IVRSystem* pVRSystem;
 
 	vr::TrackedDevicePose_t* devicePoses;
-
-	std::unordered_map<unsigned int, Joint::JointNames> userDeviceToJoint;
-
-	std::unordered_map<Joint::JointNames, unsigned int> userJointToDevice;
-
-	std::unordered_map<Joint::JointNames, int> jointToDevice;
 
 	OpenVRButtonSubject ovrButtonSubject;
 };

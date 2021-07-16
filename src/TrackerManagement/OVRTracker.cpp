@@ -1,5 +1,7 @@
 #include "OVRTracker.h"
 
+static bool DEBUG_HMD = true;
+
 OVRTracker::OVRTracker() {
 
 	// Initialize OpenVR & IK Solvers
@@ -49,6 +51,15 @@ void OVRTracker::start() {
 	//skeleton was added/removed, so UI updates
 	m_hasSkeletonPoolChanged = true;
 
+	// Read assigned devices from config
+	config->readAssignedDevices();
+
+	// Assign remaining devices
+	config->updateUserDeviceRoles();
+
+	// Read offset from config
+	config->readOffsets();
+
 	// Clear point collection
 	m_pointCollection.clear();
 
@@ -61,20 +72,17 @@ void OVRTracker::start() {
 		// Add point to collection
 		m_pointCollection.addPoint(device.index, pointType);
 
-		// TODO: Set Joint Name
-		//m_pointCollection.updatePoint(device.Index, device.)
+		// Update Joint if assigned
+		Joint::JointNames joint = config->getJoint(device.index);
+		if (joint != Joint::NDEF) {
+			m_pointCollection.updatePoint(device.index, joint);
+		}
 	}
 
 	// register tracker as observers
 	trackingSystem->registerButtonPressObserver(this);
 
-	config->read();
-	
-	trackingSystem->refreshJointToDevice();
-
-	// start tracking thread and detach the thread from method scope runtime
-	//m_trackingThread = new std::thread(&OVRTracker::update, this);
-	//m_trackingThread->detach();
+	// start tracking thread
 	Tracker::start();
 }
 
@@ -138,6 +146,8 @@ void OVRTracker::track() {
 		// Read pose from device index
 		const auto& pose = trackingSystem->Poses[i];
 
+		Vector3f position = pose.position;
+
 		// Convert Rotation
 		Quaternionf rotation = pose.rotation;
 		//Quaternionf rotation = eulerToQuaternion(m_properties->rotationOffset);
@@ -146,11 +156,20 @@ void OVRTracker::track() {
 
 		rotation = Quaternionf(-rotation.y(), -rotation.z(), rotation.w(), rotation.x());
 
-		// Update point position & rotation
-		m_pointCollection.updatePoint(trackingSystem->Devices[i].index, pose.position, rotation);
+		// Debug
+		switch (trackingSystem->Devices[i].deviceClass) {
+		case OpenVRTracking::HMD:
+			if (DEBUG_HMD)
+				position = Vector3f(0, 1.6f, 0);
+			break;
+		default:
+			break;
+		}
 
+		// Update point position & rotation
+		m_pointCollection.updatePoint(trackingSystem->Devices[i].index, position, rotation);
 	}
-	
+
 	// Unlock point collection mutex
 	m_pointCollectionLock.unlock();
 
@@ -224,10 +243,8 @@ Skeleton* OVRTracker::parseSkeleton(int id, Skeleton* oldSkeletonData) {
 		currSkeleton->m_joints.insert({ Joint::HEAD, Joint(pos, rot, Joint::JointConfidence::HIGH) });
 	}
 
-	//OpenVRTracking::DevicePose* hipPose = getAssignedPose(Joint::HIPS);
-	//hipPose->Position = Vector3f(0, 1.0f, 0);
-	//hipPose->Rotation = Quaternionf::Identity();
-
+	// Solve Hip
+	auto hipPose = getAssignedPose(Joint::HIPS);
 	ikSolverHip->solve(Vector3f(0, 1.0f, 0), Quaternionf::Identity());
 	hierarchicSkeleton->hips.setConfidence(Joint::JointConfidence::HIGH);
 
@@ -319,24 +336,26 @@ OpenVRTracking::DevicePose OVRTracker::getAssignedPose(Joint::JointNames joint, 
 	// Init empty device pose
 	auto pose = OpenVRTracking::DevicePose();
 
-	// Try to get a pose from tracking system
-	auto devicePose = trackingSystem->getPose(joint);
+	// Try to get a assigned device with requested joint
+	int deviceIndex = config->getDeviceIndex(joint);
 
-	// Apply transform if pose is not null
-	if (devicePose != nullptr) {
-		pose.position = devicePose->position;
-		pose.rotation = devicePose->rotation;
-	}
-	// Return empty pose if null
-	else {
+	// Return empty pose if device was not found
+	if (deviceIndex < 0) {
 		return pose;
 	}
+
+	// Get the pose from tracking system 
+	auto devicePose = trackingSystem->getPose(deviceIndex);
+
+	pose.position = devicePose->position;
+	pose.rotation = devicePose->rotation;
 
 	// Return pose if offset is not requested
 	if (!applyOffset) {
 		return pose;
 	}
 
+	// Debug
 	switch (joint) {
 	case Joint::HIPS:
 		break;
@@ -357,16 +376,23 @@ OpenVRTracking::DevicePose OVRTracker::getAssignedPose(Joint::JointNames joint, 
 	case Joint::FOOT_R:
 		break;
 	case Joint::HEAD:
+		if (DEBUG_HMD)
+			pose.position = Vector3f(0, 1.6f, 0);
 		break;
+	}
 
 	// Try to get a offset from config
 	auto offset = config->getOffset(joint);
 
-	// Add offset if not null
-	if (!offset.isNull()) {
-		Console::logError(toString(offset.position));
-
+	// Add offset position if not null
+	if (!offset.isPositionNull()) {
+		//Console::log(Joint::toString(joint) + " pos: " + toString(offset.position));
 		pose.position += pose.rotation * offset.position;
+	}
+
+	// Add offset rotation if not null
+	if (!offset.isRotationNull()) {
+		//Console::log(Joint::toString(joint) + " rot: " + toString(offset.rotation));
 		pose.rotation *= offset.rotation;
 	}
 

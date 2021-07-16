@@ -7,7 +7,7 @@
  * \param jointName Joint::JointNames
  * \return k_pchPathUser... found in openvr_capi.v
  */
-static const char* ConvertJointNameToInputPath(Joint::JointNames jointName) {
+static const char* convertJointNameToInputPath(Joint::JointNames jointName) {
 
 	// Map JointName to k_pchPathUser variants found in openvr_capi.v
 	switch (jointName) {
@@ -61,7 +61,7 @@ static const char* ConvertJointNameToInputPath(Joint::JointNames jointName) {
  * \param inputPath (k_pchPathUser...) found in openvr_capi.v
  * \return Joint::JointNames
  */
-static Joint::JointNames ConvertInputPathToJointName(const char* inputPath) {
+static Joint::JointNames convertInputPathToJointName(const char* inputPath) {
 
 	// Map k_pchPathUser variants found in openvr_capi.v to JointNames
 	if (inputPath == k_pchPathUserWaist) {
@@ -106,52 +106,12 @@ static Joint::JointNames ConvertInputPathToJointName(const char* inputPath) {
 }
 
 /*!
- * Converts JointName constructor to OpenVR input path (k_pchPathUser...) found in openvr_capi.v
- *
- * \param jointName Joint::JointNames
- * \return k_pchPathUser... found in openvr_capi.v
- */
-static int GetDeviceIndexForJoint(Joint::JointNames jointName) {
-
-	// Convert JointName to input path
-	const char* inputPath = ConvertJointNameToInputPath(jointName);
-
-	// Error: input path is empty
-	if (inputPath == NULL) {
-		return -1;
-	}
-
-	// Retrieve handle for specified path in the input system
-	vr::VRInputValueHandle_t inputHandle = vr::k_ulInvalidInputValueHandle;
-	vr::EVRInputError inputError = vr::VRInput()->GetInputSourceHandle(inputPath, &inputHandle);
-
-	// Error: handle for path could not be retrieved
-	if (inputError != vr::EVRInputError::VRInputError_None) {
-		return -2;
-	}
-
-	// Retrieve information for the origin the action
-	vr::InputOriginInfo_t inputOriginInfo;
-	inputError = vr::VRInput()->GetOriginTrackedDeviceInfo(inputHandle, &inputOriginInfo, sizeof(inputOriginInfo));
-
-	// Error: InputOriginInfo could not be retrieved
-	if (inputError != vr::EVRInputError::VRInputError_None) {
-		//Console::logError("GetOriginTrackedDeviceInfo Error: " + toString((int)inputError) + " for " + inputPath);
-		return -3;
-	}
-	// Return DeviceIndex from InputOriginInfo
-	else {
-		return inputOriginInfo.trackedDeviceIndex;
-	}
-}
-
-/*!
  * Converts vr::ETrackedDeviceClass to OpenVRTracking::DeviceClass
  *
  * \param ovrDeviceClass the device class from Open VR
  * \return OpenVRTracking::DeviceClass
  */
-static OpenVRTracking::DeviceClass ConvertDeviceClass(const vr::ETrackedDeviceClass& ovrDeviceClass) {
+static OpenVRTracking::DeviceClass convertDeviceClass(const vr::ETrackedDeviceClass& ovrDeviceClass) {
 
 	// Init device class as invalid
 	OpenVRTracking::DeviceClass deviceClass = OpenVRTracking::DeviceClass::Invalid;
@@ -186,7 +146,7 @@ static OpenVRTracking::DeviceClass ConvertDeviceClass(const vr::ETrackedDeviceCl
  * \param property the requested property to read
  * \return the property as string
  */
-static std::string GetTrackedDevicePorpertyString(vr::IVRSystem* pVRSystem, const vr::TrackedDeviceIndex_t& deviceIndex, const vr::ETrackedDeviceProperty& property) {
+static std::string getTrackedDevicePorpertyString(vr::IVRSystem* pVRSystem, const vr::TrackedDeviceIndex_t& deviceIndex, const vr::ETrackedDeviceProperty& property) {
 
 	// Create string for return value
 	std::string propertyString;
@@ -215,6 +175,7 @@ static std::string GetTrackedDevicePorpertyString(vr::IVRSystem* pVRSystem, cons
 	return propertyString;
 }
 
+// TODO: raus
 static Vector3f ConvertToPosition(const vr::HmdMatrix34_t& trackingMatrix) {
 
 	return Vector3f(-trackingMatrix.m[0][3], trackingMatrix.m[1][3], -trackingMatrix.m[2][3]);
@@ -262,11 +223,12 @@ struct DeviceRoleAssigner {
 	}
 
 	/*!
-	 * assigns roles to devices inside a specific distance to their mean position
+	 * assigns roles to devices inside a specific distance to their mean position & returns a Device to Joint map
 	 *
 	 * \param allowedDistanceToCenter the distance to a middle (mean) position
+	 * \return Device to Joint map
 	 */
-	void assignWithinDistance(float allowedDistanceToCenter) {
+	std::unordered_map<unsigned int, Joint::JointNames> getWithinDistance(float allowedDistanceToCenter) {
 
 		// Sum all positions from all device poses and calc mean
 		Vector3f centerPosition = calculateCenterPosition();
@@ -332,13 +294,16 @@ struct DeviceRoleAssigner {
 			removeFromVector(sortedDeviceIndexes, hipIndex);
 
 			// assign hip joint to device
-			trackingSystem->assignJointToDevice(Joint::HIPS, hipIndex);
+			deviceToJoint[hipIndex] = Joint::HIPS;
+			//trackingSystem->assignJointToDevice(Joint::HIPS, hipIndex);
 
 			Console::log("Hip:" + trackingSystem->Devices[hipIndex].identifier);
 		}
 
 		// Assign remainign devices
 		assignRemaining(sortedDeviceIndexes);
+
+		return deviceToJoint;
 	}
 
 private:
@@ -397,7 +362,8 @@ private:
 		removeFromVector(sortedDeviceIndexes, headIndex);
 
 		// assign head joint to device
-		trackingSystem->assignJointToDevice(Joint::HEAD, headIndex);
+		deviceToJoint[headIndex] = Joint::HEAD;
+		//trackingSystem->assignJointToDevice(Joint::HEAD, headIndex);
 
 		// Store head position & forward +
 		const auto& headPose = trackingSystem->Poses[headIndex];
@@ -463,8 +429,10 @@ private:
 		}
 
 		// assign joints to devices
-		trackingSystem->assignJointToDevice(Joint::FOOT_L, leftFootIndex);
-		trackingSystem->assignJointToDevice(Joint::FOOT_R, rightFootIndex);
+		deviceToJoint[leftFootIndex] = Joint::FOOT_L;
+		deviceToJoint[rightFootIndex] = Joint::FOOT_R;
+		//trackingSystem->assignJointToDevice(Joint::FOOT_L, leftFootIndex);
+		//trackingSystem->assignJointToDevice(Joint::FOOT_R, rightFootIndex);
 
 		Console::log("Left Foot:" + trackingSystem->Devices[leftFootIndex].identifier);
 		Console::log("Right Foot:" + trackingSystem->Devices[rightFootIndex].identifier);
@@ -515,8 +483,10 @@ private:
 		}
 
 		// assign joints to devices
-		trackingSystem->assignJointToDevice(Joint::HAND_L, leftHandIndex);
-		trackingSystem->assignJointToDevice(Joint::HAND_R, rightHandIndex);
+		deviceToJoint[leftHandIndex] = Joint::HAND_L;
+		deviceToJoint[rightHandIndex] = Joint::HAND_R;
+		//trackingSystem->assignJointToDevice(Joint::HAND_L, leftHandIndex);
+		//trackingSystem->assignJointToDevice(Joint::HAND_R, rightHandIndex);
 
 		Console::log("Left Hand:" + trackingSystem->Devices[leftHandIndex].identifier);
 		Console::log("Right Hand:" + trackingSystem->Devices[rightHandIndex].identifier);
@@ -605,7 +575,7 @@ private:
 					// Init target joint with left foot
 					Joint::JointNames targetJoint = Joint::FOOT_L;
 					// Is limb device already left foot? -> switch to right foot
-					if (trackingSystem->Devices[limbDeviceIndex].joint == targetJoint) {
+					if (deviceToJoint[limbDeviceIndex] == targetJoint) {
 						targetJoint = Joint::FOOT_R;
 					}
 
@@ -623,7 +593,7 @@ private:
 
 					// Find limb with target joint and switch limb assignment
 					for (unsigned int currentDeviceIndex = 0; currentDeviceIndex < trackingSystem->Devices.size(); currentDeviceIndex++) {
-						if (trackingSystem->Devices[currentDeviceIndex].joint == targetJoint) {
+						if (deviceToJoint[currentDeviceIndex] == targetJoint) {
 							assignedLimbIndexes[changeIndex] = currentDeviceIndex;
 
 							limbDeviceAssigned = true;
@@ -642,13 +612,14 @@ private:
 			unsigned int limbIndex = assignedLimbIndexes[i];
 
 			// Get current target joint from limb device index
-			Joint::JointNames targetJoint = trackingSystem->Devices[limbIndex].joint;
+			Joint::JointNames targetJoint = deviceToJoint[limbIndex];
 			// and get previous joint in hierarchy
 			int prevJointIndex = static_cast<int>(targetJoint) - 1;
 			Joint::JointNames previousJoint = static_cast<Joint::JointNames>(prevJointIndex);
 
 			// Assign previous joint to device
-			trackingSystem->assignJointToDevice(previousJoint, deviceIndex);
+			deviceToJoint[deviceIndex] = previousJoint;
+			//trackingSystem->assignJointToDevice(previousJoint, deviceIndex);
 
 			Console::log(Joint::toString(previousJoint) + ": " + trackingSystem->Devices[deviceIndex].identifier);
 		}
@@ -668,6 +639,8 @@ private:
 	Vector3f headForward;
 
 	std::vector<unsigned int> limbDevices;
+
+	std::unordered_map<unsigned int, Joint::JointNames> deviceToJoint;
 };
 #pragma endregion
 
@@ -746,29 +719,11 @@ void OpenVRTracking::init() {
 	*/
 
 	updateDevices();
-
-	updateDeviceRoles();
 }
 
 void OpenVRTracking::start() {
 
 	updateDevices();
-
-	// TODO: Device Roles noch nötig?
-	updateDeviceRoles();
-
-	for (auto& device : Devices) {
-		if (device.joint != Joint::NDEF) {
-			continue;
-		}		
-
-		// try to find  in user config
-		auto deviceToJointIterator = userDeviceToJoint.find(device.index);
-
-		if (deviceToJointIterator != userDeviceToJoint.end()) {
-			assignJointToDevice(deviceToJointIterator->second, deviceToJointIterator->first);
-		}
-	}
 }
 
 void OpenVRTracking::updateDevices() {
@@ -842,32 +797,17 @@ void OpenVRTracking::removeDevice(unsigned int deviceIndex) {
 
 OpenVRTracking::DevicePose* OpenVRTracking::getPose(unsigned int deviceIndex) {
 
+	if (deviceIndex < Poses.size()) {
+		return &Poses[deviceIndex];
+	}
+
+	return nullptr;
+
 	// Loop over all devices and return pose with matching device index
 	for (int i = 0; i < Devices.size(); i++) {
 		if (Devices[i].index == deviceIndex) {
 			return &Poses[i];
 		}
-	}
-
-	return nullptr;
-}
-
-OpenVRTracking::DevicePose* OpenVRTracking::getPose(Joint::JointNames joint) {
-
-	// find device for specific joint in calibration
-	auto deviceIndexIterator = jointToDevice.find(joint);
-
-	// device could be found -> return pose
-	if (deviceIndexIterator != jointToDevice.end()) {
-		return &Poses[deviceIndexIterator->second];
-	}
-
-	// find device for specific joint in user settings
-	auto userDeviceIndexIterator = userJointToDevice.find(joint);
-
-	// device could be found -> return pose
-	if (userDeviceIndexIterator != userJointToDevice.end()) {
-		return &Poses[userDeviceIndexIterator->second];
 	}
 
 	return nullptr;
@@ -932,7 +872,7 @@ void OpenVRTracking::tryAddDevice(unsigned int deviceIndex) {
 
 	// Read OpenVR-Device specific Class and convert it
 	vr::ETrackedDeviceClass ovrDeviceClass = pVRSystem->GetTrackedDeviceClass(deviceIndex);
-	OpenVRTracking::DeviceClass deviceClass = ConvertDeviceClass(ovrDeviceClass);
+	OpenVRTracking::DeviceClass deviceClass = convertDeviceClass(ovrDeviceClass);
 
 	// Skip unwanted Devices
 	if (deviceClass == OpenVRTracking::DeviceClass::Invalid) {
@@ -940,7 +880,7 @@ void OpenVRTracking::tryAddDevice(unsigned int deviceIndex) {
 	}
 
 	// Assign serial number as identifier
-	std::string identifier = GetTrackedDevicePorpertyString(pVRSystem, deviceIndex, vr::ETrackedDeviceProperty::Prop_SerialNumber_String);
+	std::string identifier = getTrackedDevicePorpertyString(pVRSystem, deviceIndex, vr::ETrackedDeviceProperty::Prop_SerialNumber_String);
 
 	// Add Device to Vector
 	Devices.emplace_back(deviceIndex, deviceClass, identifier);
@@ -949,61 +889,6 @@ void OpenVRTracking::tryAddDevice(unsigned int deviceIndex) {
 	if (deviceClass == OpenVRTracking::DeviceClass::Controller) {
 		//updateDeviceRole(deviceIndex);
 	}
-}
-
-void OpenVRTracking::updateDeviceRoles() {
-
-	Console::logWarning("OpenVRTracking::updateDeviceRoles()");
-
-	// You have to call UpdateActionState to get all Device Roles
-	vr::VRActiveActionSet_t actionSet = { 0 };
-	vr::VRInput()->UpdateActionState(&actionSet, sizeof(actionSet), 1);
-
-	std::unordered_map<unsigned int, Joint::JointNames> newDeviceToJoint;
-
-	std::unordered_map<Joint::JointNames, unsigned int> newJointToDevice;
-
-	bool headFound = false;
-
-	// Loop over all Joints in Joint::JointNames
-	for (Joint::JointNames joint = Joint::HIPS; joint < Joint::HEAD; joint = Joint::JointNames(joint + 1)) {
-		int deviceIndex = GetDeviceIndexForJoint(joint);
-
-		if (deviceIndex >= 0) {
-
-			newJointToDevice[joint] = deviceIndex;
-			newDeviceToJoint[deviceIndex] = joint;
-
-			if (joint == Joint::HEAD) {
-				headFound = true;
-			}
-		}
-	}
-
-	// Head could not be found -> Add Head to HMD Index
-	if (!headFound) {
-		for (const auto& device : Devices) {
-			if (device.deviceClass == DeviceClass::HMD) {
-
-				newJointToDevice[Joint::HEAD] = device.index;
-				newDeviceToJoint[device.index] = Joint::HEAD;
-				break;
-			}
-		}
-	}
-
-	for (const auto& device : Devices) {
-		if (newDeviceToJoint.count(device.index) == 0) {
-			continue;
-		}
-
-		Joint::JointNames joint = newDeviceToJoint.at(device.index);
-		Console::log("Device #" + toString((int)device.index) + " " + getDeviceClassType(device.deviceClass) + " " + device.identifier + " = " + Joint::toString(joint));
-	}
-
-	// TODO: new und old vergleichen
-	userJointToDevice = newJointToDevice;
-	userDeviceToJoint = newDeviceToJoint;
 }
 
 std::vector<OpenVRTracking::Device> OpenVRTracking::getConnectedDevices() {
@@ -1017,7 +902,7 @@ std::vector<OpenVRTracking::Device> OpenVRTracking::getConnectedDevices() {
 
 		// Read OpenVR-Device specific Class and convert 
 		vr::ETrackedDeviceClass ovrDeviceClass = pVRSystem->GetTrackedDeviceClass(deviceIndex);
-		OpenVRTracking::DeviceClass deviceClass = ConvertDeviceClass(ovrDeviceClass);
+		OpenVRTracking::DeviceClass deviceClass = convertDeviceClass(ovrDeviceClass);
 
 		// Skip unwanted Devices
 		if (deviceClass == OpenVRTracking::DeviceClass::Invalid) {
@@ -1025,7 +910,7 @@ std::vector<OpenVRTracking::Device> OpenVRTracking::getConnectedDevices() {
 		}
 
 		// Assign serial number as identifier
-		std::string identifier = GetTrackedDevicePorpertyString(pVRSystem, deviceIndex, vr::ETrackedDeviceProperty::Prop_SerialNumber_String);
+		std::string identifier = getTrackedDevicePorpertyString(pVRSystem, deviceIndex, vr::ETrackedDeviceProperty::Prop_SerialNumber_String);
 
 		// Add Device to Vector
 		trackedDeviceVector.emplace_back(deviceIndex, deviceClass, identifier);
@@ -1041,19 +926,19 @@ void OpenVRTracking::pollEvents() {
 	// Poll all Events from Queue
 	while (pVRSystem->PollNextEvent(&event, sizeof(event))) {
 
-		Console::log("VREvent (" + toString((int)event.eventType) + "): " + pVRSystem->GetEventTypeNameFromEnum((vr::EVREventType)event.eventType));
+		//Console::log("VREvent (" + toString((int)event.eventType) + "): " + pVRSystem->GetEventTypeNameFromEnum((vr::EVREventType)event.eventType));
 
 		switch (event.eventType) {
 		case vr::EVREventType::VREvent_TrackedDeviceActivated:
 		case vr::EVREventType::VREvent_TrackedDeviceUpdated:
 
-			Console::logWarning("event.trackedDeviceIndex: " + toString((int)event.trackedDeviceIndex));
+			//Console::logWarning("event.trackedDeviceIndex: " + toString((int)event.trackedDeviceIndex));
 
 			//updateDevice(event.trackedDeviceIndex);
 			break;
 
 		case vr::EVREventType::VREvent_TrackedDeviceDeactivated:
-			Console::logWarning("event.trackedDeviceIndex: " + toString((int)event.trackedDeviceIndex));
+			//Console::logWarning("event.trackedDeviceIndex: " + toString((int)event.trackedDeviceIndex));
 
 			break;
 
@@ -1063,7 +948,7 @@ void OpenVRTracking::pollEvents() {
 			break;
 
 		case vr::EVREventType::VREvent_TrackedDeviceRoleChanged:
-			//prop = GetTrackedDevicePorpertyString(pVRSystem, event.trackedDeviceIndex, vr::ETrackedDeviceProperty::Prop_InputProfilePath_String);
+			//prop = getTrackedDevicePorpertyString(pVRSystem, event.trackedDeviceIndex, vr::ETrackedDeviceProperty::Prop_InputProfilePath_String);
 			//Console::log("Prop_InputProfilePath_String: " + prop);
 
 			// Update all Devices
@@ -1080,7 +965,7 @@ void OpenVRTracking::pollEvents() {
 			ovrButtonSubject.notifyObservers();
 
 			if (vr::EVRButtonId::k_EButton_SteamVR_Trigger == event.data.controller.button) {
-				Console::log("Trigger PRESSED on DeviceIndex: " + toString((int)event.trackedDeviceIndex));
+				//Console::log("Trigger PRESSED on DeviceIndex: " + toString((int)event.trackedDeviceIndex));
 			}
 
 			break;
@@ -1124,7 +1009,8 @@ void OpenVRTracking::calibrateDeviceRoles() {
 
 	if (Devices.size() >= 6) {
 		DeviceRoleAssigner* deviceRoleAssigner = new DeviceRoleAssigner(this);
-		deviceRoleAssigner->assignWithinDistance(1.5f);
+		
+		auto newDeviceToJoint = deviceRoleAssigner->getWithinDistance(1.5f);
 
 		delete deviceRoleAssigner;
 	}
@@ -1135,27 +1021,36 @@ void OpenVRTracking::calibrateDeviceRoles() {
 	Console::log("Calibrated");
 }
 
-void OpenVRTracking::refreshJointToDevice() {
+int OpenVRTracking::readDeviceIndexForJoint(Joint::JointNames jointName) {
 
-	jointToDevice.clear();
+	// Convert JointName to input path
+	const char* inputPath = convertJointNameToInputPath(jointName);
 
-	for (int i = 0; i < Devices.size(); i++) {
-		if (Devices[i].joint != Joint::NDEF) {
-			jointToDevice[Devices[i].joint] = i;
-		}
+	// Error: input path is empty
+	if (inputPath == NULL) {
+		return -1;
 	}
-}
 
-void OpenVRTracking::assignJointToDevice(Joint::JointNames joint, unsigned int deviceIndex) {
+	// Retrieve handle for specified path in the input system
+	vr::VRInputValueHandle_t inputHandle = vr::k_ulInvalidInputValueHandle;
+	vr::EVRInputError inputError = vr::VRInput()->GetInputSourceHandle(inputPath, &inputHandle);
 
-	Devices[deviceIndex].joint = joint;
-}
+	// Error: handle for path could not be retrieved
+	if (inputError != vr::EVRInputError::VRInputError_None) {
+		return -2;
+	}
 
-void OpenVRTracking::assignJointToDevice(int joint, unsigned int deviceIndex) {
+	// Retrieve information for the origin the action
+	vr::InputOriginInfo_t inputOriginInfo;
+	inputError = vr::VRInput()->GetOriginTrackedDeviceInfo(inputHandle, &inputOriginInfo, sizeof(inputOriginInfo));
 
-	auto castedJoint = static_cast<Joint::JointNames>(joint);
-
-	if (castedJoint != Joint::NDEF) {
-		assignJointToDevice(castedJoint, deviceIndex);
+	// Error: InputOriginInfo could not be retrieved
+	if (inputError != vr::EVRInputError::VRInputError_None) {
+		//Console::logError("GetOriginTrackedDeviceInfo Error: " + toString((int)inputError) + " for " + inputPath);
+		return -3;
+	}
+	// Return DeviceIndex from InputOriginInfo
+	else {
+		return inputOriginInfo.trackedDeviceIndex;
 	}
 }
