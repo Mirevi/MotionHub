@@ -2,6 +2,7 @@
 
 #include "Tracker.h"
 #include "OpenVRTracking.h"
+#include "OpenVRConfig.h"
 #include "MotionHubUtil/HierarchicSkeleton.h"
 #include "MotionHubUtil/IKSolverHip.h"
 #include "MotionHubUtil/IKSolverSpine.h"
@@ -103,8 +104,6 @@ private:
 
 	OpenVRTracking::DevicePose getAssignedPose(Joint::JointNames joint, bool applyOffset);
 
-	OpenVRTracking::DevicePose getOffset(Joint::JointNames joint);
-
 	void calibrate();
 
 	/*!
@@ -112,23 +111,53 @@ private:
 	 */
 	virtual void notify(Subject* subject) override;
 
+	void clearPointers() {
+
+		// Clear memory for OpenVRConfig
+		if (config != nullptr) delete config;
+
+		// Clear memory for TrackingSystem
+		if (trackingSystem != nullptr) delete trackingSystem;
+
+		// Clear memory for HierarchicSkeleton
+		if (hierarchicSkeleton != nullptr) delete hierarchicSkeleton;
+
+		// Clear memory for IKSolverHip
+		if (ikSolverHip != nullptr) delete ikSolverHip;
+
+		// Clear memory for IKSolverSpine
+		if (ikSolverSpine != nullptr) delete ikSolverSpine;
+
+		// Clear memory for IKSolverLeg
+		if (ikSolverLeftLeg != nullptr) delete ikSolverLeftLeg;
+
+		// Clear memory for IKSolverLeg
+		if (ikSolverRightLeg != nullptr) delete ikSolverRightLeg;
+
+		// Clear memory for IKSolverArm
+		if (ikSolverLeftArm != nullptr) delete ikSolverLeftArm;
+
+		// Clear memory for IKSolverArm
+		if (ikSolverRightArm != nullptr) delete ikSolverRightArm;
+	}
+
 // TODO: private
 public:
 //private:
 
-	OpenVRTracking* trackingSystem;
+	OpenVRTracking* trackingSystem = nullptr;
 
-	HierarchicSkeleton* hierarchicSkeleton;
+	HierarchicSkeleton* hierarchicSkeleton = nullptr;
 
 	// IKSolvers
-	IKSolverHip* ikSolverHip;
-	IKSolverSpine* ikSolverSpine;
-	IKSolverLeg* ikSolverLeftLeg;
-	IKSolverLeg* ikSolverRightLeg;
-	IKSolverArm* ikSolverLeftArm;
-	IKSolverArm* ikSolverRightArm;
+	IKSolverHip* ikSolverHip = nullptr;
+	IKSolverSpine* ikSolverSpine = nullptr;
+	IKSolverLeg* ikSolverLeftLeg = nullptr;
+	IKSolverLeg* ikSolverRightLeg = nullptr;
+	IKSolverArm* ikSolverLeftArm = nullptr;
+	IKSolverArm* ikSolverRightArm = nullptr;
+
+	OpenVRConfig* config = nullptr;
 
 	bool shouldCalibrate = false;
-
-	std::unordered_map<Joint::JointNames, OpenVRTracking::DevicePose> jointToDeviceOffset;
 };

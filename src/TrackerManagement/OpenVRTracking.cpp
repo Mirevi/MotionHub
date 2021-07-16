@@ -650,7 +650,7 @@ private:
 			// Assign previous joint to device
 			trackingSystem->assignJointToDevice(previousJoint, deviceIndex);
 
-			Console::log(std::string(Joint::getJointName(previousJoint)) + ": " + trackingSystem->Devices[deviceIndex].identifier);
+			Console::log(Joint::toString(previousJoint) + ": " + trackingSystem->Devices[deviceIndex].identifier);
 		}
 	}
 
@@ -754,7 +754,7 @@ void OpenVRTracking::start() {
 
 	updateDevices();
 
-	// TODO: Bei start Poses & Devices aktualisieren?
+	// TODO: Device Roles noch nötig?
 	updateDeviceRoles();
 
 	for (auto& device : Devices) {
@@ -905,7 +905,7 @@ void OpenVRTracking::receiveDevicePoses() {
 		// Get tracked Pose Matrix in relation to DeviceIndex
 		vr::TrackedDevicePose_t& trackedPose = devicePoses[Devices[i].index];
 
-		// TODO: Nur valide Posen übernehmen?
+		// Only apply valid Poses
 		if (trackedPose.bPoseIsValid) {
 			// Call copy constructor
 			Poses[i].extractPose(trackedPose.mDeviceToAbsoluteTracking);
@@ -998,7 +998,7 @@ void OpenVRTracking::updateDeviceRoles() {
 		}
 
 		Joint::JointNames joint = newDeviceToJoint.at(device.index);
-		Console::log("Device #" + toString((int)device.index) + " " + getDeviceClassType(device.deviceClass) + " " + device.identifier + " = " + Joint::getJointName(joint));
+		Console::log("Device #" + toString((int)device.index) + " " + getDeviceClassType(device.deviceClass) + " " + device.identifier + " = " + Joint::toString(joint));
 	}
 
 	// TODO: new und old vergleichen
