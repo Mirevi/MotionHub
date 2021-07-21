@@ -49,6 +49,8 @@ bool AKTracker::init()
 {
 	uint32_t device_count = k4a_device_get_installed_count();
 
+	Console::log("AKTracker::init(): device_count = " + std::to_string(device_count));
+
 	for (int i = 0; i < device_count; i++) {
 		m_cam = NULL;
 		// open camera ---> ERROR:  libusb device(s) are all unavalable.

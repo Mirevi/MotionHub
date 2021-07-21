@@ -1,17 +1,19 @@
 #pragma once
 
 #include <string>
+#include <thread>
 
 #include "QtWidgets/qprogressdialog.h"
 #include <QtWidgets/QMainWindow>
 
 
 
-inline void startProgressBar(int maxValue, int* currentValue, std::string lable, QWidget* parentWidget)
+inline void startProgressBar(int maxValue, int* currentValue, std::string lable, QWidget* parentWidget/*, std::thread* threadHandle*/)
 {
 	//create progress bar
 	QProgressDialog progress(QString(lable.c_str()), "Cancel", 0, maxValue, parentWidget);
 	progress.setWindowModality(Qt::WindowModal);
+	//progress.show();
 
 	//while still saving
 	while (*currentValue < maxValue)
@@ -24,6 +26,8 @@ inline void startProgressBar(int maxValue, int* currentValue, std::string lable,
 	}
 
 	progress.setValue(*currentValue);
+
+	/*threadHandle->join();*/
 }
 
 inline void addTrackerToWidget(int id, TrackerManager* refTrackerManager, QTreeWidget* refTreeWidgetTracker)
@@ -50,5 +54,11 @@ inline void addTrackerToWidget(int id, TrackerManager* refTrackerManager, QTreeW
 		}
 
 	}
+}
+
+inline void testFunc()
+{
+
+
 }
 

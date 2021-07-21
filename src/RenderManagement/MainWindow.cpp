@@ -1258,6 +1258,8 @@ void MainWindow::Record(bool showProgressionBar)
 			if (showProgressionBar)
 			{
 				startProgressBar(Recorder::instance().getFrameCount(), &m_recordSaveProgression, "Save Recording Session...", this);
+				//std::thread* progressionThread = new std::thread(&startProgressBar, Recorder::instance().getFrameCount(), &m_recordSaveProgression, "Save Recording Session...", this);
+				//progressionThread->detach();
 			}
 
 		}

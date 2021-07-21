@@ -151,22 +151,32 @@ void RecordingSession::save(int* progression)
 
 	//Console::log("RecordingSession::save(): " + RECORD_PATH);
 
-	filename = pathStr + filename;
 
+	//first remove emptys and colons from filename
 	filename = removeChar(filename, ' ');
 	filename = removeChar(filename, ':');
 
+	//then add path, there can be a colon
+	filename = pathStr + filename;
+
+	//if folder is missing, create it
+	if (!checkAndFixPath(pathStr))
+	{
+		Console::logError("RecordingSession::save(): path fix not working");
+	}
+
+
+
+
 	tinyxml2::XMLError error = doc.SaveFile(filename.c_str());
-
-
 
 	if ((int)error == 0)
 	{
 		Console::log("RecordingSession::save(): Session saved as: " + filename);
 	}
 	else
-	{
-		Console::logError("RecordingSession::save(): Error code " + std::to_string((int)error));
+	{	
+		Console::logError("RecordingSession::save(): Error code " + std::to_string((int)error) + ", filepath = " + filename);
 	}
 
 
