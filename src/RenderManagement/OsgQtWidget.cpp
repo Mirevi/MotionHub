@@ -303,53 +303,103 @@ void OsgQtWidget::updatePointCollectionTransform()
 			// get pointCollection from tracker 
 			PointCollection pointCollection = (*itTracker)->getPointCollection();
 
-			if (m_points.size() != pointCollection.points.size()) {
+			// Create points if point collection changed
+			if ((*itTracker)->hasPointCollectionChanged()) {
 
-				int start = std::max(0, (int)m_points.size() - 1);
-
+				// init point index
 				int pointIndex = 0;
 
-				for (auto pointIterator = pointCollection.points.begin(); pointIterator != pointCollection.points.end(); pointIterator++) {
+				// Loop over all points in collection and create/update Drawables
+				for (auto pointCollectionIt = pointCollection.points.begin(); pointCollectionIt != pointCollection.points.end(); pointCollectionIt++) {
 
-					if (pointIndex >= start) {
+					auto pointType = pointCollectionIt->second.getType();
+
+					// Create new Drawable if point index wont fit collection
+					if (pointIndex >= m_points.size()) {
 
 						m_points.push_back(new osg::ShapeDrawable());
 
-						//m_points.at(i)->setShape(new osg::Sphere(osg::Vec3(0.0f, 0.0f, 0.0f), 0.035f));
+						m_pointTypes.push_back(pointType);
 
-						switch (pointIterator->second.getType())
+						switch (pointCollectionIt->second.getType())
 						{
 						case Point::Marker:
-							m_points.at(pointIndex)->setShape(new osg::Sphere(osg::Vec3(0.0f, 0.0f, 0.0f), 0.02f));
-							m_points.at(pointIndex)->setColor(osg::Vec4(1.0f, 1.0f, 1.0f, 1.0f)); // white
+							m_points[pointIndex]->setShape(new osg::Sphere(osg::Vec3(0.0f, 0.0f, 0.0f), 0.02f));
+							m_points[pointIndex]->setColor(osg::Vec4(1.0f, 1.0f, 1.0f, 1.0f)); // white
 							break;
 						default:
-							m_points.at(pointIndex)->setShape(new osg::Box(osg::Vec3(0.0f, 0.0f, 0.0f), 0.05f));
-							m_points.at(pointIndex)->setColor(osg::Vec4(0.0f, 1.0f, 1.0f, 1.0f)); // cyan
+							m_points[pointIndex]->setShape(new osg::Box(osg::Vec3(0.0f, 0.0f, 0.0f), 0.05f));
+							m_points[pointIndex]->setColor(osg::Vec4(0.0f, 1.0f, 1.0f, 1.0f)); // cyan
 							break;
 						}
 
 						m_pointTransforms.push_back(new osg::MatrixTransform());
-						m_pointTransforms.at(pointIndex)->addChild(m_points.at(pointIndex));
-						m_sceneRoot->addChild(m_pointTransforms.at(pointIndex));
+						m_pointTransforms[pointIndex]->addChild(m_points[pointIndex]);
+
+						m_sceneRoot->addChild(m_pointTransforms[pointIndex]);
+					}
+					else {
+						
+						// Check if point type changed
+						if (m_pointTypes[pointIndex] != pointType) {
+
+							// override point type cache
+							m_pointTypes[pointIndex] = pointType;
+
+							// change point shape & color based on point type
+							switch (pointType)
+							{
+							case Point::Marker:
+								m_points[pointIndex]->setShape(new osg::Sphere(osg::Vec3(0.0f, 0.0f, 0.0f), 0.02f));
+								m_points[pointIndex]->setColor(osg::Vec4(1.0f, 1.0f, 1.0f, 1.0f)); // white
+								break;
+							default:
+								m_points[pointIndex]->setShape(new osg::Box(osg::Vec3(0.0f, 0.0f, 0.0f), 0.05f));
+								m_points[pointIndex]->setColor(osg::Vec4(0.0f, 1.0f, 1.0f, 1.0f)); // cyan
+								break;
+							}
+						}
 					}
 
 					pointIndex++;
 				}
 
+				// 
+				if(pointIndex < m_points.size()) {
 
-				//for (int i = start; i < pointCollection.points.size(); i++) {
+					// Create Iter
+					auto pointIterator = m_points.begin();
+					auto pointTransformsIterator = m_pointTransforms.begin();
 
-				//}
+					// Using advance() to increment iterator positions
+					advance(pointIterator, pointIndex);
+					advance(pointTransformsIterator, pointIndex);
+
+					// 
+					while (pointIterator != m_points.end()) {
+
+						m_sceneRoot->removeChild(m_pointTransforms[pointIndex]);
+
+						// Remove point
+						pointIterator = m_points.erase(pointIterator);
+
+						pointIndex++;
+					}
+
+					// Remove point transforms
+					while (pointTransformsIterator != m_pointTransforms.end()) {
+						pointTransformsIterator = m_pointTransforms.erase(pointTransformsIterator);
+					}
+				}
 			}
 
 
 			int pointIndex = 0;
 
-			for (auto it = pointCollection.points.begin(); it != pointCollection.points.end(); it++) {
-				//for (int i = 0; i < m_points.size(); i++) {
-				Point point = it->second;
+			for (auto pointCollectionIt = pointCollection.points.begin(); pointCollectionIt != pointCollection.points.end(); pointCollectionIt++) {
+				Point point = pointCollectionIt->second;
 
+				// ceate transform matrix: rotation * position
 				osg::Matrix transformMatrix = osg::Matrix::rotate(osg::Quat(point.getRotation().x(),
 					point.getRotation().y(),
 					point.getRotation().z(),
@@ -357,9 +407,16 @@ void OsgQtWidget::updatePointCollectionTransform()
 					* osg::Matrix::translate(osg::Vec3f(point.getPosition().x(),
 						point.getPosition().y(),
 						point.getPosition().z()));
-				m_pointTransforms.at(pointIndex)->setMatrix(transformMatrix);
 
+				// Hide invalid points with scale = 0
+				if (!point.isValid()) {
+					transformMatrix *= osg::Matrix::scale(0, 0, 0);
+				}
 
+				// set transform matrix
+				m_pointTransforms[pointIndex]->setMatrix(transformMatrix);
+
+				// Update axess corsses for all points except Markers
 				if(point.getType() != Point::Marker) {
 
 					// set attitude sets a rotation
@@ -376,7 +433,6 @@ void OsgQtWidget::updatePointCollectionTransform()
 
 				pointIndex++;
 			}
-
 		}
 	}
 }

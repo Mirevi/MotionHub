@@ -130,6 +130,20 @@ bool Tracker::hasSkeletonPoolChanged()
 	}
 }
 
+bool Tracker::hasPointCollectionChanged()
+{
+	//resets when it's true
+	if (m_hasPointCollectionChanged)
+	{
+		m_hasPointCollectionChanged = false;
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
 void Tracker::setSkeletonPoolChanged(bool state)
 {
 

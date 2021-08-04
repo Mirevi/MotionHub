@@ -103,94 +103,77 @@ void OSCSender::sendPoints(PointCollection* pointCollection, const char* uri, in
 		return;
 	}
 
-	// begin packet stream & add tracker ID as first value
-	*m_packetStream << osc::BeginBundleImmediate << osc::BeginMessage(uri);
+	int pointCount = (int)pointCollection->points.size();
+	int sendLimit = 32;
+	
+	auto pointIterator = pointCollection->points.begin();
 
-	// add point count to message stream
-	*m_packetStream << (int)pointCollection->points.size();
+	while (pointCount > 0) {
 
-	int sendLimit = 30;
-	int sendCounter = 0;
+		int pointsToSend = min(pointCount, sendLimit);
+		pointCount -= pointsToSend;
 
-	// create new var's for id, position, rotation 
-	int id;
-	Point point;
+		// begin packet stream & add tracker ID as first value
+		*m_packetStream << osc::BeginBundleImmediate << osc::BeginMessage(uri);
 
-	Vector3f position;
-	Quaternionf rotation;
+		// add point count to message stream
+		*m_packetStream << pointsToSend;
 
-	int type;
+		int sendCounter = 0;
 
-	int customInt;
-	float customFloat;
+		// loop through all Points to write data into the stream
+		while (pointIterator != pointCollection->points.end()) {
 
-	// loop through all Points to write data into the stream
-	for (const std::pair<int, Point>& item : pointCollection->points) {
+			int id = pointIterator->first;
+			Point point = pointIterator->second;
 
-		id = item.first;
-		point = item.second;
+			Vector3f position = point.getPosition();
+			Quaternionf rotation = point.getRotation();
 
-		position = point.getPosition();
-		rotation = point.getRotation();
+			// Add data to OSC packet stream:
+			*m_packetStream
 
-		type = point.getType();
+				// Add position data to stream
+				<< position.x()
+				<< position.y()
+				<< position.z()
 
-		customInt = point.getCustomInt();
-		customFloat = point.getCustomFloat();
+				// Add rotation data to stream
+				<< rotation.x()
+				<< rotation.y()
+				<< rotation.z()
+				<< rotation.w()
 
-		// Add data to OSC packet stream:
-		*m_packetStream
+				// Add id to stream
+				<< id
+				
+				// Add valid to stream
+				<< (point.isValid() ? 1 : 0)
 
-			// Add position data to stream
-			<< position.x()
-			<< position.y()
-			<< position.z()
+				// Add type to stream
+				<< point.getType()
 
-			// Add rotation data to stream
-			<< rotation.x()
-			<< rotation.y()
-			<< rotation.z()
-			<< rotation.w()
+				// Add custom data to stream
+				<< point.getCustomInt()
+				<< point.getCustomFloat();
 
-			// Add id to stream
-			<< id
+			// Limit reached? -> break & begin new stream
+			if (sendCounter++ >= sendLimit) {
+				break;
+			}
 
-			// Add type to stream
-			<< type
-
-			// Add custom data to stream
-			<< customInt
-			<< customFloat;
-
-		// Limit reached? -> begin new stream
-		if (sendCounter++ == sendLimit) {
-			sendCounter = 0;
-
-			// close the stream
-			*m_packetStream << osc::EndMessage << osc::EndBundle;
-
-			// send packet with data
-			m_transmitSocket->Send(m_packetStream->Data(), m_packetStream->Size());
-
-			// clear packet stream to prevent buffer overflow
-			m_packetStream->Clear();
-
-			// begin packet stream & add tracker ID as first value
-			*m_packetStream << osc::BeginBundleImmediate << osc::BeginMessage(uri);
-
-			// add point count to message stream
-			*m_packetStream << (int)pointCollection->points.size();
+			pointIterator++;
 		}
-	}
 
-	// close the stream
-	*m_packetStream << osc::EndMessage << osc::EndBundle;
+		// close the stream
+		*m_packetStream << osc::EndMessage << osc::EndBundle;
 
-	// send packet with data
-	m_transmitSocket->Send(m_packetStream->Data(), m_packetStream->Size());
+		// send packet with data
+		m_transmitSocket->Send(m_packetStream->Data(), m_packetStream->Size());
 
-	// clear packet stream to prevent buffer overflow
-	m_packetStream->Clear();
+		// clear packet stream to prevent buffer overflow
+		m_packetStream->Clear();
+	}	
 }
 
 void OSCSender::setIPAddress(std::string address) {

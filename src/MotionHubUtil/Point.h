@@ -81,6 +81,16 @@ public:
 	void setType(Point::PointType type);
 
 	/*!
+	 * getter for valid
+	 */
+	bool isValid();
+
+	/*!
+	 * setter for valid
+	 */
+	void setValid(bool valid);
+
+	/*!
 	 * setter for JointName
 	 */
 	void setJointName(Joint::JointNames jointName);
@@ -112,6 +122,8 @@ private:
 	Quaternionf rotation;
 
 	PointType type;
+
+	bool valid = true;
 
 	int customInt = INT_MIN;
 

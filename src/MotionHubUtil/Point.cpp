@@ -65,6 +65,16 @@ void Point::setType(Point::PointType type) {
 	this->type = type;
 }
 
+bool Point::isValid() {
+
+	return valid;
+}
+
+void Point::setValid(bool valid) {
+
+	this->valid = valid;
+}
+
 int Point::getCustomInt() {
 
 	return customInt;

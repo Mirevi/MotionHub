@@ -5,6 +5,7 @@
 #include <mutex>
 #include <atomic>
 #include <vector>
+#include <unordered_set>
 
 #include "MotionHubUtil/Skeleton.h"
 #include "MotionHubUtil/PointCollection.h"
@@ -13,7 +14,6 @@
 #include "MotionHubUtil/MMHmath.h"
 #include "MotionHubUtil/ConfigManager.h"
 #include "NetworkManagement/NetworkManager.h"
-
 
 /*!
  * \class Tracker
@@ -167,6 +167,11 @@ public:
 	 * \return true when number of skeletons is different from last frame
 	 */
 	virtual bool hasSkeletonPoolChanged();
+	/*!
+	 *  checks if point count has changed
+	 * \return true when number of skeletons is different from last frame
+	 */
+	virtual bool hasPointCollectionChanged();
 
 	/*!
 	 * setter for m_hasSkeletonPoolChanged
@@ -342,6 +347,12 @@ protected:
 	 * collection containing all points detected by this Tracker
 	 */
 	PointCollection m_pointCollection;
+	/*!
+	 * is true if a point was added or removed from pool
+	 */
+	std::atomic<bool> m_hasPointCollectionChanged = false;
+
+	std::unordered_set<int> receivedPointIDs;
 
 	/*!
 	 * updade method used for tracker thread

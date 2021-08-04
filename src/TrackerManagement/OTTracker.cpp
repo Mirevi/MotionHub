@@ -24,7 +24,7 @@ OTTracker::OTTracker(int id, NetworkManager* networkManager, ConfigManager* conf
 
 
 	/*//set default values for offsets
-	setPositionOffset(Vector3f(configManager->getFloatFromStartupConfig("xPosOptiTrack"), configManager->getFloatFromStartupConfig("yPosOptiTrack"), configManager->getFloatFromStartupConfig("zPosOptiTrack")));																		 																			 
+	setPositionOffset(Vector3f(configManager->getFloatFromStartupConfig("xPosOptiTrack"), configManager->getFloatFromStartupConfig("yPosOptiTrack"), configManager->getFloatFromStartupConfig("zPosOptiTrack")));
 	setRotationOffset(Vector3f(configManager->getFloatFromStartupConfig("xRotOptiTrack"), configManager->getFloatFromStartupConfig("yRotOptiTrack"), configManager->getFloatFromStartupConfig("zRotOptiTrack")));
 	setScaleOffset(Vector3f(configManager->getFloatFromStartupConfig("xSclOptiTrack"), configManager->getFloatFromStartupConfig("ySclOptiTrack"), configManager->getFloatFromStartupConfig("zSclOptiTrack")));*/
 
@@ -136,28 +136,24 @@ int OTTracker::createClient(int iConnectionType)
 
 void OTTracker::track()
 {
+	//when frame data wasn't initialized, try again later
+	if (m_refData == nullptr)
+	{
+		std::this_thread::sleep_for(std::chrono::milliseconds(10));
 
-//when frame data wasn't initialized, try again later
-if (m_refData == nullptr)
-{
+		return;
+	}
 
-	std::this_thread::sleep_for(std::chrono::milliseconds(10));
+	//get skeleton data from frame data
+	extractSkeleton();
 
-	return;
+	cleanSkeletonPool();
 
-}
+	//increase tracking cycle counter
+	m_trackingCycles++;
 
-//get skeleton data from frame data
-extractSkeleton();
-
-cleanSkeletonPool();
-
-//increase tracking cycle counter
-m_trackingCycles++;
-
-//new data is ready
-m_isDataAvailable = true;
-
+	//new data is ready
+	m_isDataAvailable = true;
 }
 
 
@@ -240,13 +236,23 @@ void OTTracker::extractSkeleton()
 	// lock point collection mutex
 	m_pointCollectionLock.lock();
 
+	if (m_refData->nRigidBodies + m_refData->nLabeledMarkers != receivedPointIDs.size()) {
+		m_hasPointCollectionChanged = true;
+	}
+	
+	// clear received points
+	receivedPointIDs.clear();
+
 	// RigidBodies
 	for (int i = 0; i < m_refData->nRigidBodies; i++) {
 
 		sRigidBodyData& rbData = m_refData->RigidBodies[i];
 
-		// negate id
+		// negate id for RigidBodies
 		int id = -rbData.ID;
+
+		// params 0x01 : bool, rigid body was successfully tracked in this frame
+		bool isTrackingValid = rbData.params & 0x01;
 
 		auto rbIterator = m_pointCollection.points.find(id);
 
@@ -257,19 +263,37 @@ void OTTracker::extractSkeleton()
 
 			Point& point = rbIterator->second;
 
+			point.setValid(isTrackingValid);
+
 			point.setPosition(position);
 			point.setRotation(rotation);
-		}
-		// Rigidbody not found -> add new
-		else {
-			m_pointCollection.addPoint(id, Point(position, rotation, Point::Rigidbody));
-		}
-	}
 
-	// TODO: Delete not received Markers & Rigidbodies 
+			point.setCustomInt(rbData.params);
+			point.setCustomFloat(rbData.MeanError);
+		}
+		// Rigidbody not found -> add new Point
+		else {
+			Point point = Point(position, rotation, Point::Rigidbody);
+
+			point.setValid(isTrackingValid);
+
+			point.setCustomInt(rbData.params);
+			point.setCustomFloat(rbData.MeanError);
+
+			m_pointCollection.addPoint(id, point);
+
+			m_hasPointCollectionChanged = true;
+		}
+
+		// Add ID to received points
+		receivedPointIDs.insert(id);
+	}
 
 	// Markers
 	for (int i = 0; i < m_refData->nLabeledMarkers; i++) {
+
+		// params 0x01 : bool, marker was not visible (occluded) in this frame
+		bool isOccluded = ((m_refData->LabeledMarkers[i].params & 0x01) != 0);
 
 		sMarker& marker = m_refData->LabeledMarkers[i];
 
@@ -279,21 +303,91 @@ void OTTracker::extractSkeleton()
 
 		Vector3f position = Vector3f(marker.x, marker.y, marker.z);
 
+		// Marker found -> update
 		if (markerIterator != m_pointCollection.points.end()) {
 
 			Point& point = markerIterator->second;
 
+			point.setValid(!isOccluded);
+
 			point.setPosition(position);
 
+			point.setCustomFloat(marker.size);
+			point.setCustomInt((int)marker.params);
 		}
 		// Marker not found -> add new
 		else {
 
 			Point point = Point(position, eulerToQuaternion(Vector3f(0, 0, 0)), Point::Marker);
+
+			point.setValid (!isOccluded);
+
 			point.setCustomFloat(marker.size);
-			point.setCustomInt((int) marker.params);
+			point.setCustomInt((int)marker.params);
 
 			m_pointCollection.addPoint(id, point);
+
+			m_hasPointCollectionChanged = true;
+		}
+
+		// Add ID to received points
+		receivedPointIDs.insert(id);
+	}
+
+	if (m_hasPointCollectionChanged) {
+		sDataDescriptions* pDataDefs = NULL;
+
+		m_client->GetDataDescriptions(&pDataDefs);
+
+		if (pDataDefs != NULL) {
+
+			for (int i = 0; i < pDataDefs->nDataDescriptions; i++) {
+				if (pDataDefs->arrDataDescriptions[i].type == Descriptor_MarkerSet) {
+
+					// MarkerSet
+					sMarkerSetDescription* pMS = pDataDefs->arrDataDescriptions[i].Data.MarkerSetDescription;
+					
+					for (int i = 0; i < pMS->nMarkers; i++)
+					 printf(pMS->szMarkerNames[i]);
+				}
+				else if (pDataDefs->arrDataDescriptions[i].type == Descriptor_RigidBody) {
+
+					// RigidBody
+					sRigidBodyDescription* pRB = pDataDefs->arrDataDescriptions[i].Data.RigidBodyDescription;
+					//printf("RigidBody Name : %s\n", pRB->szName);
+					//printf("RigidBody ID : %d\n", pRB->ID);
+					//printf("RigidBody Parent ID : %d\n", pRB->parentID);
+					//printf("Parent Offset : %3.2f,%3.2f,%3.2f\n", pRB->offsetx, pRB->offsety, pRB->offsetz);
+				}
+			}
+		}
+	}
+
+
+	// Copy point iterator
+	auto pointIterator = m_pointCollection.points.begin();
+
+	// Loop while point iterator
+	while (pointIterator != m_pointCollection.points.end()) {
+
+		// Check if ID was not received
+		if (receivedPointIDs.find(pointIterator->first) == receivedPointIDs.end()) {
+
+			//m_pointCollection.points[pointIterator]
+			if (pointIterator->second.isValid()) {
+				m_pointCollection.points[pointIterator->first].setValid(false);
+				++pointIterator;
+			}
+			else {
+				m_pointCollection.points.erase(pointIterator++);
+
+				m_hasPointCollectionChanged = true;
+			}
+
+		}
+		// ID was received -> advance to next element
+		else {
+			++pointIterator;
 		}
 	}
 
