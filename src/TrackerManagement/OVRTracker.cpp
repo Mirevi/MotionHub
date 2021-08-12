@@ -137,10 +137,26 @@ void OVRTracker::track() {
 		calibrate();
 	}
 
+	// Calibration for target joints
+	if (GetAsyncKeyState(VK_NUMPAD1) & 0x8000) {
+		config->calibrateDeviceToJointOffset(Joint::FOOT_L);
+	}
+	else if (GetAsyncKeyState(VK_NUMPAD3) & 0x8000) {
+		config->calibrateDeviceToJointOffset(Joint::FOOT_R);
+	}
+	else if (GetAsyncKeyState(VK_NUMPAD5) & 0x8000) {
+		config->calibrateDeviceToJointOffset(Joint::HIPS);
+	}
+	else if (GetAsyncKeyState(VK_NUMPAD7) & 0x8000) {
+		config->calibrateDeviceToJointOffset(Joint::HAND_L);
+	}
+	else if (GetAsyncKeyState(VK_NUMPAD9) & 0x8000) {
+		config->calibrateDeviceToJointOffset(Joint::HAND_R);
+	}
 	// Lock point collection mutex
 	m_pointCollectionLock.lock();
 
-	// Loop over all devices and update points
+	// Loop over all devices and update point collection
 	for (int i = 0; i < trackingSystem->Devices.size(); i++) {
 
 		// Read pose from device index
@@ -336,23 +352,18 @@ OpenVRTracking::DevicePose OVRTracker::getAssignedPose(Joint::JointNames joint, 
 	// Init empty device pose
 	auto pose = OpenVRTracking::DevicePose();
 
-	// Try to get a assigned device with requested joint
-	int deviceIndex = config->getDeviceIndex(joint);
+	// Get the pose from config & tracking system 
+	auto devicePose = config->getPose(joint);
 
-	// Return empty pose if device was not found
-	if (deviceIndex < 0) {
+	// Return empty pose if not found
+	if (devicePose == nullptr) {
 		return pose;
 	}
 
-	// Get the pose from tracking system 
-	auto devicePose = trackingSystem->getPose(deviceIndex);
-
-	pose.position = devicePose->position;
-	pose.rotation = devicePose->rotation;
-
-	// Return pose if offset is not requested
-	if (!applyOffset) {
-		return pose;
+	// Apply device pose to pose
+	if (devicePose != nullptr) {
+		pose.position = devicePose->position;
+		pose.rotation = devicePose->rotation;
 	}
 
 	// Debug
@@ -381,19 +392,39 @@ OpenVRTracking::DevicePose OVRTracker::getAssignedPose(Joint::JointNames joint, 
 		break;
 	}
 
+	// Return pose if offset is not requested
+	if (!applyOffset) {
+		return pose;
+	}
+
 	// Try to get a offset from config
 	auto offset = config->getOffset(joint);
 
+	if (joint == Joint::HAND_R) {
+		if (GetKeyState('A') & 0x8000) {
+
+			//auto offsetRot = hierarchicSkeleton->head.getGlobalRotation() * pose.rotation.inverse();
+			//offsetRot.normalize();
+
+			//m_properties->rotationOffset = quaternionToEuler(offsetRot);
+			//Console::log("Offset: " + toString(m_properties->rotationOffset));
+		}
+
+		if (DEBUG_FOOT) {
+			if (!m_properties->rotationOffset.isApprox(Vector3f::Zero())) {
+				//offset.rotation = eulerToQuaternion(m_properties->rotationOffset);
+			}
+		}
+	}
+
 	// Add offset position if not null
 	if (!offset.isPositionNull()) {
-		//Console::log(Joint::toString(joint) + " pos: " + toString(offset.position));
 		pose.position += pose.rotation * offset.position;
 	}
 
 	// Add offset rotation if not null
 	if (!offset.isRotationNull()) {
-		//Console::log(Joint::toString(joint) + " rot: " + toString(offset.rotation));
-		pose.rotation *= offset.rotation;
+		pose.rotation = offset.rotation * pose.rotation;
 	}
 
 	return pose;

@@ -48,6 +48,8 @@ public:
 
 	Joint::JointNames getJoint(unsigned int deviceIndex);
 
+	OpenVRTracking::DevicePose* getPose(Joint::JointNames joint);
+
 	/*!
 	 * Returns offset to a assigned joint
 	 *
@@ -56,10 +58,17 @@ public:
 	 */
 	OpenVRTracking::DevicePose getOffset(Joint::JointNames joint);
 
+	void setOffsetPosition(Joint::JointNames joint, Vector3f position);
+
+	void setOffsetRotation(Joint::JointNames joint, Quaternionf rotation);
 
 	void assignJointToDevice(Joint::JointNames joint, unsigned int deviceIndex);
 
 	void updateUserDeviceRoles();
+
+	void calibrateDeviceToJointOffsets();
+
+	void calibrateDeviceToJointOffset(Joint::JointNames jointName);
 
 private:
 
