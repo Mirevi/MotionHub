@@ -271,5 +271,7 @@ private:
 
 	vr::TrackedDevicePose_t* devicePoses;
 
+	std::unordered_map<unsigned int, DevicePose*> deviceToPose;
+
 	OpenVRButtonSubject ovrButtonSubject;
 };

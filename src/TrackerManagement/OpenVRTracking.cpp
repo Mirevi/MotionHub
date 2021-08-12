@@ -750,11 +750,16 @@ void OpenVRTracking::updateDevices() {
 
 	// Clear poses
 	Poses.clear();
+	deviceToPose.clear();
 
 	// Loop over all Devices and create poses for each
 	for (const auto& device : Devices) {
+
 		// Create Empty Pose and insert at back
 		Poses.emplace_back();
+
+		// Cache pose pointer address
+		deviceToPose[device.index] = &(Poses[Poses.size() - 1]);
 
 		// Check for higher DeviceIndex
 		if (device.index >= trackedPoseCount) {
@@ -797,17 +802,9 @@ void OpenVRTracking::removeDevice(unsigned int deviceIndex) {
 
 OpenVRTracking::DevicePose* OpenVRTracking::getPose(unsigned int deviceIndex) {
 
-	if (deviceIndex < Poses.size()) {
-		return &Poses[deviceIndex];
-	}
-
-	return nullptr;
-
-	// Loop over all devices and return pose with matching device index
-	for (int i = 0; i < Devices.size(); i++) {
-		if (Devices[i].index == deviceIndex) {
-			return &Poses[i];
-		}
+	auto poseIterator = deviceToPose.find(deviceIndex);
+	if (poseIterator != deviceToPose.end()) {
+		return (poseIterator->second);
 	}
 
 	return nullptr;
@@ -978,7 +975,7 @@ void OpenVRTracking::pollEvents() {
 }
 
 void OpenVRTracking::calibrateDeviceRoles() {
-
+	/*
 	Poses[0].position = Vector3f(0, 1.76f, 0);
 
 	Devices.push_back(Device(1, DeviceClass::Controller, "Left Controller"));
@@ -996,8 +993,6 @@ void OpenVRTracking::calibrateDeviceRoles() {
 	Devices.push_back(Device(6, DeviceClass::Tracker, "Right Foot"));
 	Poses.push_back(DevicePose(Vector3f(0.08f, 0.1f, 0), Quaternionf::Identity()));
 
-
-
 	Devices.push_back(Device(8, DeviceClass::Tracker, "Right Leg"));
 	Poses.push_back(DevicePose(Vector3f(0.1f, 0.5f, 0), Quaternionf::Identity()));
 
@@ -1006,6 +1001,7 @@ void OpenVRTracking::calibrateDeviceRoles() {
 
 	Devices.push_back(Device(10, DeviceClass::Tracker, "Right Arm"));
 	Poses.push_back(DevicePose(Vector3f(0.4f, 1.3f, 0), Quaternionf::Identity()));
+	*/
 
 	if (Devices.size() >= 6) {
 		DeviceRoleAssigner* deviceRoleAssigner = new DeviceRoleAssigner(this);
