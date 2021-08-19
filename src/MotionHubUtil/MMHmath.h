@@ -72,7 +72,7 @@ static Matrix4f transformMatrix(Vector3f position, Vector3f rotation, Vector3f s
 static Vector3f quaternionToEuler(Quaternionf quaternion)
 {
 	//convert to euler angles as radient
-	Vector3f euler = quaternion.toRotationMatrix().eulerAngles(1, 2, 0);
+	Vector3f euler = quaternion.toRotationMatrix().eulerAngles(0, 1, 2);
 
 	//convert radient to degrees
 	euler.x() *= 180;
