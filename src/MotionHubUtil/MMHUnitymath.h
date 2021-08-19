@@ -11,7 +11,7 @@ using namespace Eigen;
 
 /*!
  * Returns the signum function of x
- * 
+ *
  * \return -1 if x<0, 0 if x=0, 1 if x>0
  */
 template <typename T> static int sgn(T x) {
@@ -20,7 +20,7 @@ template <typename T> static int sgn(T x) {
 
 /*!
  * Calculates the reverse square root of x
- * 
+ *
  * \return reverse square root of x
  */
 static float rsqrt(float x) {
@@ -29,7 +29,7 @@ static float rsqrt(float x) {
 
 /*!
  * Returns the result of linearly interpolating from a to b using the interpolation parameter t
- * 
+ *
  * \remarks If the interpolation parameter is not in the range [0, 1], then this function extrapolates
  * \param a zhe first endpoint, corresponding to the interpolation parameter value of 0
  * \param b The second endpoint, corresponding to the interpolation parameter value of 1
@@ -42,7 +42,7 @@ static float lerp(const float a, const float b, const float t) {
 
 /*!
  * Clamps x between min and max and returns value
- * 
+ *
  * \param x input value to be clamped
  * \param min lower bound of the interval
  * \param max upper bound of the interval
@@ -54,7 +54,7 @@ static float clamp(const float x, const float min, const float max) {
 
 /*!
  * Clamps x between 0 and 1 and returns value
- * 
+ *
  * \param x input value to be clamped
  * \return x between 0 and 1
  */
@@ -89,7 +89,7 @@ static Quaternionf lookRotation(Vector3f forward, Vector3f up) {
 		return Quaternionf::FromTwoVectors(Vector3f(0, 0, 1), forward);
 	}
 	*/
-	
+
 	// TODO: Oben/Unten?
 	float forwardLengthSq = forward.dot(forward);
 	float upLengthSq = up.dot(up);
@@ -124,7 +124,7 @@ static Quaternionf lookRotation(Vector3f forward, Vector3f up) {
  *
  * \param space the rotational space to transform to
  * \param rotation lower bound of the interval
- * \return the transformed rotation 
+ * \return the transformed rotation
  */
 static Quaternionf rotationToSpace(Quaternionf space, Quaternionf rotation) {
 	return (space.inverse() * rotation).inverse();
@@ -171,7 +171,7 @@ static float angleBetween(Quaternionf from, Quaternionf to) {
  *
  * \param from first direction
  * \param to second direction
- * \param maxDegreesDelta angular step 
+ * \param maxDegreesDelta angular step
  * \return the transformed rotation
  */
 static Quaternionf rotateTowards(Quaternionf from, Quaternionf to, float maxDegreesDelta) {
@@ -181,15 +181,15 @@ static Quaternionf rotateTowards(Quaternionf from, Quaternionf to, float maxDegr
 	return from.slerp(fmin(1.0f, maxDegreesDelta / angle), to);
 }
 
- /*!
-  * Projects a vector onto another vector
-  *
-  * \param vector the vector
-  * \param onNormal the normal to project on
-  * \return projected vector
-  * \see https://docs.unity3d.com/ScriptReference/Vector3.Project.html
-  */
- static Vector3f project(Vector3f vector, Vector3f onNormal) {
+/*!
+ * Projects a vector onto another vector
+ *
+ * \param vector the vector
+ * \param onNormal the normal to project on
+ * \return projected vector
+ * \see https://docs.unity3d.com/ScriptReference/Vector3.Project.html
+ */
+static Vector3f project(Vector3f vector, Vector3f onNormal) {
 
 	float sqrMag = onNormal.dot(onNormal);
 
@@ -207,37 +207,48 @@ static Quaternionf rotateTowards(Quaternionf from, Quaternionf to, float maxDegr
 	}
 }
 
- /*!
- * Reflects a vector off the plane defined by a plane normal
- *
- * \param vector the vector is treated as a directional arrow coming in to the plane
- * \param planeNormal the normal to project on
- * \return reflected vector
- * \see https://docs.unity3d.com/ScriptReference/Vector3.Reflect.html
- */
- static Vector3f reflect(Vector3f vector, Vector3f planeNormal) {
-	 return vector - 2 * project(vector, planeNormal);
- }
+/*!
+* Reflects a vector off the plane defined by a plane normal
+*
+* \param vector the vector is treated as a directional arrow coming in to the plane
+* \param planeNormal the normal to project on
+* \return reflected vector
+* \see https://docs.unity3d.com/ScriptReference/Vector3.Reflect.html
+*/
+static Vector3f reflect(Vector3f vector, Vector3f planeNormal) {
+	return vector - 2 * project(vector, planeNormal);
+}
 
- /*!
- * Projects a vector onto another vector and rejects a 
- *
- * \param a the vector to reject
- * \param b the second vector
- * \return rejected vector
- */
- static Vector3f reject(Vector3f a, Vector3f b) {
-	 return a - project(a, b);
- }
+/*!
+* Projects a vector onto another vector and rejects a
+*
+* \param a the vector to reject
+* \param b the second vector
+* \return rejected vector
+*/
+static Vector3f reject(Vector3f a, Vector3f b) {
+	return a - project(a, b);
+}
 
- /*!
-  * Normalizes tangent and makes sure it is orthogonal to normal (that is, angle between them is 90 degrees)
-  *
-  * \param normal the normal
-  * \param tangent the tangent
-  * \return angle in degrees between both vectors.
-  * \see https://graemepottsfolio.wordpress.com/2015/11/26/vectors-programming/
-  */
+/*!
+* Projects a vector onto a plane defined by a normal orthogonal to the plane.
+*
+* \param vector the location of the vector above the plane
+* \param planeNormal the direction from the vector towards the plane
+* \return the location of the vector on the plane
+*/
+static Vector3f projectOnPlane(Vector3f vector, Vector3f planeNormal) {
+	return reject(vector, planeNormal);
+}
+
+/*!
+ * Normalizes tangent and makes sure it is orthogonal to normal (that is, angle between them is 90 degrees)
+ *
+ * \param normal the normal
+ * \param tangent the tangent
+ * \return angle in degrees between both vectors.
+ * \see https://graemepottsfolio.wordpress.com/2015/11/26/vectors-programming/
+ */
 static void orthoNormalize(Vector3f& normal, Vector3f& tangent) {
 	/*normal.normalize();
 	tangent.normalize();
@@ -245,7 +256,7 @@ static void orthoNormalize(Vector3f& normal, Vector3f& tangent) {
 	tangent.completeOrthogonalDecomposition();
 
 	return tangent.cross(normal);*/
-	
+
 	tangent = (tangent - project(tangent, normal.normalized())).normalized();
 }
 
@@ -291,7 +302,7 @@ static float angleBetween(Vector3f from, Vector3f to) {
 /*!
  * The smaller of the two possible angles between the two vectors is returned, therefore the result will never be greater than 180 degrees or smaller than -180 degrees.
  * If you imagine the from and to vectors as lines on a piece of paper, both originating from the same point, then the /axis/ vector would point up out of the paper.
- * 
+ *
  * \param from first vector.
  * \param to second vector.
  * \param axis axis vector.
@@ -405,7 +416,7 @@ static Vector3f slerpUnclamped(Vector3f start, Vector3f end, float delta) {
  * Spherically interpolates between between vector a and b by amount t
  * The parameter t is clamped to the range [0, 1].
  * The difference between this and linear interpolation (aka, "lerp") is that the vectors are treated as directions rather than points in space.
- * 
+ *
  * \param a first vector
  * \param b second vector
  * \param t interpolant
