@@ -26,6 +26,10 @@ public:
 	 */
 	void insert(Skeleton* currSkeleton);
 
+	void setScale(Vector3f scale);
+
+	Vector3f getScale();
+
 protected:
 
 	/*!

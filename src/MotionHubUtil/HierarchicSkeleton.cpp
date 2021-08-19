@@ -7,6 +7,9 @@ void HierarchicSkeleton::init() {
 	// TODO: Gröbere/Genauere Position und/oder Rotation?
 	// TODO: Koordinatensystem flipped?
 
+	// TODO: clear nötig?
+	joints.clear();
+
 	// Hips
 	hips = HierarchicJoint(Vector3f(0, 1, 0), Quaternionf::Identity());
 	addJoint(&hips, Joint::JointNames::HIPS);
@@ -154,9 +157,19 @@ void HierarchicSkeleton::insert(Skeleton* currSkeleton) {
 		Quaternionf rotation = joint->getGlobalRotation();
 		rotation = Quaternionf(-rotation.y(), -rotation.z(), rotation.w(), rotation.x());
 
+		// scale?
 		currSkeleton->m_joints.insert({ joint->getJointName(), joint->toJoint(rotation) });
 		//currSkeleton->m_joints.insert({ joint->getJointName(), joint->toJoint() });
 	}
+}
+
+void HierarchicSkeleton::setScale(Vector3f scale) {
+	Console::logWarning("Scale: " + toString(scale));
+	hips.setScale(scale);
+}
+
+Vector3f HierarchicSkeleton::getScale() {
+	return hips.getScale();
 }
 
 void HierarchicSkeleton::addJoint(HierarchicJoint* joint, Joint::JointNames jointName) {

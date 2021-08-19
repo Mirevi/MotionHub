@@ -17,6 +17,7 @@ HierarchicJoint::HierarchicJoint(Vector3f localPosition, Quaternionf localRotati
 	setLocalRotation(localRotation);
 
 	//global = local;
+	scale = Vector3f(1.0f, 1.0f, 1.0f);
 }
 
 HierarchicJoint::HierarchicJoint(Vector3f localPosition)
@@ -157,6 +158,15 @@ Vector4f HierarchicJoint::getGlobalPosition4() {
 	return Vector4f(pos.x(), pos.y(), pos.z(), 1.0f);
 }
 
+void HierarchicJoint::setScale(Vector3f scale) {
+	// TODO: Matrix
+	this->scale = scale;
+}
+
+Vector3f HierarchicJoint::getScale() {
+	return scale;
+}
+
 Vector3f HierarchicJoint::getRight() {
 	return getGlobalRotation() * Vector3f(1, 0, 0);
 }
@@ -199,6 +209,7 @@ Vector3f HierarchicJoint::inverseTransformDirection(Vector3f direction) {
 }
 
 Matrix4f HierarchicJoint::combineParentMatrixRecursive(HierarchicJoint* hierarchicJoint) {
+	// Is parent not null? -> Joint
 	if (hierarchicJoint->parent != nullptr) {
 		if (parent->globalValid) {
 			return parent->global * hierarchicJoint->local;
@@ -213,8 +224,34 @@ Matrix4f HierarchicJoint::combineParentMatrixRecursive(HierarchicJoint* hierarch
 		}
 
 	}
+	// Parent is null -> RootJoint
 	else {
-		return hierarchicJoint->local;
+
+		Vector3f scale = hierarchicJoint->scale;
+		
+		// Dont apply scaling if scale is (1, 1, 1)
+		if (scale.isApprox(Vector3f::Ones())) {
+			return hierarchicJoint->local;
+		}
+		else {
+			// Copy matrix and apply scaling
+			Matrix4f scaledLocal = Matrix4f(hierarchicJoint->local);
+
+			scaledLocal(0, 0) *= scale.x();
+			scaledLocal(1, 0) *= scale.y();
+			scaledLocal(2, 0) *= scale.z();
+
+			scaledLocal(0, 1) *= scale.x();
+			scaledLocal(1, 1) *= scale.y();
+			scaledLocal(2, 1) *= scale.z();
+
+			scaledLocal(0, 2) *= scale.x();
+			scaledLocal(1, 2) *= scale.y();
+			scaledLocal(2, 2) *= scale.z();
+
+			return scaledLocal;
+		}
+		//return hierarchicJoint->local;
 	}
 }
 

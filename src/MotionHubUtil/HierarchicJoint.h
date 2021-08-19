@@ -23,6 +23,8 @@ protected:
 
 	Matrix4f global;
 
+	Vector3f scale;
+
 	bool globalValid;
 
 public:
@@ -72,6 +74,10 @@ public:
 	Vector4f getLocalPosition4();
 
 	Vector4f getGlobalPosition4();
+
+	void setScale(Vector3f scale);
+
+	Vector3f getScale();
 
 	Vector3f getRight();
 
