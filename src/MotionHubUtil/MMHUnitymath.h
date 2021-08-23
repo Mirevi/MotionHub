@@ -436,18 +436,18 @@ static Vector3f slerp(Vector3f a, Vector3f b, float t) {
  * \return decomposed rotation
  * \see http://allenchou.net/2018/05/game-math-swing-twist-interpolation-sterp/
  */
-static Quaternionf DecomposeTwist(const Quaternionf rotation, const Vector3f twistAxis) {
+static Quaternionf decomposeTwist(const Quaternionf rotation, const Vector3f twistAxis) {
 	// Create Euler for sqrlength check
-	Vector3f r = Vector3f(rotation.x(), rotation.y(), rotation.z());
+	Vector3f euler = Vector3f(rotation.x(), rotation.y(), rotation.z());
 
 	// Singularity: rotation by 0 degree
-	if (r.squaredNorm() < FLT_EPSILON) {
+	if (euler.squaredNorm() < FLT_EPSILON) {
 		return angleAxis(0, twistAxis);
 	}
 	else {
 		// swing-twist decomposition
-		Vector3f p = project(r, twistAxis);
-		return Quaternionf(rotation.w(), rotation.x(), rotation.y(), rotation.z()).normalized();
+		Vector3f p = project(euler, twistAxis);
+		return Quaternionf(rotation.w(), p.x(), p.y(), p.z()).normalized();
 	}
 }
 

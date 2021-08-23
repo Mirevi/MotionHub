@@ -276,7 +276,7 @@ void IKSolverLeg::untwist() {
 		Quaternionf diff = lowerRotation * invMiddleRotation;
 
 		// Decompose twist in relation to middle forward axis
-		Quaternionf twist = DecomposeTwist(diff, middleForward);
+		Quaternionf twist = decomposeTwist(diff, middleForward);
 
 		// TODO: UpperRotation anstatt upperTwist? 
 		//Quaternionf middleTwist = upperTwist.slerp(middleUntwistWeight, twist);
@@ -323,7 +323,7 @@ void IKSolverLeg::untwist() {
 		Quaternionf diff = middleRotation * upperRotation.inverse();
 
 		// Decompose twist in relation to upper up axis
-		Quaternionf twist = DecomposeTwist(diff, upperUp);
+		Quaternionf twist = decomposeTwist(diff, upperUp);
 
 		// Lerp twist by configured weight
 		Quaternionf upperTwist = upperRotation.slerp(upperUntwistWeight, twist);
