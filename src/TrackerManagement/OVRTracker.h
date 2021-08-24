@@ -102,9 +102,15 @@ private:
 
 	OpenVRTracking::DevicePose getAssignedPose(Joint::JointNames joint);
 
-	OpenVRTracking::DevicePose getAssignedPose(Joint::JointNames joint, bool applyOffset);
-
 	void calibrate();
+
+	void calibrateDeviceRoles();
+
+	void calibrateDeviceToJointOffsets();
+
+	void calibrateDeviceToJointOffset(Joint::JointNames jointName);
+
+	void calibrateScale();
 
 	/*!
 	 * update the state of this observer

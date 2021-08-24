@@ -1,6 +1,30 @@
 #include "OVRTracker.h"
 
 static bool DEBUG_HMD = true;
+static std::string DebugIdentifier(std::string identifier) {
+
+	if (identifier == "LHR-774276F7") {
+		return "HEAD";
+	}
+	else if (identifier == "LHR-F0DCF515") {
+		return "HAND_L";
+	}
+	else if (identifier == "LHR-9AC396F1") {
+		return "HAND_R";
+	}
+	else if (identifier == "LHR-E6910BC0") {
+		return "FOOT_L";
+	}
+	else if (identifier == "LHR-6E2EA3BC") {
+		return "FOOT_R";
+	}
+	else if (identifier == "LHR-61441A45") {
+		return "HIPS";
+	}
+	else {
+		return "! NOT FOUND !";
+	}
+}
 
 OVRTracker::OVRTracker() {
 
@@ -23,13 +47,8 @@ OVRTracker::OVRTracker(int id, NetworkManager* networkManager, ConfigManager* co
 	//default is enabled
 	m_isEnabled = true;
 
-	// Initialize OpenVR & IK Solvers
+	// Initialize OpenVR, Config & IK Solvers
 	init();
-
-	config = new OpenVRConfig(m_configManager, trackingSystem);
-
-	// Try to write default config values
-	config->writeDefaults();
 }
 
 OVRTracker::~OVRTracker() {
@@ -115,6 +134,10 @@ void OVRTracker::init() {
 
 	// Init IKSolvers
 	initIKSolvers();
+
+	// Init Config & try to write default config values
+	config = new OpenVRConfig(m_configManager, trackingSystem);
+	config->writeDefaults();
 }
 
 void OVRTracker::track() {
@@ -249,7 +272,7 @@ Skeleton* OVRTracker::parseSkeleton(int id, Skeleton* oldSkeletonData) {
 	Joint::JointConfidence highConf = Joint::JointConfidence::HIGH;
 	Joint::JointConfidence lowConf = Joint::JointConfidence::LOW;
 
-	if (1 == 0 && trackingSystem->Poses.size() > 1) {
+	if (false && trackingSystem->Poses.size() > 1) {
 		Vector3f v3pos = trackingSystem->Poses[0].position;
 		Vector4f pos = Vector4f(v3pos.x(), v3pos.y(), v3pos.z(), 1.0f);
 
@@ -344,90 +367,8 @@ void OVRTracker::initIKSolvers() {
 
 OpenVRTracking::DevicePose OVRTracker::getAssignedPose(Joint::JointNames joint) {
 
-	return getAssignedPose(joint, true);
-}
-
-OpenVRTracking::DevicePose OVRTracker::getAssignedPose(Joint::JointNames joint, bool applyOffset) {
-
-	// Init empty device pose
-	auto pose = OpenVRTracking::DevicePose();
-
 	// Get the pose from config & tracking system 
-	auto devicePose = config->getPose(joint);
-
-	// Return empty pose if not found
-	if (devicePose == nullptr) {
-		return pose;
-	}
-
-	// Apply device pose to pose
-	if (devicePose != nullptr) {
-		pose.position = devicePose->position;
-		pose.rotation = devicePose->rotation;
-	}
-
-	// Debug
-	switch (joint) {
-	case Joint::HIPS:
-		break;
-	case Joint::FOREARM_L:
-		break;
-	case Joint::HAND_L:
-		break;
-	case Joint::FOREARM_R:
-		break;
-	case Joint::HAND_R:
-		break;
-	case Joint::LEG_L:
-		break;
-	case Joint::FOOT_L:
-		break;
-	case Joint::LEG_R:
-		break;
-	case Joint::FOOT_R:
-		break;
-	case Joint::HEAD:
-		if (DEBUG_HMD)
-			pose.position = Vector3f(0, 1.6f, 0);
-		break;
-	}
-
-	// Return pose if offset is not requested
-	if (!applyOffset) {
-		return pose;
-	}
-
-	// Try to get a offset from config
-	auto offset = config->getOffset(joint);
-
-	if (joint == Joint::HAND_R) {
-		if (GetKeyState('A') & 0x8000) {
-
-			//auto offsetRot = hierarchicSkeleton->head.getGlobalRotation() * pose.rotation.inverse();
-			//offsetRot.normalize();
-
-			//m_properties->rotationOffset = quaternionToEuler(offsetRot);
-			//Console::log("Offset: " + toString(m_properties->rotationOffset));
-		}
-
-		if (DEBUG_FOOT) {
-			if (!m_properties->rotationOffset.isApprox(Vector3f::Zero())) {
-				//offset.rotation = eulerToQuaternion(m_properties->rotationOffset);
-			}
-		}
-	}
-
-	// Add offset position if not null
-	if (!offset.isPositionNull()) {
-		pose.position += pose.rotation * offset.position;
-	}
-
-	// Add offset rotation if not null
-	if (!offset.isRotationNull()) {
-		pose.rotation = offset.rotation * pose.rotation;
-	}
-
-	return pose;
+	return config->getPoseWithOffset(joint);
 }
 
 void OVRTracker::calibrate() {
@@ -440,9 +381,45 @@ void OVRTracker::calibrate() {
 	// Reset calibration flag
 	shouldCalibrate = false;
 
-	trackingSystem->calibrateDeviceRoles();
+	calibrateDeviceRoles();
 
-	// TODO: Write to config
+	//calibrateDeviceToJointOffsets();
+}
+
+void OVRTracker::calibrateDeviceRoles() {
+
+	auto calibratedDeviceRoles = trackingSystem->getCalibratedDeviceRoles();
+
+	if (calibratedDeviceRoles.size() > 0) {
+		// TODO: Clear Roles from Config?
+		config->clearJointToDevice();
+
+		// Write calibrated DeviceRoles to Config
+		for (const auto& deviceJointPair : calibratedDeviceRoles) {
+
+			auto device = trackingSystem->Devices[deviceJointPair.first];
+			config->assignJointToDevice(deviceJointPair.second, device.index);
+		}
+
+		Console::log("Calibrated Device Roles");
+	}
+}
+
+void OVRTracker::calibrateDeviceToJointOffsets() {
+
+	config->calibrateDeviceToJointOffsets();
+
+	Console::log("Calibrated Device Joint Offsets");
+}
+
+void OVRTracker::calibrateDeviceToJointOffset(Joint::JointNames joint) {
+
+	config->calibrateDeviceToJointOffset(joint);
+
+	Console::log("Calibrated Device Joint Offset: " + Joint::toString(joint));
+}
+
+void OVRTracker::calibrateScale() {
 }
 
 void OVRTracker::notify(Subject* subject) {
@@ -454,9 +431,12 @@ void OVRTracker::notify(Subject* subject) {
 	if (ovrButtonSubject != nullptr) {
 		Console::log("Is Trigger: " + toString(ovrButtonSubject->getButtonState() == vr::EVRButtonId::k_EButton_SteamVR_Trigger));
 
-		// Calibrate on trigger pressed
-		if (ovrButtonSubject->getButtonState() == vr::EVRButtonId::k_EButton_SteamVR_Trigger) {
+		switch (ovrButtonSubject->getButtonState()) {
+
+			// Calibrate on trigger pressed
+		case vr::EVRButtonId::k_EButton_SteamVR_Trigger:
 			calibrate();
+			break;
 		}
 	}
 }

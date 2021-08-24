@@ -1,7 +1,7 @@
 #pragma once
 
 #include "MotionHubUtil/ConfigManager.h"
-#include "MotionHubUtil/Joint.h"
+#include "MotionHubUtil/HierarchicSkeleton.h"
 #include "OpenVRTracking.h"
 
 
@@ -50,6 +50,8 @@ public:
 
 	OpenVRTracking::DevicePose* getPose(Joint::JointNames joint);
 
+	OpenVRTracking::DevicePose getPoseWithOffset(Joint::JointNames joint);
+
 	/*!
 	 * Returns offset to a assigned joint
 	 *
@@ -63,6 +65,8 @@ public:
 	void setOffsetRotation(Joint::JointNames joint, Quaternionf rotation);
 
 	void assignJointToDevice(Joint::JointNames joint, unsigned int deviceIndex);
+
+	void clearJointToDevice();
 
 	void updateUserDeviceRoles();
 

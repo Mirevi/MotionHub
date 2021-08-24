@@ -1,5 +1,7 @@
 ﻿#include "OpenVRConfig.h"
 
+static bool OVERRIDE_DEFAULTS = false;
+
 OpenVRConfig::OpenVRConfig(ConfigManager* configManager, OpenVRTracking* trackingSystem) {
 
 	this->configManager = configManager;
@@ -60,7 +62,6 @@ void OpenVRConfig::readOffsets() {
 
 		// Read & set offset rotation by device & joint
 		if (configManager->readVec3f("rotation", offsetEuler, trackerType, configKey)) {
-			offsetEuler = Vector3f::Zero();
 			setOffsetRotation(joint, eulerToQuaternion(offsetEuler));
 		}
 	}
@@ -148,6 +149,12 @@ void OpenVRConfig::assignJointToDevice(Joint::JointNames joint, unsigned int dev
 	//trackingSystem->assignJointToDevice(joint, deviceIndex);
 }
 
+void OpenVRConfig::clearJointToDevice() {
+
+	jointToDevice.clear();
+	deviceToJoint.clear();
+}
+
 void OpenVRConfig::updateUserDeviceRoles() {
 
 	// You have to call UpdateActionState to get all Device Roles
@@ -203,10 +210,9 @@ void OpenVRConfig::updateUserDeviceRoles() {
 
 void OpenVRConfig::calibrateDeviceToJointOffsets() {
 
-	/*for (auto jointDevicePair : jointToDevice) {
-		jointDevicePair.first;
-		jointDevicePair.second;
-	}*/
+	for (const auto& jointDevicePair : jointToDevice) {
+		calibrateDeviceToJointOffset(jointDevicePair.first);
+	}
 }
 
 void OpenVRConfig::calibrateDeviceToJointOffset(Joint::JointNames joint) {
@@ -233,15 +239,15 @@ void OpenVRConfig::calibrateDeviceToJointOffset(Joint::JointNames joint) {
 	// create world up vector
 	Vector3f worldUp = Vector3f(0, 1, 0);
 
-	// project foward vector on world iu
+	// project foward vector on world up
 	forward = projectOnPlane(forward, worldUp);
 
 	// hip special case: forward must be flipped
 	if (joint == Joint::HIPS) {
-		forward = -forward;
+		//forward = -forward;
 	}
 
-	// create l
+	// create look rotation
 	Quaternionf rotation = lookRotation(forward, Vector3f(0, 1, 0));
 
 	// offset = rotation * inverse device rotation
@@ -260,14 +266,14 @@ void OpenVRConfig::writeDefaults() {
 
 	// Write HMD:HEAD data if not exist
 	configKey = generateKey(OpenVRTracking::HMD, Joint::HEAD);
-	if (1 == 1 || !configManager->exists(trackerType, configKey)) {
+	if (OVERRIDE_DEFAULTS || !configManager->exists(trackerType, configKey)) {
 
 		configManager->writeVec3f("position", Vector3f(0, -0.14f, -0.14f), trackerType, configKey);
 	}
 
 	// Write Controller:HAND_L data if not exist
 	configKey = generateKey(OpenVRTracking::Controller, Joint::HAND_L);
-	if (1 == 1 || !configManager->exists(trackerType, configKey)) {
+	if (OVERRIDE_DEFAULTS || !configManager->exists(trackerType, configKey)) {
 
 		//configManager->writeVec3f("position", Vector3f(0, 0, -0.16f), trackerType, configKey);
 		// TODO: rotation offset prüfen
@@ -276,15 +282,24 @@ void OpenVRConfig::writeDefaults() {
 
 	// Write Controller:HAND_R data if not exist
 	configKey = generateKey(OpenVRTracking::Controller, Joint::HAND_R);
-	if (1 == 1 || !configManager->exists(trackerType, configKey)) {
+	if (OVERRIDE_DEFAULTS || !configManager->exists(trackerType, configKey)) {
 
 		//configManager->writeVec3f("position", Vector3f(0, 0, 0.16f), trackerType, configKey);
 		configManager->writeVec3f("rotation", Vector3f(120.0f, 165.0f, -95.0f), trackerType, configKey);
 	}
 
+	// Write Tracker:HIPS data if not exist
+	configKey = generateKey(OpenVRTracking::Controller, Joint::HIPS);
+	if (OVERRIDE_DEFAULTS || !configManager->exists(trackerType, configKey)) {
+
+		configManager->writeVec3f("position", Vector3f(0, -0.03f, -0.1f), trackerType, configKey);
+		// TODO: rotation offset prüfen
+		//onfigManager->writeVec3f("rotation", Vector3f(90, 0, 0), trackerType, configKey);
+	}
+
 	// Write Tracker:FOOT_L data if not exist
 	configKey = generateKey(OpenVRTracking::Tracker, Joint::FOOT_L);
-	if (1 == 1 || !configManager->exists(trackerType, configKey)) {
+	if (OVERRIDE_DEFAULTS || !configManager->exists(trackerType, configKey)) {
 
 		configManager->writeVec3f("position", Vector3f(0.008f, -0.036f, -0.16f), trackerType, configKey);
 		// TODO: rotation offset pruefen
@@ -293,7 +308,7 @@ void OpenVRConfig::writeDefaults() {
 
 	// Write Tracker:FOOT_R data if not exist
 	configKey = generateKey(OpenVRTracking::Tracker, Joint::FOOT_R);
-	if (1 == 1 || !configManager->exists(trackerType, configKey)) {
+	if (OVERRIDE_DEFAULTS || !configManager->exists(trackerType, configKey)) {
 
 		configManager->writeVec3f("position", Vector3f(0.008f, -0.036f, -0.16f), trackerType, configKey);
 		// TODO: rotation offset pruefen
@@ -333,6 +348,50 @@ OpenVRTracking::DevicePose* OpenVRConfig::getPose(Joint::JointNames joint) {
 	else {
 		return nullptr;
 	}
+}
+
+OpenVRTracking::DevicePose OpenVRConfig::getPoseWithOffset(Joint::JointNames joint) {
+
+	// Init empty device pose
+	auto pose = OpenVRTracking::DevicePose();
+
+	// Get the pose from config & tracking system 
+	auto devicePose = getPose(joint);
+
+	// Return empty pose if not found
+	if (devicePose == nullptr) {
+		return pose;
+	}
+
+	// Apply device pose to pose
+	if (devicePose != nullptr) {
+		pose.position = devicePose->position;
+		pose.rotation = devicePose->rotation;
+	}
+
+	// Try to get a offset from config
+	auto offset = getOffset(joint);
+
+	// Add offset position if not null
+	if (!offset.isPositionNull()) {
+		pose.position += pose.rotation * offset.position;
+	}
+
+	// Add offset rotation if not null
+	if (!offset.isRotationNull()) {
+		if (joint == Joint::FOOT_R) {
+			Quaternionf rotation = devicePose->rotation;
+
+			//rotation = Quaternionf(-rotation.y(), -rotation.z(), rotation.w(), rotation.x());
+
+			pose.rotation = offset.rotation * rotation;
+		}
+		else {
+			pose.rotation = offset.rotation * pose.rotation;
+		}
+	}
+
+	return pose;
 }
 
 std::string OpenVRConfig::generateKey(OpenVRTracking::DeviceClass deviceClass, Joint::JointNames joint) {

@@ -422,7 +422,7 @@ private:
 		float rightFootAngle = signedAngle(centerToRightFoot, headForward, upAxis);
 
 		// Swap indexes if angle is negative
-		if ((leftFootAngle - rightFootAngle) < 0) {
+		if (rightFootAngle < leftFootAngle) {
 			float tempIndex = leftFootIndex;
 			leftFootIndex = rightFootIndex;
 			rightFootIndex = tempIndex;
@@ -476,7 +476,7 @@ private:
 		float rightHandAngle = signedAngle(centerToRightHand, headForward, upAxis);
 
 		// Swap indexes if angle is negative
-		if ((leftHandAngle - rightHandAngle) < 0) {
+		if (rightHandAngle < leftHandAngle) {
 			float tempIndex = leftHandIndex;
 			leftHandIndex = rightHandIndex;
 			rightHandIndex = tempIndex;
@@ -974,7 +974,10 @@ void OpenVRTracking::pollEvents() {
 	}
 }
 
-void OpenVRTracking::calibrateDeviceRoles() {
+std::unordered_map<unsigned int, Joint::JointNames> OpenVRTracking::getCalibratedDeviceRoles() {
+
+	std::unordered_map<unsigned int, Joint::JointNames> calibratedDeviceRoles;
+
 	/*
 	Poses[0].position = Vector3f(0, 1.76f, 0);
 
@@ -1003,10 +1006,30 @@ void OpenVRTracking::calibrateDeviceRoles() {
 	Poses.push_back(DevicePose(Vector3f(0.4f, 1.3f, 0), Quaternionf::Identity()));
 	*/
 
+	/*
+	Poses[0].position = Vector3f(-0.152195f, 1.788431f, -0.122941f);
+	Poses[0].rotation = eulerToQuaternion(Vector3f(158.245605f, -151.762421f, 175.139450f));
+
+	Devices.push_back(Device(3, DeviceClass::Controller, "Right Controller"));
+	Poses.push_back(DevicePose(Vector3f(-0.710560, 1.627913, -0.837436), eulerToQuaternion(Vector3f(9.634842, -130.576202, 2.810696))));
+
+	Devices.push_back(Device(4, DeviceClass::Controller, "Left Controller"));
+	Poses.push_back(DevicePose(Vector3f(0.676910, 1.599325, 0.188334), eulerToQuaternion(Vector3f(148.752411, 118.190872, -145.366653))));
+
+	Devices.push_back(Device(5, DeviceClass::Tracker, "Hip"));
+	Poses.push_back(DevicePose(Vector3f(-0.018682, 1.085394, -0.317466), eulerToQuaternion(Vector3f(16.723896, 132.666153, -1.097673))));
+
+	Devices.push_back(Device(6, DeviceClass::Tracker, "Left Foot"));
+	Poses.push_back(DevicePose(Vector3f(0.020233, 0.152932, -0.104981), eulerToQuaternion(Vector3f(127.953598, 146.914230, -28.288450))));
+
+	Devices.push_back(Device(7, DeviceClass::Tracker, "Right Foot"));
+	Poses.push_back(DevicePose(Vector3f(-0.186814, 0.147502, -0.348733), eulerToQuaternion(Vector3f(44.977505, -159.630936, -83.596497))));
+	*/
+
 	if (Devices.size() >= 6) {
 		DeviceRoleAssigner* deviceRoleAssigner = new DeviceRoleAssigner(this);
-		
-		auto newDeviceToJoint = deviceRoleAssigner->getWithinDistance(1.5f);
+
+		calibratedDeviceRoles = deviceRoleAssigner->getWithinDistance(1.5f);
 
 		delete deviceRoleAssigner;
 	}
@@ -1014,7 +1037,7 @@ void OpenVRTracking::calibrateDeviceRoles() {
 		Console::logError("Device Count < 6");
 	}
 
-	Console::log("Calibrated");
+	return calibratedDeviceRoles;
 }
 
 int OpenVRTracking::readDeviceIndexForJoint(Joint::JointNames jointName) {

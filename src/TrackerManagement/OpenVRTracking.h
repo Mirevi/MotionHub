@@ -202,7 +202,7 @@ public:
 	/*!
 	 * Assigns device roles within a T-Pose
 	 */
-	void calibrateDeviceRoles();
+	std::unordered_map<unsigned int, Joint::JointNames> getCalibratedDeviceRoles();
 
 	int readDeviceIndexForJoint(Joint::JointNames jointName);
 
