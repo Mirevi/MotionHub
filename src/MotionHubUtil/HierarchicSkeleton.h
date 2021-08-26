@@ -19,6 +19,8 @@ public:
 	 */
 	void init();
 
+	void reset();
+
 	/*!
 	 * Inserts all Joints from HierarchicSkeleton into given Skeleton
 	 * 

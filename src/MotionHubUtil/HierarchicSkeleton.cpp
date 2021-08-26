@@ -5,9 +5,6 @@
 void HierarchicSkeleton::init() {
 
 	// TODO: Gröbere/Genauere Position und/oder Rotation?
-	// TODO: Koordinatensystem flipped?
-
-	// TODO: clear nötig?
 	joints.clear();
 
 	// Hips
@@ -141,6 +138,19 @@ void HierarchicSkeleton::init() {
 	//hips.setGlobalRotation(rotation);
 
 	// TODO: Update all children?
+}
+
+void HierarchicSkeleton::reset() {
+
+	init();
+
+	hips.setScale(Vector3f::Ones());
+
+	Quaternionf identity = Quaternionf::Identity();
+
+	for (auto joint : joints) {
+		joint->setLocalRotation(identity);
+	}
 }
 
 void HierarchicSkeleton::insert(Skeleton* currSkeleton) {

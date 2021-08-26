@@ -73,24 +73,7 @@ static float clamp01(const float x) {
  * \see https://github.com/Unity-Technologies/Unity.Mathematics/blob/4915b7afebc50b9c6c9a410b7a86ae5489aa6b9c/src/Unity.Mathematics/quaternion.cs#L405
  */
 static Quaternionf lookRotation(Vector3f forward, Vector3f up) {
-	/*
-	if (forward == Vector3f::Zero()) {
-		return Quaternionf::Identity();
-	}
 
-	if (forward != up) {
-		Vector3f upNorm = up.normalized();
-
-		Vector3f v = forward + upNorm * -upNorm.dot(forward);
-		Quaternionf q = Quaternionf::FromTwoVectors(Vector3f(0, 0, 1), v);
-		return Quaternionf::FromTwoVectors(v, forward) * q;
-	}
-	else {
-		return Quaternionf::FromTwoVectors(Vector3f(0, 0, 1), forward);
-	}
-	*/
-
-	// TODO: Oben/Unten?
 	float forwardLengthSq = forward.dot(forward);
 	float upLengthSq = up.dot(up);
 
@@ -331,7 +314,7 @@ static float signedAngle(const Vector3f& from, const Vector3f& to, const Vector3
  * \see https://github.com/Unity-Technologies/Unity.Mathematics/blob/4915b7afebc50b9c6c9a410b7a86ae5489aa6b9c/src/Unity.Mathematics/quaternion.cs#L99
  */
 static Quaternionf angleAxis(const float& angle, const Vector3f& axis) {
-	// TODO: In radians umwandeln?
+	
 	float halfAngle = 0.5f * (angle * M_Deg2Rad);
 
 	float sina = sinf(halfAngle);

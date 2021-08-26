@@ -349,7 +349,7 @@ private:
 		}
 
 		// Search for HeadIndex == highest y position in T-Pose
-		unsigned int headIndex = sortedDeviceIndexes[0];
+		headIndex = sortedDeviceIndexes[0];
 		for (unsigned int& deviceIndex : sortedDeviceIndexes) {
 
 			// Is device position higher than stored device?
@@ -459,13 +459,43 @@ private:
 		removeFromVector(sortedDeviceIndexes, leftHandIndex);
 		removeFromVector(sortedDeviceIndexes, rightHandIndex);
 
+		// Store position of left & right hand
+		Vector3f leftHandPosition = trackingSystem->Poses[leftHandIndex].position;
+		Vector3f rightHandPosition = trackingSystem->Poses[rightHandIndex].position;
+
+		// Calculate distance beteen both hands
+		float distanceBetweenHands = distance(leftHandPosition, rightHandPosition);
+
+		// distance smaller than head to left hand -> right hand is head
+		if (distanceBetweenHands < distance(headPosition, leftHandPosition)) {
+			float tempIndex = headIndex;
+			headIndex = rightHandIndex;
+			rightHandIndex = tempIndex;
+
+			deviceToJoint[headIndex] = Joint::HEAD;
+
+			rightHandPosition = trackingSystem->Poses[rightHandIndex].position;
+			Console::logWarning("Swap right Hand with Head");
+		}
+		// distance smaller than head to right hand -> left hand is head
+		else if (distanceBetweenHands < distance(headPosition, rightHandPosition)) {
+			float tempIndex = headIndex;
+			headIndex = leftHandIndex;
+			leftHandIndex = tempIndex;
+
+			deviceToJoint[headIndex] = Joint::HEAD;
+
+			leftHandPosition = trackingSystem->Poses[leftHandIndex].position;
+			Console::logWarning("Swap left Hand with Head");
+		}
+
 		// Add feet indexes to limbs
 		limbDevices.push_back(leftHandIndex);
 		limbDevices.push_back(rightHandIndex);
 
 		// Create vectors from point between feet to hands
-		Vector3f centerToLeftHand = (trackingSystem->Poses[leftHandIndex].position - betweenFeet);
-		Vector3f centerToRightHand = (trackingSystem->Poses[rightHandIndex].position - betweenFeet);
+		Vector3f centerToLeftHand = (leftHandPosition - betweenFeet);
+		Vector3f centerToRightHand = (rightHandPosition - betweenFeet);
 
 		// ortho normalize both hand vectors on up axis
 		orthoNormalize(upAxis, centerToLeftHand);
@@ -634,6 +664,8 @@ private:
 
 	Vector3f betweenFeet;
 	Vector3f upAxis;
+
+	unsigned int headIndex;
 
 	Vector3f headPosition;
 	Vector3f headForward;

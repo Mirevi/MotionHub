@@ -8,6 +8,7 @@
 #include "MotionHubUtil/IKSolverSpine.h"
 #include "MotionHubUtil/IKSolverLeg.h"
 #include "MotionHubUtil/IKSolverArm.h"
+#include "MotionHubUtil/ButtonHelper.h"
 #include "OpenVRButtonSubject.h"
 
 /*!
@@ -166,4 +167,6 @@ public:
 	OpenVRConfig* config = nullptr;
 
 	bool shouldCalibrate = false;
+
+	ButtonHelper buttonHelper;
 };

@@ -108,6 +108,7 @@ void OVRTracker::start() {
 void OVRTracker::stop() {
 
 	config->write();
+	config->writeScale(hierarchicSkeleton->getScale());
 
 	// remove tracker from observers
 	trackingSystem->removeButtonPressObserver(this);
@@ -138,6 +139,8 @@ void OVRTracker::init() {
 	// Init Config & try to write default config values
 	config = new OpenVRConfig(m_configManager, trackingSystem);
 	config->writeDefaults();
+
+	hierarchicSkeleton->setScale(config->readScale());
 }
 
 void OVRTracker::track() {
@@ -162,20 +165,30 @@ void OVRTracker::track() {
 
 	// Calibration for target joints
 	if (GetAsyncKeyState(VK_NUMPAD1) & 0x8000) {
-		config->calibrateDeviceToJointOffset(Joint::FOOT_L);
+		calibrateDeviceToJointOffset(Joint::FOOT_L);
 	}
 	else if (GetAsyncKeyState(VK_NUMPAD3) & 0x8000) {
-		config->calibrateDeviceToJointOffset(Joint::FOOT_R);
+		calibrateDeviceToJointOffset(Joint::FOOT_R);
 	}
 	else if (GetAsyncKeyState(VK_NUMPAD5) & 0x8000) {
-		config->calibrateDeviceToJointOffset(Joint::HIPS);
+		calibrateDeviceToJointOffset(Joint::HIPS);
 	}
 	else if (GetAsyncKeyState(VK_NUMPAD7) & 0x8000) {
-		config->calibrateDeviceToJointOffset(Joint::HAND_L);
+		calibrateDeviceToJointOffset(Joint::HAND_L);
 	}
 	else if (GetAsyncKeyState(VK_NUMPAD9) & 0x8000) {
-		config->calibrateDeviceToJointOffset(Joint::HAND_R);
+		calibrateDeviceToJointOffset(Joint::HAND_R);
 	}
+	else if (GetAsyncKeyState(VK_RETURN) & 0x8000) { // Enter
+		Console::log("Enter");
+	}
+	else if (GetAsyncKeyState('S') & 0x8000) { // S
+		if (shouldCalibrate) {
+			shouldCalibrate = false;
+			calibrateScale();
+		}
+	}
+
 	// Lock point collection mutex
 	m_pointCollectionLock.lock();
 
@@ -272,67 +285,37 @@ Skeleton* OVRTracker::parseSkeleton(int id, Skeleton* oldSkeletonData) {
 	Joint::JointConfidence highConf = Joint::JointConfidence::HIGH;
 	Joint::JointConfidence lowConf = Joint::JointConfidence::LOW;
 
-	if (false && trackingSystem->Poses.size() > 1) {
-		Vector3f v3pos = trackingSystem->Poses[0].position;
-		Vector4f pos = Vector4f(v3pos.x(), v3pos.y(), v3pos.z(), 1.0f);
-
-		Quaternionf offset = eulerToQuaternion(Vector3f(0.0f, 90.0f, 0.0f));
-		Quaternionf rot = trackingSystem->Poses[0].rotation * offset;
-
-		currSkeleton->m_joints.insert({ Joint::HEAD, Joint(pos, rot, Joint::JointConfidence::HIGH) });
-	}
-
 	// Solve Hip
 	auto hipPose = getAssignedPose(Joint::HIPS);
-	ikSolverHip->solve(Vector3f(0, 1.0f, 0), Quaternionf::Identity());
+	ikSolverHip->solve(hipPose.position, hipPose.rotation);
 	hierarchicSkeleton->hips.setConfidence(Joint::JointConfidence::HIGH);
 
-	//OpenVRTracking::DevicePose* headPose = getAssignedPose(Joint::HEAD);
-	//headPose->Position = Vector3f(0, 1.8f, 0);
-	//headPose->Rotation = Quaternionf::Identity();
-
-	//ikSolverSpine->solve(Vector3f(0, 1.8f, 0), Quaternionf::Identity());
-	ikSolverSpine->solve(Vector3f(0, 1.8f, 0) + m_properties->positionOffset, eulerToQuaternion(m_properties->rotationOffset));
+	// Solve Spine
+	auto headPose = getAssignedPose(Joint::HEAD);
+	ikSolverSpine->solve(headPose.position, headPose.rotation);
 	hierarchicSkeleton->head.setConfidence(Joint::JointConfidence::HIGH);
 
-	Vector3f position = m_properties->positionOffset;
-
-	//ikSolverLeftLeg->middleUntwistWeight = m_properties->scaleOffset.x();
-	//ikSolverLeftLeg->upperUntwistWeight = m_properties->scaleOffset.y();
-	//ikSolverLeftLeg->DebugFloat1 = m_properties->scaleOffset.z();
-
-	ikSolverLeftLeg->solve(position + Vector3f(0.1f, 0, 0), eulerToQuaternion(m_properties->rotationOffset));
+	// Solve LeftLeg
+	auto leftFootPose = getAssignedPose(Joint::FOOT_L);
+	ikSolverLeftLeg->solve(leftFootPose.position, leftFootPose.rotation);
 	hierarchicSkeleton->leftFoot.setConfidence(Joint::JointConfidence::HIGH);
 
-	//ikSolverRightLeg->middleUntwistWeight = m_properties->scaleOffset.x();
-	//ikSolverRightLeg->upperUntwistWeight = m_properties->scaleOffset.y();
-	//ikSolverRightLeg->DebugFloat1 = m_properties->scaleOffset.z();
-
-	// TODO: Right untwisted nicht
-	ikSolverRightLeg->solve(position - Vector3f(0.1f, 0, 0), eulerToQuaternion(m_properties->rotationOffset));
+	// Solve RightLeg
+	auto rightFootPose = getAssignedPose(Joint::FOOT_R);
+	ikSolverRightLeg->solve(rightFootPose.position, rightFootPose.rotation);
 	hierarchicSkeleton->rightFoot.setConfidence(Joint::JointConfidence::HIGH);
 
+	// Solve LeftArm
+	auto leftHandPose = getAssignedPose(Joint::HAND_L);
+	ikSolverLeftArm->solve(leftHandPose.position, leftHandPose.rotation);
+	hierarchicSkeleton->leftHand.setConfidence(Joint::JointConfidence::HIGH);
 
-	hierarchicSkeleton->insert(currSkeleton);
-	return currSkeleton;
+	// Solve RightArm
+	auto rightHandPose = getAssignedPose(Joint::HAND_R);
+	ikSolverRightArm->solve(rightHandPose.position, rightHandPose.rotation);
+	hierarchicSkeleton->rightHand.setConfidence(Joint::JointConfidence::HIGH);
 
-	//confidence values are not transmitted, default confidence is High
-	Joint::JointConfidence medConf = Joint::JointConfidence::MEDIUM;
-	Vector4f pos = Vector4f(0, 0, 0, 1);
-	Quaternionf rot = Quaternionf::Identity();
-
-	for (int i = 0; i < Joint::TOE_R; i++) {
-		Joint::JointNames joint = Joint::JointNames(i);
-		switch (joint) {
-		case Joint::HEAD:
-			break;
-
-		default:
-			currSkeleton->m_joints.insert({ joint, Joint(pos, rot, medConf) });
-			break;
-		}
-	}
-
+	// Insert solved Skeleton to current Skeleton 
 	hierarchicSkeleton->insert(currSkeleton);
 	return currSkeleton;
 }
@@ -383,7 +366,7 @@ void OVRTracker::calibrate() {
 
 	calibrateDeviceRoles();
 
-	//calibrateDeviceToJointOffsets();
+	calibrateDeviceToJointOffsets();
 }
 
 void OVRTracker::calibrateDeviceRoles() {
@@ -391,7 +374,6 @@ void OVRTracker::calibrateDeviceRoles() {
 	auto calibratedDeviceRoles = trackingSystem->getCalibratedDeviceRoles();
 
 	if (calibratedDeviceRoles.size() > 0) {
-		// TODO: Clear Roles from Config?
 		config->clearJointToDevice();
 
 		// Write calibrated DeviceRoles to Config
@@ -420,6 +402,51 @@ void OVRTracker::calibrateDeviceToJointOffset(Joint::JointNames joint) {
 }
 
 void OVRTracker::calibrateScale() {
+
+	// Reset Skeleton scale & pose
+	hierarchicSkeleton->reset();
+
+	// Calculate position between feet
+	Vector3f betweenToes = lerp(hierarchicSkeleton->leftToe.getGlobalPosition(), hierarchicSkeleton->rightToe.getGlobalPosition(), 0.5f);
+
+	auto leftHandPose = config->getPoseWithOffset(Joint::HAND_L);
+	auto rightHandPose = config->getPoseWithOffset(Joint::HAND_R);
+
+	float controllerdistance = distance(leftHandPose.position, rightHandPose.position);
+	float beforeScaleDist = distance(hierarchicSkeleton->leftHand.getGlobalPosition(), hierarchicSkeleton->rightHand.getGlobalPosition());
+
+	// Scale Skeleton
+	Vector3f scale = config->getCalibratedScale(hierarchicSkeleton);
+	hierarchicSkeleton->setScale(scale);
+
+	float afterScaleDist = distance(hierarchicSkeleton->leftHand.getGlobalPosition(), hierarchicSkeleton->rightHand.getGlobalPosition());
+
+	// Calibrate Hip Offset
+	config->calibrateDeviceToJointOffset(Joint::HIPS);
+
+	// Solve Hip with identity rotation
+	auto hipPose = getAssignedPose(Joint::HIPS);
+	ikSolverHip->solve(hipPose.position, Quaternionf::Identity());
+
+	// y diff ermitteln und auf hip offset rechnen?
+	Vector3f newBetweenToes = lerp(hierarchicSkeleton->leftToe.getGlobalPosition(), hierarchicSkeleton->rightToe.getGlobalPosition(), 0.5f);
+
+	Vector3f toeOffset = newBetweenToes - betweenToes;
+
+	Console::logError("feetOffset: " + toString(toeOffset));
+	Console::logWarning("controllerdistance: " + toString(controllerdistance));
+	Console::logWarning("beforeScaleDist: " + toString(beforeScaleDist));
+	Console::logWarning("afterScaleDist: " + toString(afterScaleDist));
+
+	// Read current hip offset from config
+	Vector3f hipOffset = config->getOffset(Joint::HIPS).position;
+
+	Vector3f newHipOffset = hipOffset + Vector3f(0, -toeOffset.y(), 0);
+	config->setOffsetPosition(Joint::HIPS, newHipOffset);
+
+	// Write scale to config for Unity process
+	config->writeScale(hierarchicSkeleton->getScale());
+	Console::logError(toString(distance(betweenToes, newBetweenToes)));
 }
 
 void OVRTracker::notify(Subject* subject) {
@@ -436,6 +463,15 @@ void OVRTracker::notify(Subject* subject) {
 			// Calibrate on trigger pressed
 		case vr::EVRButtonId::k_EButton_SteamVR_Trigger:
 			calibrate();
+			break;
+
+		case vr::EVRButtonId::k_EButton_ApplicationMenu:
+			Console::log("k_EButton_ApplicationMenu");
+			if (shouldCalibrate) {
+				shouldCalibrate = false;
+				calibrateScale();
+			}
+
 			break;
 		}
 	}

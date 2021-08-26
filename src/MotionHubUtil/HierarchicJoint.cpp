@@ -4,6 +4,8 @@ HierarchicJoint::HierarchicJoint(Joint::JointNames jointName, Vector3f localPosi
 	: HierarchicJoint(localPosition, localRotation)
 {
 	setJointName(jointName);
+
+	globalValid = false;
 }
 
 HierarchicJoint::HierarchicJoint(Vector3f localPosition, Quaternionf localRotation) {
@@ -18,6 +20,7 @@ HierarchicJoint::HierarchicJoint(Vector3f localPosition, Quaternionf localRotati
 
 	//global = local;
 	scale = Vector3f(1.0f, 1.0f, 1.0f);
+	globalValid = false;
 }
 
 HierarchicJoint::HierarchicJoint(Vector3f localPosition)
@@ -159,7 +162,6 @@ Vector4f HierarchicJoint::getGlobalPosition4() {
 }
 
 void HierarchicJoint::setScale(Vector3f scale) {
-	// TODO: Matrix
 	this->scale = scale;
 }
 

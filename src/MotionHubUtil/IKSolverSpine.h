@@ -8,6 +8,7 @@
  * \class IKSolverSpine
  *
  * \brief Extends IKSolver and implements a IK Solver to solve chains from Hip to Head
+ * CCD Algorithm taken from https://github.com/zalo/MathUtilities
  */
 class MotionHubUtil_DLL_import_export IKSolverSpine : public IKSolver {
 
@@ -68,12 +69,30 @@ protected:
 	 */
 	void solveTwist();
 
+	/*!
+	 * CCD helper function to create rotations between two vectors: last - current & target - current
+	 *
+	 * \param firstPosition the current position
+	 * \param secondPosition the last position
+	 * \param targetPosition the target position
+	 * \return rotation between two vectors: last - current & target - current
+	 */
+	Quaternionf solveCCD(Vector3f currentPosition, Vector3f lastPosition, Vector3f targetPosition) {
+		
+		// Store vectors from joint to head & target
+		Vector3f jointToLast = lastPosition - currentPosition;
+		Vector3f jointToTarget = targetPosition - currentPosition;
+
+		// Return rotation from current rotation towards target 
+		return fromToRotation(jointToLast, jointToTarget);
+	}
+
 protected:
 
-	IKJoint spine;
-	IKJoint chest;
-	IKJoint neck;
-	IKJoint head;
+	IKJoint spineJoint;
+	IKJoint chestJoint;
+	IKJoint neckJoint;
+	IKJoint headJoint;
 
 	HierarchicJoint* hip;
 
@@ -86,9 +105,13 @@ protected:
 
 	float twistWeight = 0.5f;
 
+	float twistLerpY = 0.5f;
+
 	std::vector<IKJoint*> ccdJoints;
+	std::vector<float> ccdBendWeights;
 
 	float ccdWeight = 1.0f;
-	float ccdBendWeight = 0.1f;
-	float ccdAngleDamp = 360.0f;
+
+	bool onlyXZCCD = true;
+	bool lerpTest = false;
 };

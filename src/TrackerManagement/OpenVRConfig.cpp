@@ -40,6 +40,7 @@ void OpenVRConfig::readOffsets() {
 	// Init out vars for reading the config
 	Vector3f offsetPosition;
 	Vector3f offsetEuler;
+	Vector3f spaceEuler;
 
 	// Loop over all devices
 	for (const auto& device : trackingSystem->Devices) {
@@ -64,10 +65,35 @@ void OpenVRConfig::readOffsets() {
 		if (configManager->readVec3f("rotation", offsetEuler, trackerType, configKey)) {
 			setOffsetRotation(joint, eulerToQuaternion(offsetEuler));
 		}
+
+		// Read & set space rotation by device & joint
+		if (configManager->readVec3f("space", spaceEuler, trackerType, configKey)) {
+			setSpace(joint, eulerToQuaternion(spaceEuler));
+		}
 	}
 }
 
+void OpenVRConfig::writeScale(Vector3f scale) {
+
+	std::string configKey = generateKey(OpenVRTracking::Tracker, Joint::HIPS);
+	configManager->writeVec3f("scale", scale, trackerType, configKey);
+}
+
+Vector3f OpenVRConfig::readScale() {
+
+	Vector3f scale;
+
+	std::string configKey = generateKey(OpenVRTracking::Tracker, Joint::HIPS);
+
+	if (!configManager->readVec3f("scale", scale, trackerType, configKey)) {
+		scale = Vector3f::Ones();
+	};
+
+	return scale;
+}
+
 void OpenVRConfig::write() {
+
 	// TODO: Config leeren?
 
 	// Loop over all devices
@@ -99,6 +125,14 @@ void OpenVRConfig::write() {
 		if (!offset.rotation.isApprox(Quaternionf::Identity())) {
 			configManager->writeVec3f("rotation", quaternionToEuler(offset.rotation), trackerType, configKey);
 		}
+
+		// get space from assigned Joint
+		const auto space = getSpace(joint);
+
+		// Device & joint to space rotation
+		if (!space.isApprox(Quaternionf::Identity())) {
+			configManager->writeVec3f("space", quaternionToEuler(space), trackerType, configKey);
+		}
 	}
 }
 
@@ -115,6 +149,27 @@ OpenVRTracking::DevicePose OpenVRConfig::getOffset(Joint::JointNames joint) {
 	// return empty pose if offset is not configured
 	return OpenVRTracking::DevicePose();
 }
+
+Quaternionf OpenVRConfig::getSpace(Joint::JointNames joint) {
+
+	// find space for specific joint
+	auto deviceSpaceIterator = jointToSpace.find(joint);
+
+	// space could be found -> return pose
+	if (deviceSpaceIterator != jointToSpace.end()) {
+		return deviceSpaceIterator->second;
+	}
+
+	// return identity if space is not configured
+	return Quaternionf::Identity();
+}
+
+void OpenVRConfig::setSpace(Joint::JointNames joint, Quaternionf space) {
+
+	// override device space in config
+	jointToSpace[joint] = space;
+}
+
 
 void OpenVRConfig::setOffsetPosition(Joint::JointNames joint, Vector3f position) {
 
@@ -144,9 +199,6 @@ void OpenVRConfig::assignJointToDevice(Joint::JointNames joint, unsigned int dev
 
 	jointToDevice[joint] = deviceIndex;
 	deviceToJoint[deviceIndex] = joint;
-
-	// TODO: RAUS
-	//trackingSystem->assignJointToDevice(joint, deviceIndex);
 }
 
 void OpenVRConfig::clearJointToDevice() {
@@ -201,8 +253,10 @@ void OpenVRConfig::updateUserDeviceRoles() {
 
 	// Loop over all new joint:device assignments
 	for (const auto& jointDevicePair : newJointToDevice) {
-		// Is joint & device not assigned? -> Add assignment
-		if (jointToDevice.count(jointDevicePair.first) == 0 && deviceToJoint.count(jointDevicePair.second) == 0) {
+
+		// Is joint not assigned? -> Add assignment
+		//if (jointToDevice.count(jointDevicePair.first) == 0 && deviceToJoint.count(jointDevicePair.second) == 0) {
+		if (jointToDevice.count(jointDevicePair.first) == 0) {
 			assignJointToDevice(jointDevicePair.first, jointDevicePair.second);
 		}
 	}
@@ -210,31 +264,46 @@ void OpenVRConfig::updateUserDeviceRoles() {
 
 void OpenVRConfig::calibrateDeviceToJointOffsets() {
 
+	// Loop over all configured joint:device pairs
 	for (const auto& jointDevicePair : jointToDevice) {
-		calibrateDeviceToJointOffset(jointDevicePair.first);
+
+		// Read joint from first element in pair
+		Joint::JointNames joint = jointDevicePair.first;
+
+		// Skip head if device is HMD
+		switch (joint) {
+		case Joint::HEAD:
+			if (trackingSystem->getDevice(getDeviceIndex(joint))->deviceClass == OpenVRTracking::HMD) {
+				continue;
+			}
+			break;
+		}
+
+		// Calibrate offset for joint
+		calibrateDeviceToJointOffset(joint);
 	}
 }
 
 void OpenVRConfig::calibrateDeviceToJointOffset(Joint::JointNames joint) {
 
 	// Try to get hip & requested joint pose
-	auto hipPose = getPose(Joint::HIPS);
-	auto jointPose = getPose(joint);
+	auto hipDevicePose = getPose(Joint::HIPS);
+	auto jointDevicePose = getPose(joint);
 
 	// Exit if hip pose is null
-	if (hipPose == nullptr) {
+	if (hipDevicePose == nullptr) {
 		Console::logError("OpenVRConfig::calibrateDeviceToJointOffset: HIP Device not found");
 		return;
 	}
 
 	// Exit if joint pose is null
-	if (jointPose == nullptr) {
+	if (jointDevicePose == nullptr) {
 		Console::logError("OpenVRConfig::calibrateDeviceToJointOffset: JOINT Device not found");
 		return;
 	}
 
 	// create forward axis from hip pose rotation & -forward vector
-	Vector3f forward = hipPose->rotation * Vector3f(0, 0, -1);
+	Vector3f forward = hipDevicePose->rotation * Vector3f(0, 0, -1);
 
 	// create world up vector
 	Vector3f worldUp = Vector3f(0, 1, 0);
@@ -248,14 +317,45 @@ void OpenVRConfig::calibrateDeviceToJointOffset(Joint::JointNames joint) {
 	}
 
 	// create look rotation
-	Quaternionf rotation = lookRotation(forward, Vector3f(0, 1, 0));
+	Quaternionf rotation = lookRotation(forward, worldUp);
 
-	// offset = rotation * inverse device rotation
-	Quaternionf offset = rotation * jointPose->rotation.inverse();
-
-	// normalize & set offset rotation
-	offset.normalize();
+	// set offset = rotation * inverse device rotation
+	Quaternionf offset = rotation * jointDevicePose->rotation.inverse();
 	setOffsetRotation(joint, offset);
+
+	// set space = rotation in device space
+	Quaternionf space = rotationToSpace(jointDevicePose->rotation, rotation);
+	setSpace(joint, space);
+}
+
+Vector3f OpenVRConfig::getCalibratedScale(HierarchicSkeleton* hierarchicSkeleton) {
+
+	// Read scale from 
+	Vector3f scale = hierarchicSkeleton->getScale();
+
+	auto headPose = getPoseWithOffset(Joint::HEAD);
+	if (headPose.isPositionNull()) {
+		return scale;
+	}
+
+	auto leftHandPose = getPoseWithOffset(Joint::HAND_L);
+	auto rightHandPose = getPoseWithOffset(Joint::HAND_R);
+	if (leftHandPose.isPositionNull() || rightHandPose.isPositionNull()) {
+		return scale;
+	}
+
+	float yDelta = headPose.position.y() / hierarchicSkeleton->head.getGlobalPosition().y();
+
+	float deviceDistance = distance(leftHandPose.position, rightHandPose.position);
+	float handDistance = distance(hierarchicSkeleton->leftHand.getGlobalPosition(), hierarchicSkeleton->rightHand.getGlobalPosition());
+
+	float xDelta = deviceDistance / handDistance;
+
+	scale.y() *= yDelta;
+	scale.x() *= xDelta;
+	scale.z() = fminf(scale.x(), scale.y());
+
+	return scale;
 }
 
 void OpenVRConfig::writeDefaults() {
@@ -275,7 +375,7 @@ void OpenVRConfig::writeDefaults() {
 	configKey = generateKey(OpenVRTracking::Controller, Joint::HAND_L);
 	if (OVERRIDE_DEFAULTS || !configManager->exists(trackerType, configKey)) {
 
-		//configManager->writeVec3f("position", Vector3f(0, 0, -0.16f), trackerType, configKey);
+		configManager->writeVec3f("position", Vector3f(0, 0.01f, -0.15f), trackerType, configKey);
 		// TODO: rotation offset prüfen
 		//onfigManager->writeVec3f("rotation", Vector3f(90, 0, 0), trackerType, configKey);
 	}
@@ -284,12 +384,12 @@ void OpenVRConfig::writeDefaults() {
 	configKey = generateKey(OpenVRTracking::Controller, Joint::HAND_R);
 	if (OVERRIDE_DEFAULTS || !configManager->exists(trackerType, configKey)) {
 
-		//configManager->writeVec3f("position", Vector3f(0, 0, 0.16f), trackerType, configKey);
-		configManager->writeVec3f("rotation", Vector3f(120.0f, 165.0f, -95.0f), trackerType, configKey);
+		configManager->writeVec3f("position", Vector3f(0, 0.01f, -0.15f), trackerType, configKey);
+		//configManager->writeVec3f("rotation", Vector3f(120.0f, 165.0f, -95.0f), trackerType, configKey);
 	}
 
 	// Write Tracker:HIPS data if not exist
-	configKey = generateKey(OpenVRTracking::Controller, Joint::HIPS);
+	configKey = generateKey(OpenVRTracking::Tracker, Joint::HIPS);
 	if (OVERRIDE_DEFAULTS || !configManager->exists(trackerType, configKey)) {
 
 		configManager->writeVec3f("position", Vector3f(0, -0.03f, -0.1f), trackerType, configKey);
@@ -301,7 +401,7 @@ void OpenVRConfig::writeDefaults() {
 	configKey = generateKey(OpenVRTracking::Tracker, Joint::FOOT_L);
 	if (OVERRIDE_DEFAULTS || !configManager->exists(trackerType, configKey)) {
 
-		configManager->writeVec3f("position", Vector3f(0.008f, -0.036f, -0.16f), trackerType, configKey);
+		configManager->writeVec3f("position", Vector3f(0.008f, -0.036f, -0.016f), trackerType, configKey);
 		// TODO: rotation offset pruefen
 		//configManager->writeVec3f("rotation", Vector3f(90.0f, 155.0f, -55.0f), trackerType, configKey);
 	}
@@ -310,7 +410,7 @@ void OpenVRConfig::writeDefaults() {
 	configKey = generateKey(OpenVRTracking::Tracker, Joint::FOOT_R);
 	if (OVERRIDE_DEFAULTS || !configManager->exists(trackerType, configKey)) {
 
-		configManager->writeVec3f("position", Vector3f(0.008f, -0.036f, -0.16f), trackerType, configKey);
+		configManager->writeVec3f("position", Vector3f(0.008f, -0.036f, -0.016f), trackerType, configKey);
 		// TODO: rotation offset pruefen
 		configManager->writeVec3f("rotation", Vector3f(90.0f, -155.0f, -55.0f), trackerType, configKey);
 	}
@@ -372,6 +472,8 @@ OpenVRTracking::DevicePose OpenVRConfig::getPoseWithOffset(Joint::JointNames joi
 	// Try to get a offset from config
 	auto offset = getOffset(joint);
 
+	auto space = getSpace(joint);
+
 	// Add offset position if not null
 	if (!offset.isPositionNull()) {
 		pose.position += pose.rotation * offset.position;
@@ -379,16 +481,7 @@ OpenVRTracking::DevicePose OpenVRConfig::getPoseWithOffset(Joint::JointNames joi
 
 	// Add offset rotation if not null
 	if (!offset.isRotationNull()) {
-		if (joint == Joint::FOOT_R) {
-			Quaternionf rotation = devicePose->rotation;
-
-			//rotation = Quaternionf(-rotation.y(), -rotation.z(), rotation.w(), rotation.x());
-
-			pose.rotation = offset.rotation * rotation;
-		}
-		else {
-			pose.rotation = offset.rotation * pose.rotation;
-		}
+		pose.rotation = offset.rotation * (space * pose.rotation * space.inverse());
 	}
 
 	return pose;

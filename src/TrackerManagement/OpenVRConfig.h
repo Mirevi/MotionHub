@@ -39,6 +39,10 @@ public:
 	 */
 	void write();
 
+	void writeScale(Vector3f scale);
+
+	Vector3f readScale();
+
 	/*!
 	 * Writes default offsets & device:joint assignments to config
 	 */
@@ -60,6 +64,10 @@ public:
 	 */
 	OpenVRTracking::DevicePose getOffset(Joint::JointNames joint);
 
+	Quaternionf getSpace(Joint::JointNames joint);
+
+	void setSpace(Joint::JointNames joint, Quaternionf space);
+
 	void setOffsetPosition(Joint::JointNames joint, Vector3f position);
 
 	void setOffsetRotation(Joint::JointNames joint, Quaternionf rotation);
@@ -73,6 +81,8 @@ public:
 	void calibrateDeviceToJointOffsets();
 
 	void calibrateDeviceToJointOffset(Joint::JointNames jointName);
+
+	Vector3f getCalibratedScale(HierarchicSkeleton* hierarchicSkeleton);
 
 private:
 
@@ -98,4 +108,6 @@ private:
 	std::unordered_map<unsigned int, Joint::JointNames> deviceToJoint;
 
 	std::unordered_map<Joint::JointNames, OpenVRTracking::DevicePose> jointToDeviceOffset;
+
+	std::unordered_map<Joint::JointNames, Quaternionf> jointToSpace;
 };

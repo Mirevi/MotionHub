@@ -12,7 +12,12 @@ IKSolverArm::IKSolverArm(HierarchicJoint* shoulder, HierarchicJoint* upper, Hier
 	shoulderJoint = IKJoint(shoulder);
 
 	// Add pointer for IKJoint in vector
-	joints.insert(joints.begin(), &shoulderJoint);
+	// TODO: FABRIK nur mit 2 Joints -> Schulter durch vitruelle esetzen
+	// joints.insert(joints.begin(), &shoulderJoint);
+}
+
+void IKSolverArm::setChest(HierarchicJoint* joint) {
+
 }
 
 void IKSolverArm::init() {

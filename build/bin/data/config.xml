@@ -7,4 +7,56 @@
     <Azure id="000040394012">
         <position>0.000000 1.000000 0.000000</position>
     </Azure>
+    <OpenVR>
+        <position>0.000000 0.000000 0.000000</position>
+        <rotation>0.000000 0.000000 0.000000</rotation>
+        <scale>1.000000 1.000000 1.000000</scale>
+    </OpenVR>
+    <OpenVR id="HMD:HEAD">
+        <position>0.000000 -0.140000 -0.140000</position>
+    </OpenVR>
+    <OpenVR id="Controller:HAND_L">
+        <position>0.000000 0.010000 -0.150000</position>
+        <rotation>154.235306 -74.318359 136.309326</rotation>
+        <space>51.776535 112.719078 -58.829121</space>
+    </OpenVR>
+    <OpenVR id="Controller:HAND_R">
+        <position>0.000000 0.010000 -0.150000</position>
+        <rotation>19.560118 95.062050 -14.226104</rotation>
+        <space>48.852409 -97.299728 47.973846</space>
+    </OpenVR>
+    <OpenVR id="Tracker:HIPS">
+        <position>0.000000 0.012449 -0.100000</position>
+        <rotation>12.982428 177.307022 11.511131</rotation>
+        <space>11.896399 -179.999985 13.183477</space>
+        <scale>1.018216 0.956000 0.956000</scale>
+    </OpenVR>
+    <OpenVR id="Tracker:FOOT_L">
+        <position>0.008000 -0.036000 -0.016000</position>
+        <rotation>88.647522 164.581635 50.500530</rotation>
+        <space>85.003624 128.363205 20.357580</space>
+    </OpenVR>
+    <OpenVR id="Tracker:FOOT_R">
+        <position>0.008000 -0.036000 -0.016000</position>
+        <rotation>84.824417 -159.161148 -52.775322</rotation>
+        <space>83.415314 -129.753113 -25.674124</space>
+    </OpenVR>
+    <OpenVR id="LHR-774276F7">
+        <joint>HEAD</joint>
+    </OpenVR>
+    <OpenVR id="LHR-F0DCF515">
+        <joint>HAND_L</joint>
+    </OpenVR>
+    <OpenVR id="LHR-9AC396F1">
+        <joint>HAND_R</joint>
+    </OpenVR>
+    <OpenVR id="LHR-6E2EA3BC">
+        <joint>FOOT_R</joint>
+    </OpenVR>
+    <OpenVR id="LHR-E6910BC0">
+        <joint>FOOT_L</joint>
+    </OpenVR>
+    <OpenVR id="LHR-61441A45">
+        <joint>HIPS</joint>
+    </OpenVR>
 </config>

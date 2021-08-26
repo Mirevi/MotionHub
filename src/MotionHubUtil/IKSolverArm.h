@@ -9,6 +9,7 @@
  *
  * \brief Extends IKSolverLeg and implements a IK Solver based on the FABRIK algorithm.
  * Solves chains from Shoulder to Hand
+ * FABRIK Algorithm taken from https://unitylist.com/p/yfx/Easy-IK
  */
 class MotionHubUtil_DLL_import_export IKSolverArm : public IKSolverLeg {
 
@@ -27,6 +28,11 @@ public:
 	 * \param lower the lower joint
 	 */
 	IKSolverArm(HierarchicJoint* shoulder, HierarchicJoint* upper, HierarchicJoint* middle, HierarchicJoint* lower);
+
+	/*!
+	 * Stores a reference to chest joint
+	 */
+	void setChest(HierarchicJoint* joint);
 
 	/*!
 	 * Initializes the IKSolver and stores default values
@@ -87,7 +93,7 @@ protected:
 
 	IKJoint shoulderJoint;
 
-	HierarchicJoint chest;
+	HierarchicJoint* chest;
 
 	bool solveShoulder = false;
 };
