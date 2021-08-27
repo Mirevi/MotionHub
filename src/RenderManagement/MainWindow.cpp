@@ -685,12 +685,33 @@ void MainWindow::on_actionExit_triggered()
 
 }
 
-// SLOT: close window / application
-void MainWindow::on_actionToggle_JointAxes()
+
+// SLOT: check/uncheck axes in menu
+void MainWindow::on_actionToggle_JointAxes(bool menuValue)
 {
-	m_osgQtWidget->toggleJointAxes();
+
+	m_osgQtWidget->toggleJointAxes(menuValue);
 
 }
+
+
+// SLOT: check/uncheck stick man rendering in menu
+void MainWindow::on_actionToggle_StickManRendering(bool menuValue)
+{
+
+	m_osgQtWidget->toggleStickManRendering(menuValue);
+
+}
+
+
+// SLOT: check/uncheck solid bone rendering in menu
+void MainWindow::on_actionToggle_SolidBoneRendering(bool menuValue)
+{
+
+	m_osgQtWidget->toggleSolidBoneRendering(menuValue);
+
+}
+
 
 void MainWindow::slotNetworkSettings()
 {

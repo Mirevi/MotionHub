@@ -64,8 +64,16 @@ void OsgLine::redraw()
 
 void OsgLine::clear()
 {
+	if(m_vertices)
+	{
 	m_vertices->clear();
-	m_colors->clear();
+	}
+
+	if(m_colors)
+	{
+		m_colors->clear();
+	}
+	
 }
 
 

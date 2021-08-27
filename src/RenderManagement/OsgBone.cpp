@@ -1,5 +1,6 @@
 #include "OsgBone.h"
 #include <osgDB/ReadFile>
+#include "OsgLine.h"
 
 //TODO: Check if the standard CTOR is necessary
 OsgBone::OsgBone()
@@ -8,7 +9,8 @@ OsgBone::OsgBone()
 
 
 //CTOR for start and end joint
-OsgBone::OsgBone(osg::ref_ptr<osg::PositionAttitudeTransform> startJoint, osg::ref_ptr<osg::PositionAttitudeTransform> endJoint, osg::Quat rotationOffset)
+OsgBone::OsgBone(osg::ref_ptr<osg::PositionAttitudeTransform> startJoint, osg::ref_ptr<osg::PositionAttitudeTransform> endJoint,
+	osg::ref_ptr<osg::Group> stickManGroup, osg::Quat rotationOffset)
 	: m_startJoint(startJoint), m_endJoint(endJoint)
 {
 	m_boneNode = osgDB::readNodeFile("./data/mesh_models/bone.obj");
@@ -16,11 +18,14 @@ OsgBone::OsgBone(osg::ref_ptr<osg::PositionAttitudeTransform> startJoint, osg::r
 	m_startJointOffset->addChild(m_boneNode);
 	m_startJointOffset->setAttitude(rotationOffset);
 	m_startJoint->addChild(m_startJointOffset);
+	m_line = new OsgLine(stickManGroup, true);
+	m_toggleStickManRendering = true;
 }
 
 
 //CTOR for leaf joint with only one joint
-OsgBone::OsgBone(osg::ref_ptr<osg::PositionAttitudeTransform> startJoint, float lengthToVirtualEndJoint, osg::Quat rotationOffset) 
+OsgBone::OsgBone(osg::ref_ptr<osg::PositionAttitudeTransform> startJoint, float lengthToVirtualEndJoint, osg::ref_ptr<osg::Group> stickManGroup,
+	osg::Quat rotationOffset)
 	: m_startJoint(startJoint)
 {
 	m_boneNode = osgDB::readNodeFile("./data/mesh_models/bone.obj");
@@ -28,6 +33,8 @@ OsgBone::OsgBone(osg::ref_ptr<osg::PositionAttitudeTransform> startJoint, float 
 	m_startJointOffset->addChild(m_boneNode);
 	m_startJointOffset->setAttitude(rotationOffset);
 	m_startJoint->addChild(m_startJointOffset);
+	m_line = new OsgLine(stickManGroup, true);
+	m_toggleStickManRendering = true;
 
 	// m_endJoint -> To be defined?
 }
@@ -54,18 +61,37 @@ void OsgBone::setOffsetRotation(osg::Vec3 offset)
 {
 }
 
-void OsgBone::updateScale()
+void OsgBone::update()
 {
-	//Check if a leaf bine, then do not use the endJoint, because it is not initialized
+	//Check if a leaf bone, then do not use the endJoint, because it is not initialized
 	if (m_endJoint)
 	{
 		osg::Vec3f boneVector = m_startJoint->getPosition() - m_endJoint->getPosition();
 		float boneLength = boneVector.length();
 		m_startJointOffset->setScale(osg::Vec3(boneLength, boneLength, boneLength));
+
+		if (m_toggleStickManRendering)
+		{
+			m_line->clear();
+			// create a  line
+			m_line->draw(m_startJoint->getPosition(), m_endJoint->getPosition(), osg::Vec4f(1.0, 0.0, 0.0, 1.0), osg::Vec4f(0.0, 1.0, 0.0, 1.0));
+			// to reset the line count to 0, use clear(). After this, Line is empty and new lines can be added
+			m_line->redraw();
+			std::cout << "if(m_toggleStickManRendering) is true " << std::endl;
+		}
+		else
+		{
+			m_line->clear();
+			m_line->redraw();
+			std::cout << "if(m_toggleStickManRendering) is false " << std::endl;
+		}
 	}
 	else
 	{
 		m_startJointOffset->setScale(osg::Vec3(0.1f, 0.1f, 0.1f));
+		//############################# DO LINE RENDERING??????????????
+		//############################# DO LINE RENDERING??????????????
+		//############################# DO LINE RENDERING??????????????
 	}
 
 
@@ -91,3 +117,8 @@ void OsgBone::createLeafJoint()
 {
 }
 
+void OsgBone::updateStickManRenderingState(bool renderStickMan)
+{
+	std::cout << "In osgBone updateStickManRenderingState value is " << renderStickMan << std::endl;
+	m_toggleStickManRendering = renderStickMan;
+}

@@ -24,7 +24,9 @@ public:
 	void update(Skeleton skeleton);
 	void removeAndDelete();
 
-	void toggleJointAxes();
+	void toggleJointAxes(bool menuValue);
+	void toggleStickManRendering(bool menuValue);
+	void toggleSolidBoneRendering(bool menuValue);
 
 
 	/*!
@@ -39,9 +41,13 @@ private:
 	std::vector<osg::ref_ptr<osg::PositionAttitudeTransform>> m_joints;
 	std::vector<OsgBone*> m_bones;
 	
-	//RGB joint axes
+	bool m_toggleSolidBoneRendering;
+	
 	bool m_toggleJointAxes;
 	osg::ref_ptr<osg::Group> m_axesCrossGroup;
 	std::vector<OsgAxesCross*> m_axesCrosses;
+
+	bool m_toggleStickManRendering;
+	osg::ref_ptr<osg::Group> m_stickManGroup;
 
 };

@@ -339,9 +339,8 @@ void OsgQtWidget::drawLine(const osg::Vec3 start, const osg::Vec3 end, const osg
 }
 
 
-void OsgQtWidget::toggleJointAxes()
+void OsgQtWidget::toggleJointAxes(bool menuValue)
 {
-	std::cout << "toggleJointAxes in OsgQtWidget" << std::endl;
 	// get tracker pool from the tracker manager
 	std::vector<Tracker*> trackerTempCopy = m_refTrackerManager->getPoolTracker();
 
@@ -358,10 +357,66 @@ void OsgQtWidget::toggleJointAxes()
 		{
 
 			//Toggle RGB joint axes for each skeleton
-			m_skeletonMeshPool.find((*itTracker)->getProperties()->id)->second.at(indexSkeleton).toggleJointAxes();
+			m_skeletonMeshPool.find((*itTracker)->getProperties()->id)->second.at(indexSkeleton).toggleJointAxes(menuValue);
 
 			indexSkeleton++;
 
 		}
 	}
 }
+
+void OsgQtWidget::toggleStickManRendering(bool menuValue)
+{
+	// get tracker pool from the tracker manager
+	std::vector<Tracker*> trackerTempCopy = m_refTrackerManager->getPoolTracker();
+
+	// loop over all tracker in the pool
+	for (auto itTracker = trackerTempCopy.begin(); itTracker != trackerTempCopy.end(); itTracker++)
+	{
+		// get skeletonPoolCache from tracker and create skeletonPoolTempCopy
+		std::map<int, Skeleton> skeletonPoolTempCopy = (*itTracker)->getSkeletonPoolCache();
+
+		int indexSkeleton = 0;
+
+		// update each skeleton
+		for (auto itSkeleton = skeletonPoolTempCopy.begin(); itSkeleton != skeletonPoolTempCopy.end(); itSkeleton++)
+		{
+
+			//Toggle RGB joint axes for each skeleton
+			m_skeletonMeshPool.find((*itTracker)->getProperties()->id)->second.at(indexSkeleton).toggleStickManRendering(menuValue);
+
+			indexSkeleton++;
+
+		}
+	}
+}
+
+
+void OsgQtWidget::toggleSolidBoneRendering(bool menuValue)
+{
+	// get tracker pool from the tracker manager
+	std::vector<Tracker*> trackerTempCopy = m_refTrackerManager->getPoolTracker();
+
+	// loop over all tracker in the pool
+	for (auto itTracker = trackerTempCopy.begin(); itTracker != trackerTempCopy.end(); itTracker++)
+	{
+		// get skeletonPoolCache from tracker and create skeletonPoolTempCopy
+		std::map<int, Skeleton> skeletonPoolTempCopy = (*itTracker)->getSkeletonPoolCache();
+
+		int indexSkeleton = 0;
+
+		// update each skeleton
+		for (auto itSkeleton = skeletonPoolTempCopy.begin(); itSkeleton != skeletonPoolTempCopy.end(); itSkeleton++)
+		{
+
+			//Toggle RGB joint axes for each skeleton
+			m_skeletonMeshPool.find((*itTracker)->getProperties()->id)->second.at(indexSkeleton).toggleSolidBoneRendering(menuValue);
+
+			indexSkeleton++;
+
+		}
+	}
+}
+
+
+
