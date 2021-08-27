@@ -1,12 +1,23 @@
-#include "AxesCross.h"
+#include "OsgAxesCross.h"
 //#include "MotionHubUtil/ConfigManager.h"
 
 #include <osg/ShapeDrawable>
 #include <osg/Geode>
 
-AxesCross::AxesCross(osg::ref_ptr<osg::Group> nodeToAttachTo) {
+OsgAxesCross::OsgAxesCross() 
+{
+	initialize();
+
+}
+
+OsgAxesCross::OsgAxesCross(osg::ref_ptr<osg::Group> nodeToAttachTo) {
 
 	nodeToAttachTo->addChild(this);
+	initialize();
+}
+
+void OsgAxesCross::initialize()
+{
 	m_scale = 1.0;
 	m_heightX = 0.1;
 	m_heightY = 0.1;
@@ -16,10 +27,10 @@ AxesCross::AxesCross(osg::ref_ptr<osg::Group> nodeToAttachTo) {
 	m_thicknessZ = 0.005;
 
 	createGeometry();
-	
 }
 
-void AxesCross::createGeometry() 
+
+void OsgAxesCross::createGeometry()
 {
 	osg::PositionAttitudeTransform* m_originVisTransform = new osg::PositionAttitudeTransform();
 
@@ -67,84 +78,84 @@ void AxesCross::createGeometry()
 	addChild(m_originVisTransform);
 }
 
-void AxesCross::setScale(int scale)
+void OsgAxesCross::setScale(int scale)
 {
 	m_scale = scale;
 }
 
-int AxesCross::getScale()
+int OsgAxesCross::getScale()
 {
 	return m_scale;
 }
 
 
-void AxesCross::setHeightX(float height)
+void OsgAxesCross::setHeightX(float height)
 {
 	m_heightX = height;
 }
 
-float AxesCross::getHeightX()
+float OsgAxesCross::getHeightX()
 {
 	return m_heightX;
 }
 
 
-void AxesCross::setHeightY(float height)
+void OsgAxesCross::setHeightY(float height)
 {
 	m_heightY = height;
 }
 
-float AxesCross::getHeightY()
+float OsgAxesCross::getHeightY()
 {
 	return m_heightY;
 }
 
 
-void AxesCross::setHeightZ(float height)
+void OsgAxesCross::setHeightZ(float height)
 {
 	m_heightZ = height;
 }
 
-float AxesCross::getHeightZ()
+float OsgAxesCross::getHeightZ()
 {
 	return m_heightZ;
 }
 
 
-void AxesCross::setThicknessX(float thickness)
+void OsgAxesCross::setThicknessX(float thickness)
 {
 	m_thicknessX = thickness;
 }
 
-float AxesCross::getThicknessX()
+float OsgAxesCross::getThicknessX()
 {
 	return m_thicknessX;
 }
 
 
-void AxesCross::setThicknessY(float thickness)
+void OsgAxesCross::setThicknessY(float thickness)
 {
 	m_thicknessY = thickness;
 }
 
-float AxesCross::getThicknessY()
+float OsgAxesCross::getThicknessY()
 {
 	return m_thicknessY;
 }
 
 
-void AxesCross::setThicknessZ(float thickness)
+void OsgAxesCross::setThicknessZ(float thickness)
 {
 	m_thicknessZ = thickness;
 }
 
-float AxesCross::getThicknessZ()
+float OsgAxesCross::getThicknessZ()
 {
 	return m_thicknessZ;
 }
 
 
-AxesCross::~AxesCross()
+OsgAxesCross::~OsgAxesCross()
 {
 
 }

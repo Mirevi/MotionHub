@@ -685,6 +685,13 @@ void MainWindow::on_actionExit_triggered()
 
 }
 
+// SLOT: close window / application
+void MainWindow::on_actionToggle_JointAxes()
+{
+	m_osgQtWidget->toggleJointAxes();
+
+}
+
 void MainWindow::slotNetworkSettings()
 {
 

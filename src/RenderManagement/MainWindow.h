@@ -22,7 +22,7 @@
 #include <math.h>
 #include <MotionHubUtil/MMHmath.h>
 
-
+//TODO: rename this as RenderManager or add a RenderManager and incorparate MainWindow
 
 #define GET_VARIABLE_NAME(Variable) (#Variable)
 
@@ -105,6 +105,10 @@ private slots:
 	 *  called when user clicks on File->Exit
 	 */
 	void on_actionExit_triggered();
+	/*!
+ *  called when user clicks on File->Exit
+ */
+	void on_actionToggle_JointAxes();
 	/*!
 	 * called when user clicks on tracker in list 
 	 * \param index id of clicked tracker
@@ -246,7 +250,6 @@ private:
 	void progressionBarThread();
 
 	int m_recordSaveProgression;
-
 
 
 };
