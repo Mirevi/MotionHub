@@ -19,12 +19,12 @@ OsgAxesCross::OsgAxesCross(osg::ref_ptr<osg::Group> nodeToAttachTo) {
 void OsgAxesCross::initialize()
 {
 	m_scale = 1.0;
-	m_heightX = 0.1;
-	m_heightY = 0.1;
-	m_heightZ = 0.1;
-	m_thicknessX = 0.005;
-	m_thicknessY = 0.005;
-	m_thicknessZ = 0.005;
+	m_heightX = 0.06;
+	m_heightY = 0.06;
+	m_heightZ = 0.06;
+	m_thicknessX = 0.002;
+	m_thicknessY = 0.002;
+	m_thicknessZ = 0.002;
 
 	createGeometry();
 }

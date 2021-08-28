@@ -23,6 +23,7 @@ MainWindow::MainWindow(TrackerManager* trackerManager, ConfigManager* configMana
 	traits->width = 640;
 	traits->height = 480;
 	traits->doubleBuffer = true;
+	traits->samples = 4; //Anti Alaising
 
 	osgQt::GraphicsWindowQt* gw = new osgQt::GraphicsWindowQt(traits.get());
 	m_osgQtWidget = new OsgQtWidget(gw, m_refTrackerManager, m_configManager);

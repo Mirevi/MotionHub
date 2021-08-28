@@ -77,13 +77,11 @@ void OsgBone::update()
 			m_line->draw(m_startJoint->getPosition(), m_endJoint->getPosition(), osg::Vec4f(1.0, 0.0, 0.0, 1.0), osg::Vec4f(0.0, 1.0, 0.0, 1.0));
 			// to reset the line count to 0, use clear(). After this, Line is empty and new lines can be added
 			m_line->redraw();
-			std::cout << "if(m_toggleStickManRendering) is true " << std::endl;
 		}
 		else
 		{
 			m_line->clear();
 			m_line->redraw();
-			std::cout << "if(m_toggleStickManRendering) is false " << std::endl;
 		}
 	}
 	else

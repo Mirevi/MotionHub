@@ -34,7 +34,7 @@ OsgQtWidget::OsgQtWidget(osgQt::GraphicsWindowQt* gw, TrackerManager* trackerMan
 	m_viewer.setSceneData(m_sceneRoot);
 	m_viewer.addEventHandler(new osgViewer::StatsHandler);
 	m_cameraManipulator = new osgGA::TrackballManipulator();
-	m_cameraManipulator->setHomePosition(osg::Vec3f(6.0, 1.5, 0.0), osg::Vec3f(0.0, 1.0, 0.0), osg::Vec3f(0.0, 1.0, 0.0), false);
+	m_cameraManipulator->setHomePosition(osg::Vec3f(0.0, 1.5, 6.0), osg::Vec3f(0.0, 1.0, 0.0), osg::Vec3f(0.0, 1.0, 0.0), false);
 	m_viewer.setCameraManipulator(m_cameraManipulator);
 	m_viewer.setThreadingModel(osgViewer::Viewer::SingleThreaded);
 
