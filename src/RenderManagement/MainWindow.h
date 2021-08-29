@@ -122,6 +122,11 @@ private slots:
 	*/
 	void on_actionToggle_SolidBoneRendering(bool menuValue);
 
+	/*!
+	*  called when user clicks on Menu->View->Show Tracking Confidence Spheres
+	*/
+	void on_actionToggle_TrackingConfidenceSpheres(bool menuValue);
+
 
 
 

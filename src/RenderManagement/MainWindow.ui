@@ -517,6 +517,7 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
     <addaction name="actionToggle_Joint_Axes"/>
     <addaction name="actionShow_Stick_Man_Rendering"/>
     <addaction name="actionShow_Solid_Bone_Rendering"/>
+    <addaction name="actionShow_Confidence_Spheres_Rendering"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
@@ -1099,6 +1100,17 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
     <string>B</string>
    </property>
   </action>
+  <action name="actionShow_Confidence_Spheres_Rendering">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show Confidence Spheres Rendering</string>
+   </property>
+   <property name="shortcut">
+    <string>C</string>
+   </property>
+  </action>
  </widget>
  <resources>
   <include location="MainWindow.qrc"/>
@@ -1285,6 +1297,22 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
    <signal>triggered(bool)</signal>
    <receiver>MainWindow</receiver>
    <slot>on_actionToggle_SolidBoneRendering(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>959</x>
+     <y>539</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionShow_Confidence_Spheres_Rendering</sender>
+   <signal>triggered(bool)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>on_actionToggle_TrackingConfidenceSpheres(bool)</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>

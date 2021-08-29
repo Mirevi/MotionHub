@@ -713,6 +713,14 @@ void MainWindow::on_actionToggle_SolidBoneRendering(bool menuValue)
 
 }
 
+// SLOT: check/uncheck tracking confidence spheres in menu
+void MainWindow::on_actionToggle_TrackingConfidenceSpheres(bool menuValue)
+{
+
+	m_osgQtWidget->toggleConfidenceSpheresRendering(menuValue);
+
+}
+
 
 void MainWindow::slotNetworkSettings()
 {

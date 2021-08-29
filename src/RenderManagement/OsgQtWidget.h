@@ -45,6 +45,8 @@ public:
 	void toggleJointAxes(bool menuValue);
 	void toggleStickManRendering(bool menuValue);
 	void toggleSolidBoneRendering(bool menuValue);
+	void toggleConfidenceSpheresRendering(bool menuValue);
+
 	void drawLine(osg::Vec3 start, osg::Vec3 end, osg::Vec4 colorStart, osg::Vec4 colorEnd);
 
 protected:

@@ -21,33 +21,6 @@ OsgBone::OsgBone(osg::ref_ptr<osg::PositionAttitudeTransform> startJoint, osg::r
 	m_startJoint->addChild(m_startJointOffset);
 	m_line = new OsgLine(stickManGroup, true);
 	m_toggleStickManRendering = true;
-	
-
-	//Attempt to create a visualization for the confidence values
-	//I'll commit it, but I won't use it. I think, colored spheres a better indicators than bone transition colors
-	GeodeFinder geodeFinder;
-	m_boneNode->accept(geodeFinder);
-	osg::ref_ptr<osg::Geode> geode = geodeFinder.getFoundGeode();
-	
-	osg::Vec4Array* colorArray = new osg::Vec4Array();
-	colorArray->setBinding(osg::Array::BIND_PER_VERTEX);
-	geode->getDrawable(0)->asGeometry()->setColorArray(colorArray);
-
-	osg::Vec3Array* vertexArray = new osg::Vec3Array();
-	vertexArray = dynamic_cast<osg::Vec3Array*>(geode->getDrawable(0)->asGeometry()->getVertexArray());
-
-
-	for (int i = 0; i < geode->getDrawable(0)->asGeometry()->getVertexArray()->getNumElements(); i++)
-	{
-		colorArray->push_back(osg::Vec4f(0.0f, 0.0f, 0.0f, 1.0f));
-	}
-	
-	//These verts is the lowest vertexin the bone.obj. The OSGReader splits this single vert into 4 for 4 corresponding faces
-	colorArray->at(144) = osg::Vec4f(1.0f, -0.5f, -0.5f, 1.0f);
-	colorArray->at(147) = osg::Vec4f(1.0f, -0.5f, -0.5f, 1.0f);
-	colorArray->at(150) = osg::Vec4f(1.0f, -0.5f, -0.5f, 1.0f);
-	colorArray->at(150) = osg::Vec4f(1.0f, -0.5f, -0.5f, 1.0f);
-
 }
 
 
@@ -102,7 +75,9 @@ void OsgBone::update()
 		{
 			m_line->clear();
 			// create a  line
-			m_line->draw(m_startJoint->getPosition(), m_endJoint->getPosition(), osg::Vec4f(1.0, 0.0, 0.0, 1.0), osg::Vec4f(0.0, 1.0, 0.0, 1.0));
+			m_line->draw(m_startJoint->getPosition(), m_endJoint->getPosition(),
+				osg::Vec4f(0.95f, 0.95f, 0.95f, 1.0f),
+				osg::Vec4f(0.61f, 0.33f, 0.05f, 1.0f));
 			// to reset the line count to 0, use clear(). After this, Line is empty and new lines can be added
 			m_line->redraw();
 		}
@@ -115,6 +90,24 @@ void OsgBone::update()
 	else
 	{
 		m_startJointOffset->setScale(osg::Vec3(0.1f, 0.1f, 0.1f));
+
+		if (m_toggleStickManRendering)
+		{
+			m_line->clear();
+			// create a  line
+			m_line->draw(m_startJoint->getPosition(),
+				m_startJoint->getPosition() + m_startJointOffset->getAttitude() * m_startJoint->getAttitude() * osg::Vec3f(-0.1f, 0.0f, 0.0f),
+				osg::Vec4f(0.95f, 0.95f, 0.95f, 1.0f),
+				osg::Vec4f(0.7f, 0.38f, 0.08f, 1.0f));
+			// to reset the line count to 0, use clear(). After this, Line is empty and new lines can be added
+			m_line->redraw();
+		}
+		else
+		{
+			m_line->clear();
+			m_line->redraw();
+		}
+
 		//############################# DO LINE RENDERING??????????????
 		//############################# DO LINE RENDERING??????????????
 		//############################# DO LINE RENDERING??????????????

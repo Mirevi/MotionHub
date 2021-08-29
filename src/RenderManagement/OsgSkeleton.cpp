@@ -1,6 +1,7 @@
 #include "OsgSkeleton.h"
 #include "OsgBone.h"
 #include "OsgAxesCross.h"
+#include "OsgSphere.h"
 #include <osg/Program>
 
 OsgSkeleton::OsgSkeleton(osg::ref_ptr<osg::Group> parentNode) : m_parentNode(parentNode)
@@ -9,14 +10,15 @@ OsgSkeleton::OsgSkeleton(osg::ref_ptr<osg::Group> parentNode) : m_parentNode(par
 	m_boneGroup = new osg::Group();
 	m_stickManGroup = new osg::Group();
 	m_axesCrossGroup = new osg::Group();
+	m_confidenceSpheresGroup = new osg::Group();
 	m_skeletonRootNode->addChild(m_boneGroup);
 	m_skeletonRootNode->addChild(m_stickManGroup);
 	m_skeletonRootNode->addChild(m_axesCrossGroup);
-
+	m_skeletonRootNode->addChild(m_confidenceSpheresGroup);
+	
 	m_toggleStickManRendering = true;
-
-	//m_skeletonRootNode->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
-	//m_skeletonRootNode->getOrCreateStateSet()->setMode(GL_RESCALE_NORMAL, osg::StateAttribute::ON);
+	m_toggleConfidenceSpheres = false;
+	m_confidenceSpheresGroup->setNodeMask(0x0); //Hide from scenegraph
 
 	osg::ref_ptr<osg::Program> program = new osg::Program;
 	osg::ref_ptr<osg::Shader> vshader = osg::Shader::readShaderFile(osg::Shader::VERTEX, "data/shader/FLAT_SHADING.vert");
@@ -101,12 +103,18 @@ OsgSkeleton::OsgSkeleton(osg::ref_ptr<osg::Group> parentNode) : m_parentNode(par
 	//RGB axes for each joint
 	m_toggleJointAxes = false;
 	//m_axesCrossGroup->setNodeMask(0x0t); //Hide from scenegraph
-	//setup RGB joint axes
+	//setup RGB joint axes and confidence spheres
 	for (int i = 0; i <= 20; i++)
 	{
 		m_axesCrosses.push_back(new OsgAxesCross(m_axesCrossGroup));
+		m_confidenceSpheres.push_back(new OsgSphere(m_confidenceSpheresGroup));
 
 	}
+
+	//Colors for confidence spheres
+	m_colorRed = osg::Vec4f(0.75f, 0.0f, 0.0f, 1.0f);
+	m_colorYellow = osg::Vec4f(0.75f, 0.75f, 0.0f, 1.0f);
+	m_colorGreen = osg::Vec4f(0.0f, 0.75f, 0.0f, 1.0f);
 
 }
 
@@ -149,6 +157,10 @@ void OsgSkeleton::update(Skeleton skeleton)
 			itJoint->second.getJointPosition().y(),
 			itJoint->second.getJointPosition().z()));
 
+		m_confidenceSpheres.at(indexJoint)->setPosition(osg::Vec3f(itJoint->second.getJointPosition().x(),
+			itJoint->second.getJointPosition().y(),
+			itJoint->second.getJointPosition().z()));
+
 
 		indexJoint++;
 	}
@@ -160,40 +172,34 @@ void OsgSkeleton::update(Skeleton skeleton)
 		m_bones.at(i)->updateStickManRenderingState(m_toggleStickManRendering);
 	}
 
-	if (!m_toggleSolidBoneRendering && !m_toggleJointAxes && !m_toggleStickManRendering & (m_consoleOutputModuloDelay % 60 == 0)) //Print this warning only each 60frames
+	if (!m_toggleSolidBoneRendering && !m_toggleJointAxes && !m_toggleStickManRendering & !m_toggleConfidenceSpheres & (m_consoleOutputModuloDelay % 60 == 0)) //Print this warning only each 60frames
 	{
-		Console::logWarning("No tracking data can be seen, because bone, stick man and joint axes rendering is deactivated. Press A, S or B to activate one of these options.");
+		Console::logWarning("No tracking data can be seen, because bone, stick man, joint axes or confidence sphere rendering is deactivated. Press A, S, B or C to activate one of these options.");
 		m_consoleOutputModuloDelay = 0;
 	}
 
-
 	indexJoint = 0;
 
-	//// update confidence
+	// update sphere colors for showing the confidence value
 	for (auto itJoint = skeleton.m_joints.begin(); itJoint != skeleton.m_joints.end(); itJoint++)
 	{
-		// TODO2: set joint confidence in the shader
 		switch (itJoint->second.getJointConfidence())
 		{
 
 		case Joint::HIGH:
-			//currJoint->setDiffuseColor(m_colorGreen);
-			//m_spheres.at(indexJoint)->setColor(osg::Vec4f(m_colorGreen.m_xyz.x, m_colorGreen.m_xyz.y, m_colorGreen.m_xyz.z, 1.0f));
+			m_confidenceSpheres.at(indexJoint)->getSphereGeometry()->setColor(m_colorGreen);
 			break;
 
 		case Joint::MEDIUM:
-			//currJoint->setDiffuseColor(m_colorYellow);
-			//m_spheres.at(indexJoint)->setColor(osg::Vec4f(m_colorYellow.m_xyz.x, m_colorYellow.m_xyz.y, m_colorYellow.m_xyz.z, 1.0f));
+			m_confidenceSpheres.at(indexJoint)->getSphereGeometry()->setColor(m_colorYellow);
 			break;
 
 		case Joint::LOW:
-			//currJoint->setDiffuseColor(m_colorRed);
-			//m_spheres.at(indexJoint)->setColor(osg::Vec4f(m_colorRed.m_xyz.x, m_colorRed.m_xyz.y, m_colorRed.m_xyz.z, 1.0f));
+			m_confidenceSpheres.at(indexJoint)->getSphereGeometry()->setColor(m_colorRed);
 			break;
 
 		case Joint::NONE:
-			//currJoint->setDiffuseColor(Vector3::one());
-			//m_spheres.at(indexJoint)->setColor(osg::Vec4f(1.0f, 1.0f, 1.0f, 1.0f));
+			m_confidenceSpheres.at(indexJoint)->getSphereGeometry()->setColor(osg::Vec4f(1.0f, 1.0f, 1.0f, 1.0f));
 			break;
 
 		default:
@@ -240,9 +246,9 @@ void OsgSkeleton::toggleJointAxes(bool menuValue)
 }
 
 
-void OsgSkeleton::toggleStickManRendering(bool menuValue){
+void OsgSkeleton::toggleStickManRendering(bool menuValue)
+{
 
-	std::cout << "toggleStickManRendering value is " << menuValue << std::endl;
 	m_toggleStickManRendering = menuValue;
 	if (m_toggleStickManRendering)
 	{
@@ -255,7 +261,8 @@ void OsgSkeleton::toggleStickManRendering(bool menuValue){
 
 }
 
-void OsgSkeleton::toggleSolidBoneRendering(bool menuValue){
+void OsgSkeleton::toggleSolidBoneRendering(bool menuValue)
+{
 
 	m_toggleSolidBoneRendering = menuValue;
 	if (m_toggleSolidBoneRendering)
@@ -268,4 +275,21 @@ void OsgSkeleton::toggleSolidBoneRendering(bool menuValue){
 	}
 
 }
+
+
+void OsgSkeleton::toggleConfidenceSpheresRendering(bool menuValue)
+{
+
+	m_toggleConfidenceSpheres = menuValue;
+	if (m_toggleConfidenceSpheres)
+	{
+		m_confidenceSpheresGroup->setNodeMask(0x1); //Show to scenegraph
+	}
+	else
+	{
+		m_confidenceSpheresGroup->setNodeMask(0x0); //Hide from scenegraph
+	}
+
+}
+
 

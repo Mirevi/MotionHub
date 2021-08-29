@@ -3,11 +3,12 @@
 
 #include <osg/ShapeDrawable>
 #include <osg/Geode>
+#include <osg/LineWidth>
 
 OsgLine::OsgLine(osg::ref_ptr<osg::Group> nodeToAttachTo, bool isOverlay) : m_isDirty{ false }, m_isDisplayed{ true } {
 
 	nodeToAttachTo->addChild(this);
-	m_scale = 1.0;
+	m_scale = 2.0;
 
 	createGeometry(isOverlay);
 	
@@ -22,11 +23,9 @@ void OsgLine::createGeometry(bool isOverlay)
 	if (isOverlay) m_geode->getOrCreateStateSet()->setMode(GL_DEPTH_TEST, osg::StateAttribute::OFF);
 
 	m_geom = new osg::Geometry();
-	//##### NEW Speedup by using VBOs instead of displayLists
 	m_geom->setUseDisplayList(false);
 	m_geom->setUseVertexBufferObjects(true);
 	m_geom->setDataVariance(osg::Object::DYNAMIC);
-	//##### NEW END
 	m_drawArrays = new osg::DrawArrays(osg::PrimitiveSet::LINES);
 	m_geom->addPrimitiveSet(m_drawArrays);
 	m_colors = new osg::Vec4Array();
@@ -35,6 +34,10 @@ void OsgLine::createGeometry(bool isOverlay)
 	m_vertices = new osg::Vec3Array();
 	m_geom->setVertexArray(m_vertices);
 	m_geode->addDrawable(m_geom);
+
+	osg::LineWidth* lineWidth = new osg::LineWidth();
+	lineWidth->setWidth(m_scale);
+	m_geode->getOrCreateStateSet()->setAttributeAndModes(lineWidth, osg::StateAttribute::OVERRIDE | osg::StateAttribute::ON);
 
 	addChild(m_geode);
 }

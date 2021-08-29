@@ -188,7 +188,6 @@ void OsgQtWidget::updateSkeletonMeshPoolSize()
 //Is envoked, when (global) tracking is active and a new skeleton of a tracker (for example spawned by Azure Kinect) appears in the tracking data
 void OsgQtWidget::updateSkeletonMeshCount()
 {
-	//std::cout << "updateSkeletonMeshCount" << std::endl;
 	// get tracker pool from the tracker manager
 	std::vector<Tracker*> trackerTempCopy = m_refTrackerManager->getPoolTracker();
 	// lock the tracker pool
@@ -414,6 +413,35 @@ void OsgQtWidget::toggleSolidBoneRendering(bool menuValue)
 
 		}
 	}
+}
+
+
+void OsgQtWidget::toggleConfidenceSpheresRendering(bool menuValue)
+{
+	
+	// get tracker pool from the tracker manager
+	std::vector<Tracker*> trackerTempCopy = m_refTrackerManager->getPoolTracker();
+
+	// loop over all tracker in the pool
+	for (auto itTracker = trackerTempCopy.begin(); itTracker != trackerTempCopy.end(); itTracker++)
+	{
+		// get skeletonPoolCache from tracker and create skeletonPoolTempCopy
+		std::map<int, Skeleton> skeletonPoolTempCopy = (*itTracker)->getSkeletonPoolCache();
+
+		int indexSkeleton = 0;
+
+		// update each skeleton
+		for (auto itSkeleton = skeletonPoolTempCopy.begin(); itSkeleton != skeletonPoolTempCopy.end(); itSkeleton++)
+		{
+
+			//Toggle RGB joint axes for each skeleton
+			m_skeletonMeshPool.find((*itTracker)->getProperties()->id)->second.at(indexSkeleton).toggleConfidenceSpheresRendering(menuValue);
+
+			indexSkeleton++;
+
+		}
+	}
+
 }
 
 
