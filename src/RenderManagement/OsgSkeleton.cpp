@@ -160,6 +160,13 @@ void OsgSkeleton::update(Skeleton skeleton)
 		m_bones.at(i)->updateStickManRenderingState(m_toggleStickManRendering);
 	}
 
+	if (!m_toggleSolidBoneRendering && !m_toggleJointAxes && !m_toggleStickManRendering & (m_consoleOutputModuloDelay % 60 == 0)) //Print this warning only each 60frames
+	{
+		Console::logWarning("No tracking data can be seen, because bone, stick man and joint axes rendering is deactivated. Press A, S or B to activate one of these options.");
+		m_consoleOutputModuloDelay = 0;
+	}
+
+
 	indexJoint = 0;
 
 	//// update confidence
@@ -198,6 +205,7 @@ void OsgSkeleton::update(Skeleton skeleton)
 
 	}
 
+	m_consoleOutputModuloDelay++;
 }
 
 

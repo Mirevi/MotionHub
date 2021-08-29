@@ -1,6 +1,7 @@
 #include "OsgBone.h"
 #include <osgDB/ReadFile>
 #include "OsgLine.h"
+#include <MotionHubUtil/GeodeFinder.h>
 
 //TODO: Check if the standard CTOR is necessary
 OsgBone::OsgBone()
@@ -20,6 +21,33 @@ OsgBone::OsgBone(osg::ref_ptr<osg::PositionAttitudeTransform> startJoint, osg::r
 	m_startJoint->addChild(m_startJointOffset);
 	m_line = new OsgLine(stickManGroup, true);
 	m_toggleStickManRendering = true;
+	
+
+	//Attempt to create a visualization for the confidence values
+	//I'll commit it, but I won't use it. I think, colored spheres a better indicators than bone transition colors
+	GeodeFinder geodeFinder;
+	m_boneNode->accept(geodeFinder);
+	osg::ref_ptr<osg::Geode> geode = geodeFinder.getFoundGeode();
+	
+	osg::Vec4Array* colorArray = new osg::Vec4Array();
+	colorArray->setBinding(osg::Array::BIND_PER_VERTEX);
+	geode->getDrawable(0)->asGeometry()->setColorArray(colorArray);
+
+	osg::Vec3Array* vertexArray = new osg::Vec3Array();
+	vertexArray = dynamic_cast<osg::Vec3Array*>(geode->getDrawable(0)->asGeometry()->getVertexArray());
+
+
+	for (int i = 0; i < geode->getDrawable(0)->asGeometry()->getVertexArray()->getNumElements(); i++)
+	{
+		colorArray->push_back(osg::Vec4f(0.0f, 0.0f, 0.0f, 1.0f));
+	}
+	
+	//These verts is the lowest vertexin the bone.obj. The OSGReader splits this single vert into 4 for 4 corresponding faces
+	colorArray->at(144) = osg::Vec4f(1.0f, -0.5f, -0.5f, 1.0f);
+	colorArray->at(147) = osg::Vec4f(1.0f, -0.5f, -0.5f, 1.0f);
+	colorArray->at(150) = osg::Vec4f(1.0f, -0.5f, -0.5f, 1.0f);
+	colorArray->at(150) = osg::Vec4f(1.0f, -0.5f, -0.5f, 1.0f);
+
 }
 
 
@@ -117,6 +145,5 @@ void OsgBone::createLeafJoint()
 
 void OsgBone::updateStickManRenderingState(bool renderStickMan)
 {
-	std::cout << "In osgBone updateStickManRenderingState value is " << renderStickMan << std::endl;
 	m_toggleStickManRendering = renderStickMan;
 }

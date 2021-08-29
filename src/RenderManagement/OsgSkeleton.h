@@ -50,4 +50,6 @@ private:
 	bool m_toggleStickManRendering;
 	osg::ref_ptr<osg::Group> m_stickManGroup;
 
+	short m_consoleOutputModuloDelay;
+
 };

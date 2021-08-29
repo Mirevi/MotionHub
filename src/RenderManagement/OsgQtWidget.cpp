@@ -113,7 +113,7 @@ OsgQtWidget::OsgQtWidget(osgQt::GraphicsWindowQt* gw, TrackerManager* trackerMan
 //Is envoked, when no (global) tracking is active and a new tracker is added or removed
 void OsgQtWidget::updateSkeletonMeshPoolSize()
 {
-	std::cout << "Test aus updateSkeletonMeshPoolSize" << std::endl;
+
 	// get tracker pool from the tracker manager
 	std::vector<Tracker*> trackerTempCopy = m_refTrackerManager->getPoolTracker();
 	// lock the tracker pool
@@ -188,7 +188,7 @@ void OsgQtWidget::updateSkeletonMeshPoolSize()
 //Is envoked, when (global) tracking is active and a new skeleton of a tracker (for example spawned by Azure Kinect) appears in the tracking data
 void OsgQtWidget::updateSkeletonMeshCount()
 {
-	std::cout << "updateSkeletonMeshCount" << std::endl;
+	//std::cout << "updateSkeletonMeshCount" << std::endl;
 	// get tracker pool from the tracker manager
 	std::vector<Tracker*> trackerTempCopy = m_refTrackerManager->getPoolTracker();
 	// lock the tracker pool
@@ -217,7 +217,6 @@ void OsgQtWidget::updateSkeletonMeshCount()
 				while (m_skeletonMeshPool.find((*itTracker)->getProperties()->id)->second.size() < skeletonPoolTempCopy.size())
 				{
 					// add new skeletonMesh to skeltonMeshPool
-					std::cout << "add new skeletonMesh to skeltonMeshPool in updateSkeletonMeshCount" << std::endl;
 					m_skeletonMeshPool.find((*itTracker)->getProperties()->id)->second.push_back(OsgSkeleton(m_sceneRoot));
 
 				}
@@ -229,7 +228,6 @@ void OsgQtWidget::updateSkeletonMeshCount()
 				while (m_skeletonMeshPool.find((*itTracker)->getProperties()->id)->second.size() > skeletonPoolTempCopy.size())
 				{
 					// remove skeletonMesh from skeletonMeshPool
-					std::cout << "remove the last skeletonMesh from skeltonMeshPool in updateSkeletonMeshCount" << std::endl;
 					for (int i = 0; i < m_skeletonMeshPool.find((*itTracker)->getProperties()->id)->second.size(); i++)
 					{
 						m_skeletonMeshPool.find((*itTracker)->getProperties()->id)->second.at(i).removeAndDelete();
