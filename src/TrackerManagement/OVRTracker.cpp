@@ -1,6 +1,17 @@
 #include "OVRTracker.h"
 
-static bool DEBUG_HMD = true;
+static bool DEBUG_DEVICES_ON_START = false;
+
+static bool DEBUG_HMD = false;
+
+static bool DEBUG_HIP = false;
+static bool DEBUG_SKELETON_ROT = false;
+
+static bool DEBUG_FOOT = false;
+
+static bool DEBUG_ARM = false;
+
+
 static std::string DebugIdentifier(std::string identifier) {
 
 	if (identifier == "LHR-774276F7") {
@@ -69,6 +80,9 @@ void OVRTracker::start() {
 
 	//skeleton was added/removed, so UI updates
 	m_hasSkeletonPoolChanged = true;
+	
+	// Refresh config from xml
+	m_configManager->refresh();
 
 	// Read assigned devices from config
 	config->readAssignedDevices();
@@ -78,6 +92,9 @@ void OVRTracker::start() {
 
 	// Read offset from config
 	config->readOffsets();
+
+	// set skeleton scale from config
+	hierarchicSkeleton->setScale(config->readScale());
 
 	// Clear point collection
 	m_pointCollection.clear();
@@ -100,6 +117,15 @@ void OVRTracker::start() {
 
 	// register tracker as observers
 	trackingSystem->registerButtonPressObserver(this);
+
+	if (DEBUG_DEVICES_ON_START) {
+		Console::log("");
+		for (const auto& device : trackingSystem->Devices) {
+			Console::log(toString((int)device.index) + " " + OpenVRTracking::toString(device.deviceClass) + " " + device.identifier + " " + Joint::toString(config->getJoint(device.index)));
+			Console::log(DebugIdentifier(device.identifier));
+		}
+		Console::log("");
+	}
 
 	// start tracking thread
 	Tracker::start();
@@ -139,8 +165,6 @@ void OVRTracker::init() {
 	// Init Config & try to write default config values
 	config = new OpenVRConfig(m_configManager, trackingSystem);
 	config->writeDefaults();
-
-	hierarchicSkeleton->setScale(config->readScale());
 }
 
 void OVRTracker::track() {
@@ -157,6 +181,7 @@ void OVRTracker::track() {
 
 	// Calibration toggle & Calibration
 	if (GetAsyncKeyState('C') & 0x8000) { // C
+		Console::log("Should Calibrate");
 		shouldCalibrate = true;
 	}
 	else if (GetAsyncKeyState(0x20) & 0x8000) { // Space
@@ -198,8 +223,6 @@ void OVRTracker::track() {
 		// Read pose from device index
 		const auto& pose = trackingSystem->Poses[i];
 
-		Vector3f position = pose.position;
-
 		// Convert Rotation
 		Quaternionf rotation = pose.rotation;
 		//Quaternionf rotation = eulerToQuaternion(m_properties->rotationOffset);
@@ -208,25 +231,15 @@ void OVRTracker::track() {
 
 		rotation = Quaternionf(-rotation.y(), -rotation.z(), rotation.w(), rotation.x());
 
-		// Debug
-		switch (trackingSystem->Devices[i].deviceClass) {
-		case OpenVRTracking::HMD:
-			if (DEBUG_HMD)
-				position = Vector3f(0, 1.6f, 0);
-			break;
-		default:
-			break;
-		}
-
 		// Update point position & rotation
-		m_pointCollection.updatePoint(trackingSystem->Devices[i].index, position, rotation);
+		//m_pointCollection.updatePoint(trackingSystem->Devices[i].index, pose.position, rotation);
 	}
 
 	// Unlock point collection mutex
 	m_pointCollectionLock.unlock();
 
 	extractSkeleton();
-
+	
 	m_isDataAvailable = true;
 }
 
@@ -287,6 +300,11 @@ Skeleton* OVRTracker::parseSkeleton(int id, Skeleton* oldSkeletonData) {
 
 	// Solve Hip
 	auto hipPose = getAssignedPose(Joint::HIPS);
+
+	if (DEBUG_SKELETON_ROT) {
+		hipPose.rotation = eulerToQuaternion(m_properties->rotationOffset);
+	}
+
 	ikSolverHip->solve(hipPose.position, hipPose.rotation);
 	hierarchicSkeleton->hips.setConfidence(Joint::JointConfidence::HIGH);
 
@@ -341,17 +359,51 @@ void OVRTracker::initIKSolvers() {
 
 	// Init LeftArm IKSolver
 	ikSolverLeftArm = new IKSolverArm(&hierarchicSkeleton->leftShoulder, &hierarchicSkeleton->leftArm, &hierarchicSkeleton->leftForeArm, &hierarchicSkeleton->leftHand);
+	ikSolverLeftArm->setChest(&hierarchicSkeleton->chest);
 	ikSolverLeftArm->init();
 
 	// Init RightArm IKSolver
 	ikSolverRightArm = new IKSolverArm(&hierarchicSkeleton->rightShoulder, &hierarchicSkeleton->rightArm, &hierarchicSkeleton->rightForeArm, &hierarchicSkeleton->rightHand);
+	ikSolverRightArm->setChest(&hierarchicSkeleton->chest);
 	ikSolverRightArm->init();
 }
 
 OpenVRTracking::DevicePose OVRTracker::getAssignedPose(Joint::JointNames joint) {
 
 	// Get the pose from config & tracking system 
-	return config->getPoseWithOffset(joint);
+	auto pose = config->getPoseWithOffset(joint);
+
+	// TODO: Debug entfernen
+	switch (joint) {
+	case Joint::HIPS:
+		if (DEBUG_HIP) {
+			pose.position = Vector3f(0, 1.0f, 0);
+			//pose.rotation = Quaternionf::Identity();
+		}
+		break;
+	case Joint::FOREARM_L:
+		break;
+	case Joint::HAND_L:
+		break;
+	case Joint::FOREARM_R:
+		break;
+	case Joint::HAND_R:
+		break;
+	case Joint::LEG_L:
+		break;
+	case Joint::FOOT_L:
+		break;
+	case Joint::LEG_R:
+		break;
+	case Joint::FOOT_R:
+		break;
+	case Joint::HEAD:
+		if (DEBUG_HMD)
+			pose.position = Vector3f(0, 1.6f, 0);
+		break;
+	}
+
+	return pose;
 }
 
 void OVRTracker::calibrate() {
@@ -439,7 +491,7 @@ void OVRTracker::calibrateScale() {
 	Console::logWarning("afterScaleDist: " + toString(afterScaleDist));
 
 	// Read current hip offset from config
-	Vector3f hipOffset = config->getOffset(Joint::HIPS).position;
+	Vector3f hipOffset = config->getOffsetPosition(Joint::HIPS);
 
 	Vector3f newHipOffset = hipOffset + Vector3f(0, -toeOffset.y(), 0);
 	config->setOffsetPosition(Joint::HIPS, newHipOffset);

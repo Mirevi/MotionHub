@@ -41,13 +41,6 @@ public:
 	 */
 	virtual void solve(Vector3f position, Quaternionf rotation) override;
 
-	/*!
-	 * Returns the current start position of the chain
-	 *
-	 * \return the current position of the start joint
-	 */
-	virtual Vector3f getStartPosition();
-
 protected:
 
 	/*!
@@ -99,7 +92,7 @@ protected:
 				Vector3f nextJointPosition = joints[i + 1]->getSolvedPosition();
 				float jointLength = joints[i]->length;
 
-				Vector3f solvedPosition = solveFABRIK(jointPosition, nextJointPosition, jointLength);
+				Vector3f solvedPosition = IKSolver::solveFABRIK(jointPosition, nextJointPosition, jointLength);
 
 				// Store solved position
 				joints[i]->setSolvedPosition(solvedPosition);
@@ -126,24 +119,12 @@ protected:
 				Vector3f prevJointPosition = joints[i - 1]->getSolvedPosition();
 				float prevJointLength = joints[i - 1]->length;
 
-				Vector3f solvedPosition = solveFABRIK(jointPosition, prevJointPosition, prevJointLength);
+				Vector3f solvedPosition = IKSolver::solveFABRIK(jointPosition, prevJointPosition, prevJointLength);
 
 				// Store solved position
 				joints[i]->setSolvedPosition(solvedPosition);
 			}
 		}
-	}
-
-	/*!
-	 * FABRIK helper function to clamp two positions to be within the range of a desired length
-	 * 
-	 * \param firstPosition the first position
-	 * \param secondPosition the second position
-	 * \param length the desired range
-	 * \return clamped position
-	 */
-	Vector3f solveFABRIK(Vector3f firstPosition, Vector3f secondPosition, float length) {
-		return secondPosition + (firstPosition - secondPosition).normalized() * length;
 	}
 
 public:

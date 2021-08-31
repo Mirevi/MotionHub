@@ -9,7 +9,6 @@
  *
  * \brief Extends IKSolverLeg and implements a IK Solver based on the FABRIK algorithm.
  * Solves chains from Shoulder to Hand
- * FABRIK Algorithm taken from https://unitylist.com/p/yfx/Easy-IK
  */
 class MotionHubUtil_DLL_import_export IKSolverArm : public IKSolverLeg {
 
@@ -47,13 +46,6 @@ public:
 	 */
 	virtual void solve(Vector3f position, Quaternionf rotation) override;
 
-	/*!
-	 * Returns the current start position of the chain
-	 *
-	 * \return the current position of the start joint
-	 */
-	virtual Vector3f getStartPosition() override;
-
 protected:
 
 	/*!
@@ -87,7 +79,7 @@ protected:
 	virtual void untwist() override;
 
 public:
-	
+	bool solveShoulder = true;
 
 protected:
 
@@ -95,5 +87,17 @@ protected:
 
 	HierarchicJoint* chest;
 
-	bool solveShoulder = false;
+	Quaternionf shoulderDefaultRotation;
+
+	Vector3f lastMiddlePosition;
+
+	float shoulderBackYAngle = -30.0f; // Back
+	float shoulderForwardYAngle = 30.0f; // Forward
+	float shoulderUpZAngle = -45.0f; // Up
+	float shoulderDownMaxAngle = 25.0f; // Down
+
+	bool isLeftArm;
+
+	float defaultShoulderHandDistance;
+	float shoulderHandMaxAngle = 15.0f;
 };

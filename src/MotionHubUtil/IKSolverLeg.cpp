@@ -110,15 +110,10 @@ void IKSolverLeg::solve(Vector3f position, Quaternionf rotation) {
 	untwist();
 }
 
-Vector3f IKSolverLeg::getStartPosition() {
-
-	return upperJoint.joint->getGlobalPosition();
-}
-
 void IKSolverLeg::solve() {
 
 	// store start position
-	startPosition = getStartPosition();
+	startPosition = upperJoint.getSolvedPosition();
 
 	// init distance to target with "infinity"
 	float lastDistance = FLT_MAX;

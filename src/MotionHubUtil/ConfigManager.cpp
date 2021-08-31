@@ -382,6 +382,14 @@ tinyxml2::XMLElement* ConfigManager::findOrCreateElement(std::string name, std::
 	return element;
 }
 
+void ConfigManager::refresh() {
+
+	m_config.Clear();
+	m_config.RootElement() == nullptr;
+
+	loadConfig();
+}
+
 bool ConfigManager::exists(std::string parent, std::string identifier)
 {
 	tinyxml2::XMLElement* parentElement = findElement(parent, identifier);

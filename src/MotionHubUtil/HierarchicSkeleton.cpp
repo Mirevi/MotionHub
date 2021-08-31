@@ -17,7 +17,6 @@ void HierarchicSkeleton::init() {
 	leftUpLeg.setParent(&hips);
 	addJoint(&leftUpLeg, Joint::JointNames::UPLEG_L);
 
-
 	// RightUpLeg
 	//rightUpLeg = HierarchicJoint(Vector3f(0.08f, -0.054f, 0), eulerToQuaternion(Vector3f(0, 0, 180)));
 	rightUpLeg = HierarchicJoint(Vector3f(-0.08f, -0.054f, 0), eulerToQuaternion(Vector3f(0, 0, 0)));
@@ -50,13 +49,13 @@ void HierarchicSkeleton::init() {
 
 	// LeftToe
 	//leftToe = HierarchicJoint(Vector3f(0, 0.162f, 0), eulerToQuaternion(Vector3f(33, 0, 0)));
-	leftToe = HierarchicJoint(Vector3f(-0.011f, -0.091f, 0.135f), eulerToQuaternion(Vector3f(0, 0, 0)));
+	leftToe = HierarchicJoint(Vector3f(-0.011f, -0.091f, 0.134f), eulerToQuaternion(Vector3f(0, 0, 0)));
 	leftToe.setParent(&leftFoot);
 	addJoint(&leftToe, Joint::JointNames::TOE_L);
 
 	// RightToe
 	//rightToe = HierarchicJoint(Vector3f(0, 0.162f, 0), eulerToQuaternion(Vector3f(33, 0, 0)));
-	rightToe = HierarchicJoint(Vector3f(0.011f, -0.091f, 0.135f), eulerToQuaternion(Vector3f(0, 0, 0)));
+	rightToe = HierarchicJoint(Vector3f(0.011f, -0.091f, 0.134f), eulerToQuaternion(Vector3f(0, 0, 0)));
 	rightToe.setParent(&rightFoot);
 	addJoint(&rightToe, Joint::JointNames::TOE_R);
 
@@ -163,22 +162,22 @@ void HierarchicSkeleton::insert(Skeleton* currSkeleton) {
 		// rot = Quaternionf(rot.y(), rot.z(), rot.w(), rot.x());
 		// simplified: (-y, -z, w, x)
 
-		// TODO: In HierachicJoint / IKSolver auslagern?
 		Quaternionf rotation = joint->getGlobalRotation();
+		//rotation = Quaternionf(-rotation.y(), -rotation.z(), rotation.w(), rotation.x());
 		rotation = Quaternionf(-rotation.y(), -rotation.z(), rotation.w(), rotation.x());
 
-		// scale?
 		currSkeleton->m_joints.insert({ joint->getJointName(), joint->toJoint(rotation) });
 		//currSkeleton->m_joints.insert({ joint->getJointName(), joint->toJoint() });
 	}
 }
 
 void HierarchicSkeleton::setScale(Vector3f scale) {
-	Console::logWarning("Scale: " + toString(scale));
+
 	hips.setScale(scale);
 }
 
 Vector3f HierarchicSkeleton::getScale() {
+
 	return hips.getScale();
 }
 

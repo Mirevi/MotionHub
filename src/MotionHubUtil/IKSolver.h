@@ -12,6 +12,8 @@
  * \class IKSolver
  *
  * \brief Prototype class for IK Solvers - holds virtual methods
+ * FABRIK Algorithm source: https://unitylist.com/p/yfx/Easy-IK
+ * CCD Algorithm source: https://github.com/zalo/MathUtilities
  */
 class MotionHubUtil_DLL_import_export IKSolver {
 
@@ -65,6 +67,36 @@ public:
 	 * \param rotation the target rotation
 	 */
 	virtual void solve(Vector3f position, Quaternionf rotation);
+
+	/*!
+	 * FABRIK helper function to clamp two positions to be within the range of a desired length
+	 *
+	 * \param firstPosition the first position
+	 * \param secondPosition the second position
+	 * \param length the desired range
+	 * \return clamped position
+	 */
+	static Vector3f solveFABRIK(Vector3f firstPosition, Vector3f secondPosition, float length) {
+		return secondPosition + (firstPosition - secondPosition).normalized() * length;
+	}
+
+	/*!
+	 * CCD helper function to create rotations between two vectors: last - current & target - current
+	 *
+	 * \param firstPosition the current position
+	 * \param secondPosition the last position
+	 * \param targetPosition the target position
+	 * \return rotation between two vectors: last - current & target - current
+	 */
+	static Quaternionf solveCCD(Vector3f currentPosition, Vector3f lastPosition, Vector3f targetPosition) {
+
+		// Store vectors from joint to head & target
+		Vector3f jointToLast = lastPosition - currentPosition;
+		Vector3f jointToTarget = targetPosition - currentPosition;
+
+		// Return rotation from current rotation towards target 
+		return fromToRotation(jointToLast, jointToTarget);
+	}
 
 protected:
 

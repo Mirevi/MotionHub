@@ -62,6 +62,18 @@ static float clamp01(const float x) {
 	return clamp(x, 0.0f, 1.0f);
 }
 
+static float map(float value, float fromSource, float toSource, float fromTarget, float toTarget) {
+	return (value - fromSource) / (toSource - fromSource) * (toTarget - fromTarget) + fromTarget;
+}
+
+static float mapClamp(float value, float fromSource, float toSource, float fromTarget, float toTarget) {
+	return clamp(map(value, fromSource, toSource, fromTarget, toTarget), fromTarget, toTarget);
+}
+
+static float mapClamp01(float value, float fromSource, float toSource) {
+	return clamp(map(value, fromSource, toSource, 0.0f, 1.0f), 0.0f, 1.0f);
+}
+
 /*!
  * Returns a quaternion view rotation given a forward vector and an up vector
  * The two input vectors are not assumed to be unit length
