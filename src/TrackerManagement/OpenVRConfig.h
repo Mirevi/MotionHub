@@ -7,6 +7,16 @@
 
 #include "MotionHubUtil/Console.h"
 
+struct IKContainer { // TODO: Besserer Name
+	int deviceIndex = -1; // Poses
+
+	Vector3f offsetPosition = Vector3f::Zero();
+	Quaternionf offsetRotation = Quaternionf::Identity();
+	Quaternionf space = Quaternionf::Identity();
+
+	Vector3f userOffsetPosition = Vector3f::Zero();
+};
+
 /*!
  * \class OpenVRConfig
  *
@@ -56,23 +66,17 @@ public:
 
 	OpenVRTracking::DevicePose getPoseWithOffset(Joint::JointNames joint);
 
-	/*!
-	 * Returns offset to a assigned joint
-	 *
-	 * \param joint the assigned joint
-	 * \return a DevicePose containing the offset position & rotation
-	 */
-	OpenVRTracking::DevicePose getOffset(Joint::JointNames joint);
-
-	Quaternionf getSpace(Joint::JointNames joint);
-
 	void setSpace(Joint::JointNames joint, Quaternionf space);
+
+	Vector3f getOffsetPosition(Joint::JointNames joint);
 
 	void setOffsetPosition(Joint::JointNames joint, Vector3f position);
 
 	void setOffsetRotation(Joint::JointNames joint, Quaternionf rotation);
 
 	void assignJointToDevice(Joint::JointNames joint, unsigned int deviceIndex);
+
+	void setUserOffsetPosition(Joint::JointNames joint, Vector3f position);
 
 	void clearJointToDevice();
 
@@ -103,11 +107,9 @@ private:
 
 	OpenVRTracking* trackingSystem = nullptr;
 
-	std::unordered_map<Joint::JointNames, unsigned int> jointToDevice;
-
 	std::unordered_map<unsigned int, Joint::JointNames> deviceToJoint;
 
-	std::unordered_map<Joint::JointNames, OpenVRTracking::DevicePose> jointToDeviceOffset;
+	std::unordered_map<Joint::JointNames, IKContainer> jointToContainer;
 
-	std::unordered_map<Joint::JointNames, Quaternionf> jointToSpace;
+	IKContainer* getContainer(Joint::JointNames joint);
 };

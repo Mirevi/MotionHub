@@ -31,7 +31,6 @@ void OpenVRConfig::readAssignedDevices() {
 
 		// assign joint to device
 		assignJointToDevice(joint, device.index);
-		Console::logError(Joint::toString(joint));
 	}
 }
 
@@ -69,6 +68,11 @@ void OpenVRConfig::readOffsets() {
 		// Read & set space rotation by device & joint
 		if (configManager->readVec3f("space", spaceEuler, trackerType, configKey)) {
 			setSpace(joint, eulerToQuaternion(spaceEuler));
+		}
+
+		// Read & set user offset position by device & joint 
+		if (configManager->readVec3f("useroffset", offsetPosition, trackerType, configKey)) {
+			setUserOffsetPosition(joint, offsetPosition);
 		}
 	}
 }
@@ -110,100 +114,98 @@ void OpenVRConfig::write() {
 		// Identifier to Joint
 		configManager->writeString("joint", Joint::toString(joint), trackerType, device.identifier);
 
-		// get offset from assigned Joint
-		const auto offset = getOffset(joint);
+		// get container from assigned Joint
+		const auto container = getContainer(joint);
 
 		// Create key: device & joint
 		std::string configKey = generateKey(device.deviceClass, joint);
 
 		// Device & joint to offset position
-		if (!offset.position.isApprox(Vector3f::Zero())) {
-			configManager->writeVec3f("position", offset.position, trackerType, configKey);
+		if (!container->offsetPosition.isApprox(Vector3f::Zero())) {
+			configManager->writeVec3f("position", container->offsetPosition, trackerType, configKey);
 		}
 
 		// Device & joint to offset rotation
-		if (!offset.rotation.isApprox(Quaternionf::Identity())) {
-			configManager->writeVec3f("rotation", quaternionToEuler(offset.rotation), trackerType, configKey);
+		if (!container->offsetRotation.isApprox(Quaternionf::Identity())) {
+			configManager->writeVec3f("rotation", quaternionToEuler(container->offsetRotation), trackerType, configKey);
 		}
-
-		// get space from assigned Joint
-		const auto space = getSpace(joint);
 
 		// Device & joint to space rotation
-		if (!space.isApprox(Quaternionf::Identity())) {
-			configManager->writeVec3f("space", quaternionToEuler(space), trackerType, configKey);
+		if (!container->space.isApprox(Quaternionf::Identity())) {
+			configManager->writeVec3f("space", quaternionToEuler(container->space), trackerType, configKey);
+		}
+
+		// Device & joint to user offset
+		if (!container->userOffsetPosition.isApprox(Vector3f::Zero())) {
+			configManager->writeVec3f("useroffset", container->userOffsetPosition, trackerType, configKey);
 		}
 	}
-}
-
-OpenVRTracking::DevicePose OpenVRConfig::getOffset(Joint::JointNames joint) {
-
-	// find offset for specific joint
-	auto deviceOffsetIterator = jointToDeviceOffset.find(joint);
-
-	// offset could be found -> return pose
-	if (deviceOffsetIterator != jointToDeviceOffset.end()) {
-		return deviceOffsetIterator->second;
-	}
-
-	// return empty pose if offset is not configured
-	return OpenVRTracking::DevicePose();
-}
-
-Quaternionf OpenVRConfig::getSpace(Joint::JointNames joint) {
-
-	// find space for specific joint
-	auto deviceSpaceIterator = jointToSpace.find(joint);
-
-	// space could be found -> return pose
-	if (deviceSpaceIterator != jointToSpace.end()) {
-		return deviceSpaceIterator->second;
-	}
-
-	// return identity if space is not configured
-	return Quaternionf::Identity();
 }
 
 void OpenVRConfig::setSpace(Joint::JointNames joint, Quaternionf space) {
 
-	// override device space in config
-	jointToSpace[joint] = space;
+	// get container for specific joint & set value
+	auto container = getContainer(joint);
+	if (container != nullptr) {
+		container->space = space;
+	}
 }
 
+Vector3f OpenVRConfig::getOffsetPosition(Joint::JointNames joint) {
+
+	// get container for specific joint & return position
+	auto container = getContainer(joint);
+	if (container != nullptr) {
+		return container->offsetPosition;
+	}
+
+	return Vector3f::Zero();
+}
 
 void OpenVRConfig::setOffsetPosition(Joint::JointNames joint, Vector3f position) {
 
-	// get device offset from config
-	auto deviceOffset = getOffset(joint);
-
-	// override position
-	deviceOffset.position = position;
-
-	// override device offset in config
-	jointToDeviceOffset[joint] = deviceOffset;
+	// get container for specific joint & set position
+	auto container = getContainer(joint);
+	if (container != nullptr) {
+		container->offsetPosition = position;
+	}
 }
 
 void OpenVRConfig::setOffsetRotation(Joint::JointNames joint, Quaternionf rotation) {
 
-	// get device offset from config
-	auto deviceOffset = getOffset(joint);
-
-	// override rotation
-	deviceOffset.rotation = rotation;
-
-	// override device offset in config
-	jointToDeviceOffset[joint] = deviceOffset;
+	// get container for specific joint & set position
+	auto container = getContainer(joint);
+	if (container != nullptr) {
+		container->offsetRotation = rotation;
+	}
 }
 
 void OpenVRConfig::assignJointToDevice(Joint::JointNames joint, unsigned int deviceIndex) {
 
-	jointToDevice[joint] = deviceIndex;
+	// get container for specific joint & set deviceIndex
+	auto container = getContainer(joint);
+	if (container != nullptr) {
+		container->deviceIndex = deviceIndex;
+	}
+
 	deviceToJoint[deviceIndex] = joint;
+}
+
+void OpenVRConfig::setUserOffsetPosition(Joint::JointNames joint, Vector3f position) {
+
+	// get container for specific joint & set position
+	auto container = getContainer(joint);
+	if (container != nullptr) {
+		container->userOffsetPosition = position;
+	}
 }
 
 void OpenVRConfig::clearJointToDevice() {
 
-	jointToDevice.clear();
+	for(auto jointPair : jointToContainer) {
+		jointPair.second.deviceIndex = -1;
+	}
+
 	deviceToJoint.clear();
 }
 
@@ -256,7 +258,8 @@ void OpenVRConfig::updateUserDeviceRoles() {
 
 		// Is joint not assigned? -> Add assignment
 		//if (jointToDevice.count(jointDevicePair.first) == 0 && deviceToJoint.count(jointDevicePair.second) == 0) {
-		if (jointToDevice.count(jointDevicePair.first) == 0) {
+
+		if (jointToContainer.count(jointDevicePair.first) == 0) {
 			assignJointToDevice(jointDevicePair.first, jointDevicePair.second);
 		}
 	}
@@ -265,7 +268,7 @@ void OpenVRConfig::updateUserDeviceRoles() {
 void OpenVRConfig::calibrateDeviceToJointOffsets() {
 
 	// Loop over all configured joint:device pairs
-	for (const auto& jointDevicePair : jointToDevice) {
+	for (const auto& jointDevicePair : jointToContainer) {
 
 		// Read joint from first element in pair
 		Joint::JointNames joint = jointDevicePair.first;
@@ -362,8 +365,6 @@ void OpenVRConfig::writeDefaults() {
 
 	std::string configKey;
 
-	Console::log("write default");
-
 	// Write HMD:HEAD data if not exist
 	configKey = generateKey(OpenVRTracking::HMD, Joint::HEAD);
 	if (OVERRIDE_DEFAULTS || !configManager->exists(trackerType, configKey)) {
@@ -418,9 +419,10 @@ void OpenVRConfig::writeDefaults() {
 
 int OpenVRConfig::getDeviceIndex(Joint::JointNames joint) {
 
-	auto deviceIterator = jointToDevice.find(joint);
-	if (deviceIterator != jointToDevice.end()) {
-		return deviceIterator->second;
+	// get container for specific joint & return deviceIndex
+	auto container = getContainer(joint);
+	if (container != nullptr) {
+		return container->deviceIndex;
 	}
 
 	return -1;
@@ -452,37 +454,33 @@ OpenVRTracking::DevicePose* OpenVRConfig::getPose(Joint::JointNames joint) {
 
 OpenVRTracking::DevicePose OpenVRConfig::getPoseWithOffset(Joint::JointNames joint) {
 
+	// get container for specific joint
+	auto container = getContainer(joint);
+
 	// Init empty device pose
 	auto pose = OpenVRTracking::DevicePose();
 
 	// Get the pose from config & tracking system 
-	auto devicePose = getPose(joint);
+	auto devicePose = trackingSystem->getPose(container->deviceIndex);
 
 	// Return empty pose if not found
 	if (devicePose == nullptr) {
 		return pose;
 	}
-
 	// Apply device pose to pose
-	if (devicePose != nullptr) {
+	else {
 		pose.position = devicePose->position;
 		pose.rotation = devicePose->rotation;
 	}
 
-	// Try to get a offset from config
-	auto offset = getOffset(joint);
-
-	auto space = getSpace(joint);
-
-	// Add offset position if not null
-	if (!offset.isPositionNull()) {
-		pose.position += pose.rotation * offset.position;
-	}
+	// Add offset position
+	pose.position += pose.rotation * container->offsetPosition;
 
 	// Add offset rotation if not null
-	if (!offset.isRotationNull()) {
-		pose.rotation = offset.rotation * (space * pose.rotation * space.inverse());
-	}
+	pose.rotation = container->offsetRotation * (container->space * pose.rotation * container->space.inverse());
+
+	// Add user offset position
+	pose.position += pose.rotation * container->userOffsetPosition;
 
 	return pose;
 }
@@ -491,4 +489,21 @@ std::string OpenVRConfig::generateKey(OpenVRTracking::DeviceClass deviceClass, J
 
 	// return DeviceClass:JointName
 	return OpenVRTracking::toString(deviceClass) + ":" + Joint::toString(joint);
+}
+
+IKContainer* OpenVRConfig::getContainer(Joint::JointNames joint) {
+
+	auto containerIterator = jointToContainer.find(joint);
+
+	IKContainer* container = nullptr;
+
+	if (containerIterator != jointToContainer.end()) {
+		container = &containerIterator->second;
+	}
+	else {
+		jointToContainer[joint] = IKContainer();
+		container = &jointToContainer[joint];
+	}
+
+	return container;
 }
