@@ -85,7 +85,11 @@ public:
 	 */
 	void saveSolvedPosition() {
 
-		setSolvedPosition(joint->getGlobalPosition());
+		setSolvedPosition(getPosition());
+	}
+
+	void writeSolvedPosition() {
+		setPosition(solvedPosition);
 	}
 
 	/*!
@@ -99,13 +103,45 @@ public:
 	}
 
 	/*!
+	 * Sets joints solved position with given position
+	 *
+	 * \param position the solved position
+	 */
+	void setSolvedRotation(Quaternionf rotation) {
+
+		solvedRotation = rotation;
+	}
+
+	/*!
+	 * Saves joints global position as solved position
+	 */
+	void saveSolvedRotation() {
+
+		setSolvedRotation(getRotation());
+	}
+
+	void writeSolvedRotation() {
+		setRotation(solvedRotation);
+	}
+
+	/*!
+	 * Returns the joints solved position
+	 *
+	 * \return the solved position
+	 */
+	Quaternionf getSolvedRotation() {
+
+		return solvedRotation;
+	}
+
+	/*!
 	 * Sets the rotation to a direction in joint space with default normal
 	 *
 	 * \param direction the look direction
 	 */
 	void setRotationTowards(Vector3f direction) {
 
-		Vector3f normal = joint->getGlobalRotation() * defaultLocalNormal;
+		Vector3f normal = getRotation() * defaultLocalNormal;
 
 		setRotationTowards(direction, normal);
 	}
@@ -174,6 +210,7 @@ public:
 protected:
 
 	Vector3f solvedPosition;
+	Quaternionf solvedRotation;
 
 	Vector3f defaultPosition;
 	Quaternionf defaultRotation;

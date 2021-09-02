@@ -256,10 +256,8 @@ void OpenVRConfig::updateUserDeviceRoles() {
 	// Loop over all new joint:device assignments
 	for (const auto& jointDevicePair : newJointToDevice) {
 
-		// Is joint not assigned? -> Add assignment
-		//if (jointToDevice.count(jointDevicePair.first) == 0 && deviceToJoint.count(jointDevicePair.second) == 0) {
-
-		if (jointToContainer.count(jointDevicePair.first) == 0) {
+		// Is joint & device not assigned? -> Add assignment
+		if (jointToContainer.count(jointDevicePair.first) == 0 && deviceToJoint.count(jointDevicePair.second) == 0) {
 			assignJointToDevice(jointDevicePair.first, jointDevicePair.second);
 		}
 	}

@@ -30,24 +30,16 @@
  *
  */
 
+#include "ConfigDllExportMotionHubUtil.h"
+#include "MMHmath.h"
+
 #include <iostream>
 #include <stdexcept>
 #include <cmath>
 #include <ctime>
 
-#include "ConfigDllExportMotionHubUtil.h"
-#include "MMHmath.h"
-
  // -----------------------------------------------------------------
  // Utilities
-
-static void randSeed(void) {
-	srand(time(0));
-}
-
-static double unifRand(void) {
-	return rand() / double(RAND_MAX);
-}
 
 typedef double TimeStamp; // in seconds
 
@@ -56,6 +48,8 @@ static const TimeStamp UndefinedTime = -1.0;
 // -----------------------------------------------------------------
 
 class LowPassFilter {
+
+private:
 
 	double y, a, s;
 	bool initialized;
@@ -104,7 +98,9 @@ public:
 
 // -----------------------------------------------------------------
 
-class MotionHubUtil_DLL_import_export OneEuroFilter {
+class OneEuroFilter {
+
+private:
 
 	double freq;
 	double mincutoff;
@@ -141,6 +137,11 @@ class MotionHubUtil_DLL_import_export OneEuroFilter {
 
 public:
 
+	OneEuroFilter() {
+		x = nullptr;
+		dx = nullptr;
+	}
+
 	OneEuroFilter(double freq,
 		double mincutoff = 1.0, double beta_ = 0.0, double dcutoff = 1.0) {
 		setFrequency(freq);
@@ -166,9 +167,9 @@ public:
 		return x->filterWithAlpha(value, alpha(cutoff));
 	}
 
-	~OneEuroFilter(void) {
-		delete x;
-		delete dx;
+	~OneEuroFilter() {
+		//if (x != nullptr) delete x;
+		//if (dx != nullptr) delete dx;
 	}
 
 };
@@ -206,3 +207,41 @@ main(int argc, char** argv) {
 	return 0;
 }
 */
+
+// -----------------------------------------------------------------
+
+class Vector3OneEuroFilter {
+
+private:
+
+	std::vector<OneEuroFilter> oneEuroFilters;
+
+
+public:
+
+	Vector3OneEuroFilter() {
+
+	}
+
+	Vector3OneEuroFilter(double freq, double mincutoff = 1.0, double beta_ = 0.0, double dcutoff = 1.0) {
+
+		for (int i = 0; i < 3; i++) {
+			oneEuroFilters.push_back(OneEuroFilter(freq, mincutoff, beta_, dcutoff));
+		}
+	}
+
+	~Vector3OneEuroFilter() {
+
+	}
+
+	Vector3f filter(Vector3f value, TimeStamp timestamp = UndefinedTime) {
+
+		Vector3f output;
+
+		for (int i = 0; i < 3; i++) {
+			output[i] = oneEuroFilters[i].filter(value[i], timestamp);
+		}
+		
+		return output;
+	}
+};

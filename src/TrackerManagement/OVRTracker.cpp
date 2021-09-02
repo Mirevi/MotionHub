@@ -127,6 +127,8 @@ void OVRTracker::start() {
 		Console::log("");
 	}
 
+
+	oneEuroFilter = Vector3OneEuroFilter(20.0, 1.0, 0.0, 1.0);
 	// start tracking thread
 	Tracker::start();
 }
@@ -156,7 +158,7 @@ void OVRTracker::init() {
 	}
 
 	// Init IK Sekelton
-	hierarchicSkeleton = new HierarchicSkeleton();
+	hierarchicSkeleton = new HierarchicSkeleton(m_properties->id);
 	hierarchicSkeleton->init();
 
 	// Init IKSolvers
@@ -165,6 +167,18 @@ void OVRTracker::init() {
 	// Init Config & try to write default config values
 	config = new OpenVRConfig(m_configManager, trackingSystem);
 	config->writeDefaults();
+}
+
+void printOvrFPS() {
+	static std::chrono::time_point<std::chrono::steady_clock> oldOvrTime = std::chrono::high_resolution_clock::now();
+	static int ovrFps; ovrFps++;
+
+	if (std::chrono::duration_cast<std::chrono::seconds>(std::chrono::high_resolution_clock::now() - oldOvrTime) >= std::chrono::seconds{ 1 }) {
+		oldOvrTime = std::chrono::high_resolution_clock::now();
+
+		Console::log("OVR FPS: " + std::to_string(ovrFps));
+		ovrFps = 0;
+	}
 }
 
 void OVRTracker::track() {
@@ -224,15 +238,21 @@ void OVRTracker::track() {
 		const auto& pose = trackingSystem->Poses[i];
 
 		// Convert Rotation
-		Quaternionf rotation = pose.rotation;
 		//Quaternionf rotation = eulerToQuaternion(m_properties->rotationOffset);
 		//rotation = Quaternionf(-rotation.y(), -rotation.z(), rotation.w(), rotation.x());
 		//rotation = Quaternionf(-rotation.y(), -rotation.z(), -rotation.w(), -rotation.x());
 
-		rotation = Quaternionf(-rotation.y(), -rotation.z(), rotation.w(), rotation.x());
+		//rotation = Quaternionf(-rotation.y(), -rotation.z(), rotation.w(), rotation.x());
+
+		Quaternionf rotation = Quaternionf(-pose.rotation.y(), -pose.rotation.z(), pose.rotation.w(), pose.rotation.x());
+
+		Vector3f position = pose.position;
+		if (trackingSystem->Devices[i].index == 4) {
+			position = oneEuroFilter.filter(position);
+		}
 
 		// Update point position & rotation
-		//m_pointCollection.updatePoint(trackingSystem->Devices[i].index, pose.position, rotation);
+		m_pointCollection.updatePoint(trackingSystem->Devices[i].index, position, rotation);
 	}
 
 	// Unlock point collection mutex

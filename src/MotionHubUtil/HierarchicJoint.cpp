@@ -127,7 +127,7 @@ Vector3f HierarchicJoint::getGlobalPosition() {
 	if (parent != nullptr) {
 		if (!globalValid) {
 			global = combineParentMatrixRecursive(this);
-			//globalValid = true;
+			globalValid = true;
 		}
 
 		return getLocalPosition(global);
@@ -141,7 +141,7 @@ Quaternionf HierarchicJoint::getGlobalRotation() {
 	if (parent != nullptr) {
 		if (!globalValid) {
 			global = combineParentMatrixRecursive(this);
-			//globalValid = true;
+			globalValid = true;
 		}
 
 		return getLocalRotation(global);
