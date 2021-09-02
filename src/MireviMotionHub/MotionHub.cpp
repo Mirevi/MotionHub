@@ -55,6 +55,20 @@ MotionHub::~MotionHub()
 	delete m_configManager;
 }
 
+#include <chrono>
+
+void printMainFPS() {
+	static std::chrono::time_point<std::chrono::steady_clock> oldMainTime = std::chrono::high_resolution_clock::now();
+	static int mainFps; mainFps++;
+
+	if (std::chrono::duration_cast<std::chrono::seconds>(std::chrono::high_resolution_clock::now() - oldMainTime) >= std::chrono::seconds{ 1 }) {
+		oldMainTime = std::chrono::high_resolution_clock::now();
+
+		Console::log("MainFPS: " + std::to_string(mainFps));
+		mainFps = 0;
+	}
+}
+
 // motion hub main loop
 void MotionHub::update()
 {
@@ -146,7 +160,7 @@ void MotionHub::update()
 
 		}
 
-
+		//printMainFPS();
 
 		//Console::log("duration: " + toString(Timer::getDuration()));
 	}

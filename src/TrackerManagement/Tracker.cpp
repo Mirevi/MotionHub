@@ -16,6 +16,7 @@ void Tracker::start()
 {
 	//isTracking is true, so update loop will continue tracking
 	m_isTracking = true;
+
 	//start new thread for update loop
 	m_trackingThread = new std::thread(&Tracker::update, this);
 }
@@ -274,6 +275,19 @@ bool Tracker::readOffsetFromConfig()
 
 #pragma region protected_methods
 
+
+void printFPS() {
+	static std::chrono::time_point<std::chrono::steady_clock> oldTime = std::chrono::high_resolution_clock::now();
+	static int fps; fps++;
+
+	if (std::chrono::duration_cast<std::chrono::seconds>(std::chrono::high_resolution_clock::now() - oldTime) >= std::chrono::seconds{ 1 }) {
+		oldTime = std::chrono::high_resolution_clock::now();
+
+		Console::log("FPS: " + std::to_string(fps));
+		fps = 0;
+	}
+}
+
 void Tracker::update()
 {
 	// track while tracking is true
@@ -282,6 +296,9 @@ void Tracker::update()
 		//Console::log("Tracker::update()");
 		// if no new data is procressed
 		if (!m_isDataAvailable && m_isEnabled) {
+
+			//auto t1 = std::chrono::high_resolution_clock::now();
+
 			// get new data
 			track();
 
@@ -289,12 +306,18 @@ void Tracker::update()
 			if (m_networkManager != nullptr) {
 
 				//send Skeleton Pool to NetworkManager
-				m_networkManager->sendSkeletonPool(&getSkeletonPool(), m_properties->id);
+				m_networkManager->sendSkeletonPool(&m_skeletonPool, m_properties->id);
 
 				// send Point Pool to NetworkManager
-				m_networkManager->sendPointPool(&getPointCollection(), m_properties->id);
-
+				m_networkManager->sendPointPool(&m_pointCollection, m_properties->id);
 			}
+			
+			//printFPS();
+			/*
+			auto t2 = std::chrono::high_resolution_clock::now();
+			auto ms_int2 = std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1);
+			Console::logWarning(std::to_string(ms_int2.count()));
+			*/
 		}
 	}
 	//clean skeleton pool after tracking
