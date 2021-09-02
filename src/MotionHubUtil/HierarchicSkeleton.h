@@ -2,8 +2,8 @@
 
 #include "ConfigDllExportMotionHubUtil.h"
 
-#include "MotionHubUtil/HierarchicJoint.h"
-#include <MotionHubUtil/Skeleton.h>
+#include "HierarchicJoint.h"
+#include "Skeleton.h"
 
 /*!
  * \class HierarchicSkeleton
@@ -13,6 +13,8 @@
 class MotionHubUtil_DLL_import_export HierarchicSkeleton {
 
 public:
+
+	HierarchicSkeleton(int sid = 1);
 
 	/*!
 	 * Initializes the HierarchicSkeleton with default values
@@ -74,4 +76,6 @@ public:
 	HierarchicJoint rightArm;
 	HierarchicJoint rightForeArm;
 	HierarchicJoint rightHand;
+
+	Skeleton skeleton;
 };

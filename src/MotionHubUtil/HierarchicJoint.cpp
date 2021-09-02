@@ -40,7 +40,7 @@ void HierarchicJoint::setParent(HierarchicJoint* hierarchicJoint) {
 
 	parent->addChild(this);
 
-	invalidateGlobalRecursive(this);
+	invalidateGlobalRecursive();
 }
 
 HierarchicJoint* HierarchicJoint::getParent() {
@@ -74,13 +74,13 @@ Joint::JointNames HierarchicJoint::getJointName() {
 void HierarchicJoint::setLocalPosition(Vector3f localPosition) {
 	local.block<3, 1>(0, 3) = localPosition;
 
-	invalidateGlobalRecursive(this);
+	invalidateGlobalRecursive();
 }
 
 void HierarchicJoint::setLocalRotation(Quaternionf localRotation) {
 	local.block<3, 3>(0, 0) = localRotation.toRotationMatrix();
 
-	invalidateGlobalRecursive(this);
+	invalidateGlobalRecursive();
 }
 
 Vector3f HierarchicJoint::getLocalPosition() {
@@ -213,11 +213,13 @@ Vector3f HierarchicJoint::inverseTransformDirection(Vector3f direction) {
 Matrix4f HierarchicJoint::combineParentMatrixRecursive(HierarchicJoint* hierarchicJoint) {
 	// Is parent not null? -> Joint
 	if (hierarchicJoint->parent != nullptr) {
-		if (parent->globalValid) {
-			return parent->global * hierarchicJoint->local;
+		auto parentJoint = hierarchicJoint->parent;
+
+		if (parentJoint->globalValid) {
+			return parentJoint->global * hierarchicJoint->local;
 		}
 		else {
-			Matrix4f newGlobal = combineParentMatrixRecursive(hierarchicJoint->parent) * hierarchicJoint->local;
+			Matrix4f newGlobal = combineParentMatrixRecursive(parentJoint) * hierarchicJoint->local;
 
 			hierarchicJoint->global = newGlobal;
 			hierarchicJoint->globalValid = true;
@@ -257,10 +259,13 @@ Matrix4f HierarchicJoint::combineParentMatrixRecursive(HierarchicJoint* hierarch
 	}
 }
 
-void HierarchicJoint::invalidateGlobalRecursive(HierarchicJoint* hierarchicJoint) {
-	hierarchicJoint->globalValid = false;
+void HierarchicJoint::invalidateGlobalRecursive() {
 
-	for (HierarchicJoint* child : hierarchicJoint->children) {
-		invalidateGlobalRecursive(child);
+	if(globalValid) {
+		for (auto& child : children) {
+			child->invalidateGlobalRecursive();
+		}
 	}
+	
+	globalValid = false;
 }

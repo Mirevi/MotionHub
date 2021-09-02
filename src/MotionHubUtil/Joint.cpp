@@ -6,7 +6,7 @@
 Joint::Joint()
 {
 
-	m_modifier = Vector3f(0, 0, 0);
+	m_modifier = Vector3f::Zero();
 	m_invertX = false;
 	m_invertY = false;
 	m_invertZ = false;
@@ -20,7 +20,19 @@ Joint::Joint(Vector4f position, Quaternionf rotation, Joint::JointConfidence con
 	m_rotation = rotation;
 	m_confidence = confidence;
 
-	m_modifier = Vector3f(0, 0, 0);
+	m_modifier = Vector3f::Zero();
+	m_invertX = false;
+	m_invertY = false;
+	m_invertZ = false;
+}
+
+Joint::Joint(const Joint& joint)
+{
+	m_position = joint.m_position;
+	m_rotation = joint.m_rotation;
+	m_confidence = joint.m_confidence;
+
+	m_modifier = Vector3f::Zero();
 	m_invertX = false;
 	m_invertY = false;
 	m_invertZ = false;
@@ -202,4 +214,9 @@ Joint::JointNames Joint::toJointNames(std::string name)
 void Joint::setPosition(Vector4f newPos)
 {
 	m_position = newPos;
+}
+
+void Joint::setRotation(Quaternionf newRot) 
+{
+	m_rotation = newRot;
 }

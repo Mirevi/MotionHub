@@ -28,6 +28,9 @@ protected:
 	bool globalValid;
 
 public:
+	Joint* jointPointer;
+
+public:
 
 	HierarchicJoint(Joint::JointNames jointName, Vector3f localPosition, Quaternionf localRotation);
 
@@ -101,6 +104,6 @@ protected:
 
 	Matrix4f combineParentMatrixRecursive(HierarchicJoint* hierarchicJoint);
 
-	void invalidateGlobalRecursive(HierarchicJoint* hierarchicJoint);
+	void invalidateGlobalRecursive();
 
 };

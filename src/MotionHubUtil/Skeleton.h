@@ -48,7 +48,7 @@ public:
 	 * map of all skeleton joints with JointNames as keys
 	 * 
 	 */
-	std::map<Joint::JointNames, Joint> m_joints;
+	std::unordered_map<Joint::JointNames, Joint> m_joints;
 
 	enum StateSkeleton
 	{

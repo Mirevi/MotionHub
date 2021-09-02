@@ -1,6 +1,11 @@
-#include "MotionHubUtil/HierarchicSkeleton.h"
+#include "HierarchicSkeleton.h"
 // TODO: Debug: Console entfernen
-#include "MotionHubUtil/Console.h"
+#include "Console.h"
+
+
+HierarchicSkeleton::HierarchicSkeleton(int sid) {
+	skeleton = Skeleton(sid);
+}
 
 void HierarchicSkeleton::init() {
 
@@ -154,8 +159,10 @@ void HierarchicSkeleton::reset() {
 
 void HierarchicSkeleton::insert(Skeleton* currSkeleton) {
 
+	//auto t1 = std::chrono::high_resolution_clock::now();
+
 	// Loop over all Joints and insert into Skeleton
-	for (HierarchicJoint* joint : joints) {
+	for (auto& joint : joints) {
 
 		// Conversion from OptiTrack Tracker:
 		// rot = Quaternionf(rbData.qw, rbData.qx, -rbData.qy, -rbData.qz);
@@ -163,12 +170,22 @@ void HierarchicSkeleton::insert(Skeleton* currSkeleton) {
 		// simplified: (-y, -z, w, x)
 
 		Quaternionf rotation = joint->getGlobalRotation();
-		//rotation = Quaternionf(-rotation.y(), -rotation.z(), rotation.w(), rotation.x());
 		rotation = Quaternionf(-rotation.y(), -rotation.z(), rotation.w(), rotation.x());
 
-		currSkeleton->m_joints.insert({ joint->getJointName(), joint->toJoint(rotation) });
+		auto jointPointer = joint->jointPointer;
+		jointPointer->setPosition(joint->getGlobalPosition4());
+		jointPointer->setRotation(rotation);
+		//joint->jointPointer->setPosition(joint->getGlobalPosition4());
+		//joint->jointPointer->setRotation(rotation);
+
+		//currSkeleton->m_joints.insert({ joint->getJointName(), joint->toJoint(rotation) });
 		//currSkeleton->m_joints.insert({ joint->getJointName(), joint->toJoint() });
 	}
+
+	/*auto t2 = std::chrono::high_resolution_clock::now();
+	auto ms_int2 = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1);
+
+	Console::logWarning(toString(ms_int2.count()));*/
 }
 
 void HierarchicSkeleton::setScale(Vector3f scale) {
@@ -183,7 +200,14 @@ Vector3f HierarchicSkeleton::getScale() {
 
 void HierarchicSkeleton::addJoint(HierarchicJoint* joint, Joint::JointNames jointName) {
 
+	// Set joint
 	joint->setJointName(jointName);
+	
+	// Set pointer to internal Skeleton.joint
+	Joint* jointPointer = &skeleton.m_joints[jointName];
+	(*jointPointer) = Joint(Vector4f::Zero(), Quaternionf::Identity(), Joint::MEDIUM);
+	joint->jointPointer = jointPointer;
 
+	// Insert to joints vector
 	joints.push_back(joint);
 }

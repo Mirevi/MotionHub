@@ -77,9 +77,18 @@ public:
 	 */
 	Joint(Vector4f position, Quaternionf rotation, Joint::JointConfidence confidence = HIGH);
 
+	/*!
+	 * copy constructor
+	 *
+	 * \param joint
+	 */
+	Joint(const Joint& joint);
+
 	void setTransform(Vector4f position, Quaternionf rotation, Joint::JointConfidence confidence = HIGH);
 
 	void setPosition(Vector4f newPos);
+
+	void setRotation(Quaternionf newRot);
 
 	/*!
 	 * getter for Joints Position Vector
