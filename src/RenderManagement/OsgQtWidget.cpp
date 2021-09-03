@@ -46,68 +46,25 @@ OsgQtWidget::OsgQtWidget(osgQt::GraphicsWindowQt* gw, TrackerManager* trackerMan
 	m_timer.start(10); //TODO1: Hardcoded fps timing
 
 	// setup grid
-	int lineCountGrid = 10;
+	int lineCountGrid = 12;
 	m_configManager->readInt("line_count_for_floor_grid", lineCountGrid);
 
 	float cellSizeGrid = 0.5;
 	m_configManager->readFloat("cell_size_for_floor_grid", cellSizeGrid);
 
-	float lineWidthForRGBAxesGrid = 2.0;
+	float lineWidthForRGBAxesGrid = 2.0f;
 	m_configManager->readFloat("line_width_for_rgb_axes_floor_grid", lineWidthForRGBAxesGrid);
 
-	float lineWidthForGreyAxesGrid = 0.01;
-	m_configManager->readFloat("line_width_for_grey_axes_floor_grid", lineWidthForGreyAxesGrid);
+	float lineWidthForGreyAxesGrid = 1.0f;
+	//m_configManager->readFloat("line_width_for_grey_axes_floor_grid", lineWidthForGreyAxesGrid);
 
-	OsgGrid grid(lineCountGrid, SHOW_X_Z, cellSizeGrid, lineWidthForRGBAxesGrid, lineWidthForGreyAxesGrid);
+	OsgGrid grid(lineCountGrid, OsgGrid::SHOW_X_Z, cellSizeGrid, lineWidthForRGBAxesGrid, lineWidthForGreyAxesGrid);
 	grid.attachToSceneGraph(m_sceneRoot);
 
 	//setup confidence colors
 	m_colorRed = osg::Vec4f(0.75f, 0.0f, 0.0f, 1.0f);
 	m_colorYellow = osg::Vec4f(0.75f, 0.75f, 0.0f, 1.0f);
 	m_colorGreen = osg::Vec4f(0.0f, 0.75f, 0.0f, 1.0f);
-
-
-
-	//m_spheres.push_back(new osg::ShapeDrawable());
-//m_spheres.at(i)->setShape(new osg::Sphere(osg::Vec3(0.0f, 0.0f, 0.0f), 0.035f));
-//m_spheres.at(i)->setColor(osg::Vec4(1.0f, 0.0f, 0.0f, 1.0f));
-//m_sphereTransforms.push_back(new osg::MatrixTransform());
-//m_sphereTransforms.at(i)->addChild(m_spheres.at(i));
-//m_sceneRoot->addChild(m_sphereTransforms.at(i));
-
-	// #### START debug draws: OsgAxesCross and Lines 1/2 ####
-	//create axesCross
-	//m_axesCrossTest = new OsgAxesCross(m_sceneRoot);
-	// create a simple line
-	//m_line = new Line(m_sceneRoot, true);
-	//m_line->draw(osg::Vec3f(0.0, 0.0, 0.0), osg::Vec3f(1.0, 1.0, 1.0), osg::Vec4f(1.0, 0.0, 0.0, 1.0), osg::Vec4f(0.0, 1.0, 0.0, 1.0));
-	// adding another line - a new draw()-call adds a new line to the line object
-	//m_line->draw(osg::Vec3f(0.0, 2.0, 0.0), osg::Vec3f(0.0, 1.0, 1.0), osg::Vec4f(0.0, 0.0, 1.0, 1.0), osg::Vec4f(0.0, 1.0, 0.0, 1.0));
-	// to reset the line count to 0, use clear(). After this, Line is empty and new lines can be added
-	//m_line->clear(); 
-
-	//m_sceneRoot->addChild(m_axesCrossTest);
-	// ---- END debug draws ----
-
-	////HWM: Skelett reinrbingen -> Bone laden - ist 1m auf der Y hoch
-	//osg::ref_ptr<osg::Node> bone = osgDB::readNodeFile("./data/mesh_models/bone.obj");
-	//m_sceneRoot->addChild(bone);
-
-
-	////Dann kopieren - dep oder shallow?
-	//osg::ref_ptr<osg::Geode> geode2 = dynamic_cast<osg::Geode*>(geode1->clone(osg::CopyOp::SHALLOW_COPY));
-	//osg::ref_ptr<osg::Geode> geode3 = dynamic_cast<osg::Geode*>(geode1->clone(osg::CopyOp::DEEP_COPY_ALL));
-	//osg::ref_ptr<osg::Group> root = new osg::Group;
-	//root->addChild(createMatrixTransform(geode1.get(), osg::Vec3(0.0f, 0.0f, 0.0f)));
-	//root->addChild(createMatrixTransform(geode2.get(), osg::Vec3(-2.0f, 0.0f, 0.0f)));
-	//root->addChild(createMatrixTransform(geode3.get(), osg::Vec3(2.0f, 0.0f, 0.0f)));
-
-	////Und dann entsprechend einhängen -> Sind macht es aber, wenn ich hier eine Schnittstelle und Klasse baue, die die LowLevelDaten entgegennimmt
-	////Ich muss beliebig viele Instanzen erzeugen können, ähnlich wie es Eric gemacht hat
-	//g_ARCoreModell->getOrCreateStateSet();
-	//g_ARCoreModellMatrixTransform->addChild(g_ARCoreModell);
-	//g_ARCoreModell->setName("ArCoreAndroidModel");
-	//g_sceneRoot->addChild(g_ARCoreModellMatrixTransform);
 }
 
 //Is envoked, when no (global) tracking is active and a new tracker is added or removed

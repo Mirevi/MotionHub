@@ -63,7 +63,7 @@ OsgSkeleton::OsgSkeleton(osg::ref_ptr<osg::Group> parentNode) : m_parentNode(par
 	//FOREARM_L to HAND_L bone
 	m_bones.push_back(new OsgBone(m_joints.at(6), m_joints.at(7), m_stickManGroup));
 	//HAND_L ### leaf bone ###
-	m_bones.push_back(new OsgBone(m_joints.at(7), 1.0f, m_stickManGroup));
+	m_bones.push_back(new OsgBone(m_joints.at(7), m_stickManGroup));
 	//NECK to SHOULDER_R bone
 	m_bones.push_back(new OsgBone(m_joints.at(3), m_joints.at(8), m_stickManGroup, osg::Quat(osg::DegreesToRadians(135.0), osg::Z_AXIS))); // 
 	//SHOULDER_R to ARM_R bone
@@ -73,7 +73,7 @@ OsgSkeleton::OsgSkeleton(osg::ref_ptr<osg::Group> parentNode) : m_parentNode(par
 	//FOREARM_R to HAND_R bone
 	m_bones.push_back(new OsgBone(m_joints.at(10), m_joints.at(11), m_stickManGroup, osg::Quat(osg::DegreesToRadians(180.0), osg::Z_AXIS)));
 	//HAND_R ### leaf bone ###
-	m_bones.push_back(new OsgBone(m_joints.at(11), 1.0f, m_stickManGroup, osg::Quat(osg::DegreesToRadians(180.0), osg::Z_AXIS)));
+	m_bones.push_back(new OsgBone(m_joints.at(11), m_stickManGroup, osg::Quat(osg::DegreesToRadians(180.0), osg::Z_AXIS)));
 	//HIPS to UPLEG_L
 	m_bones.push_back(new OsgBone(m_joints.at(0), m_joints.at(12), m_stickManGroup)); //-180 // , osg::Quat(osg::DegreesToRadians(90.0), osg::Z_AXIS)
 	//UPLEG_L to LEG_L 
@@ -83,7 +83,7 @@ OsgSkeleton::OsgSkeleton(osg::ref_ptr<osg::Group> parentNode) : m_parentNode(par
 	//FOOT_L to TOE_L - Rotation to TOE_L was visually adjusted in the render view
 	m_bones.push_back(new OsgBone(m_joints.at(14), m_joints.at(15), m_stickManGroup, osg::Quat(osg::DegreesToRadians(-90.0), osg::Y_AXIS) * osg::Quat(osg::DegreesToRadians(-37.0), osg::X_AXIS)));
 	//TOE_L ### leaf bone ###
-	m_bones.push_back(new OsgBone(m_joints.at(15), 1.0f, m_stickManGroup, osg::Quat(osg::DegreesToRadians(-90.0), osg::Y_AXIS)));
+	m_bones.push_back(new OsgBone(m_joints.at(15), m_stickManGroup, osg::Quat(osg::DegreesToRadians(-90.0), osg::Y_AXIS)));
 	//HIPS to UPLEG_R
 	m_bones.push_back(new OsgBone(m_joints.at(0), m_joints.at(16), m_stickManGroup, osg::Quat(osg::DegreesToRadians(180.0), osg::Z_AXIS)));
 	//UPLEG_R to LEG_R
@@ -93,11 +93,11 @@ OsgSkeleton::OsgSkeleton(osg::ref_ptr<osg::Group> parentNode) : m_parentNode(par
 	//FOOT_R to TOE_R - Rotation to TOE_R was visually adjusted in the render view
 	m_bones.push_back(new OsgBone(m_joints.at(18), m_joints.at(19), m_stickManGroup, osg::Quat(osg::DegreesToRadians(-90.0), osg::Y_AXIS) * osg::Quat(osg::DegreesToRadians(-37.0), osg::X_AXIS)));
 	//TOE_R ### leaf bone ###
-	m_bones.push_back(new OsgBone(m_joints.at(19), 1.0f, m_stickManGroup, osg::Quat(osg::DegreesToRadians(90.0), osg::Y_AXIS)));
+	m_bones.push_back(new OsgBone(m_joints.at(19), m_stickManGroup, osg::Quat(osg::DegreesToRadians(90.0), osg::Y_AXIS)));
 	//NECK to HEAD
 	m_bones.push_back(new OsgBone(m_joints.at(3), m_joints.at(20), m_stickManGroup, osg::Quat(osg::DegreesToRadians(-90.0), osg::Z_AXIS)));
 	//HEAD ### leaf bone ###
-	m_bones.push_back(new OsgBone(m_joints.at(20), 1.0f, m_stickManGroup, osg::Quat(osg::DegreesToRadians(-90.0), osg::Z_AXIS)));
+	m_bones.push_back(new OsgBone(m_joints.at(20), m_stickManGroup, osg::Quat(osg::DegreesToRadians(-90.0), osg::Z_AXIS)));
 
 
 	//RGB axes for each joint

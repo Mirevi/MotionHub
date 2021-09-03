@@ -3,8 +3,6 @@
 #include <osg/PositionAttitudeTransform>
 #include "MotionHubUtil/Joint.h"
 #include <osg/Node>
-//#include <osg/geometry>
-//#include <osg/Vec3f>
 
 class OsgLine;
 
@@ -13,12 +11,11 @@ class RenderManagement_DLL_import_export OsgBone : public osg::Node
 {
 
 public:
-    OsgBone();
     //Bone, connected with two known joints. By default, an identity quaternion ("no rotation") is set
 	OsgBone(osg::ref_ptr<osg::PositionAttitudeTransform> startJoint, osg::ref_ptr<osg::PositionAttitudeTransform> endJoint,
         osg::ref_ptr<osg::Group> stickManGroup, osg::Quat rotationOffset = osg::Quat(0, 0, 0, 1));
     //Leaf Bone, connected with only one joint. By default, an identity quaternion ("no rotation") is set
-	OsgBone(osg::ref_ptr<osg::PositionAttitudeTransform> startJoint, float lengthToVirtualEndJoint, osg::ref_ptr<osg::Group> stickManGroup,
+	OsgBone(osg::ref_ptr<osg::PositionAttitudeTransform> startJoint, osg::ref_ptr<osg::Group> stickManGroup,
         osg::Quat rotationOffset = osg::Quat(0, 0, 0, 1));
     ~OsgBone();
 
@@ -31,6 +28,7 @@ public:
     void updateStickManRenderingState(bool renderStickMan);
 
 private:
+    void initialize(osg::ref_ptr<osg::Group> stickManGroup, osg::Quat rotationOffset);
     //osg::ref_ptr<osg::Group> m_parentNode;
 
     osg::ref_ptr<osg::Node> m_boneNode;
@@ -46,6 +44,6 @@ private:
 
     OsgLine* m_line;
     bool m_toggleStickManRendering;
-
+    bool m_isGlLookAtSolidBoneRotationActivated;
 
 };

@@ -1,12 +1,6 @@
 #include "OsgBone.h"
 #include <osgDB/ReadFile>
 #include "OsgLine.h"
-#include <MotionHubUtil/GeodeFinder.h>
-
-//TODO: Check if the standard CTOR is necessary
-OsgBone::OsgBone()
-{
-}
 
 
 //CTOR for start and end joint
@@ -14,21 +8,26 @@ OsgBone::OsgBone(osg::ref_ptr<osg::PositionAttitudeTransform> startJoint, osg::r
 	osg::ref_ptr<osg::Group> stickManGroup, osg::Quat rotationOffset)
 	: m_startJoint(startJoint), m_endJoint(endJoint)
 {
-	m_boneNode = osgDB::readNodeFile("./data/mesh_models/bone.obj");
-	m_startJointOffset = new osg::PositionAttitudeTransform();
-	m_startJointOffset->addChild(m_boneNode);
-	m_startJointOffset->setAttitude(rotationOffset);
-	m_startJoint->addChild(m_startJointOffset);
-	m_line = new OsgLine(stickManGroup, true);
-	m_toggleStickManRendering = true;
+
+	initialize(stickManGroup, rotationOffset);
+
 }
 
 
 //CTOR for leaf joint with only one joint
-OsgBone::OsgBone(osg::ref_ptr<osg::PositionAttitudeTransform> startJoint, float lengthToVirtualEndJoint, osg::ref_ptr<osg::Group> stickManGroup,
+OsgBone::OsgBone(osg::ref_ptr<osg::PositionAttitudeTransform> startJoint, osg::ref_ptr<osg::Group> stickManGroup,
 	osg::Quat rotationOffset)
 	: m_startJoint(startJoint)
 {
+
+	// m_endJoint won`t be initialzed and is the hint for being an end joint - a "end joint" without any further connections  
+	initialize(stickManGroup, rotationOffset);
+
+}
+
+void OsgBone::initialize(osg::ref_ptr<osg::Group> stickManGroup, osg::Quat rotationOffset)
+{
+
 	m_boneNode = osgDB::readNodeFile("./data/mesh_models/bone.obj");
 	m_startJointOffset = new osg::PositionAttitudeTransform();
 	m_startJointOffset->addChild(m_boneNode);
@@ -36,8 +35,8 @@ OsgBone::OsgBone(osg::ref_ptr<osg::PositionAttitudeTransform> startJoint, float 
 	m_startJoint->addChild(m_startJointOffset);
 	m_line = new OsgLine(stickManGroup, true);
 	m_toggleStickManRendering = true;
+	m_isGlLookAtSolidBoneRotationActivated = false;
 
-	// m_endJoint -> To be defined?
 }
 
 
@@ -64,13 +63,25 @@ void OsgBone::setOffsetRotation(osg::Vec3 offset)
 
 void OsgBone::update()
 {
-	//Check if a leaf bone, then do not use the endJoint, because it is not initialized
-	if (m_endJoint)
+	
+	if (m_endJoint) //Check if a leaf bone, then do not use the endJoint, because it is not initialized. Leaf bone is an "end bone" without further joint connections
 	{
+		//Calculate scale.Scale is the length (magnitude) of the vector between start and end joint. 
 		osg::Vec3f boneVector = m_startJoint->getPosition() - m_endJoint->getPosition();
 		float boneLength = boneVector.length();
 		m_startJointOffset->setScale(osg::Vec3(boneLength, boneLength, boneLength));
 
+		if (m_isGlLookAtSolidBoneRotationActivated)
+		{
+			osg::Matrix matrix;
+			matrix.makeLookAt(m_startJoint->getPosition(), m_endJoint->getPosition(), osg::Y_AXIS);
+			m_startJointOffset->setAttitude(matrix.getRotate());
+			m_startJointOffset->setPosition(m_startJoint->getPosition());
+			//m_startJointOffset->matr
+			//osg::look boneVector
+		}
+
+		// Perform line rendering for stick man rendering
 		if (m_toggleStickManRendering)
 		{
 			m_line->clear();
@@ -87,9 +98,11 @@ void OsgBone::update()
 			m_line->redraw();
 		}
 	}
-	else
+	else //It`s a leaf bone
 	{
 		m_startJointOffset->setScale(osg::Vec3(0.1f, 0.1f, 0.1f));
+
+		//TODO1:if (m_isGlLookAtSolidBoneRotationActivated)
 
 		if (m_toggleStickManRendering)
 		{
@@ -107,10 +120,6 @@ void OsgBone::update()
 			m_line->clear();
 			m_line->redraw();
 		}
-
-		//############################# DO LINE RENDERING??????????????
-		//############################# DO LINE RENDERING??????????????
-		//############################# DO LINE RENDERING??????????????
 	}
 
 
