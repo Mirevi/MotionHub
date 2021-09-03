@@ -65,9 +65,6 @@ private:
 	void initializeFeatureLineColor();
 
 	//threads
-	std::shared_ptr<std::thread> m_taskThread;
-	State m_state;
-
 	void taskThreadMethod();
 	void initiateAzureKinect();
 	void updateUiLineEditBoundaries();
@@ -81,6 +78,7 @@ private:
 	boolean currentCaptureIsValid(k4a::capture* capture);
 	void processColorImage();
 	void processDepthImage();
+	void estimateDepth8Mat();
 	void processInfraredImage();
 	void processFeatureImage();
 	void cropAndResizeMat(std::shared_ptr<cv::Mat>* mat);
@@ -92,7 +90,7 @@ private:
 
 	//feature image generation 
 	void extractJointLandmarks();
-	void saveJointLandmarks();
+	void saveColorImageLandmarks();
 	void drawFeaturesToMatrix();
 	void continuousLineDrawingBetweenLandmarks(int start, int end);
 	void drawSingleLineBetweenLandmarks(int landmarkIndexStart, int landmarkIndexEnd);
@@ -102,10 +100,10 @@ private:
 	void startLandmarkTransmission();
 	void startLandmarkTransmissionWithCapturedData();
 	void countFramesInLandmarkFile();
-	void processLandmarkFileData();
+	void processImageLandmarkFileData();
 	bool stringStartsWith(std::string* string, std::string startsWith);
 	void splitDataString(std::string fullString, std::string* splittedString);
-	void sendImageLandmarksOverNetwork();
+	void sendFeatureImageLandmarksOverNetwork();
 
 	//general
 	boolean convertJointLandmarksToColorImageLandmarks();
@@ -126,7 +124,10 @@ private:
 	int m_senderId;
 	int m_transmissionId;
 	int m_framesToCapture;
-	int m_clippingDistance;
+	int m_clippingNear;
+	int m_clippingFar;
+	int m_unclippedAreaSize;
+	int m_depthCaptureBitSize;
 	cv::Size m_imageSize;
 	cv::Size m_featureImageSize;
 	cv::Rect m_cropRegion;
@@ -137,6 +138,11 @@ private:
 	bool m_showColorImagePreview;
 	bool m_showDepthImagePreview;
 	bool m_showFeatureImagePreview;
+
+	//threads
+	std::shared_ptr<std::thread> m_taskThread;
+	State m_state;
+	bool m_closeAzureDeviceAfterTask;
 
 	//azure kinect
 	k4a::device m_azureKinectSensor;
@@ -151,7 +157,8 @@ private:
 
 	//cv mats
 	std::shared_ptr<cv::Mat> m_colorMat;
-	std::shared_ptr<cv::Mat> m_depthMat;
+	std::shared_ptr<cv::Mat> m_depthMat16;
+	std::shared_ptr<cv::Mat> m_depthMat8;
 	std::shared_ptr<cv::Mat> m_irMat;
 	std::shared_ptr<cv::Mat> m_featureMatrix;
 
@@ -159,8 +166,8 @@ private:
 	k4a::capture* m_currentCapture;
 	k4a::image m_transformedDepthImage;
 	std::pair<k4a::image, k4a::image> m_depthAndIrImagePair;
-	std::ofstream m_jointLandmarkWriter;
-	std::ifstream m_jointLandmarkReader;
+	std::ofstream m_colorImageLandmarkWriter;
+	std::ifstream m_colorImageLandmarkReader;
 
 	//transmission
 	int m_landmarkFileFrameCount;

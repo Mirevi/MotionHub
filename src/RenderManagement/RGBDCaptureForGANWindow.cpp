@@ -21,21 +21,25 @@ RGBDCaptureForGANWindow::RGBDCaptureForGANWindow(ConfigManager* configManager, N
 
 	//states
 	m_state = State::UNINITIALIZED;
+	m_closeAzureDeviceAfterTask = false;
 
 	//capture
 	m_currentCapture = new k4a::capture();
 	m_framesToCapture = 1000;
-	m_clippingDistance = 2850; //behind this value (millimeters) the points will be rejected
+	m_clippingNear = 1000;//before this value (millimeters) the points will be rejected
+	m_clippingFar = 2850; //behind this value (millimeters) the points will be rejected
+	m_unclippedAreaSize = m_clippingFar - m_clippingNear;
 
 	//feature generation
 	m_imageSize = cv::Size(512, 512);
-	m_featureImageSize = cv::Size(256, 256);
+	m_featureImageSize = cv::Size(512, 512);
 	m_cropRegion = cv::Rect(cv::Point(280, 0), cv::Point(1000, 720));
 	initializeFeatureLineColor();
 
 	//save
 	m_dataDirPath = "data\\RGBD-GAN\\";
 	m_saveIdPrefix = "a";
+	m_depthCaptureBitSize = 8;
 
 	//preview
 	m_showColorImagePreview = true;
@@ -58,8 +62,18 @@ void RGBDCaptureForGANWindow::updateGui()
 	ui->le_image_size_y->setText(QString::fromStdString(std::to_string(m_imageSize.height)));
 	ui->le_feature_image_size_x->setText(QString::fromStdString(std::to_string(m_featureImageSize.width)));
 	ui->le_feature_image_size_y->setText(QString::fromStdString(std::to_string(m_featureImageSize.height)));
-	ui->le_clipping_distance->setText(QString::fromStdString(std::to_string(m_clippingDistance)));
+	ui->le_clipping_near->setText(QString::fromStdString(std::to_string(m_clippingNear)));
+	ui->le_clipping_far->setText(QString::fromStdString(std::to_string(m_clippingFar)));
 	ui->le_transmission_id->setText(QString::fromStdString(std::to_string(m_transmissionId)));
+	if (m_depthCaptureBitSize == 8)
+		ui->rb_8BitDepthSize->setChecked(true);
+	else
+		ui->rb_8BitDepthSize->setChecked(false);
+	if (m_depthCaptureBitSize == 16)
+		ui->rb_16BitDepthSize->setChecked(true);
+	else
+		ui->rb_16BitDepthSize->setChecked(false);
+
 
 	//preview buttons
 	ui->cb_visualizeColor->setChecked(m_showColorImagePreview);
@@ -81,12 +95,40 @@ void RGBDCaptureForGANWindow::updateGui()
 		ui->cb_visualizeLandmarks->setText("Visualize Feature");
 
 	//enable/disable
+	ui->le_file_prefix->setEnabled(false);
+	ui->le_frames_to_capture->setEnabled(false);
+	ui->le_crop_region_x1->setEnabled(false);
+	ui->le_crop_region_y1->setEnabled(false);
+	ui->le_crop_region_x2->setEnabled(false);
+	ui->le_crop_region_y2->setEnabled(false);
+	ui->le_image_size_x->setEnabled(false);
+	ui->le_image_size_y->setEnabled(false);
+	ui->le_feature_image_size_x->setEnabled(false);
+	ui->le_feature_image_size_y->setEnabled(false);
+	ui->le_clipping_near->setEnabled(false);
+	ui->le_clipping_far->setEnabled(false);
+	ui->le_transmission_id->setEnabled(false);
+	ui->rb_8BitDepthSize->setEnabled(false);
+	ui->rb_16BitDepthSize->setEnabled(false);
+	ui->btn_initiate_kinect->setEnabled(false);
+	ui->btn_stop->setEnabled(false);
+	ui->btn_start_capture->setEnabled(false);
+	ui->btn_start_transmission->setEnabled(false);
+	ui->btn_start_captured_transmission->setEnabled(false);
+
 	if (m_state == State::UNINITIALIZED) {
+		ui->le_crop_region_x1->setEnabled(true);
+		ui->le_crop_region_y1->setEnabled(true);
+		ui->le_crop_region_x2->setEnabled(true);
+		ui->le_crop_region_y2->setEnabled(true);
+		ui->le_feature_image_size_x->setEnabled(true);
+		ui->le_feature_image_size_y->setEnabled(true);
+		ui->le_clipping_near->setEnabled(true);
+		ui->le_clipping_far->setEnabled(true);
 		ui->btn_initiate_kinect->setEnabled(true);
-		ui->btn_stop->setEnabled(false);
+		ui->btn_start_captured_transmission->setEnabled(true);
 	}
 	else {
-		ui->btn_initiate_kinect->setEnabled(false);
 		ui->btn_stop->setEnabled(true);
 	}
 
@@ -101,30 +143,14 @@ void RGBDCaptureForGANWindow::updateGui()
 		ui->le_image_size_y->setEnabled(true);
 		ui->le_feature_image_size_x->setEnabled(true);
 		ui->le_feature_image_size_y->setEnabled(true);
-		ui->le_clipping_distance->setEnabled(true);
+		ui->le_clipping_near->setEnabled(true);
+		ui->le_clipping_far->setEnabled(true);
+		ui->rb_8BitDepthSize->setEnabled(true);
+		ui->rb_16BitDepthSize->setEnabled(true);
 		ui->btn_start_capture->setEnabled(true);
 		ui->btn_start_transmission->setEnabled(true);
-		ui->btn_start_captured_transmission->setEnabled(true);
 		ui->le_transmission_id->setEnabled(true);
 	}
-	else {
-		ui->le_file_prefix->setEnabled(false);
-		ui->le_frames_to_capture->setEnabled(false);
-		ui->le_crop_region_x1->setEnabled(false);
-		ui->le_crop_region_y1->setEnabled(false);
-		ui->le_crop_region_x2->setEnabled(false);
-		ui->le_crop_region_y2->setEnabled(false);
-		ui->le_image_size_x->setEnabled(false);
-		ui->le_image_size_y->setEnabled(false);
-		ui->le_feature_image_size_x->setEnabled(false);
-		ui->le_feature_image_size_y->setEnabled(false);
-		ui->le_clipping_distance->setEnabled(false);
-		ui->btn_start_capture->setEnabled(false);
-		ui->btn_start_transmission->setEnabled(false);
-		ui->btn_start_captured_transmission->setEnabled(false);
-		ui->le_transmission_id->setEnabled(false);
-	}
-
 }
 
 void RGBDCaptureForGANWindow::initializeFeatureLineColor()
@@ -173,8 +199,10 @@ void RGBDCaptureForGANWindow::onGuiValueChanged() {
 		ui->le_image_size_x->setText("0");
 	if (ui->le_image_size_y->text().length() == 0)
 		ui->le_image_size_y->setText("0");
-	if (ui->le_clipping_distance->text().length() == 0)
-		ui->le_clipping_distance->setText("0");
+	if (ui->le_clipping_near->text().length() == 0)
+		ui->le_clipping_near->setText("0");
+	if (ui->le_clipping_far->text().length() == 0)
+		ui->le_clipping_far->setText("0");
 	if (ui->le_transmission_id->text().length() == 0)
 		ui->le_transmission_id->setText("0");
 
@@ -191,8 +219,15 @@ void RGBDCaptureForGANWindow::onGuiValueChanged() {
 		ui->le_feature_image_size_x->text().toInt(), 
 		ui->le_feature_image_size_y->text().toInt());
 
-	m_clippingDistance = ui->le_clipping_distance->text().toInt();
+	m_clippingNear = ui->le_clipping_near->text().toInt();
+	m_clippingFar = ui->le_clipping_far->text().toInt();
+	m_unclippedAreaSize = m_clippingFar - m_clippingNear;
 	m_transmissionId = ui->le_transmission_id->text().toInt();
+
+	if (ui->rb_8BitDepthSize->isChecked())
+		m_depthCaptureBitSize = 8;
+	else if (ui->rb_16BitDepthSize->isChecked())
+		m_depthCaptureBitSize = 16;
 
 	m_showColorImagePreview = ui->cb_visualizeColor->isChecked();
 	m_showDepthImagePreview = ui->cb_visualizeDepth->isChecked();
@@ -233,19 +268,34 @@ void RGBDCaptureForGANWindow::onStartLandmarkTransissionTriggered()
 
 void RGBDCaptureForGANWindow::onStartLandmarkTransissionWithCapturedDataTriggered()
 {
-	if (m_state == State::INITIALIZED)
+	if (m_state == State::UNINITIALIZED) {
+		if (m_taskThread.get() != nullptr && m_taskThread->joinable())
+			m_taskThread->join();
+
 		m_state = State::TRANSMITTING_FILE;
+		updateGui();
+		m_taskThread = std::shared_ptr<std::thread>(new std::thread(&RGBDCaptureForGANWindow::taskThreadMethod, this));
+	}
 }
 
 void RGBDCaptureForGANWindow::taskThreadMethod()
 {
 	printAndShowMessage("Start GAN Task Thread");
+	m_closeAzureDeviceAfterTask = false;
 
-	initiateAzureKinect();
-	updateUiLineEditBoundaries();
-	updateGui();
-	showAzurePreview();
-	updateGui();
+	if (m_state == State::IS_INITIALIZING) {
+		initiateAzureKinect();
+		updateUiLineEditBoundaries();
+		updateGui();
+
+		showAzurePreview();
+		updateGui();
+	}
+	else {
+		m_colorResolution = cv::Size(4096, 3072);
+		updateUiLineEditBoundaries();
+		updateGui();
+	}
 
 	switch (m_state) {
 	case State::CAPTURING:
@@ -259,9 +309,13 @@ void RGBDCaptureForGANWindow::taskThreadMethod()
 		break;
 	}
 
+	//close Azure
+	if (m_closeAzureDeviceAfterTask) {
+		m_azureKinectSensor.close();
+		m_tracker.destroy();
+	}
+
 	printAndShowMessage("End GAN Task Thread");
-	m_azureKinectSensor.close();
-	m_tracker.destroy();
 	m_state = State::UNINITIALIZED;
 	updateGui();
 }
@@ -306,6 +360,7 @@ void RGBDCaptureForGANWindow::initiateAzureKinect()
 	m_tracker = m_tracker.create(m_calibration, m_trackerConfig);
 	printAndShowMessage("Initiate Body Tracking Component done");
 
+	m_closeAzureDeviceAfterTask = true;
 	m_state = State::INITIALIZED;
 }
 
@@ -317,7 +372,8 @@ void RGBDCaptureForGANWindow::updateUiLineEditBoundaries() {
 	ui->le_crop_region_y2->setValidator(new QIntValidator(0, m_colorResolution.height, this));
 	ui->le_image_size_x->setValidator(new QIntValidator(0, m_colorResolution.width, this));
 	ui->le_image_size_y->setValidator(new QIntValidator(0, m_colorResolution.height, this));
-	ui->le_clipping_distance->setValidator(new QIntValidator(0, 65000, this));
+	ui->le_clipping_near->setValidator(new QIntValidator(0, 65000, this));
+	ui->le_clipping_far->setValidator(new QIntValidator(0, 65000, this));
 	ui->le_transmission_id->setValidator(new QIntValidator(0, 1000, this));
 }
 
@@ -357,7 +413,7 @@ void RGBDCaptureForGANWindow::startCapture()
 
 	//initiation
 	prepareSaveDirLocation();
-	m_jointLandmarkWriter.open(m_saveDirPath + "jointLandmarks.txt");
+	m_colorImageLandmarkWriter.open(m_saveDirPath + "colorImageLandmarks.txt");
 
 	//process capture and save
 	while (m_state == State::CAPTURING && m_frameCounter < m_framesToCapture) {
@@ -396,7 +452,7 @@ void RGBDCaptureForGANWindow::startCapture()
 		printTaskConsoleInfos(m_frameCounter, m_framesToCapture);
 	}
 
-	m_jointLandmarkWriter.close();
+	m_colorImageLandmarkWriter.close();
 
 	m_endTime = clock();
 	std::cout << "End RGBD Capture for GAN after " << differenceInSeconds(m_startTime, m_endTime) 
@@ -491,7 +547,7 @@ void RGBDCaptureForGANWindow::processDepthImage()
 	{
 		//If the distance is farther than clip (format is YUY2 -> Two byte per pixel results in 16bit and 65535mm depth resolution)
 		uint16_t depth = (uint16_t)(depth_buffer[i + 1] << 8 | depth_buffer[i]);
-		if (depth > m_clippingDistance)
+		if (depth < m_clippingNear || depth > m_clippingFar)
 		{
 			depth_buffer[i] = 0;
 			depth_buffer[i + 1] = 0;
@@ -511,24 +567,37 @@ void RGBDCaptureForGANWindow::processDepthImage()
 	int transformedDepthWidth = m_transformedDepthImage.get_width_pixels();
 	int transformedDepthHeight = m_transformedDepthImage.get_height_pixels();
 
-	m_depthMat = std::shared_ptr<cv::Mat>(new cv::Mat(transformedDepthHeight, transformedDepthWidth, CV_16UC1, (void*)transformed_depth_buffer, cv::Mat::AUTO_STEP));
+	m_depthMat16 = std::shared_ptr<cv::Mat>(new cv::Mat(transformedDepthHeight, transformedDepthWidth, CV_16UC1, (void*)transformed_depth_buffer, cv::Mat::AUTO_STEP));
+	m_depthMat8 = std::shared_ptr<cv::Mat>(new cv::Mat(transformedDepthHeight, transformedDepthWidth, CV_8UC1));
 
-	cropAndResizeMat(&m_depthMat);
+	cropAndResizeMat(&m_depthMat16);
 
-	cv::Mat depthMat8 = cv::Mat(transformedDepthHeight, transformedDepthWidth, CV_8UC1);
+	estimateDepth8Mat();
 
 	if (m_showDepthImagePreview) {
-		m_depthMat->convertTo(depthMat8, CV_8UC1, 255.0 / m_clippingDistance);
 		QImage image = QImage(
-			depthMat8.data,
-			depthMat8.cols,
-			depthMat8.rows,
-			depthMat8.step,
+			m_depthMat8->data,
+			m_depthMat8->cols,
+			m_depthMat8->rows,
+			m_depthMat8->step,
 			QImage::Format_Grayscale8
 		);
 		image = image.scaled(256, 256, Qt::AspectRatioMode::KeepAspectRatio);
 		ui->depth_image->setPixmap(QPixmap::fromImage(image));
 	}
+}
+
+void RGBDCaptureForGANWindow::estimateDepth8Mat() {
+	//TODO apply thresholds and convert in raw format as followed:
+	/*
+	_, image = cv.threshold(image, 0, 65535, cv.THRESH_TOZERO)
+	_, image = cv.threshold(image, unclipped_area_size, 65535, cv.THRESH_TOZERO_INV)
+	image = image * (float(255.0) / float(unclipped_area_size))
+	*/
+	cv::Mat tempDepth16 = *m_depthMat16 - m_clippingNear;
+	cv::threshold(tempDepth16, tempDepth16, 0, 65535, cv::THRESH_TOZERO);
+	cv::threshold(tempDepth16, tempDepth16, m_unclippedAreaSize, 65535, cv::THRESH_TOZERO_INV);
+	tempDepth16.convertTo(*m_depthMat8, CV_8UC1, 255.0 / m_unclippedAreaSize);
 }
 
 void RGBDCaptureForGANWindow::processInfraredImage()
@@ -602,8 +671,8 @@ void RGBDCaptureForGANWindow::saveProcessedCapturedData()
 	saveColorImage();
 	saveDepthImage();
 	saveIrImage();
-	saveJointLandmarks();
 	saveFeatureImage();
+	saveColorImageLandmarks();
 	m_frameCounter++;
 }
 
@@ -618,7 +687,16 @@ void RGBDCaptureForGANWindow::saveDepthImage()
 {
 	//Create a file name
 	std::string depthFileName = imageFilePath(ImageType::DEPTH_IMAGE);
-	cv::imwrite(depthFileName, *m_depthMat, std::vector<int>());
+
+	if (m_depthCaptureBitSize == 8) {
+		cv::imwrite(depthFileName, *m_depthMat8, std::vector<int>());
+	}
+	else if (m_depthCaptureBitSize == 16) {
+		cv::imwrite(depthFileName, *m_depthMat16, std::vector<int>());
+	}
+	else {
+		std::cout << "Depth Bit Size is not supported: " << m_depthCaptureBitSize << std::endl;
+	}
 }
 
 void RGBDCaptureForGANWindow::saveIrImage()
@@ -655,30 +733,30 @@ void RGBDCaptureForGANWindow::extractJointLandmarks()
 	}
 }
 
-void RGBDCaptureForGANWindow::saveJointLandmarks()
+void RGBDCaptureForGANWindow::saveColorImageLandmarks()
 {
 	//save to text file
-	m_jointLandmarkWriter << "ID: " << m_saveIdPrefix << m_frameCounter << std::endl;
+	m_colorImageLandmarkWriter << "ID: " << m_saveIdPrefix << m_frameCounter << std::endl;
 
-	m_jointLandmarkWriter << "X: ";
+	m_colorImageLandmarkWriter << "X: ";
 	for (int i = 0; i < K4ABT_JOINT_COUNT; i++) {
-		m_jointLandmarkWriter << m_jointLandmarks[i].x << ",";
+		m_colorImageLandmarkWriter << m_colorImageLandmarks[i].x << ",";
 	}
-	m_jointLandmarkWriter << std::endl;
+	m_colorImageLandmarkWriter << std::endl;
 
-	m_jointLandmarkWriter << "Y: ";
+	m_colorImageLandmarkWriter << "Y: ";
 	for (int i = 0; i < K4ABT_JOINT_COUNT; i++) {
-		m_jointLandmarkWriter << m_jointLandmarks[i].y << ",";
+		m_colorImageLandmarkWriter << m_colorImageLandmarks[i].y << ",";
 	}
-	m_jointLandmarkWriter << std::endl;
+	m_colorImageLandmarkWriter << std::endl;
 
-	m_jointLandmarkWriter << "Depth: ";
+	m_colorImageLandmarkWriter << "Depth: ";
 	for (int i = 0; i < K4ABT_JOINT_COUNT; i++) {
-		m_jointLandmarkWriter << m_jointLandmarks[i].depth << ",";
+		m_colorImageLandmarkWriter << m_colorImageLandmarks[i].depth << ",";
 	}
-	m_jointLandmarkWriter << std::endl;
+	m_colorImageLandmarkWriter << std::endl;
 
-	m_jointLandmarkWriter << "END" << std::endl;
+	m_colorImageLandmarkWriter << "END" << std::endl;
 }
 
 void RGBDCaptureForGANWindow::drawFeaturesToMatrix()
@@ -790,7 +868,7 @@ void RGBDCaptureForGANWindow::startLandmarkTransmission()
 		}
 
 		mapColorLandmarksToFeatureImageLandmarks();
-		sendImageLandmarksOverNetwork();
+		sendFeatureImageLandmarksOverNetwork();
 
 		if (m_skippedFrames > 0)
 			printSkipFramesToConsole();
@@ -820,19 +898,19 @@ void RGBDCaptureForGANWindow::startLandmarkTransmissionWithCapturedData()
 	m_totalSubtaskTime = 0;
 	m_skippedFrames = 0;
 
-	m_jointLandmarkReader.open(m_dataDirPath + "jointLandmarks.txt");
+	m_colorImageLandmarkReader.open(m_dataDirPath + "colorImageLandmarks.txt");
 
 	//count frames for console output
 	countFramesInLandmarkFile();
 
 	//reset reader
-	m_jointLandmarkReader.clear();
-	m_jointLandmarkReader.seekg(0);
+	m_colorImageLandmarkReader.clear();
+	m_colorImageLandmarkReader.seekg(0);
 
 	//process data from file
-	processLandmarkFileData();
+	processImageLandmarkFileData();
 
-	m_jointLandmarkReader.close();
+	m_colorImageLandmarkReader.close();
 
 	m_endTime = clock();
 	std::cout << "End Landmark Transission with captured Data after "
@@ -845,21 +923,21 @@ void RGBDCaptureForGANWindow::countFramesInLandmarkFile()
 
 	std::string line;
 
-	while (std::getline(m_jointLandmarkReader, line)) {
+	while (std::getline(m_colorImageLandmarkReader, line)) {
 		if (stringStartsWith(&line, "END")) {
 			m_landmarkFileFrameCount++;
 		}
 	}
 }
 
-void RGBDCaptureForGANWindow::processLandmarkFileData()
+void RGBDCaptureForGANWindow::processImageLandmarkFileData()
 {
 	m_frameCounter = 0;
 	std::string line;
 	std::string splitted[K4ABT_JOINT_COUNT];
 	m_subtaskStartTime = clock();
 
-	while (m_state == State::TRANSMITTING_FILE && std::getline(m_jointLandmarkReader, line)) {
+	while (m_state == State::TRANSMITTING_FILE && std::getline(m_colorImageLandmarkReader, line)) {
 		if (stringStartsWith(&line, "ID: ")) {
 			m_id = line.substr(4);
 		}
@@ -867,27 +945,25 @@ void RGBDCaptureForGANWindow::processLandmarkFileData()
 			splitDataString(line.substr(3), splitted);
 
 			for (int i = 0; i < K4ABT_JOINT_COUNT; i++)
-				m_jointLandmarks[i].x = std::stof(splitted[i]);
+				m_colorImageLandmarks[i].x = std::stof(splitted[i]);
 		}
 		else if (stringStartsWith(&line, "Y: ")) {
 			splitDataString(line.substr(3), splitted);
 
 			for (int i = 0; i < K4ABT_JOINT_COUNT; i++)
-				m_jointLandmarks[i].y = std::stof(splitted[i]);
+				m_colorImageLandmarks[i].y = std::stof(splitted[i]);
 		}
 		else if (stringStartsWith(&line, "Depth: ")) {
 			splitDataString(line.substr(7), splitted);
 
 			for (int i = 0; i < K4ABT_JOINT_COUNT; i++)
-				m_jointLandmarks[i].depth = std::stof(splitted[i]);
+				m_colorImageLandmarks[i].depth = std::stof(splitted[i]);
 		}
 		else if (stringStartsWith(&line, "END")) {
 			//process current Landmarks
 
-			if (!convertJointLandmarksToColorImageLandmarks())
-				continue;
 			mapColorLandmarksToFeatureImageLandmarks();
-			sendImageLandmarksOverNetwork();
+			sendFeatureImageLandmarksOverNetwork();
 
 			if (m_showFeatureImagePreview) {
 				processFeatureImage(); 
@@ -934,7 +1010,7 @@ void RGBDCaptureForGANWindow::splitDataString(std::string fullString, std::strin
 	}
 }
 
-void RGBDCaptureForGANWindow::sendImageLandmarksOverNetwork()
+void RGBDCaptureForGANWindow::sendFeatureImageLandmarksOverNetwork()
 {
 	//convert to std::vector
 	std::vector<Landmark> imageLandmarks;
@@ -968,7 +1044,7 @@ boolean RGBDCaptureForGANWindow::convertJointLandmarksToColorImageLandmarks()
 			Landmark colorImageLandmark;
 			colorImageLandmark.x = imagePosition.xy.x;
 			colorImageLandmark.y = imagePosition.xy.y;
-			colorImageLandmark.depth = 256 - (jointPosition.xyz.z / m_clippingDistance) * 256;
+			colorImageLandmark.depth = 256 - ((jointPosition.xyz.z - m_clippingNear) / m_unclippedAreaSize) * 256;
 
 			m_colorImageLandmarks[i] = colorImageLandmark;
 		}
