@@ -72,7 +72,8 @@ public:
 		return lineList;
 	}
 
-	Vector3OneEuroFilter oneEuroFilter;
+	// TODO: Pointer
+	Vector3OneEuroFilter positionOneEuroFilter;
 
 private:
 
@@ -152,6 +153,8 @@ private:
 
 		// Clear memory for IKSolverArm
 		if (ikSolverRightArm != nullptr) delete ikSolverRightArm;
+
+		if (skeleton != nullptr) delete skeleton;
 	}
 
 // TODO: private
@@ -182,5 +185,11 @@ public:
 	bool isTrackReading;
 
 	std::thread* m_ovrTrackingThread;
+
+
+	std::mutex pointCollectionTrackingLock;
+	std::mutex skeletonPoolTrackingLock;
+
+	Skeleton* skeleton = nullptr;
 
 };

@@ -128,7 +128,11 @@ void OVRTracker::start() {
 	}
 
 
-	oneEuroFilter = Vector3OneEuroFilter(20.0, 1.0, 0.0, 1.0);
+	positionOneEuroFilter = Vector3OneEuroFilter(10.0, 1.0, 0.0, 1.0);
+
+
+	m_ovrTrackingThread = new std::thread(&OVRTracker::ovrTrack, this);
+
 	// start tracking thread
 	Tracker::start();
 }
@@ -142,6 +146,10 @@ void OVRTracker::stop() {
 	trackingSystem->removeButtonPressObserver(this);
 
 	Tracker::stop();
+
+	//wait for tracking thread to terminate, then dispose of thread object
+	if (m_ovrTrackingThread->joinable()) m_ovrTrackingThread->join();
+	delete m_ovrTrackingThread;
 }
 
 void OVRTracker::init() {
@@ -160,6 +168,8 @@ void OVRTracker::init() {
 	// Init IK Sekelton
 	hierarchicSkeleton = new HierarchicSkeleton(m_properties->id);
 	hierarchicSkeleton->init();
+
+	skeleton = new Skeleton(m_properties->id);
 
 	// Init IKSolvers
 	initIKSolvers();
@@ -181,8 +191,104 @@ void printOvrFPS() {
 	}
 }
 
+void OVRTracker::ovrTrack() {
+
+	// track while tracking is true
+	while (m_isTracking) {
+		
+		if (isTrackReading && m_isEnabled) {
+			//std::this_thread::sleep_for(std::chrono::milliseconds(1));
+		}
+		
+		if (!isTrackReading && m_isEnabled) {
+			//auto t1 = std::chrono::high_resolution_clock::now();
+
+			// Poll Events in the Tracking System
+			trackingSystem->pollEvents();
+
+			// Update prediction time
+			float mmhDelay = 0.0f; // 0.05f;
+			trackingSystem->setPredictionTime(mmhDelay);
+
+
+			// Lock point collection mutex
+			pointCollectionTrackingLock.lock();
+
+			// Update device poses
+			trackingSystem->receiveDevicePoses();
+
+			// Unlock point collection mutex
+			pointCollectionTrackingLock.unlock();
+
+			// TODO: IK write nach hinten verschieben -> kuerzers lock & unlock
+
+			Joint::JointConfidence highConf = Joint::JointConfidence::HIGH;
+
+			auto hipPose = getAssignedPose(Joint::HIPS);
+			//auto hipPose = OpenVRTracking::DevicePose();
+
+			if (DEBUG_SKELETON_ROT) {
+				hipPose.rotation = eulerToQuaternion(m_properties->rotationOffset);
+			}
+
+			ikSolverHip->solve(hipPose.position, hipPose.rotation);
+			hierarchicSkeleton->hips.setConfidence(highConf);
+
+			// Solve Spine
+			auto headPose = getAssignedPose(Joint::HEAD);
+			//auto headPose = OpenVRTracking::DevicePose();
+			ikSolverSpine->solve(headPose.position, headPose.rotation);
+			hierarchicSkeleton->head.setConfidence(highConf);
+
+			// Solve LeftLeg
+			auto leftFootPose = getAssignedPose(Joint::FOOT_L);
+			//auto leftFootPose = OpenVRTracking::DevicePose();
+			ikSolverLeftLeg->solve(leftFootPose.position, leftFootPose.rotation);
+			hierarchicSkeleton->leftFoot.setConfidence(highConf);
+
+			// Solve RightLeg
+			auto rightFootPose = getAssignedPose(Joint::FOOT_R);
+			//auto rightFootPose = OpenVRTracking::DevicePose();
+			ikSolverRightLeg->solve(rightFootPose.position, rightFootPose.rotation);
+			hierarchicSkeleton->rightFoot.setConfidence(highConf);
+
+			// Solve LeftArm
+			auto leftHandPose = getAssignedPose(Joint::HAND_L);
+			//auto leftHandPose = OpenVRTracking::DevicePose();
+			ikSolverLeftArm->solve(leftHandPose.position, leftHandPose.rotation);
+			hierarchicSkeleton->leftHand.setConfidence(highConf);
+
+			// Solve RightArm
+			auto rightHandPose = getAssignedPose(Joint::HAND_R);
+			//auto rightHandPose = OpenVRTracking::DevicePose();
+			ikSolverRightArm->solve(rightHandPose.position, rightHandPose.rotation);
+			hierarchicSkeleton->rightHand.setConfidence(highConf);
+			
+
+			// Lock skeleton mutex
+			skeletonPoolTrackingLock.lock();
+
+			hierarchicSkeleton->insert(nullptr);
+
+			// Unlock skeleton mutex
+			skeletonPoolTrackingLock.unlock();
+			
+			//printOvrFPS();
+
+			/*
+			auto t2 = std::chrono::high_resolution_clock::now();
+			auto ms_int2 = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1);
+			Console::logWarning(std::to_string(ms_int2.count()));
+			*/
+		}
+	}
+}
+
 void OVRTracker::track() {
 
+	isTrackReading = true;
+
+	/*
 	// Poll Events in the Tracking System
 	trackingSystem->pollEvents();
 
@@ -192,6 +298,7 @@ void OVRTracker::track() {
 
 	// Update device poses
 	trackingSystem->receiveDevicePoses();
+	*/
 
 	// Calibration toggle & Calibration
 	if (GetAsyncKeyState('C') & 0x8000) { // C
@@ -228,78 +335,77 @@ void OVRTracker::track() {
 		}
 	}
 
+	
+	pointCollectionTrackingLock.lock();
+	auto poses = trackingSystem->Poses;
+	pointCollectionTrackingLock.unlock();
+	
+	skeletonPoolTrackingLock.lock();
+	skeleton->m_joints = hierarchicSkeleton->skeleton.m_joints;
+	//hierarchicSkeleton->insert(nullptr);
+	skeletonPoolTrackingLock.unlock();
+
+
 	// Lock point collection mutex
 	m_pointCollectionLock.lock();
-
-	// Loop over all devices and update point collection
-	for (int i = 0; i < trackingSystem->Devices.size(); i++) {
-
+	
+	int i = 0;
+	for (auto& device : trackingSystem->Devices) {
 		// Read pose from device index
-		const auto& pose = trackingSystem->Poses[i];
-
-		// Convert Rotation
-		//Quaternionf rotation = eulerToQuaternion(m_properties->rotationOffset);
-		//rotation = Quaternionf(-rotation.y(), -rotation.z(), rotation.w(), rotation.x());
-		//rotation = Quaternionf(-rotation.y(), -rotation.z(), -rotation.w(), -rotation.x());
-
-		//rotation = Quaternionf(-rotation.y(), -rotation.z(), rotation.w(), rotation.x());
+		const auto& pose = poses[i];
 
 		Quaternionf rotation = Quaternionf(-pose.rotation.y(), -pose.rotation.z(), pose.rotation.w(), pose.rotation.x());
 
 		Vector3f position = pose.position;
-		if (trackingSystem->Devices[i].index == 4) {
-			position = oneEuroFilter.filter(position);
+		if (device.index == 2) {
+			position = positionOneEuroFilter.filter(position);
 		}
 
-		// Update point position & rotation
-		m_pointCollection.updatePoint(trackingSystem->Devices[i].index, position, rotation);
-	}
+		m_pointCollection.updatePoint(device.index, position, rotation);
 
+		i++;
+	}
+	
 	// Unlock point collection mutex
 	m_pointCollectionLock.unlock();
-
+	
 	extractSkeleton();
 	
 	m_isDataAvailable = true;
+
+	isTrackReading = false;
 }
 
 void OVRTracker::extractSkeleton() {
 
-	//true as long new skeleton will be added to the pool
-	bool createNewSkeleton = true;
+	/*
+	skeletonPoolTrackingLock.lock();
+	skeleton->m_joints = hierarchicSkeleton->skeleton.m_joints;
+	//hierarchicSkeleton->insert(nullptr)
+	skeletonPoolTrackingLock.unlock();
+	*/
 
 	m_skeletonPoolLock.lock();
 
+	// Get id from tracker properties
 	int id = m_properties->id;
 
-	//loop through all MMH skeletons
-	for (auto itPoolSkeletons = m_skeletonPool.begin(); itPoolSkeletons != m_skeletonPool.end(); itPoolSkeletons++) {
+	// Try to find skeleton with wid
+	auto skeletonIterator = m_skeletonPool.find(id);
 
-		//when skeletons have the same ID, the skeleton is alredy in pool and no new skeleton has to be created
-		//if (skData.skeletonID == itPoolSkeletons->first)
-		if (id == itPoolSkeletons->first) {
+	// Skeleton found -> update joints
+	if (skeletonIterator != m_skeletonPool.end()) {
 
-			Skeleton* currSkeleton = parseSkeleton(id, &m_skeletonPool[id]);
-
-			if (currSkeleton != nullptr) {
-				// update all joints of existing skeleon with new data
-				m_skeletonPool[id].m_joints = currSkeleton->m_joints;
-			}
-
-			//delete temp skeleton object 
-			delete currSkeleton;
-
-			// no new skeleton has to be created
-			createNewSkeleton = false;
-
-			break;
-		}
+		// update all joints of existing skeleon with new data
+		skeletonIterator->second.m_joints = skeleton->m_joints;
+		//skeletonIterator->second.m_joints = hierarchicSkeleton->skeleton.m_joints;
+		//m_skeletonPool[id].m_joints = hierarchicSkeleton->skeleton.m_joints;		
 	}
+	// Skeleton not found -> insert new
+	else {
 
-	// create new skeleton
-	if (createNewSkeleton) {
-
-		m_skeletonPool.insert({ id,  *parseSkeleton(id, NULL) });
+		m_skeletonPool.insert({ id, *skeleton });
+		//m_skeletonPool.insert({ id,  hierarchicSkeleton->skeleton });
 
 		//skeleton was added, so UI updates
 		m_hasSkeletonPoolChanged = true;
@@ -312,15 +418,15 @@ void OVRTracker::extractSkeleton() {
 
 Skeleton* OVRTracker::parseSkeleton(int id, Skeleton* oldSkeletonData) {
 
-	// skeleton data container
-	Skeleton* currSkeleton = new Skeleton(id);
 
-	Joint::JointConfidence highConf = Joint::JointConfidence::HIGH;
-	Joint::JointConfidence lowConf = Joint::JointConfidence::LOW;
+	Skeleton* currSkeleton = new Skeleton(id);
+	hierarchicSkeleton->insert(currSkeleton);
+
+	return currSkeleton;
+
 
 	// Solve Hip
 	auto hipPose = getAssignedPose(Joint::HIPS);
-
 	if (DEBUG_SKELETON_ROT) {
 		hipPose.rotation = eulerToQuaternion(m_properties->rotationOffset);
 	}
