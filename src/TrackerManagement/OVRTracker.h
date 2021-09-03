@@ -53,11 +53,6 @@ private:
 	void init();
 
 	/*!
-	 * updade method used for tracker thread
-	 */
-	void update() override;
-
-	/*!
 	 * main tracking method
 	 * captures one frame of body tracking data and saves all data in the skeleton pool
 	 */

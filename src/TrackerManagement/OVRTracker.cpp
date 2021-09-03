@@ -72,24 +72,6 @@ void OVRTracker::init() {
 	//trackingSystem.LoadDevices();
 }
 
-void OVRTracker::update() {
-
-	// track while tracking is true
-	while (m_isTracking) {
-		// get new data
-		track();
-
-		//send Skeleton Pool to NetworkManager
-		m_networkManager->sendSkeletonPool(&getSkeletonPoolCache(), m_properties->id, m_trackingCycles);
-	}
-
-	//clean skeleton pool after tracking
-	clean();
-
-	//skeleton was added/removed, so UI updates
-	m_hasSkeletonPoolChanged = true;
-}
-
 void OVRTracker::track() {
 
 	float mmhDelay = 0.0f; // 0.05f;
@@ -171,16 +153,10 @@ Skeleton* OVRTracker::parseSkeleton(int id, Skeleton* oldSkeletonData) {
 	Vector4f pos = Vector4f(0, 0, 0, 1);
 	Quaternionf rot = Quaternionf::Identity();
 
-	for (int i = 0; i < Joint::TOE_R; i++) {
+	for (int i = 0; i <= Joint::HEAD; i++) {
 		Joint::JointNames joint = Joint::JointNames(i);
-		switch (joint) {
-		case Joint::HEAD:
-			break;
 
-		default:
-			currSkeleton->m_joints.insert({ joint, Joint(pos, rot, medConf) });
-			break;
-		}
+		currSkeleton->m_joints.insert({ joint, Joint(pos, rot, medConf) });
 	}
 
 	return currSkeleton;
