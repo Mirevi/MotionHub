@@ -265,6 +265,18 @@ bool Tracker::readOffsetFromConfig()
 
 #pragma region protected_methods
 
+void printFPS() {
+	static std::chrono::time_point<std::chrono::steady_clock> oldTime = std::chrono::high_resolution_clock::now();
+	static int fps; fps++;
+
+	if (std::chrono::duration_cast<std::chrono::seconds>(std::chrono::high_resolution_clock::now() - oldTime) >= std::chrono::seconds{ 1 }) {
+		oldTime = std::chrono::high_resolution_clock::now();
+
+		Console::log("FPS: " + std::to_string(fps));
+		fps = 0;
+	}
+}
+
 void Tracker::update()
 {
 	// track while tracking is true
@@ -278,7 +290,10 @@ void Tracker::update()
 
 			// send Skeleton Pool to NetworkManager
 			if (m_networkManager != nullptr) m_networkManager->sendSkeletonPool(&m_skeletonPool, m_properties->id, m_trackingCycles);
+
+			printFPS();
 		}
+
 	}
 	//clean skeleton pool after tracking
 	clean();

@@ -117,6 +117,6 @@ void OsgBone::createLeafJoint()
 
 void OsgBone::updateStickManRenderingState(bool renderStickMan)
 {
-	std::cout << "In osgBone updateStickManRenderingState value is " << renderStickMan << std::endl;
+	//std::cout << "In osgBone updateStickManRenderingState value is " << renderStickMan << std::endl;
 	m_toggleStickManRendering = renderStickMan;
 }
