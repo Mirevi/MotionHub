@@ -76,7 +76,7 @@ public:
 	 * \param length the desired range
 	 * \return clamped position
 	 */
-	static Vector3f solveFABRIK(Vector3f firstPosition, Vector3f secondPosition, float length) {
+	static Vector3f solveFABRIK(const Vector3f& firstPosition, const Vector3f& secondPosition, const float length) {
 		return secondPosition + (firstPosition - secondPosition).normalized() * length;
 	}
 
@@ -88,7 +88,7 @@ public:
 	 * \param targetPosition the target position
 	 * \return rotation between two vectors: last - current & target - current
 	 */
-	static Quaternionf solveCCD(Vector3f currentPosition, Vector3f lastPosition, Vector3f targetPosition) {
+	static Quaternionf solveCCD(const Vector3f& currentPosition, const Vector3f& lastPosition, const Vector3f& targetPosition) {
 
 		// Store vectors from joint to head & target
 		Vector3f jointToLast = lastPosition - currentPosition;

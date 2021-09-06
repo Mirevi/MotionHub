@@ -182,7 +182,7 @@ public:
 
 	void ovrTrack();
 
-	bool isTrackReading;
+	std::atomic<bool> isTrackReading;
 
 	std::thread* m_ovrTrackingThread;
 

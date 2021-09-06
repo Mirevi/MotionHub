@@ -19,6 +19,9 @@ void Tracker::start()
 
 	//start new thread for update loop
 	m_trackingThread = new std::thread(&Tracker::update, this);
+
+	SetPriorityClass(m_trackingThread, HIGH_PRIORITY_CLASS);
+	SetThreadPriority(m_trackingThread, THREAD_PRIORITY_ABOVE_NORMAL);
 }
 
 void Tracker::stop()
@@ -312,7 +315,12 @@ void Tracker::update()
 				m_networkManager->sendPointPool(&m_pointCollection, m_properties->id);
 			}
 			
-			//printFPS();
+			if(shouldSleep) {
+				//std::this_thread::sleep_until(std::chrono::steady_clock::now() + std::chrono::milliseconds(2));
+			}
+
+			printFPS();
+			
 			/*
 			auto t2 = std::chrono::high_resolution_clock::now();
 			auto ms_int2 = std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1);

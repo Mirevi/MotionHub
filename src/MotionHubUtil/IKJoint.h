@@ -47,6 +47,10 @@ public:
 		Quaternionf jointToChildRotation = lookRotation(jointToChild, normal);
 		toJointSpace = rotationToSpace(jointRotation, jointToChildRotation);
 
+		setLength(jointToChild);
+	}
+
+	void setLength(Vector3f jointToChild) {
 		// Store square joint length & sqrMagnitude for calculations/checks
 		squaredNorm = jointToChild.squaredNorm();
 		length = sqrtf(squaredNorm);

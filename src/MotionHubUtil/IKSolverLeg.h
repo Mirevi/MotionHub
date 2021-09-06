@@ -73,6 +73,8 @@ protected:
 	 */
 	virtual void untwist();
 
+	virtual Vector3f calculateMiddleDirection();
+
 	/*!
 	 * The "Forward Reaching" pass of the FABRIK algorithm.
 	 * Iterate backward through all joints and clamp their position to be within the range of the joint above it

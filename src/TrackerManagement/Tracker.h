@@ -388,4 +388,12 @@ protected:
 
 	ConfigManager* m_configManager = nullptr;
 
+
+	std::atomic<bool> shouldSleep = false;
+
+public:
+
+	void setShouldSleep(bool sleep) {
+		shouldSleep = sleep;
+	}
 };

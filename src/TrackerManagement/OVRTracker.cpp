@@ -193,6 +193,8 @@ void printOvrFPS() {
 
 void OVRTracker::ovrTrack() {
 
+	return;
+
 	// track while tracking is true
 	while (m_isTracking) {
 		
@@ -268,6 +270,7 @@ void OVRTracker::ovrTrack() {
 			// Lock skeleton mutex
 			skeletonPoolTrackingLock.lock();
 
+			// Update Skeleton
 			hierarchicSkeleton->insert(nullptr);
 
 			// Unlock skeleton mutex
@@ -288,17 +291,15 @@ void OVRTracker::track() {
 
 	isTrackReading = true;
 
-	/*
 	// Poll Events in the Tracking System
 	trackingSystem->pollEvents();
 
 	// Update prediction time
-	float mmhDelay = 0.0f; // 0.05f;
+	float mmhDelay = 0.01f; // 0.005f;
 	trackingSystem->setPredictionTime(mmhDelay);
 
 	// Update device poses
 	trackingSystem->receiveDevicePoses();
-	*/
 
 	// Calibration toggle & Calibration
 	if (GetAsyncKeyState('C') & 0x8000) { // C
@@ -335,6 +336,46 @@ void OVRTracker::track() {
 		}
 	}
 
+
+
+
+	auto highConf = Joint::JointConfidence::HIGH;
+
+	auto hipPose = getAssignedPose(Joint::HIPS);
+	ikSolverHip->solve(hipPose.position, hipPose.rotation);
+	hierarchicSkeleton->hips.setConfidence(highConf);
+
+	// Solve Spine
+	auto headPose = getAssignedPose(Joint::HEAD);
+	ikSolverSpine->solve(headPose.position, headPose.rotation);
+	hierarchicSkeleton->head.setConfidence(highConf);
+
+	// Solve LeftLeg
+	auto leftFootPose = getAssignedPose(Joint::FOOT_L);
+	ikSolverLeftLeg->solve(leftFootPose.position, leftFootPose.rotation);
+	hierarchicSkeleton->leftFoot.setConfidence(highConf);
+
+	// Solve RightLeg
+	auto rightFootPose = getAssignedPose(Joint::FOOT_R);
+	ikSolverRightLeg->solve(rightFootPose.position, rightFootPose.rotation);
+	hierarchicSkeleton->rightFoot.setConfidence(highConf);
+
+	// Solve LeftArm
+	auto leftHandPose = getAssignedPose(Joint::HAND_L);
+	ikSolverLeftArm->solve(leftHandPose.position, leftHandPose.rotation);
+	hierarchicSkeleton->leftHand.setConfidence(highConf);
+
+	// Solve RightArm
+	auto rightHandPose = getAssignedPose(Joint::HAND_R);
+	ikSolverRightArm->solve(rightHandPose.position, rightHandPose.rotation);
+	hierarchicSkeleton->rightHand.setConfidence(highConf);
+
+
+	hierarchicSkeleton->insert(nullptr);
+
+
+
+
 	
 	pointCollectionTrackingLock.lock();
 	auto poses = trackingSystem->Poses;
@@ -357,9 +398,9 @@ void OVRTracker::track() {
 		Quaternionf rotation = Quaternionf(-pose.rotation.y(), -pose.rotation.z(), pose.rotation.w(), pose.rotation.x());
 
 		Vector3f position = pose.position;
-		if (device.index == 2) {
+		/*if (device.index == 2) {
 			position = positionOneEuroFilter.filter(position);
-		}
+		}*/
 
 		m_pointCollection.updatePoint(device.index, position, rotation);
 
@@ -398,14 +439,11 @@ void OVRTracker::extractSkeleton() {
 
 		// update all joints of existing skeleon with new data
 		skeletonIterator->second.m_joints = skeleton->m_joints;
-		//skeletonIterator->second.m_joints = hierarchicSkeleton->skeleton.m_joints;
-		//m_skeletonPool[id].m_joints = hierarchicSkeleton->skeleton.m_joints;		
 	}
 	// Skeleton not found -> insert new
 	else {
 
 		m_skeletonPool.insert({ id, *skeleton });
-		//m_skeletonPool.insert({ id,  hierarchicSkeleton->skeleton });
 
 		//skeleton was added, so UI updates
 		m_hasSkeletonPoolChanged = true;

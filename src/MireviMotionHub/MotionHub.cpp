@@ -3,6 +3,10 @@
 
 //#include "RenderManagement/QTOsgWidget.h"
 
+static bool STOP_UI_REFRESH_ESC = true;
+static bool uiRefreshAllowed = true;
+static bool escapePressed = false;
+
 MotionHub::MotionHub(int argc, char** argv)
 {
 
@@ -81,7 +85,30 @@ void MotionHub::update()
 		//Timer::reset();
 
 		// process ui input
-		m_uiManager->processInput();
+		if (!STOP_UI_REFRESH_ESC) {
+			m_uiManager->processInput();
+		}
+		else {
+			if (GetAsyncKeyState(VK_ESCAPE) & 0x8000) {
+				if (!escapePressed) {
+					uiRefreshAllowed = !uiRefreshAllowed;
+					Console::logWarning("UI-Events allowed: " + std::to_string(uiRefreshAllowed));
+				}
+
+				escapePressed = true;
+			}
+			else {
+				escapePressed = false;
+			}
+
+			if (m_trackerManager->isTracking()) {
+				if(uiRefreshAllowed) m_uiManager->processInput();
+			}
+			else {
+				m_uiManager->processInput();
+			}
+		}
+		
 		m_uiManager->getMainWindow()->updateConsole();
 
 		// send skeleton pools to other managers
@@ -97,6 +124,8 @@ void MotionHub::update()
 			// iterates through all tracker located in the tracker manager tracker pool 
 			for (auto itTracker = trackerPoolTempCopy.begin(); itTracker != trackerPoolTempCopy.end(); itTracker++)
 			{
+
+				(*itTracker)->setShouldSleep(!uiEventsAllowed);
 
 				// check if new skeleton data is available
 				if ((*itTracker)->isDataAvailable())
