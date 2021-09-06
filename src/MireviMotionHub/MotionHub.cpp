@@ -125,7 +125,7 @@ void MotionHub::update()
 			for (auto itTracker = trackerPoolTempCopy.begin(); itTracker != trackerPoolTempCopy.end(); itTracker++)
 			{
 
-				(*itTracker)->setShouldSleep(!uiEventsAllowed);
+				(*itTracker)->setShouldSleep(!uiRefreshAllowed);
 
 				// check if new skeleton data is available
 				if ((*itTracker)->isDataAvailable())

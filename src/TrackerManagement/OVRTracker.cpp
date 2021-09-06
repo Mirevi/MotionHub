@@ -1,6 +1,7 @@
 #include "OVRTracker.h"
 
-static bool DEBUG_DEVICES_ON_START = false;
+
+static bool DEBUG_DEVICES_ON_START = true;
 
 static bool DEBUG_HMD = false;
 
@@ -342,6 +343,11 @@ void OVRTracker::track() {
 	auto highConf = Joint::JointConfidence::HIGH;
 
 	auto hipPose = getAssignedPose(Joint::HIPS);
+
+	if (DEBUG_SKELETON_ROT) {
+		hipPose.rotation = eulerToQuaternion(m_properties->rotationOffset);
+	}
+
 	ikSolverHip->solve(hipPose.position, hipPose.rotation);
 	hierarchicSkeleton->hips.setConfidence(highConf);
 
@@ -583,6 +589,8 @@ void OVRTracker::calibrate() {
 	calibrateDeviceRoles();
 
 	calibrateDeviceToJointOffsets();
+
+	calibrateScale();
 }
 
 void OVRTracker::calibrateDeviceRoles() {
@@ -663,6 +671,11 @@ void OVRTracker::calibrateScale() {
 	// Write scale to config for Unity process
 	config->writeScale(hierarchicSkeleton->getScale());
 	Console::logError(toString(distance(betweenToes, newBetweenToes)));
+
+	ikSolverLeftLeg->refresh();
+	ikSolverRightLeg->refresh();
+	ikSolverLeftArm->refresh();
+	ikSolverRightArm->refresh();
 }
 
 void OVRTracker::notify(Subject* subject) {

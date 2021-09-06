@@ -33,6 +33,8 @@ public:
 	 */
 	virtual void init() override;
 
+	void refresh();
+
 	/*!
 	 * Solves current chain to a given position & rotation
 	 *
@@ -167,7 +169,11 @@ protected:
 	Vector3f defaultNormal;
 	Vector3f defaultLocalNormal;
 
+	Quaternionf upperDefaultRotation;
+	Quaternionf middleDefaultRotation;
 	Quaternionf lowerDefaultRotation;
 
 	Vector3f startPosition;
+
+	float length;
 };

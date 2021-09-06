@@ -143,7 +143,7 @@ static Quaternionf fromToRotation(Quaternionf from, Quaternionf to) {
  * \param to second direction
  * \return the transformed direction
  */
-static Quaternionf fromToRotation(Vector3f from, Vector3f to) {
+static Quaternionf fromToRotation(const Vector3f& from, const Vector3f& to) {
 	return Quaternionf::FromTwoVectors(from, to);
 }
 

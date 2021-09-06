@@ -17,29 +17,29 @@
     </OpenVR>
     <OpenVR id="Controller:HAND_L">
         <position>0.000000 0.010000 -0.150000</position>
-        <rotation>154.235306 -74.318359 136.309326</rotation>
-        <space>51.776535 112.719078 -58.829121</space>
+        <rotation>166.002853 -82.422829 150.936844</rotation>
+        <space>65.923035 106.767792 -64.211464</space>
     </OpenVR>
     <OpenVR id="Controller:HAND_R">
         <position>0.000000 0.010000 -0.150000</position>
-        <rotation>19.560118 95.062050 -14.226104</rotation>
-        <space>48.852409 -97.299728 47.973846</space>
+        <rotation>12.413131 94.202179 -10.563360</rotation>
+        <space>26.174118 -94.583527 25.909893</space>
     </OpenVR>
     <OpenVR id="Tracker:HIPS">
         <position>0.000000 0.012449 -0.100000</position>
-        <rotation>12.982428 177.307022 11.511131</rotation>
-        <space>11.896399 -179.999985 13.183477</space>
-        <scale>1.018216 0.956000 0.956000</scale>
+        <rotation>10.811466 178.628922 6.829821</rotation>
+        <space>8.417197 -179.999985 9.816261</space>
+        <scale>1.065490 0.953829 0.953829</scale>
     </OpenVR>
     <OpenVR id="Tracker:FOOT_L">
         <position>0.008000 -0.036000 -0.016000</position>
-        <rotation>88.647522 164.581635 50.500530</rotation>
-        <space>85.003624 128.363205 20.357580</space>
+        <rotation>95.443939 177.735550 32.157776</rotation>
+        <space>77.546310 131.743896 24.146080</space>
     </OpenVR>
     <OpenVR id="Tracker:FOOT_R">
         <position>0.008000 -0.036000 -0.016000</position>
-        <rotation>84.824417 -159.161148 -52.775322</rotation>
-        <space>83.415314 -129.753113 -25.674124</space>
+        <rotation>66.623161 -159.619568 -74.231689</rotation>
+        <space>87.237152 -128.947281 -18.426462</space>
     </OpenVR>
     <OpenVR id="LHR-774276F7">
         <joint>HEAD</joint>

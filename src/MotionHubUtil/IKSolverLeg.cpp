@@ -39,8 +39,24 @@ void IKSolverLeg::init() {
 	upperJoint.init(upperToMiddle, defaultNormal);
 	middleJoint.init(middleToLower, defaultNormal);
 
+	length = (upperJoint.length + middleJoint.length);
+
 	// Save default state for joints
 	saveDefaultState();
+}
+
+void IKSolverLeg::refresh() {
+
+	Vector3f middlePosition = middleJoint.getPosition();
+	Vector3f lowerPosition = lowerJoint.getPosition();
+
+	Vector3f upperToMiddle = middlePosition - upperJoint.getPosition();
+	Vector3f middleToLower = lowerPosition - middlePosition;
+
+	upperJoint.setLength(upperToMiddle);
+	middleJoint.setLength(middleToLower);
+
+	length = (upperJoint.length + middleJoint.length);
 }
 
 void IKSolverLeg::saveDefaultState() {
@@ -51,7 +67,9 @@ void IKSolverLeg::saveDefaultState() {
 	lowerJoint.saveDefaultState();
 
 	// Save lower default rotation
-	lowerDefaultRotation = lowerJoint.joint->getGlobalRotation();	
+	upperDefaultRotation = upperJoint.joint->getGlobalRotation();
+	middleDefaultRotation = middleJoint.joint->getGlobalRotation();
+	lowerDefaultRotation = lowerJoint.joint->getGlobalRotation();
 }
 
 void IKSolverLeg::loadDefaultState() {
@@ -67,13 +85,17 @@ void IKSolverLeg::solve(Vector3f position, Quaternionf rotation) {
 	// TODO: Debug raus
 	clearDebugLines();
 
-
 	// TODO: position auf length beschränken
-	//Vector3f upperPosition = upperJoint.getPosition();
-	//float length = (upperJoint.length + middleJoint.length) * 0.999f;
+	/*
+	Vector3f upperPosition = upperJoint.getPosition();
+	Vector3f upperToTarget = position - upperPosition;
+	if (upperToTarget.norm() >= (length * 0.98f)) {
+		upperToTarget = upperToTarget.normalized() * length * 0.98f;
+	}
 
 	// Call solve from base class
-	//IKSolver::solve((position - upperPosition).normalized() * length + upperPosition, rotation);
+	IKSolver::solve(upperToTarget + upperPosition, rotation);
+	*/
 	IKSolver::solve(position, rotation);
 
 	// Restore default state
@@ -96,7 +118,7 @@ void IKSolverLeg::solve(Vector3f position, Quaternionf rotation) {
 	//debugDrawLine(upperJoint.getPosition(), upperJoint.getPosition() + normal.normalized(), Vector3f(0.5f, 0.5f, 0.5f));
 
 	Quaternionf targetRotation = rotation * lowerDefaultRotation.inverse();
-	Vector3f targetNormal = targetRotation * defaultNormal;
+	Vector3f targetNormal = targetRotation * defaultLocalNormal;
 	normal = lerp(normal, targetNormal, bendToTargetRotationWeight);
 
 	// TODO: Debug raus
@@ -216,10 +238,18 @@ void IKSolverLeg::apply() {
 
 void IKSolverLeg::untwist() {
 
-	// TODO: confident angle? 180° flips
+	return;
+
+	// TODO: Wie Shoulder default rotation beruecksichtigen
+
+	// TODO: confident angle? 180 flips
 
 	// TODO: Debug raus
 	if (lowerJoint.joint->getJointName() == Joint::FOOT_R) {
+		return;
+	}
+	
+	if (GetAsyncKeyState(VK_CONTROL) & 0x8000) {
 		return;
 	}
 
@@ -251,9 +281,6 @@ void IKSolverLeg::untwist() {
 
 		// Decompose twist in relation to middle forward axis
 		Quaternionf twist = decomposeTwist(diff, middleForward);
-
-		// TODO: UpperRotation anstatt upperTwist? 
-		//Quaternionf middleTwist = upperTwist.slerp(middleUntwistWeight, twist);
 
 		// Lerp twist by configured weight
 		Quaternionf middleTwist = middleRotation.slerp(middleUntwistWeight, twist);
