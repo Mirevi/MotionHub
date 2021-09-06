@@ -128,7 +128,7 @@ void OVRTracker::start() {
 	}
 
 
-	positionOneEuroFilter = Vector3OneEuroFilter(10.0, 1.0, 0.0, 1.0);
+	positionOneEuroFilter = Vector3OneEuroFilter(10.0f, 1.0f, 0.0f, 1.0f);
 
 
 	m_ovrTrackingThread = new std::thread(&OVRTracker::ovrTrack, this);
