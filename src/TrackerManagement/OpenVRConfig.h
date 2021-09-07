@@ -53,6 +53,10 @@ public:
 
 	Vector3f readScale();
 
+	void writePredictionTime(float predictionTime);
+
+	float readPredictionTime();
+
 	/*!
 	 * Writes default offsets & device:joint assignments to config
 	 */

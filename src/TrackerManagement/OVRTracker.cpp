@@ -70,6 +70,14 @@ OVRTracker::~OVRTracker() {
 
 void OVRTracker::start() {
 
+	// Update prediction time from config
+	//float mmhDelay = 0.0255f; // 0.0255f
+	float predictionTime = config->readPredictionTime();
+	if (predictionTime > 0.0f) {
+		Console::log("OVRTracker::start: prediction time " + toString(predictionTime));
+		trackingSystem->setPredictionTime(predictionTime);
+	}
+
 	// start tracking in tracking system
 	trackingSystem->start();
 
@@ -81,7 +89,7 @@ void OVRTracker::start() {
 
 	//skeleton was added/removed, so UI updates
 	m_hasSkeletonPoolChanged = true;
-	
+
 	// Refresh config from xml
 	m_configManager->refresh();
 
@@ -198,11 +206,11 @@ void OVRTracker::ovrTrack() {
 
 	// track while tracking is true
 	while (m_isTracking) {
-		
+
 		if (isTrackReading && m_isEnabled) {
 			//std::this_thread::sleep_for(std::chrono::milliseconds(1));
 		}
-		
+
 		if (!isTrackReading && m_isEnabled) {
 			//auto t1 = std::chrono::high_resolution_clock::now();
 
@@ -266,7 +274,7 @@ void OVRTracker::ovrTrack() {
 			//auto rightHandPose = OpenVRTracking::DevicePose();
 			ikSolverRightArm->solve(rightHandPose.position, rightHandPose.rotation);
 			hierarchicSkeleton->rightHand.setConfidence(highConf);
-			
+
 
 			// Lock skeleton mutex
 			skeletonPoolTrackingLock.lock();
@@ -276,7 +284,7 @@ void OVRTracker::ovrTrack() {
 
 			// Unlock skeleton mutex
 			skeletonPoolTrackingLock.unlock();
-			
+
 			//printOvrFPS();
 
 			/*
@@ -295,17 +303,12 @@ void OVRTracker::track() {
 	// Poll Events in the Tracking System
 	trackingSystem->pollEvents();
 
-	// Update prediction time
-	// TODO: Aus Config lesen
-	float mmhDelay = 0.0255f; // 0.0255f
-	trackingSystem->setPredictionTime(mmhDelay);
-
 	// Update device poses
 	trackingSystem->receiveDevicePoses();
 
 	// Calibration toggle & Calibration
 	if (GetAsyncKeyState('C') & 0x8000) { // C
-		Console::log("Should Calibrate");
+		Console::log("OVRTracker: Should Calibrate");
 		shouldCalibrate = true;
 	}
 	else if (GetAsyncKeyState(0x20) & 0x8000) { // Space
@@ -327,9 +330,6 @@ void OVRTracker::track() {
 	}
 	else if (GetAsyncKeyState(VK_NUMPAD9) & 0x8000) {
 		calibrateDeviceToJointOffset(Joint::HAND_R);
-	}
-	else if (GetAsyncKeyState(VK_RETURN) & 0x8000) { // Enter
-		Console::log("Enter");
 	}
 	else if (GetAsyncKeyState('S') & 0x8000) { // S
 		if (shouldCalibrate) {
@@ -383,11 +383,11 @@ void OVRTracker::track() {
 
 
 
-	
+
 	pointCollectionTrackingLock.lock();
 	auto poses = trackingSystem->Poses;
 	pointCollectionTrackingLock.unlock();
-	
+
 	skeletonPoolTrackingLock.lock();
 	skeleton->m_joints = hierarchicSkeleton->skeleton.m_joints;
 	//hierarchicSkeleton->insert(nullptr);
@@ -396,7 +396,7 @@ void OVRTracker::track() {
 
 	// Lock point collection mutex
 	m_pointCollectionLock.lock();
-	
+
 	int i = 0;
 	for (auto& device : trackingSystem->Devices) {
 		// Read pose from device index
@@ -413,12 +413,12 @@ void OVRTracker::track() {
 
 		i++;
 	}
-	
+
 	// Unlock point collection mutex
 	m_pointCollectionLock.unlock();
-	
+
 	extractSkeleton();
-	
+
 	m_isDataAvailable = true;
 
 	isTrackReading = false;
@@ -592,6 +592,8 @@ void OVRTracker::calibrate() {
 	calibrateDeviceToJointOffsets();
 
 	calibrateScale();
+
+	Console::log("OVRTracker::calibrate");
 }
 
 void OVRTracker::calibrateDeviceRoles() {
@@ -644,6 +646,7 @@ void OVRTracker::calibrateScale() {
 	Vector3f scale = config->getCalibratedScale(hierarchicSkeleton);
 	if (scale.x() < 0.0f || scale.y() < 0.0f) {
 		Console::logError("OVRTracker::calibrateScale: Invalid Scale x or y < 0");
+		return;
 	}
 
 	hierarchicSkeleton->setScale(scale);

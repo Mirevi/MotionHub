@@ -96,6 +96,20 @@ Vector3f OpenVRConfig::readScale() {
 	return scale;
 }
 
+void OpenVRConfig::writePredictionTime(float predictionTime) {
+	configManager->writeFloat("prediction", predictionTime, trackerType);
+}
+
+float OpenVRConfig::readPredictionTime() {
+	float predictionTime;
+
+	if (!configManager->readFloat("prediction", predictionTime, trackerType)) {
+		predictionTime = 0.0f;
+	};
+
+	return predictionTime;
+}
+
 void OpenVRConfig::write() {
 
 	// TODO: Config leeren?

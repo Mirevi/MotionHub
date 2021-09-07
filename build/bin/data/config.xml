@@ -11,6 +11,7 @@
         <position>0.000000 0.000000 0.000000</position>
         <rotation>0.000000 0.000000 0.000000</rotation>
         <scale>1.000000 1.000000 1.000000</scale>
+        <prediction>0.025500</prediction>
     </OpenVR>
     <OpenVR id="HMD:HEAD">
         <position>0.000000 -0.140000 -0.140000</position>
