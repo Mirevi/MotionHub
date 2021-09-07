@@ -2,6 +2,10 @@
 #include "MotionHub.h"
 
 //#include "RenderManagement/QTOsgWidget.h"
+static bool STOP_UI_REFRESH_ESC = true;
+static bool isUiRefreshAllowed = true;
+static bool isEscapePressed = false;
+
 
 MotionHub::MotionHub(int argc, char** argv)
 {
@@ -80,7 +84,42 @@ void MotionHub::update()
 		//Timer::reset();
 
 		// process ui input
-		m_uiManager->processInput();
+		if (!STOP_UI_REFRESH_ESC) {
+			m_uiManager->processInput();
+		}
+		// ui input processing can be skipped
+		else {
+
+			// Is ESC Key pressed in this frame?
+			if (GetAsyncKeyState(VK_ESCAPE) & 0x8000) {
+
+				// Was escape pressed in last frame?
+				if (!isEscapePressed) {
+					// Toggle ui refresh flag
+					isUiRefreshAllowed = !isUiRefreshAllowed;
+					Console::logWarning("UI-Events allowed: " + std::to_string(isUiRefreshAllowed));
+				}
+
+				// set escape pressed flag
+				isEscapePressed = true;
+			}
+			else {
+				// reset escape pressed flag
+				isEscapePressed = false;
+			}
+
+			// Is tracker manager tracking?
+			if (m_trackerManager->isTracking()) {
+				// process ui input if allowed
+				if (isUiRefreshAllowed) m_uiManager->processInput();
+			}
+			else {
+				// process ui input
+				m_uiManager->processInput();
+			}
+		}
+
+		// update console
 		m_uiManager->getMainWindow()->updateConsole();
 
 		// send skeleton pools to other managers
