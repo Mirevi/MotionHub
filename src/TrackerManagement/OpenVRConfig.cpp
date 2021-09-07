@@ -303,6 +303,7 @@ void OpenVRConfig::calibrateDeviceToJointOffset(Joint::JointNames joint) {
 
 	// Try to get hip & requested joint pose
 	auto hipDevicePose = getPose(Joint::HIPS);
+	//auto headDevicePose = getPose(Joint::HEAD);
 	auto jointDevicePose = getPose(joint);
 
 	// Exit if hip pose is null
@@ -317,14 +318,25 @@ void OpenVRConfig::calibrateDeviceToJointOffset(Joint::JointNames joint) {
 		return;
 	}
 
-	// create forward axis from hip pose rotation & -forward vector
-	Vector3f forward = hipDevicePose->rotation * Vector3f(0, 0, -1);
-
 	// create world up vector
 	Vector3f worldUp = Vector3f(0, 1, 0);
 
+	// create forward axis from hip pose rotation & -forward vector
+	Vector3f forward = hipDevicePose->rotation * Vector3f(0, 0, -1);
+
 	// project foward vector on world up
 	forward = projectOnPlane(forward, worldUp);
+
+	/*
+	Vector3f hmdForward = headDevicePose->rotation * Vector3f(0, 0, 1);
+	hmdForward = projectOnPlane(hmdForward, worldUp);
+
+	if (fabs(signedAngle(forward, hmdForward, worldUp)) > 90.0f) {
+		forward = -forward;
+	}
+	*/
+
+	Console::log(std::to_string(signedAngle(Vector3f(0, 0, 1), forward, worldUp)));
 
 	// hip special case: forward must be flipped
 	if (joint == Joint::HIPS) {
