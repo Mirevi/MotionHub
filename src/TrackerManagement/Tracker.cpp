@@ -316,14 +316,14 @@ void Tracker::update()
 			}
 			
 			if(shouldSleep) {
-				//std::this_thread::sleep_until(std::chrono::steady_clock::now() + std::chrono::milliseconds(2));
+				std::this_thread::sleep_until(std::chrono::steady_clock::now() + std::chrono::milliseconds(1));
 			}
 
 			printFPS();
 			
 			/*
 			auto t2 = std::chrono::high_resolution_clock::now();
-			auto ms_int2 = std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1);
+			auto ms_int2 = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1);
 			Console::logWarning(std::to_string(ms_int2.count()));
 			*/
 		}

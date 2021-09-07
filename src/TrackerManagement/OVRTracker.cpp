@@ -296,7 +296,8 @@ void OVRTracker::track() {
 	trackingSystem->pollEvents();
 
 	// Update prediction time
-	float mmhDelay = 0.01f; // 0.005f;
+	// TODO: Aus Config lesen
+	float mmhDelay = 0.0255f; // 0.0255f
 	trackingSystem->setPredictionTime(mmhDelay);
 
 	// Update device poses
@@ -641,6 +642,10 @@ void OVRTracker::calibrateScale() {
 
 	// Scale Skeleton
 	Vector3f scale = config->getCalibratedScale(hierarchicSkeleton);
+	if (scale.x() < 0.0f || scale.y() < 0.0f) {
+		Console::logError("OVRTracker::calibrateScale: Invalid Scale x or y < 0");
+	}
+
 	hierarchicSkeleton->setScale(scale);
 
 	float afterScaleDist = distance(hierarchicSkeleton->leftHand.getGlobalPosition(), hierarchicSkeleton->rightHand.getGlobalPosition());
