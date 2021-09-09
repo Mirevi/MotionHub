@@ -72,9 +72,6 @@ public:
 		return lineList;
 	}
 
-	// TODO: Pointer
-	Vector3OneEuroFilter positionOneEuroFilter;
-
 private:
 
 	/*!

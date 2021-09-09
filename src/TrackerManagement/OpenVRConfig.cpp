@@ -363,13 +363,13 @@ Vector3f OpenVRConfig::getCalibratedScale(HierarchicSkeleton* hierarchicSkeleton
 	// Read scale from 
 	Vector3f scale = hierarchicSkeleton->getScale();
 
-	auto headPose = getPoseWithOffset(Joint::HEAD);
+	auto headPose = getPoseWithOffset(Joint::HEAD, false);
 	if (headPose.isPositionNull()) {
 		return scale;
 	}
 
-	auto leftHandPose = getPoseWithOffset(Joint::HAND_L);
-	auto rightHandPose = getPoseWithOffset(Joint::HAND_R);
+	auto leftHandPose = getPoseWithOffset(Joint::HAND_L, false);
+	auto rightHandPose = getPoseWithOffset(Joint::HAND_R, false);
 	if (leftHandPose.isPositionNull() || rightHandPose.isPositionNull()) {
 		return scale;
 	}
@@ -480,7 +480,7 @@ OpenVRTracking::DevicePose* OpenVRConfig::getPose(Joint::JointNames joint) {
 	}
 }
 
-OpenVRTracking::DevicePose OpenVRConfig::getPoseWithOffset(Joint::JointNames joint) {
+OpenVRTracking::DevicePose OpenVRConfig::getPoseWithOffset(Joint::JointNames joint, bool filter) {
 
 	// get container for specific joint
 	auto container = getContainer(joint);

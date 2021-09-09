@@ -3,6 +3,7 @@
 #include "MotionHubUtil/Exception.h"
 #include "MotionHubUtil/Console.h"
 #include "MotionHubUtil/Joint.h"
+#include "MotionHubUtil/OneEuroFilter.h"
 #include "OpenVRButtonSubject.h"
 
 #include <openvr_capi.h>
@@ -224,6 +225,13 @@ public:
 		ovrButtonSubject.removeObserver(observer);
 	}
 
+	DevicePose filter(int index, DevicePose& pose, TimeStamp timestamp = UndefinedTime) {
+		return DevicePose(
+			positionFilters[index].filter(pose.position, timestamp),
+			rotationFilters[index].filter(pose.rotation, timestamp)
+		);
+	}
+
 	/*!
 	 * Converts a device class to string
 	 */
@@ -255,6 +263,8 @@ public:
 	// collection for Devices transforms
 	std::vector<DevicePose> Poses;
 
+	std::vector<DevicePose> FilteredPoses;
+
 private:
 
 	void tryAddDevice(unsigned int deviceIndex);
@@ -272,6 +282,12 @@ private:
 	vr::TrackedDevicePose_t* devicePoses;
 
 	std::unordered_map<unsigned int, DevicePose*> deviceToPose;
+
+	std::unordered_map<unsigned int, DevicePose*> deviceToFilteredPose;
+
+
+	std::vector<Vector3OneEuroFilter> positionFilters;
+	std::vector<QuaternionOneEuroFilter> rotationFilters;
 
 	OpenVRButtonSubject ovrButtonSubject;
 };

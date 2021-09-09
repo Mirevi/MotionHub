@@ -68,7 +68,7 @@ public:
 
 	OpenVRTracking::DevicePose* getPose(Joint::JointNames joint);
 
-	OpenVRTracking::DevicePose getPoseWithOffset(Joint::JointNames joint);
+	OpenVRTracking::DevicePose getPoseWithOffset(Joint::JointNames joint, bool filter = true);
 
 	void setSpace(Joint::JointNames joint, Quaternionf space);
 

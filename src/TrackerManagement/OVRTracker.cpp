@@ -136,10 +136,6 @@ void OVRTracker::start() {
 		Console::log("");
 	}
 
-
-	positionOneEuroFilter = Vector3OneEuroFilter(10.0f, 1.0f, 0.0f, 1.0f);
-
-
 	m_ovrTrackingThread = new std::thread(&OVRTracker::ovrTrack, this);
 
 	// start tracking thread
@@ -638,8 +634,9 @@ void OVRTracker::calibrateScale() {
 	// Calculate position between feet
 	Vector3f betweenToes = lerp(hierarchicSkeleton->leftToe.getGlobalPosition(), hierarchicSkeleton->rightToe.getGlobalPosition(), 0.5f);
 
-	auto leftHandPose = config->getPoseWithOffset(Joint::HAND_L);
-	auto rightHandPose = config->getPoseWithOffset(Joint::HAND_R);
+	auto headPose = config->getPoseWithOffset(Joint::HEAD, false);
+	auto leftHandPose = config->getPoseWithOffset(Joint::HAND_L, false);
+	auto rightHandPose = config->getPoseWithOffset(Joint::HAND_R, false);
 
 	float controllerdistance = distance(leftHandPose.position, rightHandPose.position);
 	float beforeScaleDist = distance(hierarchicSkeleton->leftHand.getGlobalPosition(), hierarchicSkeleton->rightHand.getGlobalPosition());

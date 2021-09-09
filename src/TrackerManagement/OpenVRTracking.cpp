@@ -783,15 +783,35 @@ void OpenVRTracking::updateDevices() {
 	// Clear poses
 	Poses.clear();
 	deviceToPose.clear();
+	deviceToFilteredPose.clear();
+
+	// Clear filters
+	positionFilters.clear();
+	rotationFilters.clear();
 
 	// Loop over all Devices and create poses for each
 	for (const auto& device : Devices) {
 
-		// Create Empty Pose and insert at back
+		// Create Empty Pose and insert at back of Poses
 		Poses.emplace_back();
-
+		
 		// Cache pose pointer address
 		deviceToPose[device.index] = &(Poses[Poses.size() - 1]);
+
+		// Create Empty Pose and insert at back FilteredPoses
+		FilteredPoses.emplace_back();
+
+		if(device.index == 3) {
+		// Create position & rotation filters
+			positionFilters.emplace_back(Vector3OneEuroFilter(60, 1.0f, 0.0f, 1.0f));
+			rotationFilters.emplace_back(QuaternionOneEuroFilter(60, 1.0f, 0.0f, 1.0f));
+		}
+		else {
+			positionFilters.emplace_back(Vector3OneEuroFilter(120, 1.0f, 0.0f, 1.0f));
+			rotationFilters.emplace_back(QuaternionOneEuroFilter(120, 1.0f, 0.0f, 1.0f));
+		}
+		// Cache filtered pose pointer address
+		deviceToFilteredPose[device.index] = &(FilteredPoses[FilteredPoses.size() - 1]);
 
 		// Check for higher DeviceIndex
 		if (device.index >= trackedPoseCount) {
@@ -868,6 +888,16 @@ void OpenVRTracking::receiveDevicePoses() {
 	// Get predicted Tracking Pose and write to Pose Array
 	pVRSystem->GetDeviceToAbsoluteTrackingPose(vr::TrackingUniverseStanding, predictedSecondsFromNow, devicePoses, trackedPoseCount);
 
+	// Read microseconds from current date
+	long long microseconds = std::chrono::duration_cast<std::chrono::microseconds>(
+		std::chrono::system_clock::now().time_since_epoch()
+	).count();
+
+	//Console::log(std::to_string(microseconds) + " " + std::to_string(microseconds / 1000000.0));
+
+	// Create timestamp by converting microseconds to seconds
+	double timestamp = microseconds / 1000000.0;
+
 	// Loop over devices & convert Pose Array to MMH Format
 	for (int i = 0; i < Devices.size(); i++) {
 
@@ -876,8 +906,14 @@ void OpenVRTracking::receiveDevicePoses() {
 
 		// Only apply valid Poses
 		if (trackedPose.bPoseIsValid) {
+			auto& pose = Poses[i];
+
 			// Call copy constructor
-			Poses[i].extractPose(trackedPose.mDeviceToAbsoluteTracking);
+			pose.extractPose(trackedPose.mDeviceToAbsoluteTracking);
+
+			// Filter pose
+			//FilteredPoses[i] = filter(i, pose, timestamp);
+			FilteredPoses[i] = filter(i, pose);
 		}
 	}
 }

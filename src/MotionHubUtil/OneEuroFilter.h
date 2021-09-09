@@ -1,3 +1,5 @@
+#pragma once
+
 /* -*- coding: utf-8 -*-
  *
  * OneEuroFilter.cc -
@@ -54,18 +56,20 @@ private:
 	float y, a, s;
 	bool initialized;
 
-	void setAlpha(float alpha) {
-		if (alpha <= 0.0f || alpha > 1.0f)
-			throw std::range_error("alpha should be in (0.0., 1.0]");
-		a = alpha;
-	}
-
 public:
 
 	LowPassFilter(float alpha, float initval = 0.0f) {
 		y = s = initval;
 		setAlpha(alpha);
 		initialized = false;
+	}
+
+	void setAlpha(float alpha) {
+		if (alpha <= 0.0f || alpha > 1.0f) {
+			std::cout << std::to_string(alpha) << std::endl;
+			throw std::range_error("alpha should be in (0.0., 1.0]. alpha: " + std::to_string(alpha));
+		}
+		a = alpha;
 	}
 
 	float filter(float value) {
@@ -104,7 +108,7 @@ private:
 
 	float freq;
 	float mincutoff;
-	float beta_;
+	float beta;
 	float dcutoff;
 	LowPassFilter* x;
 	LowPassFilter* dx;
@@ -129,7 +133,7 @@ private:
 	}
 
 	void setBeta(float b) {
-		beta_ = b;
+		beta = b;
 	}
 
 	void setDerivateCutoff(float dc) {
@@ -144,26 +148,36 @@ public:
 		dx = nullptr;
 	}
 
-	OneEuroFilter(float freq, float mincutoff = 1.0f, float beta_ = 0.0f, float dcutoff = 1.0f) {
+	OneEuroFilter(float freq, float mincutoff = 1.0f, float beta = 0.0f, float dcutoff = 1.0f) {
 		setFrequency(freq);
 		setMinCutoff(mincutoff);
-		setBeta(beta_);
+		setBeta(beta);
 		setDerivateCutoff(dcutoff);
 		x = new LowPassFilter(alpha(mincutoff));
 		dx = new LowPassFilter(alpha(dcutoff));
 		lasttime = UndefinedTime;
 	}
 
+	void setParams(float freq, float mincutoff = 1.0f, float beta = 0.0f, float dcutoff = 1.0f) {
+		setFrequency(freq);
+		setMinCutoff(mincutoff);
+		setBeta(beta);
+		setDerivateCutoff(dcutoff);
+		x->setAlpha(alpha(mincutoff));
+		dx->setAlpha(alpha(dcutoff));
+	}
+
 	float filter(float value, TimeStamp timestamp = UndefinedTime) {
 		// update the sampling frequency based on timestamps
-		if (lasttime != UndefinedTime && timestamp != UndefinedTime)
+		if (lasttime != UndefinedTime && timestamp != UndefinedTime && timestamp > lasttime)
 			freq = 1.0f / (timestamp - lasttime);
 		lasttime = timestamp;
 		// estimate the current variation per second 
-		float dvalue = x->hasLastRawValue() ? (value - x->lastRawValue()) * freq : 0.0f; // FIXME: 0.0 or value?
+		//float dvalue = x->hasLastRawValue() ? (value - x->lastRawValue()) * freq : 0.0f; // FIXME: 0.0 or value?
+		float dvalue = x->hasLastRawValue() ? (value - x->lastRawValue()) * freq : value; // FIXME: 0.0 or value?
 		float edvalue = dx->filterWithAlpha(dvalue, alpha(dcutoff));
 		// use it to update the cutoff frequency
-		float cutoff = mincutoff + beta_ * fabs(edvalue);
+		float cutoff = mincutoff + beta * fabs(edvalue);
 		// filter the given value
 		currentValue = x->filterWithAlpha(value, alpha(cutoff));
 		return currentValue;
@@ -271,22 +285,30 @@ public:
 
 		Quaternionf output;
 
-		/*
-		if ((Vector4f(oneEuroFilters[0].value(), oneEuroFilters[1].value(), oneEuroFilters[2].value(), oneEuroFilters[3].value()).normalized()
-			- Vector4f(value.x(), value.y(), value.z(), value.w()).normalized()).squaredNorm() > 2.0f)
-		{
-			output.x() = oneEuroFilters[0].filter(-value.x(), timestamp);
-			output.y() = oneEuroFilters[1].filter(-value.y(), timestamp);
-			output.z() = oneEuroFilters[2].filter(-value.z(), timestamp);
-			output.w() = oneEuroFilters[2].filter(-value.w(), timestamp);
+		Vector4f prevAsVector = Vector4f(oneEuroFilters[0].value(), oneEuroFilters[1].value(), oneEuroFilters[2].value(), oneEuroFilters[3].value());
+		Vector4f valueAsVector = Vector4f(value.w(), value.x(), value.y(), value.z());
+
+		// Workaround that take into account that some input device sends
+		// quaternion that represent only a half of all possible values.
+		// this piece of code does not affect normal behaviour (when the
+		// input use the full range of possible values).
+
+		if ((prevAsVector.normalized() - valueAsVector.normalized()).squaredNorm() > 2.0f) {
+			output = Quaternionf(
+				oneEuroFilters[0].filter(-value.w(), timestamp),
+				oneEuroFilters[1].filter(-value.x(), timestamp),
+				oneEuroFilters[2].filter(-value.y(), timestamp),
+				oneEuroFilters[3].filter(-value.z(), timestamp)
+			);
 		}
 		else {
-		*/
-			output.x() = oneEuroFilters[0].filter(value.x(), timestamp);
-			output.y() = oneEuroFilters[1].filter(value.y(), timestamp);
-			output.z() = oneEuroFilters[2].filter(value.z(), timestamp);
-			output.w() = oneEuroFilters[3].filter(value.w(), timestamp);
-		//}
+			output = Quaternionf(
+				oneEuroFilters[0].filter(value.w(), timestamp),
+				oneEuroFilters[1].filter(value.x(), timestamp),
+				oneEuroFilters[2].filter(value.y(), timestamp),
+				oneEuroFilters[3].filter(value.z(), timestamp)
+			);
+		}
 
 		return output;
 	}
