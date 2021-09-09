@@ -630,6 +630,8 @@ void OVRTracker::calibrateDeviceToJointOffset(Joint::JointNames joint) {
 
 void OVRTracker::calibrateScale() {
 
+	Vector3f oldScale = hierarchicSkeleton->getScale();
+
 	// Reset Skeleton scale & pose
 	hierarchicSkeleton->reset();
 
@@ -644,7 +646,12 @@ void OVRTracker::calibrateScale() {
 
 	// Scale Skeleton
 	Vector3f scale = config->getCalibratedScale(hierarchicSkeleton);
+
+	// Is scale invalid?
 	if (scale.x() < 0.0f || scale.y() < 0.0f) {
+		// Revert scaling
+		hierarchicSkeleton->setScale(oldScale);
+
 		Console::logError("OVRTracker::calibrateScale: Invalid Scale x or y < 0");
 		return;
 	}
