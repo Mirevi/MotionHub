@@ -3,32 +3,10 @@
 #include <string>
 #include <thread>
 
-#include "QtWidgets/qprogressdialog.h"
+#include "QtWidgets/qprogressbar.h"
 #include <QtWidgets/QMainWindow>
 
 
-
-inline void startProgressBar(int maxValue, int* currentValue, std::string lable, QWidget* parentWidget/*, std::thread* threadHandle*/)
-{
-	//create progress bar
-	QProgressDialog progress(QString(lable.c_str()), "Cancel", 0, maxValue, parentWidget);
-	progress.setWindowModality(Qt::WindowModal);
-	//progress.show();
-
-	//while still saving
-	while (*currentValue < maxValue)
-	{
-		//update progress bar
-		progress.setValue(*currentValue);
-
-		if (progress.wasCanceled())
-			break;
-	}
-
-	progress.setValue(*currentValue);
-
-	/*threadHandle->join();*/
-}
 
 inline void addTrackerToWidget(int id, TrackerManager* refTrackerManager, QTreeWidget* refTreeWidgetTracker)
 {
