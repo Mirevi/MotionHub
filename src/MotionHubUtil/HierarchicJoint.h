@@ -80,6 +80,8 @@ public:
 
 	void setScale(Vector3f scale);
 
+	void invalidateGlobal();
+
 	Vector3f getScale();
 
 	Vector3f getRight();

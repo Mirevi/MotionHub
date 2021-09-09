@@ -380,7 +380,8 @@ Vector3f OpenVRConfig::getCalibratedScale(HierarchicSkeleton* hierarchicSkeleton
 
 	scale.y() *= yDelta;
 	scale.x() *= xDelta;
-	scale.z() = fminf(scale.x(), scale.y());
+	//scale.z() = fminf(scale.x(), scale.y());
+	scale.z() = scale.x();
 
 	return scale;
 }

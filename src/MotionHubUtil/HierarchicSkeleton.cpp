@@ -191,6 +191,10 @@ void HierarchicSkeleton::insert(Skeleton* currSkeleton) {
 void HierarchicSkeleton::setScale(Vector3f scale) {
 
 	hips.setScale(scale);
+
+	for (auto& joint : joints) {
+		joint->invalidateGlobal();
+	}
 }
 
 Vector3f HierarchicSkeleton::getScale() {

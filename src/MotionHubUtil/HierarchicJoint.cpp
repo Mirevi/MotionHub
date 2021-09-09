@@ -165,6 +165,10 @@ void HierarchicJoint::setScale(Vector3f scale) {
 	this->scale = scale;
 }
 
+void HierarchicJoint::invalidateGlobal() {
+	globalValid = false;
+}
+
 Vector3f HierarchicJoint::getScale() {
 	return scale;
 }
