@@ -1,5 +1,6 @@
 # CmakeLists for MireviMotionHub
 
+#include source files
 include_directories(${CMAKE_BINARY_DIR}/src 
 ${K4A_INCLUDE_DIR}
 ${K4ABT_INCLUDE_DIR}
@@ -13,6 +14,7 @@ ${OSG_INCLUDE_DIR}
 ${OpenVR_INCLUDE_DIR}
 )
 
+#include library pathes
 link_directories(${CMAKE_BINARY_DIR}/lib
 "${CMAKE_BINARY_DIR}/lib"
 ${K4A_LIBRARIES_DIR}

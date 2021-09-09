@@ -35,7 +35,7 @@ public:
 	 * \param position
 	 * \param rotation
 	 */
-	void parseJoint(Joint::JointNames name, Vector4f position, Quaternionf rotation, Joint::JointConfidence confidence);
+	//void parseJoint(Joint::JointNames name, Vector4f position, Quaternionf rotation, Joint::JointConfidence confidence);
 
 	/*!
 	 * getter for skeleton ID
@@ -44,6 +44,7 @@ public:
 	 */
 	int getSid();
 
+	//TODO: Make a setter and getter method
 	/*!
 	 * map of all skeleton joints with JointNames as keys
 	 * 

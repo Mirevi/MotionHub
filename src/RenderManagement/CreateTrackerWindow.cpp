@@ -136,7 +136,8 @@ void CreateTrackerWindow::slotSelectTrackerInDropdown(int id)
 std::string CreateTrackerWindow::getFilePath(const char* caption, const char* dir, const char* filter)
 {
 	// get file Path from Open File Dialog with caption, dir & filter
-	QString filePath = QFileDialog::getOpenFileName(this, caption, dir, tr(filter));
+	QString filePath = QFileDialog::getOpenFileName(this, caption, dir, tr(filter), 0, QFileDialog::DontUseNativeDialog);
+	//QString filePath = "C:/Users/phili/Downloads/MMH_FriJul21948092021.mmh";
 
 	// is file path valid?
 	if (filePath != NULL) {

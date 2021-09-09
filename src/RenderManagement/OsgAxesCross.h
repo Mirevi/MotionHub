@@ -4,11 +4,12 @@
 
 //class ConfigManager;
 
-class RenderManagement_DLL_import_export AxesCross : public osg::PositionAttitudeTransform
+class RenderManagement_DLL_import_export OsgAxesCross : public osg::PositionAttitudeTransform
 {
 public:
-    AxesCross(osg::ref_ptr<osg::Group> nodeToAttachTo);
-    ~AxesCross();
+	OsgAxesCross();
+	OsgAxesCross(osg::ref_ptr<osg::Group> nodeToAttachTo);
+    ~OsgAxesCross();
 
     void createGeometry();
 
@@ -36,6 +37,7 @@ public:
 	float getThicknessZ();
 
 private:
+	void initialize();
 	float m_scale;
 	float m_heightX;
 	float m_heightY;

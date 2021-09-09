@@ -23,6 +23,7 @@ MainWindow::MainWindow(TrackerManager* trackerManager, ConfigManager* configMana
 	traits->width = 640;
 	traits->height = 480;
 	traits->doubleBuffer = true;
+	traits->samples = 4; //Anti Alaising
 
 	osgQt::GraphicsWindowQt* gw = new osgQt::GraphicsWindowQt(traits.get());
 	m_osgQtWidget = new OsgQtWidget(gw, m_refTrackerManager, m_configManager);
@@ -686,6 +687,34 @@ void MainWindow::on_actionExit_triggered()
 	this->close();
 
 }
+
+
+// SLOT: check/uncheck axes in menu
+void MainWindow::on_actionToggle_JointAxes(bool menuValue)
+{
+
+	m_osgQtWidget->toggleJointAxes(menuValue);
+
+}
+
+
+// SLOT: check/uncheck stick man rendering in menu
+void MainWindow::on_actionToggle_StickManRendering(bool menuValue)
+{
+
+	m_osgQtWidget->toggleStickManRendering(menuValue);
+
+}
+
+
+// SLOT: check/uncheck solid bone rendering in menu
+void MainWindow::on_actionToggle_SolidBoneRendering(bool menuValue)
+{
+
+	m_osgQtWidget->toggleSolidBoneRendering(menuValue);
+
+}
+
 
 void MainWindow::slotNetworkSettings()
 {

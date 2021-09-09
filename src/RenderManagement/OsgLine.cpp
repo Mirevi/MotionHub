@@ -1,10 +1,10 @@
-#include "Line.h"
+#include "OsgLine.h"
 //#include "MotionHubUtil/ConfigManager.h"
 
 #include <osg/ShapeDrawable>
 #include <osg/Geode>
 
-Line::Line(osg::ref_ptr<osg::Group> nodeToAttachTo, bool isOverlay) : m_isDirty{ false }, m_isDisplayed{ true } {
+OsgLine::OsgLine(osg::ref_ptr<osg::Group> nodeToAttachTo, bool isOverlay) : m_isDirty{ false }, m_isDisplayed{ true } {
 
 	nodeToAttachTo->addChild(this);
 	m_scale = 1.0;
@@ -13,7 +13,7 @@ Line::Line(osg::ref_ptr<osg::Group> nodeToAttachTo, bool isOverlay) : m_isDirty{
 	
 }
 
-void Line::createGeometry(bool isOverlay)
+void OsgLine::createGeometry(bool isOverlay)
 {
 	//Setup  geometry to draw lines
 	m_geode = new osg::Geode();
@@ -39,7 +39,7 @@ void Line::createGeometry(bool isOverlay)
 	addChild(m_geode);
 }
 
-void Line::draw(osg::Vec3 start, osg::Vec3 end, osg::Vec4 colorStart, osg::Vec4 colorEnd) 
+void OsgLine::draw(osg::Vec3 start, osg::Vec3 end, osg::Vec4 colorStart, osg::Vec4 colorEnd)
 {
 	m_vertices->push_back(start);
 	m_vertices->push_back(end);
@@ -48,7 +48,7 @@ void Line::draw(osg::Vec3 start, osg::Vec3 end, osg::Vec4 colorStart, osg::Vec4 
 	m_isDirty = true;
 }
 
-void Line::redraw() 
+void OsgLine::redraw()
 {
 	if (!m_isDirty) return;
 	m_drawArrays->setFirst(0);
@@ -62,14 +62,22 @@ void Line::redraw()
 }
 
 
-void Line::clear()
+void OsgLine::clear()
 {
+	if(m_vertices)
+	{
 	m_vertices->clear();
-	m_colors->clear();
+	}
+
+	if(m_colors)
+	{
+		m_colors->clear();
+	}
+	
 }
 
 
-Line::~Line()
+OsgLine::~OsgLine()
 {
 
 }

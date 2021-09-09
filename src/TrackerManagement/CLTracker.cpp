@@ -148,9 +148,9 @@ std::pair<Joint::JointNames, bool> CLTracker::parseJointName(const CapturyJoint*
 	//else if (name == "LeftHandEE")
 	else if (name == "RightUpLeg")
 		return { Joint::JointNames::UPLEG_R, true };
-	else if (name == "RightFoot")
-		return { Joint::JointNames::LEG_R, true };
 	else if (name == "RightLeg")
+		return { Joint::JointNames::LEG_R, true };
+	else if (name == "RightFoot")
 		return { Joint::JointNames::FOOT_R, true };
 	else if (name == "RightToeBase")
 		return { Joint::JointNames::TOE_R, true };

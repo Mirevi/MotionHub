@@ -22,7 +22,7 @@
 #include <math.h>
 #include <MotionHubUtil/MMHmath.h>
 
-
+//TODO: rename this as RenderManager or add a RenderManager and incorparate MainWindow
 
 #define GET_VARIABLE_NAME(Variable) (#Variable)
 
@@ -101,10 +101,30 @@ private slots:
 	 * called when user clicks "remove" tracker button
 	 */
 	void slotRemoveTracker();
+
 	/*!
 	 *  called when user clicks on File->Exit
 	 */
 	void on_actionExit_triggered();
+	
+	/*!
+	*  called when user clicks on Menu->View->Show JointAxes
+	*/
+	void on_actionToggle_JointAxes(bool menuValue);
+
+	/*!
+	*  called when user clicks on Menu->View->Show Sick Man Rendering
+	*/
+	void on_actionToggle_StickManRendering(bool menuValue);
+
+	/*!
+	*  called when user clicks on Menu->View->Show Solid Bone Rendering
+	*/
+	void on_actionToggle_SolidBoneRendering(bool menuValue);
+
+
+
+
 	/*!
 	 * called when user clicks on tracker in list 
 	 * \param index id of clicked tracker
