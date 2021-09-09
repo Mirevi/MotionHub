@@ -347,11 +347,14 @@ void OpenVRConfig::calibrateDeviceToJointOffset(Joint::JointNames joint) {
 	Quaternionf rotation = lookRotation(forward, worldUp);
 
 	// set offset = rotation * inverse device rotation
-	Quaternionf offset = rotation * jointDevicePose->rotation.inverse();
+	//Quaternionf offset = rotation * jointDevicePose->rotation.inverse();
+	//Quaternionf offset = rotation;
+	Quaternionf offset = jointDevicePose->rotation.inverse() * rotation;
 	setOffsetRotation(joint, offset);
 
 	// set space = rotation in device space
-	Quaternionf space = rotationToSpace(jointDevicePose->rotation, rotation);
+	//Quaternionf space = rotationToSpace(jointDevicePose->rotation, rotation);
+	Quaternionf space = jointDevicePose->rotation.inverse();
 	setSpace(joint, space);
 }
 
@@ -502,7 +505,9 @@ OpenVRTracking::DevicePose OpenVRConfig::getPoseWithOffset(Joint::JointNames joi
 	pose.position += pose.rotation * container->offsetPosition;
 
 	// Add offset rotation if not null
-	pose.rotation = container->offsetRotation * (container->space * pose.rotation * container->space.inverse());
+	//pose.rotation = container->offsetRotation * (container->space * pose.rotation * container->space.inverse());
+
+	pose.rotation = pose.rotation * container->offsetRotation;
 
 	// Add user offset position
 	pose.position += pose.rotation * container->userOffsetPosition;

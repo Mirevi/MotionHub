@@ -153,7 +153,7 @@ void HierarchicSkeleton::reset() {
 	Quaternionf identity = Quaternionf::Identity();
 
 	for (auto joint : joints) {
-		joint->setLocalRotation(identity);
+		//joint->setLocalRotation(identity);
 	}
 }
 
