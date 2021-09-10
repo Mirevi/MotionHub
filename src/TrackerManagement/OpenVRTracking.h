@@ -173,6 +173,8 @@ public:
 	 * \return pointer to a pose, null if index was not found
 	 */
 	DevicePose* getPose(unsigned int deviceIndex);
+	
+	DevicePose* getFilteredPose(unsigned int deviceIndex);
 
 	/*!
 	 * updates the devices poses from the VR System

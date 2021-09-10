@@ -862,6 +862,16 @@ OpenVRTracking::DevicePose* OpenVRTracking::getPose(unsigned int deviceIndex) {
 	return nullptr;
 }
 
+OpenVRTracking::DevicePose* OpenVRTracking::getFilteredPose(unsigned int deviceIndex) {
+
+	auto poseIterator = deviceToFilteredPose.find(deviceIndex);
+	if (poseIterator != deviceToFilteredPose.end()) {
+		return (poseIterator->second);
+	}
+
+	return nullptr;
+}
+
 void OpenVRTracking::receiveDevicePoses() {
 
 	// Init prediction with zero

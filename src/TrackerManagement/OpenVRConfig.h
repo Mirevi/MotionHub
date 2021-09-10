@@ -115,5 +115,5 @@ private:
 
 	std::unordered_map<Joint::JointNames, IKContainer> jointToContainer;
 
-	IKContainer* getContainer(Joint::JointNames joint);
+	IKContainer* getIKContainer(Joint::JointNames joint);
 };

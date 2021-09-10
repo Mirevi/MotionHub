@@ -129,7 +129,7 @@ void OpenVRConfig::write() {
 		configManager->writeString("joint", Joint::toString(joint), trackerType, device.identifier);
 
 		// get container from assigned Joint
-		const auto container = getContainer(joint);
+		const auto container = getIKContainer(joint);
 
 		// Create key: device & joint
 		std::string configKey = generateKey(device.deviceClass, joint);
@@ -159,7 +159,7 @@ void OpenVRConfig::write() {
 void OpenVRConfig::setSpace(Joint::JointNames joint, Quaternionf space) {
 
 	// get container for specific joint & set value
-	auto container = getContainer(joint);
+	auto container = getIKContainer(joint);
 	if (container != nullptr) {
 		container->space = space;
 	}
@@ -168,7 +168,7 @@ void OpenVRConfig::setSpace(Joint::JointNames joint, Quaternionf space) {
 Vector3f OpenVRConfig::getOffsetPosition(Joint::JointNames joint) {
 
 	// get container for specific joint & return position
-	auto container = getContainer(joint);
+	auto container = getIKContainer(joint);
 	if (container != nullptr) {
 		return container->offsetPosition;
 	}
@@ -179,7 +179,7 @@ Vector3f OpenVRConfig::getOffsetPosition(Joint::JointNames joint) {
 void OpenVRConfig::setOffsetPosition(Joint::JointNames joint, Vector3f position) {
 
 	// get container for specific joint & set position
-	auto container = getContainer(joint);
+	auto container = getIKContainer(joint);
 	if (container != nullptr) {
 		container->offsetPosition = position;
 	}
@@ -188,7 +188,7 @@ void OpenVRConfig::setOffsetPosition(Joint::JointNames joint, Vector3f position)
 void OpenVRConfig::setOffsetRotation(Joint::JointNames joint, Quaternionf rotation) {
 
 	// get container for specific joint & set position
-	auto container = getContainer(joint);
+	auto container = getIKContainer(joint);
 	if (container != nullptr) {
 		container->offsetRotation = rotation;
 	}
@@ -197,7 +197,7 @@ void OpenVRConfig::setOffsetRotation(Joint::JointNames joint, Quaternionf rotati
 void OpenVRConfig::assignJointToDevice(Joint::JointNames joint, unsigned int deviceIndex) {
 
 	// get container for specific joint & set deviceIndex
-	auto container = getContainer(joint);
+	auto container = getIKContainer(joint);
 	if (container != nullptr) {
 		container->deviceIndex = deviceIndex;
 	}
@@ -208,7 +208,7 @@ void OpenVRConfig::assignJointToDevice(Joint::JointNames joint, unsigned int dev
 void OpenVRConfig::setUserOffsetPosition(Joint::JointNames joint, Vector3f position) {
 
 	// get container for specific joint & set position
-	auto container = getContainer(joint);
+	auto container = getIKContainer(joint);
 	if (container != nullptr) {
 		container->userOffsetPosition = position;
 	}
@@ -448,7 +448,7 @@ void OpenVRConfig::writeDefaults() {
 int OpenVRConfig::getDeviceIndex(Joint::JointNames joint) {
 
 	// get container for specific joint & return deviceIndex
-	auto container = getContainer(joint);
+	auto container = getIKContainer(joint);
 	if (container != nullptr) {
 		return container->deviceIndex;
 	}
@@ -483,14 +483,20 @@ OpenVRTracking::DevicePose* OpenVRConfig::getPose(Joint::JointNames joint) {
 OpenVRTracking::DevicePose OpenVRConfig::getPoseWithOffset(Joint::JointNames joint, bool filter) {
 
 	// get container for specific joint
-	auto container = getContainer(joint);
+	auto container = getIKContainer(joint);
 
 	// Init empty device pose
 	auto pose = OpenVRTracking::DevicePose();
 
 	// Get the pose from config & tracking system 
-	auto devicePose = trackingSystem->getPose(container->deviceIndex);
-
+	OpenVRTracking::DevicePose* devicePose;
+	if (filter) {
+		trackingSystem->getFilteredPose(container->deviceIndex);
+	}
+	else {
+		trackingSystem->getPose(container->deviceIndex);
+	}
+	
 	// Return empty pose if not found
 	if (devicePose == nullptr) {
 		return pose;
@@ -521,7 +527,7 @@ std::string OpenVRConfig::generateKey(OpenVRTracking::DeviceClass deviceClass, J
 	return OpenVRTracking::toString(deviceClass) + ":" + Joint::toString(joint);
 }
 
-IKContainer* OpenVRConfig::getContainer(Joint::JointNames joint) {
+IKContainer* OpenVRConfig::getIKContainer(Joint::JointNames joint) {
 
 	auto containerIterator = jointToContainer.find(joint);
 
