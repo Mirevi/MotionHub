@@ -911,6 +911,10 @@ void OpenVRTracking::receiveDevicePoses() {
 			// Call copy constructor
 			pose.extractPose(trackedPose.mDeviceToAbsoluteTracking);
 
+			// Apply Tracking offsets
+			pose.position = applyOffset(pose.position);
+			pose.rotation = applyOffset(pose.rotation);
+
 			// Filter pose
 			//FilteredPoses[i] = filter(i, pose, timestamp);
 			FilteredPoses[i] = filter(i, pose);

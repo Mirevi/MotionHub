@@ -61,6 +61,8 @@ OVRTracker::OVRTracker(int id, NetworkManager* networkManager, ConfigManager* co
 
 	// Initialize OpenVR, Config & IK Solvers
 	init();
+
+	readOffsetFromConfig();
 }
 
 OVRTracker::~OVRTracker() {
@@ -293,6 +295,8 @@ void OVRTracker::ovrTrack() {
 }
 
 void OVRTracker::track() {
+
+	trackingSystem->setOffsets(m_properties->positionOffset, m_rotationOffset, m_properties->scaleOffset);
 
 	isTrackReading = true;
 

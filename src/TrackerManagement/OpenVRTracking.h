@@ -255,6 +255,28 @@ public:
 		return type;
 	}
 
+	void setOffsets(Vector3f positionOffset, Quaternionf rotationOffset, Vector3f scaleOffset) {
+
+		this->positionOffset = positionOffset;
+		this->rotationOffset = rotationOffset;
+		this->scaleOffset = scaleOffset;
+	}
+
+
+	private:
+
+		Vector3f applyOffset(Vector3f pos) {
+
+			return rotationOffset * pos.cwiseProduct(scaleOffset) + positionOffset;
+		}
+
+		Quaternionf applyOffset(Quaternionf rot) {
+
+			if (scaleOffset.x() < 0) rot.x() *= -1;
+			if (scaleOffset.y() < 0) rot.y() *= -1;
+			if (scaleOffset.z() < 0) rot.z() *= -1;
+			return rotationOffset * rot;
+		}
 public:
 
 	// collection for Devices
@@ -290,4 +312,8 @@ private:
 	std::vector<QuaternionOneEuroFilter> rotationFilters;
 
 	OpenVRButtonSubject ovrButtonSubject;
+
+	Vector3f positionOffset = Vector3f::Zero();
+	Quaternionf rotationOffset = Quaternionf::Identity();
+	Vector3f scaleOffset = Vector3f::Ones();
 };
