@@ -1,5 +1,16 @@
 # CmakeLists for NetworkManagement
 
+if(BUILD_WITH_MULTI_PROCESSOR_COMPILER)
+	include(ProcessorCount)
+	ProcessorCount(N)
+	if(NOT N EQUAL 0)
+		SET(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   /MP${N} ")
+		SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP${N} ")
+		SET(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS} /MP${N}")
+		SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP${N}")
+	endif()
+endif()
+
 #OSCpack
 include_directories(${CMAKE_BINARY_DIR}/src ${OSCp_INCLUDE_DIR})
 link_directories(${CMAKE_BINARY_DIR}/lib "${CMAKE_BINARY_DIR}/lib" ${OSCp_LIBRARIES_DIR})

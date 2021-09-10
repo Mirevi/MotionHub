@@ -1,5 +1,16 @@
 # CmakeLists for MotionHubUtil
 
+if(BUILD_WITH_MULTI_PROCESSOR_COMPILER)
+	include(ProcessorCount)
+	ProcessorCount(N)
+	if(NOT N EQUAL 0)
+		SET(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   /MP${N} ")
+		SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP${N} ")
+		SET(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS} /MP${N}")
+		SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP${N}")
+	endif()
+endif()
+
 file(GLOB_RECURSE MotionHubUtil_HEADER "${CMAKE_CURRENT_SRC_DIR}" *.h)
 file(GLOB_RECURSE MotionHubUtil_SRC "${CMAKE_CURRENT_SRC_DIR}" *.cpp)
 

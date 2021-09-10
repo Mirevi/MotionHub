@@ -1,5 +1,16 @@
 # CmakeLists for TrackerManagement
 
+if(BUILD_WITH_MULTI_PROCESSOR_COMPILER)
+	include(ProcessorCount)
+	ProcessorCount(N)
+	if(NOT N EQUAL 0)
+		SET(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   /MP${N} ")
+		SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP${N} ")
+		SET(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS} /MP${N}")
+		SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP${N}")
+	endif()
+endif()
+
 #include internal source files
 include_directories(${CMAKE_BINARY_DIR}/src/MotionHubUtil 
 ${CMAKE_BINARY_DIR}/src/RenderManagement)

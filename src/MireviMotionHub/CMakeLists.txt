@@ -1,5 +1,16 @@
 # CmakeLists for MireviMotionHub
 
+if(BUILD_WITH_MULTI_PROCESSOR_COMPILER)
+	include(ProcessorCount)
+	ProcessorCount(N)
+	if(NOT N EQUAL 0)
+		SET(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   /MP${N} ")
+		SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP${N} ")
+		SET(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS} /MP${N}")
+		SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP${N}")
+	endif()
+endif()
+
 #include source files
 include_directories(${CMAKE_BINARY_DIR}/src 
 ${K4A_INCLUDE_DIR}
@@ -44,8 +55,6 @@ file(GLOB_RECURSE MotionHub_HEADER "${CMAKE_CURRENT_SRC_DIR}" *.h)
 file(GLOB_RECURSE MotionHub_SRC "${CMAKE_CURRENT_SRC_DIR}" *.cpp)
 file(GLOB_RECURSE MotionHub_RC "${CMAKE_CURRENT_SRC_DIR}" *.rc)
 file(GLOB_RECURSE MotionHub_QRC "${CMAKE_CURRENT_SRC_DIR}/../RenderManagement/" *.qrc)
-
-
 add_executable(MireviMotionHub ${MotionHub_HEADER} ${MotionHub_SRC} ${MotionHub_QRC} ${MotionHub_RC})
 
 target_link_libraries(MireviMotionHub

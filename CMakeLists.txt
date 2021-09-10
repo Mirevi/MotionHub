@@ -154,6 +154,15 @@ file(COPY ${CURRENT_DEPS_PATH}/bin/win64/openvr_api.dll DESTINATION ${CMAKE_BINA
 file(COPY ${CURRENT_DEPS_PATH}/bin/win64/openvr_api.dll.sig DESTINATION ${CMAKE_BINARY_DIR}/bin)
 file(COPY ${CURRENT_DEPS_PATH}/bin/win64/openvr_api.pdb DESTINATION ${CMAKE_BINARY_DIR}/bin)
 
+option(BUILD_WITH_MULTI_PROCESSOR_COMPILER "Faster build but can lead to erros during build such as stops." ON)
+if(BUILD_WITH_MULTI_PROCESSOR_COMPILER)
+	include(ProcessorCount)
+	ProcessorCount(N)
+	message(STATUS "Multi Processor Compiler (/MP) for Visual Studio activated. Found ${N} logical cores.")
+else()
+	message(STATUS "Multi Processor Compiler (/MP) for Visual Studio deactivated.")
+endif()
+
 # Add subdir with additional CMakeLists.txt and files
 add_subdirectory("${CMAKE_SOURCE_DIR}/src/MireviMotionHub") # CMake look for further CMakeLists.txt in that directory
 add_subdirectory("${CMAKE_SOURCE_DIR}/src/TrackerManagement")
@@ -209,5 +218,5 @@ file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/bin/data/)
 
 set_target_properties(MireviMotionHub PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT MireviMotionHub)
-# set(CMAKE_BUILD_TYPE RelWithDebInfo" CACHE STRING "Build type (default RelWithDepInfo)" FORCE)
+set(CMAKE_BUILD_TYPE "RelWithDebInfo" CACHE STRING "Build type (default RelWithDepInfo)" FORCE)
 
