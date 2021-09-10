@@ -173,12 +173,15 @@ void RecordingSession::save(int* progression)
 	if ((int)error == 0)
 	{
 		Console::log("RecordingSession::save(): Session saved as: " + filename);
+
+
 	}
 	else
 	{	
 		Console::logError("RecordingSession::save(): Error code " + std::to_string((int)error) + ", filepath = " + filename);
 	}
 
+	m_frames.clear();
 
 }
 

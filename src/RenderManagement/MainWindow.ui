@@ -608,20 +608,7 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
         <string>Tracker Controls</string>
        </property>
        <layout class="QGridLayout" name="gridLayout_4">
-        <item row="0" column="0">
-         <widget class="QPushButton" name="btn_addTracker">
-          <property name="cursor">
-           <cursorShape>PointingHandCursor</cursorShape>
-          </property>
-          <property name="toolTip">
-           <string>Add Tracker</string>
-          </property>
-          <property name="text">
-           <string>Add</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="1">
+        <item row="1" column="1">
          <widget class="QPushButton" name="btn_addGroup">
           <property name="font">
            <font>
@@ -639,23 +626,7 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
           </property>
          </widget>
         </item>
-        <item row="0" column="2">
-         <widget class="QPushButton" name="btn_removeTracker">
-          <property name="enabled">
-           <bool>true</bool>
-          </property>
-          <property name="cursor">
-           <cursorShape>PointingHandCursor</cursorShape>
-          </property>
-          <property name="toolTip">
-           <string>Remove Tracker</string>
-          </property>
-          <property name="text">
-           <string>Remove</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="3">
+        <item row="1" column="3">
          <widget class="QPushButton" name="btn_startTracker">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -681,7 +652,36 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
           </property>
          </widget>
         </item>
-        <item row="0" column="4">
+        <item row="1" column="2">
+         <widget class="QPushButton" name="btn_removeTracker">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="cursor">
+           <cursorShape>PointingHandCursor</cursorShape>
+          </property>
+          <property name="toolTip">
+           <string>Remove Tracker</string>
+          </property>
+          <property name="text">
+           <string>Remove</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QPushButton" name="btn_addTracker">
+          <property name="cursor">
+           <cursorShape>PointingHandCursor</cursorShape>
+          </property>
+          <property name="toolTip">
+           <string>Add Tracker</string>
+          </property>
+          <property name="text">
+           <string>Add</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="4">
          <widget class="QPushButton" name="btn_Record">
           <property name="enabled">
            <bool>false</bool>
@@ -707,6 +707,13 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
           </property>
           <property name="flat">
            <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0" colspan="5">
+         <widget class="QProgressBar" name="progressBar_save">
+          <property name="value">
+           <number>0</number>
           </property>
          </widget>
         </item>

@@ -45,6 +45,8 @@ MainWindow::MainWindow(TrackerManager* trackerManager, ConfigManager* configMana
 	//sets the Timeline visible
 	m_mmhTimeline->show();
 
+	//hides progressbar
+	ui->progressBar_save->hide();
 
 
 
@@ -1261,10 +1263,6 @@ void MainWindow::setTimelineValue(float totalTime, int frameIdx, int numFrames)
 
 void MainWindow::saveRecord()
 {
-	
-	//std::thread* progressionThread = new std::thread(&MainWindow::progressionBarThread, this);
-	//progressionThread->detach();
-
 
 	Recorder::instance().stopRecording(&m_recordSaveProgression);
 
@@ -1294,11 +1292,19 @@ void MainWindow::Record(bool showProgressionBar)
 
 			if (showProgressionBar)
 			{
-				startProgressBar(Recorder::instance().getFrameCount(), &m_recordSaveProgression, "Save Recording Session...", this);
-				//std::thread* progressionThread = new std::thread(&startProgressBar, Recorder::instance().getFrameCount(), &m_recordSaveProgression, "Save Recording Session...", this);
-				//progressionThread->detach();
-			}
 
+				ui->progressBar_save->setMaximum(max);
+				ui->progressBar_save->show();
+
+
+				//std::thread* progThread = new std::thread(&MainWindow::startProgressBar, this, max, &m_recordSaveProgression, ui->progressBar_save);
+				////std::thread* progThread = new std::thread(&MainWindow::startProgressBar, this, max, &m_recordSaveProgression, ui->progressBar_save);
+				//progThread->detach();
+
+				startProgressBar(max, &m_recordSaveProgression, ui->progressBar_save);
+
+
+			}
 		}
 		else
 		{
@@ -1315,4 +1321,23 @@ void MainWindow::Record(bool showProgressionBar)
 	{
 		Console::logError("Recording is Playmode only!");
 	}
+}
+
+
+
+void MainWindow::startProgressBar(int maxValue, int* currentValue, QProgressBar* barWidget)
+{
+
+
+
+
+	while (*currentValue < Recorder::instance().getFrameCount())
+	{
+
+		barWidget->setValue(*currentValue);
+
+	}
+
+
+	barWidget->hide();
 }

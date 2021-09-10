@@ -273,4 +273,6 @@ private:
 	int m_recordSaveProgression;
 
 
+	void startProgressBar(int maxValue, int* currentValue, QProgressBar* barWidget);
+
 };
