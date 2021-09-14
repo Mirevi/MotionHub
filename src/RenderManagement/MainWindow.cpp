@@ -501,6 +501,10 @@ void MainWindow::slotToggleTracking()
 	}
 	else
 	{
+		if (Recorder::instance().isRecording())
+		{
+			Record();
+		}
 
 		m_refTrackerManager->stopTracker(); // stop tracking if true
 		//m_timelineActive = false;
