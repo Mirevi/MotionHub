@@ -98,6 +98,29 @@ public:
 		return fromToRotation(jointToLast, jointToTarget);
 	}
 
+
+	static Vector3f calcInverseKinematic(Vector3f start, Vector3f end, float length0, float length1, Vector3f up) {
+		Vector3f startToEnd = (end - start);
+		
+		float length = startToEnd.norm();
+
+		float ld = (length1 * length1 - length0 * length0 + length * length) / (2 * length);
+
+		float h = length1 * length1 - ld * ld;
+		h = h >= 0 ? sqrtf(h) : 0;
+
+		Vector3f forward = startToEnd.normalized();
+		Vector3f right = up.cross(forward).normalized();
+
+		up = forward.cross(right).normalized();
+
+		//if (basti2) {
+		// ! GUT mit normal
+		//return (end - ld * forward + h * up) - right;
+		//}
+		return end - ld * forward + h * up;
+	}
+
 protected:
 
 	/*!
@@ -113,6 +136,8 @@ protected:
 protected:
 
 	Vector3f targetPosition;
+
+	Vector3f solvePosition;
 
 	Quaternionf targetRotation;
 };

@@ -80,6 +80,23 @@ void IKSolverLeg::loadDefaultState() {
 	lowerJoint.loadDefaultState();
 }
 
+void IKSolverLeg::updateNormal() {
+
+	// TODO: Fallunterscheidung mit und ohne Bend Goal
+	//if (bend == nullptr) {
+
+	Vector3f currentNormal = upperJoint.getRotation() * defaultLocalNormal;
+
+	Quaternionf rotation = targetRotation * lowerDefaultRotation.inverse();
+	Vector3f targetNormal = rotation * defaultLocalNormal;
+
+	// slerp 
+	normal = slerp(currentNormal.normalized(), targetNormal.normalized(), bendToTargetRotationWeight);
+	
+	// normalize normal
+	normal = normal.normalized();
+}
+
 void IKSolverLeg::solve(Vector3f position, Quaternionf rotation) {
 
 	// TODO: Debug raus
@@ -106,6 +123,10 @@ void IKSolverLeg::solve(Vector3f position, Quaternionf rotation) {
 		joint->saveSolvedPosition();
 	}
 
+	// update normal
+	updateNormal();
+
+	/*
 	// Update normal from current rotation 
 	normal = upperJoint.getRotation() * defaultLocalNormal;
 
@@ -119,19 +140,52 @@ void IKSolverLeg::solve(Vector3f position, Quaternionf rotation) {
 
 	Quaternionf targetRotation = rotation * lowerDefaultRotation.inverse();
 	Vector3f targetNormal = targetRotation * defaultLocalNormal;
-	normal = lerp(normal, targetNormal, bendToTargetRotationWeight);
+	normal = slerp(normal.normalized(), targetNormal.normalized(), bendToTargetRotationWeight);
+
+	Quaternionf toLocalSpace = rotationToSpace(lowerDefaultRotation, targetRotation);
+
+	Quaternionf rf = decomposeTwist(targetRotation * upperJoint.getRotation().inverse(), targetRotation * Vector3f(0,0,1));
+
+	Vector3f localNormal = (toLocalSpace * normal).normalized();
+	Vector3f localTargetNormal = (toLocalSpace * rf * normal).normalized();
+
+	float angle = angleBetween(localNormal, localTargetNormal);
+
+	if (angle != 180.0f) {
+		lastLocalNormal = localTargetNormal;
+	}
+
+
+	Vector3f localAxis = localNormal.cross(lastLocalNormal).normalized();
+	if (angle < 30.0f) {
+		lastConfidendAxis = localAxis;
+	}
+
+	Quaternionf axisAngle = angleAxis(angle * bendToTargetRotationWeight, localAxis);
+
+	// Flip?
+	if (angleBetween(lastConfidendAxis, localAxis) > 90.0f) {
+
+		axisAngle = angleAxis(180 * bendToTargetRotationWeight, -localAxis);
+
+		float invAngle = angleBetween(-localNormal, lastLocalNormal);
+		axisAngle = angleAxis(-invAngle * bendToTargetRotationWeight, localAxis) * axisAngle;
+	}
+
+
+	normal = axisAngle * normal;
+	
+	//DebugPos3 = targetPosition + ((axisAngle * localNormal).normalized() * 0.1f);
+	DebugPos3 = targetPosition + (normal.normalized() * 0.1f);
 
 	// TODO: Debug raus
 	normal = normal.normalized();
 	//debugDrawLine(upperJoint.getPosition(), upperJoint.getPosition() + Vector3f(normal.x() * 0.5f, normal.y() * 0.5f, normal.z() * 0.5f), Vector3f(1.0f, 1.0f, 1.0f));
 	//debugDrawLine(upperJoint.getPosition(), upperJoint.getPosition() + targetNormal.normalized(), Vector3f(1.0f, 0.5f, 0.5f));
-
-
+	
 	//else {
 	//}
-
-	// normalize normal
-	normal = normal.normalized();
+	*/
 
 	// Solve IK
 	solve();
@@ -151,6 +205,29 @@ void IKSolverLeg::solve() {
 	// store start position
 	startPosition = upperJoint.getSolvedPosition();
 
+	// is target out of reach -> limit solve to avoid stretching & twitching
+	if (distance(startPosition, targetPosition) >= length) {
+		solvePosition = startPosition + (targetPosition - startPosition).normalized() * length;
+	}
+
+	// knee hint
+	Vector3f helpAxis = (lowerJoint.getSolvedPosition() - startPosition).cross(normal);
+	Vector3f kneeHint = calcInverseKinematic(startPosition, solvePosition, upperJoint.length, middleJoint.length, helpAxis);
+
+	// Move middle position to knee hint
+	Vector3f middlePosition = startPosition + (kneeHint - startPosition).normalized() * upperJoint.length;
+
+	if (!(GetAsyncKeyState(VK_LCONTROL) & 0x8000)) {
+		middleJoint.setSolvedPosition(middlePosition);
+	}
+
+	// Move lower position between knee hint & target
+	Vector3f lowerPosition = middlePosition + (solvePosition - middlePosition).normalized() * middleJoint.length;
+
+	if (!(GetAsyncKeyState(VK_LCONTROL) & 0x8000)) {
+		lowerJoint.setSolvedPosition(lowerPosition);
+	}
+
 	// init distance to target with "infinity"
 	float lastDistance = FLT_MAX;
 
@@ -162,7 +239,7 @@ void IKSolverLeg::solve() {
 		backwardReach();
 
 		// Calculate distance between target position & last joint position
-		float distanceToTarget = distance(targetPosition, lowerJoint.getSolvedPosition());
+		float distanceToTarget = distance(solvePosition, lowerJoint.getSolvedPosition());
 
 		// Break if tolerance distance is reached
 		if (distanceToTarget < distanceTolerance) {

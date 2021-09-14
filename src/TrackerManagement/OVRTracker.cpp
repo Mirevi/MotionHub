@@ -107,6 +107,9 @@ void OVRTracker::start() {
 	// set skeleton scale from config
 	hierarchicSkeleton->setScale(config->readScale());
 
+	// Init IKSolvers
+	initIKSolvers();
+
 	// Clear point collection
 	m_pointCollection.clear();
 
@@ -139,6 +142,11 @@ void OVRTracker::start() {
 	}
 
 	m_ovrTrackingThread = new std::thread(&OVRTracker::ovrTrack, this);
+
+	ikSolverLeftLeg->refresh();
+	ikSolverRightLeg->refresh();
+	ikSolverLeftArm->refresh();
+	ikSolverRightArm->refresh();
 
 	// start tracking thread
 	Tracker::start();
@@ -177,9 +185,6 @@ void OVRTracker::init() {
 	hierarchicSkeleton->init();
 
 	skeleton = new Skeleton(m_properties->id);
-
-	// Init IKSolvers
-	initIKSolvers();
 
 	// Init Config & try to write default config values
 	config = new OpenVRConfig(m_configManager, trackingSystem);

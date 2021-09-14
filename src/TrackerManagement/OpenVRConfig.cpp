@@ -205,6 +205,16 @@ void OpenVRConfig::assignJointToDevice(Joint::JointNames joint, unsigned int dev
 	deviceToJoint[deviceIndex] = joint;
 }
 
+Vector3f OpenVRConfig::getUserOffsetPosition(Joint::JointNames joint) {
+
+	auto container = getIKContainer(joint);
+	if (container != nullptr) {
+		return container->userOffsetPosition;
+	}
+
+	return Vector3f::Zero();
+}
+
 void OpenVRConfig::setUserOffsetPosition(Joint::JointNames joint, Vector3f position) {
 
 	// get container for specific joint & set position
@@ -489,12 +499,13 @@ OpenVRTracking::DevicePose OpenVRConfig::getPoseWithOffset(Joint::JointNames joi
 	auto pose = OpenVRTracking::DevicePose();
 
 	// Get the pose from config & tracking system 
-	OpenVRTracking::DevicePose* devicePose;
+	OpenVRTracking::DevicePose* devicePose = nullptr;
 	if (filter) {
-		trackingSystem->getFilteredPose(container->deviceIndex);
+		//devicePose = trackingSystem->getFilteredPose(container->deviceIndex);
+		devicePose = trackingSystem->getPose(container->deviceIndex);
 	}
 	else {
-		trackingSystem->getPose(container->deviceIndex);
+		devicePose = trackingSystem->getPose(container->deviceIndex);
 	}
 	
 	// Return empty pose if not found

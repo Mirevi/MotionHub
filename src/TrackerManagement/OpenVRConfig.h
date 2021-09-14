@@ -80,6 +80,8 @@ public:
 
 	void assignJointToDevice(Joint::JointNames joint, unsigned int deviceIndex);
 
+	Vector3f getUserOffsetPosition(Joint::JointNames joint);
+
 	void setUserOffsetPosition(Joint::JointNames joint, Vector3f position);
 
 	void clearJointToDevice();

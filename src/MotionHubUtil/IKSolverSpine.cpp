@@ -107,7 +107,7 @@ void IKSolverSpine::solveCCD() {
 		Quaternionf jointRotation = ccdJoints[i]->getRotation();
 
 		// Create rotation towards target with CCD
-		Quaternionf fromTo = IKSolver::solveCCD(jointPosition, headPosition, targetPosition);
+		Quaternionf fromTo = IKSolver::solveCCD(jointPosition, headPosition, solvePosition);
 
 		// Apply rotation to joint rotation
 		Quaternionf rotation = fromTo * jointRotation;

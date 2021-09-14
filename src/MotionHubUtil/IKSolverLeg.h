@@ -55,6 +55,9 @@ protected:
 	 */
 	virtual void loadDefaultState() override;
 
+
+	virtual void updateNormal();
+
 	/*!
 	 * Solves the chain with the FABRIK algorithm
 	 */
@@ -88,7 +91,7 @@ protected:
 
 			// The last joint should have the same position as the target position
 			if (i == joints.size() - 1) {
-				joints[i]->setSolvedPosition(targetPosition);
+				joints[i]->setSolvedPosition(solvePosition);
 			}
 			else {
 				// Solve position to be within the range of the joint above it
@@ -134,13 +137,13 @@ protected:
 public:
 
 	// Break Condition: Max allowed iterations 
-	int iterations = 10;
+	int iterations = 20; // 10
 
 	// Break Condition: How close lower joint should be to the target (in meters) 
-	float distanceTolerance = 0; // 0.001f
+	float distanceTolerance = 0.0001f; // 0.001f
 
 	// Break Condition: threshold for progress in beteween iterations (in meters) 
-	float progressTolerance = 0.0001f;
+	float progressTolerance = 0.000001f; // 0.00001f
 
 	// Bend weights for target rotation & goal
 	float bendToTargetRotationWeight = 0.5f;
