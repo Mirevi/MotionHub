@@ -57,6 +57,8 @@ void IKSolverLeg::refresh() {
 	middleJoint.setLength(middleToLower);
 
 	length = (upperJoint.length + middleJoint.length);
+
+	lastRotation = Quaternionf::Identity();
 }
 
 void IKSolverLeg::saveDefaultState() {
@@ -85,16 +87,43 @@ void IKSolverLeg::updateNormal() {
 	// TODO: Fallunterscheidung mit und ohne Bend Goal
 	//if (bend == nullptr) {
 
+	// Get normal from current rotation
 	Vector3f currentNormal = upperJoint.getRotation() * defaultLocalNormal;
 
+	// Get target normal relative to lower default rotation 
 	Quaternionf rotation = targetRotation * lowerDefaultRotation.inverse();
 	Vector3f targetNormal = rotation * defaultLocalNormal;
 
-	// slerp 
-	normal = slerp(currentNormal.normalized(), targetNormal.normalized(), bendToTargetRotationWeight);
-	
+	// is angle safe or last rotation not initialized?
+	if (angleBetween(currentNormal, targetNormal) <= 30.0f || lastRotation.isApprox(Quaternionf::Identity())) {
+
+		// update rotation & normal to current
+		lastRotation = rotation;
+		normal = slerpUnclamped(currentNormal.normalized(), targetNormal.normalized(), slerpTargetRotationDelta).normalized();
+	}
+
+	// Get rotation difference to last frame
+	Quaternionf rotationDifference = rotation * lastRotation.inverse();
+
+	// rotate normal by difference & configured rotation delta
+	normal = Quaternionf::Identity().slerp(slerpTargetRotationDelta, rotationDifference) * normal;
+
 	// normalize normal
 	normal = normal.normalized();
+
+	DebugPos1 = targetPosition + normal.normalized() * 0.1f;
+	DebugPos2 = targetPosition + currentNormal.normalized() * 0.1f;
+	DebugPos3 = targetPosition + targetNormal.normalized() * 0.1f;
+
+	// update last rotation 
+	lastRotation = rotation;
+
+	return;
+
+	float angle = angleBetween(currentNormal, targetNormal);
+	float invDelta = (360 - angle) / angle * -slerpTargetRotationDelta;
+
+	Vector3f invSlerp = slerpUnclamped(currentNormal.normalized(), targetNormal.normalized(), invDelta);
 }
 
 void IKSolverLeg::solve(Vector3f position, Quaternionf rotation) {
@@ -123,24 +152,30 @@ void IKSolverLeg::solve(Vector3f position, Quaternionf rotation) {
 		joint->saveSolvedPosition();
 	}
 
+	// is target out of reach -> limit solve to avoid stretching & twitching
+	Vector3f upperPosition = upperJoint.getPosition();
+	if (distance(upperPosition, targetPosition) >= length) {
+		solvePosition = upperPosition + (targetPosition - upperPosition).normalized() * length;
+	}
+
 	// update normal
 	updateNormal();
 
 	/*
-	// Update normal from current rotation 
+	// Update normal from current rotation
 	normal = upperJoint.getRotation() * defaultLocalNormal;
 
 	// TODO: Fallunterscheidung mit und ohne Bend Goal
 	//if (bend == nullptr) {
 
 	//Quaternionf rotation = targetRotation * lowerDefaultRotation.inverse();
-	//normal = Quaternionf::Identity().slerp(bendToTargetRotationWeight, rotation) * normal;
+	//normal = Quaternionf::Identity().slerp(slerpTargetRotationDelta, rotation) * normal;
 
 	//debugDrawLine(upperJoint.getPosition(), upperJoint.getPosition() + normal.normalized(), Vector3f(0.5f, 0.5f, 0.5f));
 
 	Quaternionf targetRotation = rotation * lowerDefaultRotation.inverse();
 	Vector3f targetNormal = targetRotation * defaultLocalNormal;
-	normal = slerp(normal.normalized(), targetNormal.normalized(), bendToTargetRotationWeight);
+	normal = slerp(normal.normalized(), targetNormal.normalized(), slerpTargetRotationDelta);
 
 	Quaternionf toLocalSpace = rotationToSpace(lowerDefaultRotation, targetRotation);
 
@@ -161,20 +196,20 @@ void IKSolverLeg::solve(Vector3f position, Quaternionf rotation) {
 		lastConfidendAxis = localAxis;
 	}
 
-	Quaternionf axisAngle = angleAxis(angle * bendToTargetRotationWeight, localAxis);
+	Quaternionf axisAngle = angleAxis(angle * slerpTargetRotationDelta, localAxis);
 
 	// Flip?
 	if (angleBetween(lastConfidendAxis, localAxis) > 90.0f) {
 
-		axisAngle = angleAxis(180 * bendToTargetRotationWeight, -localAxis);
+		axisAngle = angleAxis(180 * slerpTargetRotationDelta, -localAxis);
 
 		float invAngle = angleBetween(-localNormal, lastLocalNormal);
-		axisAngle = angleAxis(-invAngle * bendToTargetRotationWeight, localAxis) * axisAngle;
+		axisAngle = angleAxis(-invAngle * slerpTargetRotationDelta, localAxis) * axisAngle;
 	}
 
 
 	normal = axisAngle * normal;
-	
+
 	//DebugPos3 = targetPosition + ((axisAngle * localNormal).normalized() * 0.1f);
 	DebugPos3 = targetPosition + (normal.normalized() * 0.1f);
 
@@ -182,7 +217,7 @@ void IKSolverLeg::solve(Vector3f position, Quaternionf rotation) {
 	normal = normal.normalized();
 	//debugDrawLine(upperJoint.getPosition(), upperJoint.getPosition() + Vector3f(normal.x() * 0.5f, normal.y() * 0.5f, normal.z() * 0.5f), Vector3f(1.0f, 1.0f, 1.0f));
 	//debugDrawLine(upperJoint.getPosition(), upperJoint.getPosition() + targetNormal.normalized(), Vector3f(1.0f, 0.5f, 0.5f));
-	
+
 	//else {
 	//}
 	*/
@@ -205,13 +240,14 @@ void IKSolverLeg::solve() {
 	// store start position
 	startPosition = upperJoint.getSolvedPosition();
 
-	// is target out of reach -> limit solve to avoid stretching & twitching
+	// update solve position (shoulder modifies start position -> reach could be greater)
 	if (distance(startPosition, targetPosition) >= length) {
 		solvePosition = startPosition + (targetPosition - startPosition).normalized() * length;
 	}
 
 	// knee hint
-	Vector3f helpAxis = (lowerJoint.getSolvedPosition() - startPosition).cross(normal);
+	Vector3f helpAxis = (solvePosition - startPosition).cross(normal);
+	float upperLengthMultiplicator = 1.0001f;
 	Vector3f kneeHint = calcInverseKinematic(startPosition, solvePosition, upperJoint.length, middleJoint.length, helpAxis);
 
 	// Move middle position to knee hint
@@ -268,27 +304,25 @@ void IKSolverLeg::constraint() {
 	Vector3f middlePosition = middleJoint.getSolvedPosition();
 	Vector3f lowerPosition = lowerJoint.getSolvedPosition();
 
-	// Get direction the limb should point to
-	Vector3f middleDirection = calculateMiddleDirection();
-
 	// Get the rotation limb axis from upper to lower joint
 	Vector3f limbAxis = (lowerPosition - upperPosition).normalized();
 
 	// Store current direction
 	Vector3f currentDirection = (middlePosition - upperPosition).normalized();
 
+	// Get direction the limb should point to
+	Vector3f bendDirection = (solvePosition - upperPosition).cross(normal);
+
 	// Ortho normalize both directions on limb axis
 	orthoNormalize(limbAxis, currentDirection);
-	orthoNormalize(limbAxis, middleDirection);
+	orthoNormalize(limbAxis, bendDirection);
 
-	//TODO: bendDirNullNew?
-
-	// Calculate angle difference on limb axis
-	float angle = signedAngle(currentDirection, middleDirection, limbAxis);
+	// Calculate angle difference on limb axis & create rotation on axis
+	float angle = signedAngle(currentDirection, bendDirection, limbAxis);
 	Quaternionf rotation = angleAxis(angle, limbAxis);
 
 	// Rotate the middle bone using the angle
-	Vector3f newMiddlePosition = rotation * (middlePosition - upperPosition) + upperPosition;
+	Vector3f newMiddlePosition = angleAxis(angle, limbAxis) * (middlePosition - upperPosition) + upperPosition;
 	middleJoint.setSolvedPosition(newMiddlePosition);
 }
 
@@ -304,7 +338,7 @@ void IKSolverLeg::apply() {
 	upperJoint.setRotationTowards(middleDirection, normal);
 
 	// Rotate middle Joint
-	Vector3f lowerDirection = targetPosition - middlePosition;
+	Vector3f lowerDirection = lowerJoint.getSolvedPosition() - middlePosition;
 	middleJoint.setRotationTowards(lowerDirection);
 
 	// TODO: preTwist(); ?
@@ -325,7 +359,7 @@ void IKSolverLeg::untwist() {
 	if (lowerJoint.joint->getJointName() == Joint::FOOT_R) {
 		return;
 	}
-	
+
 	if (GetAsyncKeyState(VK_CONTROL) & 0x8000) {
 		return;
 	}
@@ -334,12 +368,12 @@ void IKSolverLeg::untwist() {
 	Vector3f upperPosition = upperJoint.getPosition();
 	Vector3f middlePosition = middleJoint.getPosition();
 	Vector3f lowerPosition = lowerJoint.getPosition();
-	
+
 	// Store rotations for all joints
 	Quaternionf upperRotation = upperJoint.getRotation();
 	Quaternionf middleRotation = middleJoint.getRotation();
 	Quaternionf lowerRotation = lowerJoint.getRotation();
-	
+
 	// Untwist middle joint if configured
 	if (middleUntwistWeight > 0) {
 
@@ -428,29 +462,4 @@ void IKSolverLeg::untwist() {
 
 	// Restore child rotation
 	lowerJoint.setRotation(lowerRotation);
-}
-
-Vector3f IKSolverLeg::calculateMiddleDirection() {
-
-	// Store direction from upper joint to mid joint & bend from normal
-	Vector3f targetDirection = targetPosition - upperJoint.getSolvedPosition();
-	Vector3f bendDirection = targetDirection.cross(normal);
-
-	// Store squared Norm & Magnitude of direction
-	float targetDirSqrdNorm = targetDirection.squaredNorm();
-	float targetDirMagnitude = sqrtf(targetDirSqrdNorm);
-
-	// Calculate forward and up values based on to target & joint lengths
-	float forward = (upperJoint.squaredNorm - middleJoint.squaredNorm + targetDirSqrdNorm) / (2.0f * targetDirMagnitude);
-	float up = upperJoint.squaredNorm - forward * forward;
-
-	if (up >= 0.0f) {
-		up = sqrtf(up);
-	}
-	else {
-		up = 0.0f;
-	}
-
-	// Get direction the limb should point to
-	return lookRotation(targetDirection, bendDirection) * Vector3f(0.0f, up, forward);
 }
