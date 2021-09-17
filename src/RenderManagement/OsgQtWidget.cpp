@@ -42,7 +42,7 @@ OsgQtWidget::OsgQtWidget(osgQt::GraphicsWindowQt* gw, TrackerManager* trackerMan
 	camera->setViewMatrixAsLookAt(osg::Vec3f(0.0, 1.5, 6.0), osg::Vec3f(0.0, 1.0, 0.0), osg::Vec3f(0.0, 1.0, 0.0));
 
 	m_cameraManipulator->setHomePosition(osg::Vec3f(0.0, 1.5, 6.0), osg::Vec3f(0.0, 1.0, 0.0), osg::Vec3f(0.0, 1.0, 0.0), false);
-	//m_viewer.setCameraManipulator(m_cameraManipulator);
+	m_viewer.setCameraManipulator(m_cameraManipulator);
 	m_viewer.setThreadingModel(osgViewer::Viewer::SingleThreaded);
 
 	QVBoxLayout* layout = new QVBoxLayout;
