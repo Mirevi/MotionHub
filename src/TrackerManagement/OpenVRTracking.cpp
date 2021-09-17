@@ -1086,6 +1086,16 @@ std::unordered_map<unsigned int, Joint::JointNames> OpenVRTracking::getCalibrate
 
 	Devices.push_back(Device(10, DeviceClass::Tracker, "Right Arm"));
 	Poses.push_back(DevicePose(Vector3f(0.4f, 1.3f, 0), Quaternionf::Identity()));
+	
+	DeviceRoleAssigner* deviceRoleAssigner = new DeviceRoleAssigner(this);
+
+	calibratedDeviceRoles = deviceRoleAssigner->getWithinDistance(1.5f);
+
+	delete deviceRoleAssigner;
+
+	for (auto& calibratedDeviceRole : calibratedDeviceRoles) {
+		Console::logWarning(std::to_string(calibratedDeviceRole.first) + " # " + Joint::toString(calibratedDeviceRole.second));
+	}
 	*/
 
 	/*

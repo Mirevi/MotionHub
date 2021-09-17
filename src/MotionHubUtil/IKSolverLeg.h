@@ -180,5 +180,5 @@ protected:
 
 	float length;
 
-	Quaternionf lastRotation = Quaternionf::Identity();
+	Quaternionf lastRotation;
 };

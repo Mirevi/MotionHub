@@ -41,6 +41,8 @@ void IKSolverLeg::init() {
 
 	length = (upperJoint.length + middleJoint.length);
 
+	lastRotation = Quaternionf::Identity();
+
 	// Save default state for joints
 	saveDefaultState();
 }

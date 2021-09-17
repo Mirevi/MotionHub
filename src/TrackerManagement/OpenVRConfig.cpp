@@ -226,7 +226,7 @@ void OpenVRConfig::setUserOffsetPosition(Joint::JointNames joint, Vector3f posit
 
 void OpenVRConfig::clearJointToDevice() {
 
-	for(auto jointPair : jointToContainer) {
+	for(auto jointPair : jointToIKContainer) {
 		jointPair.second.deviceIndex = -1;
 	}
 
@@ -281,7 +281,7 @@ void OpenVRConfig::updateUserDeviceRoles() {
 	for (const auto& jointDevicePair : newJointToDevice) {
 
 		// Is joint & device not assigned? -> Add assignment
-		if (jointToContainer.count(jointDevicePair.first) == 0 && deviceToJoint.count(jointDevicePair.second) == 0) {
+		if (jointToIKContainer.count(jointDevicePair.first) == 0 && deviceToJoint.count(jointDevicePair.second) == 0) {
 			assignJointToDevice(jointDevicePair.first, jointDevicePair.second);
 		}
 	}
@@ -290,7 +290,7 @@ void OpenVRConfig::updateUserDeviceRoles() {
 void OpenVRConfig::calibrateDeviceToJointOffsets() {
 
 	// Loop over all configured joint:device pairs
-	for (const auto& jointDevicePair : jointToContainer) {
+	for (const auto& jointDevicePair : jointToIKContainer) {
 
 		// Read joint from first element in pair
 		Joint::JointNames joint = jointDevicePair.first;
@@ -537,16 +537,16 @@ std::string OpenVRConfig::generateKey(OpenVRTracking::DeviceClass deviceClass, J
 
 IKContainer* OpenVRConfig::getIKContainer(Joint::JointNames joint) {
 
-	auto containerIterator = jointToContainer.find(joint);
+	auto containerIterator = jointToIKContainer.find(joint);
 
 	IKContainer* container = nullptr;
 
-	if (containerIterator != jointToContainer.end()) {
+	if (containerIterator != jointToIKContainer.end()) {
 		container = &containerIterator->second;
 	}
 	else {
-		jointToContainer[joint] = IKContainer();
-		container = &jointToContainer[joint];
+		jointToIKContainer[joint] = IKContainer();
+		container = &jointToIKContainer[joint];
 	}
 
 	return container;
