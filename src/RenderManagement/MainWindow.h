@@ -166,6 +166,13 @@ private slots:
 	void slotTimelineLableModeChanged(int idx);
 
 
+	void slotOsgWidgetPressed	(osg::Vec2 position2d);
+	void slotOsgWidgetReleased	(osg::Vec2 position2d);
+	void slotOsgWidgetMoved		(osg::Vec2 position2d);
+
+
+
+
 
 private:
 	/*!
@@ -274,5 +281,8 @@ private:
 
 
 	void startProgressBar(int maxValue, int* currentValue, QProgressBar* barWidget);
+
+	osg::Vec2 m_cameraManipulatorStartPosition;
+	bool m_cameraManipulatorIsRotating;
 
 };

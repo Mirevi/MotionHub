@@ -31,6 +31,14 @@ MainWindow::MainWindow(TrackerManager* trackerManager, ConfigManager* configMana
 	QSizePolicy sizePolicyOsgQtWidget(QSizePolicy::Expanding, QSizePolicy::Preferred);
 	m_osgQtWidget->setSizePolicy(sizePolicyOsgQtWidget);
 	ui->gridLayout_main->addWidget(m_osgQtWidget);
+
+
+	connect(m_osgQtWidget, SIGNAL(osgWidgetPressed(osg::Vec2 position2d)),	this, SLOT(slotOsgWidgetPressed(osg::Vec2 position2d))	);
+	connect(m_osgQtWidget, SIGNAL(osgWidgetReleased(osg::Vec2 position2d)), this, SLOT(slotOsgWidgetReleased(osg::Vec2 position2d))	);
+	connect(m_osgQtWidget, SIGNAL(osgWidgetMoved(osg::Vec2 position2d)),	this, SLOT(slotOsgWidgetMoved(osg::Vec2 position2d)	)	);
+
+
+
 	m_osgQtWidget->show();
 
 	//add timeline-Widget to MainWindow
@@ -790,6 +798,30 @@ void MainWindow::slotTimelineLableModeChanged(int idx)
 
 	default:
 		break;
+	}
+}
+
+void MainWindow::slotOsgWidgetPressed(osg::Vec2 position2d)
+{
+	m_cameraManipulatorIsRotating = true;
+	m_cameraManipulatorStartPosition = position2d;
+
+	Console::log("MainWindow::slotOsgWidgetPressed(): " + toString((float)position2d.x()) + ", " + toString((float)position2d.y()));
+
+
+}
+
+void MainWindow::slotOsgWidgetReleased(osg::Vec2 position2d)
+{
+	m_cameraManipulatorIsRotating = false;
+
+}
+
+void MainWindow::slotOsgWidgetMoved(osg::Vec2 position2d)
+{
+	if (m_cameraManipulatorIsRotating)
+	{
+		//m_osgQtWidget->setCameraTransform();
 	}
 }
 

@@ -10,6 +10,7 @@
 
 #include <osgDB/ReadFile>
 #include <osgGA/TrackballManipulator>
+#include <osgGA/OrbitManipulator>
 #include <osgViewer/ViewerEventHandlers>
 #include <osgViewer/Viewer>
 #include <osg/ShapeDrawable>
@@ -49,7 +50,22 @@ public:
 
 	void drawLine(osg::Vec3 start, osg::Vec3 end, osg::Vec4 colorStart, osg::Vec4 colorEnd);
 
+	void setCameraTransform(const osg::Vec3d& eye, const osg::Vec3d& center, const osg::Vec3d& up);
+
+
+
+signals:
+	void osgWidgetPressed(osg::Vec2 position2d);
+	void osgWidgetReleased(osg::Vec2 position2d);
+	void osgWidgetMoved(osg::Vec2 position2d);
+
 protected:
+
+	void mouseMoveEvent(QMouseEvent* event) override;
+	void mousePressEvent(QMouseEvent* event) override;
+	void mouseReleaseEvent(QMouseEvent* event) override;
+
+
 	virtual void paintEvent(QPaintEvent* event)
 	{
 		m_viewer.frame();
