@@ -31,8 +31,8 @@ void IKSolverLeg::init() {
 	targetPosition = lowerPosition;
 	targetRotation = lowerJoint.getRotation();
 
-	// Store default normal & default normal in joint space
-	defaultNormal = upperToMiddle.cross(middleToLower);
+	// Calculate default normal & store default normal in joint space
+	Vector3f defaultNormal = upperToMiddle.cross(middleToLower);
 	defaultLocalNormal = upperJoint.getRotation().inverse() * defaultNormal;
 
 	// Initiate joints
@@ -152,11 +152,8 @@ void IKSolverLeg::solve(Vector3f position, Quaternionf rotation) {
 		joint->saveSolvedPosition();
 	}
 
-	// is target out of reach -> limit solve to avoid stretching & twitching
-	Vector3f upperPosition = upperJoint.getPosition();
-	if (distance(upperPosition, targetPosition) >= length) {
-		solvePosition = upperPosition + (targetPosition - upperPosition).normalized() * length;
-	}
+	// limit solve position to avoid stretching & twitching when target is out of reach
+	constraintSolvePosition(upperJoint.getPosition());
 
 	// update normal
 	updateNormal();
@@ -241,9 +238,7 @@ void IKSolverLeg::solve() {
 	startPosition = upperJoint.getSolvedPosition();
 
 	// update solve position (shoulder modifies start position -> reach could be greater)
-	if (distance(startPosition, targetPosition) >= length) {
-		solvePosition = startPosition + (targetPosition - startPosition).normalized() * length;
-	}
+	constraintSolvePosition(startPosition);
 
 	// knee hint
 	Vector3f helpAxis = (solvePosition - startPosition).cross(normal);
@@ -324,6 +319,13 @@ void IKSolverLeg::constraint() {
 	// Rotate the middle bone using the angle
 	Vector3f newMiddlePosition = angleAxis(angle, limbAxis) * (middlePosition - upperPosition) + upperPosition;
 	middleJoint.setSolvedPosition(newMiddlePosition);
+}
+
+void IKSolverLeg::constraintSolvePosition(Vector3f startPosition) {
+
+	if (distance(startPosition, targetPosition) >= length) {
+		solvePosition = startPosition + (targetPosition - startPosition).normalized() * length;
+	}
 }
 
 void IKSolverLeg::apply() {

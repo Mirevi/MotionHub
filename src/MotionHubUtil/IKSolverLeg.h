@@ -68,6 +68,8 @@ protected:
 	 */
 	virtual void constraint();
 
+	virtual void constraintSolvePosition(Vector3f startPosition);
+
 	/*!
 	 * Applies the solution to the joints
 	 */
