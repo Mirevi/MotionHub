@@ -163,8 +163,14 @@ void MotionHub::update()
 
 			}
 
+			//set Play/Pause button at the timeline correct
 
-			//Recorder::instance().nextFrame();
+			//get mmh player
+			Tracker* mmhPlayer = m_trackerManager->getFirstTrackerFromType(TrackerManager::mmh);
+			if (mmhPlayer != nullptr && mmhPlayer->isLoopEnded())
+			{
+				m_uiManager->getMainWindow()->setTimelinePlayButton(false);
+			}
 
 			updateTimeline();
 		}	//check if tracker is added or removed

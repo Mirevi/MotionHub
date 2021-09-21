@@ -342,6 +342,21 @@ void TrackerManager::writeSkeletonsToRecorder()
 
 }
 
+Tracker* TrackerManager::getFirstTrackerFromType(TrackerType type)
+{
+
+	for (int currTrackerI = 0; currTrackerI < m_trackerPool.size(); currTrackerI++)
+	{
+		if (m_trackerPool.at(currTrackerI)->getTrackerType() == TrackerTypeString.at(type))
+		{
+			return m_trackerPool.at(currTrackerI);
+			break;
+		}
+	}
+	
+	return nullptr;
+}
+
 Tracker* TrackerManager::instantiateTracker(TrackerType type, int id, std::string filePath) {
 
 	Tracker* tempTracker = nullptr;

@@ -6,6 +6,8 @@
 #include <atomic>
 #include <vector>
 
+#include "ConfigDllExportTrackingManagement.h"
+
 #include "MotionHubUtil/Skeleton.h"
 #include "MotionHubUtil/Console.h"
 #include "MotionHubUtil/Exception.h"
@@ -21,7 +23,7 @@
  *
  * \author Kester Evers, Eric Jansen and Manuel Zohlen
  */
-class  Tracker
+class /*TrackingManagement_DLL_import_export*/ Tracker
 {
 
 public:
@@ -277,6 +279,14 @@ public:
 	bool isInitiated();
 
 
+	virtual void setPaused(bool state);
+	virtual bool isPaused();
+
+	virtual void setLooping(bool state);
+	
+	virtual bool isLoopEnded();
+
+
 protected:
 	/*!
 	* returns a unique number as identifier in addition to the tracker type.
@@ -362,6 +372,13 @@ protected:
 
 	ConfigManager* m_configManager = nullptr;
 	bool m_isInitiated;
+
+
+	bool m_paused;
+
+	bool m_loopEnded;
+
+	bool m_isLooping;
 
 
 };

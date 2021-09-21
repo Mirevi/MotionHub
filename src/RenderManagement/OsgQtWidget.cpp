@@ -72,6 +72,7 @@ OsgQtWidget::OsgQtWidget(osgQt::GraphicsWindowQt* gw, TrackerManager* trackerMan
 	m_colorRed = osg::Vec4f(0.75f, 0.0f, 0.0f, 1.0f);
 	m_colorYellow = osg::Vec4f(0.75f, 0.75f, 0.0f, 1.0f);
 	m_colorGreen = osg::Vec4f(0.0f, 0.75f, 0.0f, 1.0f);
+
 }
 
 //Is envoked, when no (global) tracking is active and a new tracker is added or removed
@@ -319,11 +320,13 @@ void OsgQtWidget::mousePressEvent(QMouseEvent* event)
 	QPoint globalCursorPos = QCursor::pos();
 
 	//Console::log("MainWindow::slotOsgWidgetPressed(): " + toString(globalCursorPos.x()) + ", " + toString(globalCursorPos.y()));
-	Console::log("MainWindow::slotOsgWidgetPressed()");
+	Console::log("MainWindow::slotOsgWidgetPressed()"); 
 
 	emit osgWidgetPressed(osg::Vec2(globalCursorPos.x(), globalCursorPos.y()));
 
 	QWidget::mousePressEvent(event);
+
+	//doesn't work :(
 
 }
 

@@ -32,6 +32,9 @@ MainWindow::MainWindow(TrackerManager* trackerManager, ConfigManager* configMana
 	m_osgQtWidget->setSizePolicy(sizePolicyOsgQtWidget);
 	ui->gridLayout_main->addWidget(m_osgQtWidget);
 
+	m_isTimelinePlaying = true;
+	m_isLooping = true;
+
 
 	connect(m_osgQtWidget, SIGNAL(osgWidgetPressed(osg::Vec2 position2d)),	this, SLOT(slotOsgWidgetPressed(osg::Vec2 position2d))	);
 	connect(m_osgQtWidget, SIGNAL(osgWidgetReleased(osg::Vec2 position2d)), this, SLOT(slotOsgWidgetReleased(osg::Vec2 position2d))	);
@@ -648,7 +651,7 @@ void MainWindow::slotInspectorItemChanged(QTableWidgetItem* item)
 
 		switch (item->row())
 		{
-		case 3:
+		case 3: //isEnabled
 		{
 
 			// set the curser to wait circle
@@ -825,9 +828,64 @@ void MainWindow::slotOsgWidgetMoved(osg::Vec2 position2d)
 	}
 }
 
-QTreeWidget* MainWindow::getTreeWidgetTrackerRef()
+void MainWindow::slotTimelinePlay()
 {
-	return ui->treeWidget_tracker;
+	m_isTimelinePlaying = ui->pushButton_timeline_play->isChecked();
+
+	Tracker* currTracker = m_refTrackerManager->getFirstTrackerFromType(TrackerManager::mmh);
+
+	if (currTracker == nullptr)
+	{
+		return;
+	}
+
+	//start/stop playing mmh-player
+	if (m_isTimelinePlaying)
+	{
+		//currTracker->enable();
+
+		if (currTracker->isTracking())
+		{
+
+			currTracker->setPaused(false);
+		}
+	}
+	else
+	{
+		//currTracker->disable();
+
+
+		if (currTracker->isTracking())
+		{
+
+			currTracker->setPaused(true);
+			//currTracker->stop();
+		}
+	}
+}
+
+void MainWindow::slotLoop()
+{
+	m_isLooping = !m_isLooping;
+
+	Tracker* currTracker = m_refTrackerManager->getFirstTrackerFromType(TrackerManager::mmh);
+
+	if (currTracker == nullptr)
+	{
+		return;
+	}
+
+	//start/stop playing mmh-player
+	if (m_isLooping)
+	{
+		
+		currTracker->setLooping(true);
+	}
+	else
+	{
+		currTracker->setLooping(false);
+	}
+
 }
 
 
@@ -1376,4 +1434,16 @@ void MainWindow::startProgressBar(int maxValue, int* currentValue, QProgressBar*
 
 
 	barWidget->hide();
+}
+
+QTreeWidget* MainWindow::getTreeWidgetTrackerRef()
+{
+	return ui->treeWidget_tracker;
+}
+
+void MainWindow::setTimelinePlayButton(bool state)
+{
+	ui->pushButton_timeline_play->setChecked(state);
+
+	m_isTimelinePlaying = state;
 }
