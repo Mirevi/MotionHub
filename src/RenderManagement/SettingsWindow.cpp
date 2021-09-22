@@ -85,6 +85,11 @@ void SettingsWindow::accept()
 		RecordingSession::RECORD_PATH = pathname;
 		m_configManager->writeString("recordPath", RecordingSession::RECORD_PATH);
 	}
+	else
+	{
+		Console::logError("SettingsWindow::accept(): path fix not working!");
+
+	}
 
 
 
