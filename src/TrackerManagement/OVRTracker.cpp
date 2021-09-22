@@ -72,13 +72,8 @@ OVRTracker::~OVRTracker() {
 
 void OVRTracker::start() {
 
-	// Update prediction time from config
-	//float mmhDelay = 0.0255f; // 0.0255f
-	float predictionTime = config->readPredictionTime();
-	if (predictionTime > 0.0f) {
-		Console::log("OVRTracker::start: prediction time " + toString(predictionTime));
-		trackingSystem->setPredictionTime(predictionTime);
-	}
+	// Refresh values from config
+	refresh();
 
 	// start tracking in tracking system
 	trackingSystem->start();
@@ -91,21 +86,6 @@ void OVRTracker::start() {
 
 	//skeleton was added/removed, so UI updates
 	m_hasSkeletonPoolChanged = true;
-
-	// Refresh config from xml
-	m_configManager->refresh();
-
-	// Read assigned devices from config
-	config->readAssignedDevices();
-
-	// Assign remaining devices
-	config->updateUserDeviceRoles();
-
-	// Read offset from config
-	config->readOffsets();
-
-	// set skeleton scale from config
-	hierarchicSkeleton->setScale(config->readScale());
 
 	// Init IKSolvers
 	initIKSolvers();
@@ -143,13 +123,44 @@ void OVRTracker::start() {
 
 	m_ovrTrackingThread = new std::thread(&OVRTracker::ovrTrack, this);
 
-	ikSolverLeftLeg->refresh();
-	ikSolverRightLeg->refresh();
-	ikSolverLeftArm->refresh();
-	ikSolverRightArm->refresh();
-
 	// start tracking thread
 	Tracker::start();
+}
+
+void OVRTracker::refresh() {
+
+	// Refresh config from xml
+	m_configManager->refresh();
+
+	// Read global offsets
+	readOffsetFromConfig();
+
+	// Update prediction time from config
+	//float mmhDelay = 0.0255f; // 0.0255f
+	float predictionTime = config->readPredictionTime();
+	if (predictionTime > 0.0f) {
+		Console::log("OVRTracker::refresh: prediction time " + toString(predictionTime) + " s");
+		trackingSystem->setPredictionTime(predictionTime);
+	}
+
+	// Read assigned devices from config
+	config->readAssignedDevices();
+
+	// Assign remaining devices
+	config->updateUserDeviceRoles();
+
+	// Read offset from config
+	config->readOffsets();
+
+	// Init skeleton & set scale from config
+	hierarchicSkeleton->setScale(config->readScale());
+	hierarchicSkeleton->init();
+	
+	// Refresh IKSolvers (if initialized)
+	if (ikSolverLeftLeg != nullptr) ikSolverLeftLeg->refresh();
+	if (ikSolverRightLeg != nullptr) ikSolverRightLeg->refresh();
+	if (ikSolverLeftArm != nullptr) ikSolverLeftArm->refresh();
+	if (ikSolverRightArm != nullptr) ikSolverRightArm->refresh();
 }
 
 void OVRTracker::stop() {
@@ -180,9 +191,8 @@ void OVRTracker::init() {
 		throw exception;
 	}
 
-	// Init IK Sekelton
+	// Create IK Skeleton 
 	hierarchicSkeleton = new HierarchicSkeleton(m_properties->id);
-	hierarchicSkeleton->init();
 
 	skeleton = new Skeleton(m_properties->id);
 
@@ -344,6 +354,9 @@ void OVRTracker::track() {
 	}
 
 
+	if (GetAsyncKeyState('R') & 0x8000) {
+		refresh();
+	}
 
 
 	auto highConf = Joint::JointConfidence::HIGH;
@@ -670,7 +683,7 @@ void OVRTracker::calibrateScale() {
 	config->calibrateDeviceToJointOffset(Joint::HIPS);
 
 	// Solve Hip with identity rotation
-	auto hipPose = getAssignedPose(Joint::HIPS);
+	auto hipPose = config->getPoseWithOffset(Joint::HIPS, false);
 	ikSolverHip->solve(hipPose.position, Quaternionf::Identity());
 
 	// y diff ermitteln und auf hip offset rechnen?

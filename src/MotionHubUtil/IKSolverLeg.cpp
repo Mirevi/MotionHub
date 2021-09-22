@@ -19,15 +19,16 @@ IKSolverLeg::IKSolverLeg(HierarchicJoint* upper, HierarchicJoint* middle, Hierar
 
 void IKSolverLeg::init() {
 
-	// Store middle & lower position
+	// Store upper, middle & lower position
+	Vector3f upperPosition = upperJoint.getPosition();
 	Vector3f middlePosition = middleJoint.getPosition();
 	Vector3f lowerPosition = lowerJoint.getPosition();
 
 	// Store chain direction vectors
-	Vector3f upperToMiddle = middlePosition - upperJoint.getPosition();
+	Vector3f upperToMiddle = middlePosition - upperPosition;
 	Vector3f middleToLower = lowerPosition - middlePosition;
 
-	// Set target to current position & rotation
+	// Set target to lower position & rotation
 	targetPosition = lowerPosition;
 	targetRotation = lowerJoint.getRotation();
 
@@ -39,9 +40,8 @@ void IKSolverLeg::init() {
 	upperJoint.init(upperToMiddle, defaultNormal);
 	middleJoint.init(middleToLower, defaultNormal);
 
-	length = (upperJoint.length + middleJoint.length);
 
-	lastRotation = Quaternionf::Identity();
+	refresh();
 
 	// Save default state for joints
 	saveDefaultState();
@@ -49,11 +49,16 @@ void IKSolverLeg::init() {
 
 void IKSolverLeg::refresh() {
 
+	// Store upper, middle & lower position
+	Vector3f upperPosition = upperJoint.getPosition();
 	Vector3f middlePosition = middleJoint.getPosition();
 	Vector3f lowerPosition = lowerJoint.getPosition();
 
-	Vector3f upperToMiddle = middlePosition - upperJoint.getPosition();
+	Vector3f upperToMiddle = middlePosition - upperPosition;
 	Vector3f middleToLower = lowerPosition - middlePosition;
+
+	// Store middle to upper direction
+	middleToUpper = upperPosition - middlePosition;
 
 	upperJoint.setLength(upperToMiddle);
 	middleJoint.setLength(middleToLower);
@@ -61,6 +66,10 @@ void IKSolverLeg::refresh() {
 	length = (upperJoint.length + middleJoint.length);
 
 	lastRotation = Quaternionf::Identity();
+
+	hintPosition = Vector3f::Zero();
+	hintRotation = Quaternionf::Identity();
+	hasHint = false;
 }
 
 void IKSolverLeg::saveDefaultState() {
@@ -70,10 +79,11 @@ void IKSolverLeg::saveDefaultState() {
 	middleJoint.saveDefaultState();
 	lowerJoint.saveDefaultState();
 
+	// TODO: ZU IK Joint
 	// Save lower default rotation
-	upperDefaultRotation = upperJoint.joint->getGlobalRotation();
-	middleDefaultRotation = middleJoint.joint->getGlobalRotation();
-	lowerDefaultRotation = lowerJoint.joint->getGlobalRotation();
+	invUpperDefaultRotation = upperJoint.joint->getGlobalRotation().inverse();
+	invMiddleDefaultRotation = middleJoint.joint->getGlobalRotation().inverse();
+	invLowerDefaultRotation = lowerJoint.joint->getGlobalRotation().inverse();
 }
 
 void IKSolverLeg::loadDefaultState() {
@@ -93,7 +103,7 @@ void IKSolverLeg::updateNormal() {
 	Vector3f currentNormal = upperJoint.getRotation() * defaultLocalNormal;
 
 	// Get target normal relative to lower default rotation 
-	Quaternionf rotation = targetRotation * lowerDefaultRotation.inverse();
+	Quaternionf rotation = targetRotation * invLowerDefaultRotation;
 	Vector3f targetNormal = rotation * defaultLocalNormal;
 
 	// is angle safe or last rotation not initialized?
@@ -232,6 +242,14 @@ void IKSolverLeg::solve(Vector3f position, Quaternionf rotation) {
 
 	// Untwist lower joints based on target rotation
 	untwist();
+}
+
+void IKSolverLeg::hint(Vector3f position, Quaternionf rotation) {
+
+	hintPosition = position;
+	hintRotation = rotation;
+
+	hasHint = true;
 }
 
 void IKSolverLeg::solve() {

@@ -43,6 +43,8 @@ public:
 	 */
 	virtual void solve(Vector3f position, Quaternionf rotation) override;
 
+	virtual void hint(Vector3f position, Quaternionf rotation);
+
 protected:
 
 	/*!
@@ -145,9 +147,9 @@ public:
 	// Break Condition: threshold for progress in beteween iterations (in meters) 
 	float progressTolerance = 0.000001f; // 0.00001f
 
-	// Bend weights for target rotation & goal
-	float bendToTargetRotationWeight = 0.5f;
-	float bendToGoalWeight = 0.9f;
+	// Bend weights for target rotation & hint
+	float slerpTargetRotationDelta = 0.5f;
+	float slerpHintDelta = 0.9f;
 
 	// Weights for twisting upper & middle
 	float middleUntwistWeight = 0.4f;
@@ -172,13 +174,19 @@ protected:
 	Vector3f defaultNormal;
 	Vector3f defaultLocalNormal;
 
-	Quaternionf upperDefaultRotation;
-	Quaternionf middleDefaultRotation;
-	Quaternionf lowerDefaultRotation;
+	Quaternionf invUpperDefaultRotation;
+	Quaternionf invMiddleDefaultRotation;
+	Quaternionf invLowerDefaultRotation;
 
 	Vector3f startPosition;
 
 	float length;
 
 	Quaternionf lastRotation;
+
+	Vector3f hintPosition;
+	Quaternionf hintRotation;
+	bool hasHint = false;
+
+	Vector3f middleToUpper;
 };

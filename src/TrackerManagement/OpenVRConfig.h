@@ -115,7 +115,7 @@ private:
 
 	std::unordered_map<unsigned int, Joint::JointNames> deviceToJoint;
 
-	std::unordered_map<Joint::JointNames, IKContainer> jointToContainer;
+	std::unordered_map<Joint::JointNames, IKContainer> jointToIKContainer;
 
 	IKContainer* getIKContainer(Joint::JointNames joint);
 };

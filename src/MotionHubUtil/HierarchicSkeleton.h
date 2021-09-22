@@ -23,6 +23,8 @@ public:
 
 	void reset();
 
+	void invalidateGlobals();
+
 	/*!
 	 * Inserts all Joints from HierarchicSkeleton into given Skeleton
 	 * 
@@ -33,6 +35,8 @@ public:
 	void setScale(Vector3f scale);
 
 	Vector3f getScale();
+
+	HierarchicJoint* getJoint(Joint::JointNames jointName);
 
 protected:
 
@@ -45,6 +49,8 @@ protected:
 	void addJoint(HierarchicJoint* joint, Joint::JointNames jointName);
 
 public:
+
+	Vector3f scale;
 
 	// joint collection
 	std::vector<HierarchicJoint*> joints;

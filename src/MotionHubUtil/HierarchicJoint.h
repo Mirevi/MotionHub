@@ -23,8 +23,6 @@ protected:
 
 	Matrix4f global;
 
-	Vector3f scale;
-
 	bool globalValid;
 
 public:
@@ -34,7 +32,7 @@ public:
 
 	HierarchicJoint(Joint::JointNames jointName, Vector3f localPosition, Quaternionf localRotation);
 
-	HierarchicJoint(Vector3f localPosition, Quaternionf localRotation);
+	HierarchicJoint(Vector3f localPosition, Quaternionf localRotation, Vector3f scale = Vector3f(1,1,1));
 
 	HierarchicJoint(Vector3f localPosition);
 
@@ -78,11 +76,7 @@ public:
 
 	Vector4f getGlobalPosition4();
 
-	void setScale(Vector3f scale);
-
 	void invalidateGlobal();
-
-	Vector3f getScale();
 
 	Vector3f getRight();
 

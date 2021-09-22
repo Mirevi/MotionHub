@@ -8,18 +8,19 @@ HierarchicJoint::HierarchicJoint(Joint::JointNames jointName, Vector3f localPosi
 	globalValid = false;
 }
 
-HierarchicJoint::HierarchicJoint(Vector3f localPosition, Quaternionf localRotation) {
+HierarchicJoint::HierarchicJoint(Vector3f localPosition, Quaternionf localRotation, Vector3f scale) {
 	parent = nullptr;
 
 	local.setIdentity();
 
 	confidence = Joint::JointConfidence::MEDIUM;
 
-	setLocalPosition(localPosition);
+	Vector3f scaledPosition = localPosition.cwiseProduct(scale);
+
+	setLocalPosition(scaledPosition);
 	setLocalRotation(localRotation);
 
 	//global = local;
-	scale = Vector3f(1.0f, 1.0f, 1.0f);
 	globalValid = false;
 }
 
@@ -161,16 +162,8 @@ Vector4f HierarchicJoint::getGlobalPosition4() {
 	return Vector4f(pos.x(), pos.y(), pos.z(), 1.0f);
 }
 
-void HierarchicJoint::setScale(Vector3f scale) {
-	this->scale = scale;
-}
-
 void HierarchicJoint::invalidateGlobal() {
 	globalValid = false;
-}
-
-Vector3f HierarchicJoint::getScale() {
-	return scale;
 }
 
 Vector3f HierarchicJoint::getRight() {
@@ -230,46 +223,20 @@ Matrix4f HierarchicJoint::combineParentMatrixRecursive(HierarchicJoint* hierarch
 
 			return newGlobal;
 		}
-
 	}
 	// Parent is null -> RootJoint
 	else {
-
-		Vector3f scale = hierarchicJoint->scale;
-		
-		// Dont apply scaling if scale is (1, 1, 1)
-		if (scale.isApprox(Vector3f::Ones())) {
-			return hierarchicJoint->local;
-		}
-		else {
-			// Copy matrix and apply scaling
-			Matrix4f scaledLocal = Matrix4f(hierarchicJoint->local);
-
-			scaledLocal(0, 0) *= scale.x();
-			scaledLocal(1, 0) *= scale.y();
-			scaledLocal(2, 0) *= scale.z();
-
-			scaledLocal(0, 1) *= scale.x();
-			scaledLocal(1, 1) *= scale.y();
-			scaledLocal(2, 1) *= scale.z();
-
-			scaledLocal(0, 2) *= scale.x();
-			scaledLocal(1, 2) *= scale.y();
-			scaledLocal(2, 2) *= scale.z();
-
-			return scaledLocal;
-		}
-		//return hierarchicJoint->local;
+		return hierarchicJoint->local;
 	}
 }
 
 void HierarchicJoint::invalidateGlobalRecursive() {
 
-	if(globalValid) {
+	if (globalValid) {
 		for (auto& child : children) {
 			child->invalidateGlobalRecursive();
 		}
 	}
-	
+
 	globalValid = false;
 }

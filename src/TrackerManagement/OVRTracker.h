@@ -46,6 +46,8 @@ public:
 	 */
 	void start() override;
 
+	void refresh();
+
 	/*!
 	* executes the stop() method of the base class which sets m_tracking to false
 	*/
