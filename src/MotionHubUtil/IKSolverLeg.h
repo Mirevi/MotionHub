@@ -33,7 +33,7 @@ public:
 	 */
 	virtual void init() override;
 
-	void refresh();
+	virtual void refresh(bool overrideDefault = false);
 
 	/*!
 	 * Solves current chain to a given position & rotation
@@ -169,6 +169,8 @@ protected:
 
 	std::vector<IKJoint*> joints;
 
+	bool isLeft;
+
 	Vector3f normal;
 
 	Vector3f defaultNormal;
@@ -182,7 +184,8 @@ protected:
 
 	float length;
 
-	Quaternionf lastRotation;
+	Quaternionf lastTargetRotation;
+	Quaternionf lastUpperRotation;
 
 	Vector3f hintPosition;
 	Quaternionf hintRotation;

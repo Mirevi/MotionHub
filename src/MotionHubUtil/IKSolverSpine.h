@@ -84,14 +84,16 @@ protected:
 	std::vector<IKJoint*> twistJoints;
 	std::vector<float> twistWeights;
 
-	float twistWeight = 0.5f;
+	float ccdSlerpX = 1.0f;
+	float ccdSlerpZ = 0.9f;
 
-	float twistLerpY = 0.5f;
+	float twistSlerpY = 0.5f;
 
 	std::vector<IKJoint*> ccdJoints;
-	std::vector<float> ccdBendWeights;
 
-	float ccdWeight = 1.0f;
+	std::vector<Quaternionf> ccdDefaultRotations;
+
+	std::vector<float> ccdBendDelta;
 
 	bool onlyXZCCD = true;
 	bool lerpTest = false;

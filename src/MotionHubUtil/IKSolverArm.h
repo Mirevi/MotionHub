@@ -38,6 +38,8 @@ public:
 	 */
 	virtual void init() override;
 
+	virtual void refresh(bool overrideDefault = false) override;
+
 	/*!
 	 * Solves current chain to a given position & rotation
 	 *
@@ -57,6 +59,8 @@ protected:
 	 * Restores default joint positions and rotations
 	 */
 	virtual void loadDefaultState() override;
+
+	virtual void updateNormal() override;
 
 	/*!
 	 * Solves the chain with the FABRIK algorithm
@@ -87,17 +91,17 @@ protected:
 
 	HierarchicJoint* chest;
 
-	Quaternionf shoulderDefaultRotation;
+	Quaternionf invShoulderDefaultRotation;
 
-	Vector3f lastMiddlePosition;
+	Vector3f lastShoulderToHint;
 
-	float shoulderBackYAngle = -30.0f; // Back
-	float shoulderForwardYAngle = 30.0f; // Forward
-	float shoulderUpZAngle = -45.0f; // Up
-	float shoulderDownMaxAngle = 25.0f; // Down
+	Vector3f handToPinky;
 
-	bool isLeftArm;
+	float shoulderBackYAngle = 35.0f; // Back
+	float shoulderForwardYAngle = 45.0f; // Forward
+	float shoulderUpZAngle = 50.0f; // Up
+	float shoulderDownMaxAngle = 35.0f; // Down
 
 	float defaultShoulderHandDistance;
-	float shoulderHandMaxAngle = 15.0f;
+	float shoulderHandMaxAngle = 25.0f;
 };

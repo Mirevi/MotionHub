@@ -68,6 +68,14 @@ public:
 	 */
 	virtual void solve(Vector3f position, Quaternionf rotation);
 
+	void enableCalibrationMode() {
+		isCalibrating = true;
+	}
+
+	void disableCalibrationMode() {
+		isCalibrating = false;
+	}
+
 	/*!
 	 * FABRIK helper function to clamp two positions to be within the range of a desired length
 	 *
@@ -140,4 +148,6 @@ protected:
 	Vector3f solvePosition;
 
 	Quaternionf targetRotation;
+
+	bool isCalibrating = false;
 };
