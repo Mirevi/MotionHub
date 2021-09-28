@@ -72,11 +72,11 @@ OVRTracker::~OVRTracker() {
 
 void OVRTracker::start() {
 
-	// Refresh values from config
-	refresh();
-
 	// start tracking in tracking system
 	trackingSystem->start();
+
+	// Refresh values from config
+	refresh();
 
 	// set tracking to true
 	m_isTracking = true;
@@ -157,10 +157,7 @@ void OVRTracker::refresh() {
 	hierarchicSkeleton->init();
 	
 	// Refresh IKSolvers (if initialized)
-	if (ikSolverLeftLeg != nullptr) ikSolverLeftLeg->refresh();
-	if (ikSolverRightLeg != nullptr) ikSolverRightLeg->refresh();
-	if (ikSolverLeftArm != nullptr) ikSolverLeftArm->refresh();
-	if (ikSolverRightArm != nullptr) ikSolverRightArm->refresh();
+	refreshIKSolvers(true);
 }
 
 void OVRTracker::stop() {
@@ -322,7 +319,7 @@ void OVRTracker::track() {
 	trackingSystem->receiveDevicePoses();
 
 	// Calibration toggle & Calibration
-	if (GetAsyncKeyState('C') & 0x8000) { // C
+	if (GetAsyncKeyState('C') & 0x8000) {
 		Console::log("OVRTracker: Should Calibrate");
 		shouldCalibrate = true;
 	}
@@ -346,7 +343,7 @@ void OVRTracker::track() {
 	else if (GetAsyncKeyState(VK_NUMPAD9) & 0x8000) {
 		calibrateDeviceToJointOffset(Joint::HAND_R);
 	}
-	else if (GetAsyncKeyState('S') & 0x8000) { // S
+	else if (GetAsyncKeyState('S') & 0x8000) {
 		if (shouldCalibrate) {
 			shouldCalibrate = false;
 			calibrateScale();
@@ -479,54 +476,6 @@ void OVRTracker::extractSkeleton() {
 	m_skeletonPoolLock.unlock();
 }
 
-Skeleton* OVRTracker::parseSkeleton(int id, Skeleton* oldSkeletonData) {
-
-
-	Skeleton* currSkeleton = new Skeleton(id);
-	hierarchicSkeleton->insert(currSkeleton);
-
-	return currSkeleton;
-
-
-	// Solve Hip
-	auto hipPose = getAssignedPose(Joint::HIPS);
-	if (DEBUG_SKELETON_ROT) {
-		hipPose.rotation = eulerToQuaternion(m_properties->rotationOffset);
-	}
-
-	ikSolverHip->solve(hipPose.position, hipPose.rotation);
-	hierarchicSkeleton->hips.setConfidence(Joint::JointConfidence::HIGH);
-
-	// Solve Spine
-	auto headPose = getAssignedPose(Joint::HEAD);
-	ikSolverSpine->solve(headPose.position, headPose.rotation);
-	hierarchicSkeleton->head.setConfidence(Joint::JointConfidence::HIGH);
-
-	// Solve LeftLeg
-	auto leftFootPose = getAssignedPose(Joint::FOOT_L);
-	ikSolverLeftLeg->solve(leftFootPose.position, leftFootPose.rotation);
-	hierarchicSkeleton->leftFoot.setConfidence(Joint::JointConfidence::HIGH);
-
-	// Solve RightLeg
-	auto rightFootPose = getAssignedPose(Joint::FOOT_R);
-	ikSolverRightLeg->solve(rightFootPose.position, rightFootPose.rotation);
-	hierarchicSkeleton->rightFoot.setConfidence(Joint::JointConfidence::HIGH);
-
-	// Solve LeftArm
-	auto leftHandPose = getAssignedPose(Joint::HAND_L);
-	ikSolverLeftArm->solve(leftHandPose.position, leftHandPose.rotation);
-	hierarchicSkeleton->leftHand.setConfidence(Joint::JointConfidence::HIGH);
-
-	// Solve RightArm
-	auto rightHandPose = getAssignedPose(Joint::HAND_R);
-	ikSolverRightArm->solve(rightHandPose.position, rightHandPose.rotation);
-	hierarchicSkeleton->rightHand.setConfidence(Joint::JointConfidence::HIGH);
-
-	// Insert solved Skeleton to current Skeleton 
-	hierarchicSkeleton->insert(currSkeleton);
-	return currSkeleton;
-}
-
 void OVRTracker::initIKSolvers() {
 
 	// Init Hip IKSolver
@@ -555,6 +504,36 @@ void OVRTracker::initIKSolvers() {
 	ikSolverRightArm = new IKSolverArm(&hierarchicSkeleton->rightShoulder, &hierarchicSkeleton->rightArm, &hierarchicSkeleton->rightForeArm, &hierarchicSkeleton->rightHand);
 	ikSolverRightArm->setChest(&hierarchicSkeleton->chest);
 	ikSolverRightArm->init();
+
+	// Solve in T-Pose
+	ikSolverHip->solve(hierarchicSkeleton->hips.getGlobalPosition(), hierarchicSkeleton->hips.getGlobalRotation());
+	ikSolverSpine->solve(hierarchicSkeleton->head.getGlobalPosition(), hierarchicSkeleton->head.getGlobalRotation());
+	ikSolverLeftLeg->solve(hierarchicSkeleton->leftFoot.getGlobalPosition(), hierarchicSkeleton->leftFoot.getGlobalRotation());
+	ikSolverRightLeg->solve(hierarchicSkeleton->rightFoot.getGlobalPosition(), hierarchicSkeleton->rightFoot.getGlobalRotation());
+	ikSolverLeftArm->solve(hierarchicSkeleton->leftHand.getGlobalPosition(), hierarchicSkeleton->leftHand.getGlobalRotation());
+	ikSolverRightArm->solve(hierarchicSkeleton->rightHand.getGlobalPosition(), hierarchicSkeleton->rightHand.getGlobalRotation());
+}
+
+void OVRTracker::refreshIKSolvers(bool overrideDefault) {
+	if (ikSolverLeftLeg != nullptr) {
+		ikSolverLeftLeg->refresh(overrideDefault);
+	}
+
+	if (ikSolverRightLeg != nullptr) {
+		ikSolverRightLeg->refresh(overrideDefault);
+	}
+
+	if (ikSolverLeftArm != nullptr) {
+		ikSolverLeftArm->refresh(overrideDefault);
+	}
+
+	if (ikSolverRightArm != nullptr) {
+		ikSolverRightArm->refresh(overrideDefault);
+	}
+
+	if (hierarchicSkeleton != nullptr) {
+		hierarchicSkeleton->invalidateGlobals();
+	}
 }
 
 OpenVRTracking::DevicePose OVRTracker::getAssignedPose(Joint::JointNames joint) {
@@ -611,6 +590,8 @@ void OVRTracker::calibrate() {
 
 	calibrateScale();
 
+	refreshIKSolvers();
+
 	Console::log("OVRTracker::calibrate");
 }
 
@@ -648,6 +629,8 @@ void OVRTracker::calibrateDeviceToJointOffset(Joint::JointNames joint) {
 
 void OVRTracker::calibrateScale() {
 
+	enableCalibrationMode();
+
 	Vector3f oldScale = hierarchicSkeleton->getScale();
 
 	// Reset Skeleton scale & pose
@@ -670,12 +653,18 @@ void OVRTracker::calibrateScale() {
 	if (scale.x() < 0.0f || scale.y() < 0.0f) {
 		// Revert scaling
 		hierarchicSkeleton->setScale(oldScale);
+		hierarchicSkeleton->init();
+
+		disableCalibrationMode();
 
 		Console::logError("OVRTracker::calibrateScale: Invalid Scale x or y < 0");
 		return;
 	}
 
 	hierarchicSkeleton->setScale(scale);
+	hierarchicSkeleton->init();
+
+	refreshIKSolvers(true);
 
 	float afterScaleDist = distance(hierarchicSkeleton->leftHand.getGlobalPosition(), hierarchicSkeleton->rightHand.getGlobalPosition());
 

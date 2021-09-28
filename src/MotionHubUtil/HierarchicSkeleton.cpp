@@ -144,6 +144,7 @@ void HierarchicSkeleton::init() {
 	//hips.setGlobalRotation(rotation);
 
 	// TODO: Update all children?
+	invalidateGlobals();
 }
 
 void HierarchicSkeleton::reset() {
@@ -153,7 +154,7 @@ void HierarchicSkeleton::reset() {
 
 	init();
 
-	//invalidateGlobals();
+	invalidateGlobals();
 }
 
 void HierarchicSkeleton::invalidateGlobals() {

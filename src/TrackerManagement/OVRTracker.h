@@ -93,18 +93,11 @@ private:
 	void extractSkeleton();
 
 	/*!
-	 * converts OpenVR tracking to default skeleton type
-	 *
-	 * \param skeleton input OptiTrack skeleton
-	 * \param id the skeletons ID
-	 * \return converted default skeleton
-	 */
-	Skeleton* parseSkeleton(int id, Skeleton* oldSkeletonData);
-
-	/*!
 	 * initializes IK chains
 	 */
 	void initIKSolvers();
+
+	void refreshIKSolvers(bool overrideDefault = false);
 
 
 	OpenVRTracking::DevicePose getAssignedPose(Joint::JointNames joint);
@@ -154,6 +147,24 @@ private:
 		if (ikSolverRightArm != nullptr) delete ikSolverRightArm;
 
 		if (skeleton != nullptr) delete skeleton;
+	}
+
+	void enableCalibrationMode() {
+
+		ikSolverSpine->enableCalibrationMode();
+		ikSolverLeftLeg->enableCalibrationMode();
+		ikSolverRightLeg->enableCalibrationMode();
+		ikSolverLeftArm->enableCalibrationMode();
+		ikSolverRightArm->enableCalibrationMode();
+	}
+
+	void disableCalibrationMode() {
+
+		ikSolverSpine->disableCalibrationMode();
+		ikSolverLeftLeg->disableCalibrationMode();
+		ikSolverRightLeg->disableCalibrationMode();
+		ikSolverLeftArm->disableCalibrationMode();
+		ikSolverRightArm->disableCalibrationMode();
 	}
 
 // TODO: private
