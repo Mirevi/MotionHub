@@ -782,6 +782,7 @@ void OpenVRTracking::updateDevices() {
 
 	// Clear poses
 	Poses.clear();
+	FilteredPoses.clear();
 	deviceToPose.clear();
 	deviceToFilteredPose.clear();
 
@@ -801,15 +802,9 @@ void OpenVRTracking::updateDevices() {
 		// Create Empty Pose and insert at back FilteredPoses
 		FilteredPoses.emplace_back();
 
-		if(device.index == 3) {
-		// Create position & rotation filters
-			positionFilters.emplace_back(Vector3OneEuroFilter(60, 1.0f, 0.0f, 1.0f));
-			rotationFilters.emplace_back(QuaternionOneEuroFilter(60, 1.0f, 0.0f, 1.0f));
-		}
-		else {
-			positionFilters.emplace_back(Vector3OneEuroFilter(120, 1.0f, 0.0f, 1.0f));
-			rotationFilters.emplace_back(QuaternionOneEuroFilter(120, 1.0f, 0.0f, 1.0f));
-		}
+		positionFilters.emplace_back(Vector3OneEuroFilter(30, 1.0f, 0.0f, 1.0f));
+		rotationFilters.emplace_back(QuaternionOneEuroFilter(60, 1.0f, 0.0f, 1.0f));
+
 		// Cache filtered pose pointer address
 		deviceToFilteredPose[device.index] = &(FilteredPoses[FilteredPoses.size() - 1]);
 

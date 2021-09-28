@@ -239,6 +239,13 @@ public:
 	BaseOneEuroFilter() {}
 
 	~BaseOneEuroFilter() {}
+
+	void setParams(float freq, float mincutoff = 1.0f, float beta = 0.0f, float dcutoff = 1.0f) {
+
+		for(OneEuroFilter& oneEuroFilter : oneEuroFilters) {
+			oneEuroFilter.setParams(freq, mincutoff, beta, dcutoff);
+		}
+	}
 };
 
 class Vector3OneEuroFilter : public BaseOneEuroFilter {

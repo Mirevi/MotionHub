@@ -289,6 +289,9 @@ public:
 
 	std::vector<DevicePose> FilteredPoses;
 
+	std::vector<Vector3OneEuroFilter> positionFilters;
+	std::vector<QuaternionOneEuroFilter> rotationFilters;
+
 private:
 
 	void tryAddDevice(unsigned int deviceIndex);
@@ -308,10 +311,6 @@ private:
 	std::unordered_map<unsigned int, DevicePose*> deviceToPose;
 
 	std::unordered_map<unsigned int, DevicePose*> deviceToFilteredPose;
-
-
-	std::vector<Vector3OneEuroFilter> positionFilters;
-	std::vector<QuaternionOneEuroFilter> rotationFilters;
 
 	OpenVRButtonSubject ovrButtonSubject;
 

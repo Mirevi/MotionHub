@@ -498,8 +498,7 @@ OpenVRTracking::DevicePose OpenVRConfig::getPoseWithOffset(Joint::JointNames joi
 	// Get the pose from config & tracking system 
 	OpenVRTracking::DevicePose* devicePose = nullptr;
 	if (filter) {
-		//devicePose = trackingSystem->getFilteredPose(container->deviceIndex);
-		devicePose = trackingSystem->getPose(container->deviceIndex);
+		devicePose = trackingSystem->getFilteredPose(container->deviceIndex);
 	}
 	else {
 		devicePose = trackingSystem->getPose(container->deviceIndex);
