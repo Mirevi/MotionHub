@@ -129,26 +129,34 @@ private:
 
 		// Clear memory for HierarchicSkeleton
 		if (hierarchicSkeleton != nullptr) delete hierarchicSkeleton;
+		if (testHierarchicSkeleton != nullptr) delete testHierarchicSkeleton;
 
 		// Clear memory for IKSolverHip
 		if (ikSolverHip != nullptr) delete ikSolverHip;
+		if (testIkSolverHip != nullptr) delete testIkSolverHip;
 
 		// Clear memory for IKSolverSpine
 		if (ikSolverSpine != nullptr) delete ikSolverSpine;
+		if (testIkSolverSpine != nullptr) delete testIkSolverSpine;
 
 		// Clear memory for IKSolverLeg
 		if (ikSolverLeftLeg != nullptr) delete ikSolverLeftLeg;
+		if (testIkSolverLeftLeg != nullptr) delete testIkSolverLeftLeg;
 
 		// Clear memory for IKSolverLeg
 		if (ikSolverRightLeg != nullptr) delete ikSolverRightLeg;
+		if (testIkSolverRightLeg != nullptr) delete testIkSolverRightLeg;
 
 		// Clear memory for IKSolverArm
 		if (ikSolverLeftArm != nullptr) delete ikSolverLeftArm;
+		if (testIkSolverLeftArm != nullptr) delete testIkSolverLeftArm;
 
 		// Clear memory for IKSolverArm
 		if (ikSolverRightArm != nullptr) delete ikSolverRightArm;
+		if (testIkSolverRightArm != nullptr) delete testIkSolverRightArm;
 
 		if (skeleton != nullptr) delete skeleton;
+		if (testSkeleton != nullptr) delete testSkeleton;
 	}
 
 	void enableCalibrationMode() {
@@ -176,6 +184,7 @@ public:
 	OpenVRTracking* trackingSystem = nullptr;
 
 	HierarchicSkeleton* hierarchicSkeleton = nullptr;
+	HierarchicSkeleton* testHierarchicSkeleton = nullptr;
 
 	// IKSolvers
 	IKSolverHip* ikSolverHip = nullptr;
@@ -184,6 +193,13 @@ public:
 	IKSolverLeg* ikSolverRightLeg = nullptr;
 	IKSolverArm* ikSolverLeftArm = nullptr;
 	IKSolverArm* ikSolverRightArm = nullptr;
+
+	IKSolverHip* testIkSolverHip = nullptr;
+	IKSolverSpine* testIkSolverSpine = nullptr;
+	IKSolverLeg* testIkSolverLeftLeg = nullptr;
+	IKSolverLeg* testIkSolverRightLeg = nullptr;
+	IKSolverArm* testIkSolverLeftArm = nullptr;
+	IKSolverArm* testIkSolverRightArm = nullptr;
 
 	OpenVRConfig* config = nullptr;
 
@@ -203,5 +219,7 @@ public:
 	std::mutex skeletonPoolTrackingLock;
 
 	Skeleton* skeleton = nullptr;
+	Skeleton* testSkeleton = nullptr;
 
+	bool useTestSkeleton = false;
 };
