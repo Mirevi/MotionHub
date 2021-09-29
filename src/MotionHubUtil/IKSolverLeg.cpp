@@ -87,8 +87,8 @@ void IKSolverLeg::refresh(bool overrideDefault) {
 	middleJoint.setLength(middleToLower);
 	length = (upperJoint.length + middleJoint.length);
 
-	// Reset last rotation for normal
-	lastTargetRotation = Quaternionf::Identity();
+	// Reset lastNormal
+	lastNormal = Vector3f::Zero();
 
 	// Reset hint
 	hintPosition = Vector3f::Zero();
@@ -131,40 +131,12 @@ void IKSolverLeg::updateNormal() {
 	Quaternionf rotation = targetRotation * invLowerDefaultRotation;
 	Vector3f targetNormal = rotation * defaultLocalNormal;
 
-	// Is angle safe or last rotation not initialized?
-	if (angleBetween(currentNormal, targetNormal) <= 30.0f || lastTargetRotation.isApprox(Quaternionf::Identity())) {
-		//normal = slerpUnclamped(currentNormal.normalized(), targetNormal.normalized(), slerpTargetRotationDelta).normalized();
-		normal = upperRotation.slerp(slerpTargetRotationDelta, rotation) * defaultLocalNormal;
-	}
-	else {
-		// Get rotation difference to last frame
-		Quaternionf rotationDifference = rotation * lastTargetRotation.inverse();
-		Quaternionf upperDifference = upperRotation * lastUpperRotation.inverse();
-
-		// rotate normal by difference & configured rotation delta
-		//normal = Quaternionf::Identity().slerp(slerpTargetRotationDelta, rotationDifference) * normal;
-		normal = upperDifference.slerp(slerpTargetRotationDelta, rotationDifference) * normal;
-	}
-
-	// Update rotation & normal to current
-	lastTargetRotation = rotation;
-	lastUpperRotation = upperRotation;
+	Quaternionf fromTo = fromToRotation(upperRotation, rotation);
+	normal = upperRotation.slerp(slerpTargetRotationDelta, fromTo * upperRotation) * defaultLocalNormal;
 
 	// normalize normal
 	normal = normal.normalized();
-
-	/*
-	DebugPos1 = targetPosition + currentNormal.normalized() * 0.2f;
-	DebugPos2 = targetPosition + targetNormal.normalized() * 0.2f;
-	DebugPos3 = targetPosition + targetNormal.normalized() * 0.2f;
-	*/
-
-	return;
-
-	float angle = angleBetween(currentNormal, targetNormal);
-	float invDelta = (360 - angle) / angle * -slerpTargetRotationDelta;
-
-	Vector3f invSlerp = slerpUnclamped(currentNormal.normalized(), targetNormal.normalized(), invDelta);
+	lastNormal = normal;
 }
 
 void IKSolverLeg::solve(Vector3f position, Quaternionf rotation) {

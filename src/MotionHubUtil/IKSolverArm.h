@@ -94,14 +94,15 @@ protected:
 	Quaternionf invShoulderDefaultRotation;
 
 	Vector3f lastShoulderToHint;
+	Quaternionf lastShoulderRotation;
 
-	Vector3f handToPinky;
+	Vector3f handToBack;
 
 	float shoulderBackYAngle = 35.0f; // Back
 	float shoulderForwardYAngle = 45.0f; // Forward
-	float shoulderUpZAngle = 50.0f; // Up
-	float shoulderDownMaxAngle = 35.0f; // Down
+	float shoulderUpZAngle = 45.0f; // Up
+	float shoulderDownZAngle = 20.0f; // Down
 
 	float defaultShoulderHandDistance;
-	float shoulderHandMaxAngle = 25.0f;
+	float shoulderHandMaxAngle = 20.0f;
 };

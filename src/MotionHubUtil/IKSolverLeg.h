@@ -172,8 +172,8 @@ protected:
 	bool isLeft;
 
 	Vector3f normal;
+	Vector3f lastNormal;
 
-	Vector3f defaultNormal;
 	Vector3f defaultLocalNormal;
 
 	Quaternionf invUpperDefaultRotation;
@@ -183,9 +183,6 @@ protected:
 	Vector3f startPosition;
 
 	float length;
-
-	Quaternionf lastTargetRotation;
-	Quaternionf lastUpperRotation;
 
 	Vector3f hintPosition;
 	Quaternionf hintRotation;

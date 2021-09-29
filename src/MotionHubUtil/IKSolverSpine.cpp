@@ -67,10 +67,12 @@ void IKSolverSpine::solve(Vector3f position, Quaternionf rotation) {
 	// Solve another CCD iteration to make the spine less rigid
 	solveCCD();
 
-	// Solve neck joint with CCD
-	//Quaternionf fromTo = IKSolver::solveCCD(neckJoint.getPosition(), headJoint.getPosition(), targetPosition);
-	//neckJoint.setRotation(fromTo * neckJoint.getRotation());
-
+	// Solve neck with CCD & extra offset
+	Vector3f offset = targetRotation * Vector3f(0, 0.2f, 0);
+	Quaternionf fromTo = IKSolver::solveCCD(neckJoint.getPosition(), headJoint.getPosition(), targetPosition + offset);
+	Quaternionf neckRotation = Quaternionf::Identity().slerp(0.75f, fromTo);
+	neckJoint.setRotation(neckRotation * neckJoint.getRotation());
+	
 	// Solve Head rotation
 	headJoint.setRotation(targetRotation);
 }

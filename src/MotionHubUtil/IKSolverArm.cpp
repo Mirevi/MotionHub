@@ -25,13 +25,16 @@ void IKSolverArm::init() {
 	Vector3f shoulderToUpper = upperJoint.getPosition() - shoulderJoint.getPosition();
 	shoulderJoint.init(shoulderToUpper, normal);
 
-	// TODO: Achsen bestimmen
-	// - Handflaeche zu Mittelfinger
-	// - Handflaeche zu Daumen
 
-	handToPinky = Vector3f(0, 0, 1);
+	handToBack = Vector3f(1, 0, 0);
 	if (isLeft) {
-		handToPinky = Vector3f(0, 0, -1);
+		handToBack = Vector3f(-1, 0, 0);
+	}
+
+	if (isLeft) {
+		float tempAngle = shoulderUpZAngle;
+		shoulderUpZAngle = shoulderDownZAngle;
+		shoulderDownZAngle = tempAngle;
 	}
 
 	refresh(true);
@@ -47,6 +50,10 @@ void IKSolverArm::refresh(bool overrideDefault) {
 
 	Vector3f shoulderToUpper = upperJoint.getPosition() - shoulderJoint.getPosition();
 	shoulderJoint.setLength(shoulderToUpper);
+
+	lastShoulderRotation = shoulderJoint.getRotation();
+
+	lastShoulderToHint = middleJoint.getPosition() - shoulderJoint.getPosition();
 
 	// Save shoulder to hand distance
 	defaultShoulderHandDistance = (lowerJoint.getLocalPosition() - shoulderJoint.getPosition()).norm();
@@ -76,7 +83,44 @@ void IKSolverArm::updateNormal() {
 
 	slerpTargetRotationDelta = 0.25f;
 
-	IKSolverLeg::updateNormal();
+	if (hasHint) {
+		IKSolverLeg::updateNormal();
+	}
+	else {
+		// Get normal from current rotation
+		Quaternionf upperRotation = upperJoint.getRotation();
+		Vector3f currentNormal = upperRotation * defaultLocalNormal;
+
+		// Get target normal relative to lower default rotation 
+		Quaternionf rotation = targetRotation * invLowerDefaultRotation;
+		Vector3f targetNormal = rotation * defaultLocalNormal;
+
+		float angle = angleBetween(upperRotation, rotation);
+		Quaternionf fromTo = fromToRotation(upperRotation, rotation);
+
+		Vector3f slerpNormal = upperRotation.slerp(slerpTargetRotationDelta, fromTo * upperRotation) * defaultLocalNormal;
+
+		float angleDelta = (360.0f - angle) / angle;
+		Vector3f invSlerpNormal = upperRotation.slerp(angleDelta * -slerpTargetRotationDelta, fromTo * upperRotation) * defaultLocalNormal;
+
+		//if(!isLeft)
+		//Console::log(toString(angleBetween(lastNormal, slerpNormal)) + " <= " + toString(angleBetween(lastNormal, invSlerpNormal)));
+
+		//if (angleBetween(currentNormal, targetNormal) <= 30.0f || lastNormal.isApprox(Vector3f::Zero())) {
+		if (lastNormal.isApprox(Vector3f::Zero())) {
+			normal = slerpNormal;
+		}
+		else if (angleBetween(lastNormal, slerpNormal) <= angleBetween(lastNormal, invSlerpNormal)) {
+			normal = slerpNormal;
+		}
+		else {
+			normal = invSlerpNormal;
+		}
+		
+		// normalize normal
+		normal = normal.normalized();
+		lastNormal = normal;
+	}
 }
 
 void IKSolverArm::solve(Vector3f position, Quaternionf rotation) {
@@ -201,18 +245,18 @@ void IKSolverArm::solve() {
 		float yDeltaAngle;
 		if (isForward) {
 			if (yAngle >= 0) {
-				yDeltaAngle = mapClamp(yAngle, 0, 70, 0, shoulderForwardYAngle + handYAngle);
+				yDeltaAngle = mapClamp(yAngle, 0, 80, 0, shoulderForwardYAngle + handYAngle);
 			}
 			else {
-				yDeltaAngle = mapClamp(yAngle, -70, 0, -shoulderForwardYAngle - handYAngle, 0);
+				yDeltaAngle = mapClamp(yAngle, -80, 0, -shoulderForwardYAngle - handYAngle, 0);
 			}
 		}
 		else {
 			if (yAngle >= 0) {
-				yDeltaAngle = mapClamp(yAngle, 0, 70, 0, shoulderBackYAngle + handYAngle);
+				yDeltaAngle = mapClamp(yAngle, 0, 80, 0, shoulderBackYAngle + handYAngle);
 			}
 			else {
-				yDeltaAngle = mapClamp(yAngle, -70, 0, -shoulderBackYAngle - handYAngle, 0);
+				yDeltaAngle = mapClamp(yAngle, -80, 0, -shoulderBackYAngle - handYAngle, 0);
 			}
 		}
 
@@ -239,18 +283,18 @@ void IKSolverArm::solve() {
 		float zDeltaAngle;
 		if (isUp) {
 			if (zAngle >= 0) {
-				zDeltaAngle = mapClamp(zAngle, 0, 70, 0, shoulderUpZAngle + handZAngle);
+				zDeltaAngle = mapClamp(zAngle, 0, 80, 0, shoulderUpZAngle + handZAngle);
 			}
 			else {
-				zDeltaAngle = mapClamp(zAngle, -70, 0, -shoulderUpZAngle - handZAngle, 0);
+				zDeltaAngle = mapClamp(zAngle, -80, 0, -shoulderUpZAngle - handZAngle, 0);
 			}
 		}
 		else {
 			if (zAngle >= 0) {
-				zDeltaAngle = mapClamp(zAngle, 0, 70, 0, shoulderDownMaxAngle + handZAngle);
+				zDeltaAngle = mapClamp(zAngle, 0, 80, 0, shoulderDownZAngle + handZAngle);
 			}
 			else {
-				zDeltaAngle = mapClamp(zAngle, -70, 0, -shoulderDownMaxAngle - handZAngle, 0);
+				zDeltaAngle = mapClamp(zAngle, -80, 0, -shoulderDownZAngle - handZAngle, 0);
 			}
 		}
 
@@ -266,9 +310,13 @@ void IKSolverArm::solve() {
 		}
 
 		if (solve) {
+			Quaternionf newShoulderRotation = rotation * shoulderJoint.getRotation();
 			// Set upper joint solved position & shoulder rotation
 			//upperJoint.setSolvedPosition(direction + shoulderPosition);
-			shoulderJoint.setRotation(rotation * shoulderJoint.getRotation());
+			shoulderJoint.setRotation(lastShoulderRotation.slerp(0.5f, newShoulderRotation));
+
+			lastShoulderRotation = newShoulderRotation;
+
 			for (IKJoint* joint : joints) {
 				joint->saveSolvedPosition();
 			}
@@ -281,6 +329,49 @@ void IKSolverArm::solve() {
 void IKSolverArm::constraint() {
 
 	IKSolverLeg::constraint();
+	// Store solved positions of all 3 joints
+	Vector3f upperPosition = upperJoint.getSolvedPosition();
+	Vector3f middlePosition = middleJoint.getSolvedPosition();
+	Vector3f lowerPosition = lowerJoint.getSolvedPosition();
+
+	// Get the rotation limb axis from upper to lower joint
+	Vector3f limbAxis = (lowerPosition - upperPosition).normalized();
+
+	// Store current direction
+	Vector3f currentDirection = (middlePosition - upperPosition).normalized();
+
+	Vector3f bendDirection = currentDirection;
+
+	if (!isLeft) {
+		bendDirection += (middlePosition - upperPosition).normalized() * 1.2f;
+
+		bendDirection += targetRotation * (handToBack * 0.25f);
+		bendDirection += Vector3f(0, -1.0f, 0);
+
+		//DebugPos1 = upperPosition + currentDirection + Vector3f(0, -0.75f, 0);
+		//DebugPos3 = upperPosition + currentDirection + targetRotation * (handToBack * 0.5f);
+	}
+	else {
+		bendDirection += (middlePosition - upperPosition).normalized() * 1.0f;
+
+		bendDirection += targetRotation * (handToBack * 0.25f);
+		bendDirection += Vector3f(0, -1.0f, 0);
+
+		//DebugPos1 = upperPosition + currentDirection + Vector3f(0, -0.75f, 0);
+		//DebugPos3 = upperPosition + currentDirection + targetRotation * (handToBack * 0.1f);
+	}
+
+	// Ortho normalize both directions on limb axis
+	orthoNormalize(limbAxis, currentDirection);
+	orthoNormalize(limbAxis, bendDirection);
+
+	// Calculate angle difference on limb axis & create rotation on axis
+	float angle = signedAngle(currentDirection, bendDirection, limbAxis);
+	Quaternionf rotation = angleAxis(angle, limbAxis);
+
+	// Rotate the middle bone using the angle
+	Vector3f newMiddlePosition = angleAxis(angle, limbAxis) * (middlePosition - upperPosition) + upperPosition;
+	middleJoint.setSolvedPosition(newMiddlePosition);
 }
 
 void IKSolverArm::apply() {
