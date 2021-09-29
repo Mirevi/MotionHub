@@ -450,6 +450,22 @@ void OpenVRConfig::writeDefaults() {
 		configManager->writeVec3f("position", Vector3f(0.008f, -0.036f, -0.016f), trackerType, configKey);
 		configManager->writeVec3f("rotation", Vector3f(90.0f, -160.0f, -55.0f), trackerType, configKey);
 	}
+
+	// Write Tracker:FOREARM_L if not exist
+	configKey = generateKey(OpenVRTracking::Tracker, Joint::FOREARM_L);
+	if (OVERRIDE_DEFAULTS || !configManager->exists(trackerType, configKey)) {
+
+		//configManager->writeVec3f("position", Vector3f(-0.01f, 0.1f, -0.05f), trackerType, configKey);
+		configManager->writeVec3f("position", Vector3f(0, 0.1f, -0.05f), trackerType, configKey);
+	}
+
+	// Write Tracker:FOREARM_R if not exist
+	configKey = generateKey(OpenVRTracking::Tracker, Joint::FOREARM_R);
+	if (OVERRIDE_DEFAULTS || !configManager->exists(trackerType, configKey)) {
+
+		//configManager->writeVec3f("position", Vector3f(0.01f, 0.1f, -0.05f), trackerType, configKey);
+		configManager->writeVec3f("position", Vector3f(0, 0.1f, -0.05f), trackerType, configKey);
+	}
 }
 
 int OpenVRConfig::getDeviceIndex(Joint::JointNames joint) {

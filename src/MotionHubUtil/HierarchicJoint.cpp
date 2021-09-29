@@ -128,7 +128,7 @@ Vector3f HierarchicJoint::getGlobalPosition() {
 	if (parent != nullptr) {
 		if (!globalValid) {
 			global = combineParentMatrixRecursive(this);
-			globalValid = true;
+			//globalValid = true;
 		}
 
 		return getLocalPosition(global);
@@ -232,10 +232,8 @@ Matrix4f HierarchicJoint::combineParentMatrixRecursive(HierarchicJoint* hierarch
 
 void HierarchicJoint::invalidateGlobalRecursive() {
 
-	if (globalValid) {
-		for (auto& child : children) {
-			child->invalidateGlobalRecursive();
-		}
+	for (auto& child : children) {
+		child->invalidateGlobalRecursive();
 	}
 
 	globalValid = false;

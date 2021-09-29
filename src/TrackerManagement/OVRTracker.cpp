@@ -590,6 +590,8 @@ void OVRTracker::calibrate() {
 
 	calibrateScale();
 
+	calibrateHintOffsets();
+
 	refreshIKSolvers();
 
 	Console::log("OVRTracker::calibrate");
@@ -699,6 +701,58 @@ void OVRTracker::calibrateScale() {
 	ikSolverRightLeg->refresh();
 	ikSolverLeftArm->refresh();
 	ikSolverRightArm->refresh();
+}
+
+void OVRTracker::calibrateHintOffsets() {
+
+	Joint::JointNames limbJoints[]{
+		Joint::LEG_L,
+		Joint::LEG_R,
+		Joint::FOREARM_L,
+		Joint::FOREARM_R
+	};
+
+	enableCalibrationMode();
+
+	for (auto limbJoint : limbJoints) {
+		int deviceIndex = config->getDeviceIndex(limbJoint);
+
+		// Skip if limb is not assigned
+		if (deviceIndex == -1) {
+			continue;
+		}
+
+		// get joint from skeleton
+		HierarchicJoint* joint = hierarchicSkeleton->getJoint(limbJoint);
+
+
+		auto limbDevicePose = config->getPose(limbJoint);
+
+
+		//config->calibrateDeviceToJointOffset(limbJoint);
+
+		Quaternionf offsetRot = limbDevicePose->rotation.inverse() * joint->getGlobalRotation();
+		config->setOffsetRotation(limbJoint, offsetRot);
+
+		/*
+		// Save user offset & set it to zero
+		Vector3f oldOffset = config->getUserOffsetPosition(limbJoint);
+		config->setUserOffsetPosition(limbJoint, Vector3f::Zero());
+		config->setOffsetPosition(limbJoint, Vector3f::Zero());
+
+		// TODO: Position Offset ermitteln und speichern
+		auto limbPose = config->getPoseWithOffset(limbJoint, false);
+
+		Vector3f offset = (joint->getGlobalPosition() - limbPose.position);
+
+		config->setOffsetPosition(limbJoint, offset);
+
+		// Restore old user offset
+		config->setUserOffsetPosition(limbJoint, oldOffset);
+		*/
+	}
+
+	disableCalibrationMode();
 }
 
 void OVRTracker::notify(Subject* subject) {

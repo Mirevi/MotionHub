@@ -112,6 +112,8 @@ private:
 
 	void calibrateScale();
 
+	void calibrateHintOffsets();
+
 	/*!
 	 * update the state of this observer
 	 */
