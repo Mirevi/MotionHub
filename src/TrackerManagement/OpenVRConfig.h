@@ -12,7 +12,6 @@ struct IKContainer { // TODO: Besserer Name
 
 	Vector3f offsetPosition = Vector3f::Zero();
 	Quaternionf offsetRotation = Quaternionf::Identity();
-	Quaternionf space = Quaternionf::Identity();
 
 	Vector3f userOffsetPosition = Vector3f::Zero();
 };
@@ -69,8 +68,6 @@ public:
 	OpenVRTracking::DevicePose* getPose(Joint::JointNames joint);
 
 	OpenVRTracking::DevicePose getPoseWithOffset(Joint::JointNames joint, bool filter = true);
-
-	void setSpace(Joint::JointNames joint, Quaternionf space);
 
 	Vector3f getOffsetPosition(Joint::JointNames joint);
 

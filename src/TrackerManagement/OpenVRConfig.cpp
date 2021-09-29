@@ -65,11 +65,6 @@ void OpenVRConfig::readOffsets() {
 			setOffsetRotation(joint, eulerToQuaternion(offsetEuler));
 		}
 
-		// Read & set space rotation by device & joint
-		if (configManager->readVec3f("space", spaceEuler, trackerType, configKey)) {
-			setSpace(joint, eulerToQuaternion(spaceEuler));
-		}
-
 		// Read & set user offset position by device & joint 
 		if (configManager->readVec3f("useroffset", offsetPosition, trackerType, configKey)) {
 			setUserOffsetPosition(joint, offsetPosition);
@@ -144,24 +139,11 @@ void OpenVRConfig::write() {
 			configManager->writeVec3f("rotation", quaternionToEuler(container->offsetRotation), trackerType, configKey);
 		}
 
-		// Device & joint to space rotation
-		if (!container->space.isApprox(Quaternionf::Identity())) {
-			configManager->writeVec3f("space", quaternionToEuler(container->space), trackerType, configKey);
-		}
 
 		// Device & joint to user offset
 		if (!container->userOffsetPosition.isApprox(Vector3f::Zero())) {
 			configManager->writeVec3f("useroffset", container->userOffsetPosition, trackerType, configKey);
 		}
-	}
-}
-
-void OpenVRConfig::setSpace(Joint::JointNames joint, Quaternionf space) {
-
-	// get container for specific joint & set value
-	auto container = getIKContainer(joint);
-	if (container != nullptr) {
-		container->space = space;
 	}
 }
 
@@ -337,35 +319,12 @@ void OpenVRConfig::calibrateDeviceToJointOffset(Joint::JointNames joint) {
 	// project foward vector on world up
 	forward = projectOnPlane(forward, worldUp);
 
-	/*
-	Vector3f hmdForward = headDevicePose->rotation * Vector3f(0, 0, 1);
-	hmdForward = projectOnPlane(hmdForward, worldUp);
-
-	if (fabs(signedAngle(forward, hmdForward, worldUp)) > 90.0f) {
-		forward = -forward;
-	}
-	*/
-
-	Console::log(std::to_string(signedAngle(Vector3f(0, 0, 1), forward, worldUp)));
-
-	// hip special case: forward must be flipped
-	if (joint == Joint::HIPS) {
-		//forward = -forward;
-	}
-
 	// create look rotation
 	Quaternionf rotation = lookRotation(forward, worldUp);
 
 	// set offset = rotation * inverse device rotation
-	//Quaternionf offset = rotation * jointDevicePose->rotation.inverse();
-	//Quaternionf offset = rotation;
 	Quaternionf offset = jointDevicePose->rotation.inverse() * rotation;
 	setOffsetRotation(joint, offset);
-
-	// set space = rotation in device space
-	//Quaternionf space = rotationToSpace(jointDevicePose->rotation, rotation);
-	Quaternionf space = jointDevicePose->rotation.inverse();
-	setSpace(joint, space);
 }
 
 Vector3f OpenVRConfig::getCalibratedScale(HierarchicSkeleton* hierarchicSkeleton) {
@@ -533,9 +492,7 @@ OpenVRTracking::DevicePose OpenVRConfig::getPoseWithOffset(Joint::JointNames joi
 	// Add offset position
 	pose.position += pose.rotation * container->offsetPosition;
 
-	// Add offset rotation if not null
-	//pose.rotation = container->offsetRotation * (container->space * pose.rotation * container->space.inverse());
-
+	// Add offset rotation
 	pose.rotation = pose.rotation * container->offsetRotation;
 
 	// Add user offset position
