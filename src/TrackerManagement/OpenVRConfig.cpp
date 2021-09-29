@@ -139,7 +139,6 @@ void OpenVRConfig::write() {
 			configManager->writeVec3f("rotation", quaternionToEuler(container->offsetRotation), trackerType, configKey);
 		}
 
-
 		// Device & joint to user offset
 		if (!container->userOffsetPosition.isApprox(Vector3f::Zero())) {
 			configManager->writeVec3f("useroffset", container->userOffsetPosition, trackerType, configKey);

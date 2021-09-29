@@ -16,6 +16,8 @@ static bool DEBUG_ARM = false;
 static bool SOLVE_IK = true;
 static bool SOLVE_ARMS = true;
 
+static bool CALIBRATE_FEET_OFFSET = false;
+
 static bool USE_TEST_SKELETON = true;
 
 static std::string DebugIdentifier(std::string identifier) {
@@ -416,16 +418,16 @@ void OVRTracker::track() {
 	int i = 0;
 	for (auto& device : trackingSystem->Devices) {
 		// Read pose from device index
-		const auto& pose = poses[i];
+		auto& pose = poses[i];
 
+		auto joint = config->getJoint(device.index);
+		if (joint == Joint::HAND_L || joint == Joint::FOOT_L) {
+			pose = trackingSystem->FilteredPoses[i];
+		}
+
+		// Convert rotation & update point
 		Quaternionf rotation = Quaternionf(-pose.rotation.y(), -pose.rotation.z(), pose.rotation.w(), pose.rotation.x());
-
-		Vector3f position = pose.position;
-		/*if (device.index == 2) {
-			position = positionOneEuroFilter.filter(position);
-		}*/
-
-		m_pointCollection.updatePoint(device.index, position, rotation);
+		m_pointCollection.updatePoint(device.index, pose.position, rotation);
 
 		i++;
 	}
@@ -439,13 +441,6 @@ void OVRTracker::track() {
 }
 
 void OVRTracker::extractSkeleton() {
-
-	/*
-	skeletonPoolTrackingLock.lock();
-	skeleton->m_joints = hierarchicSkeleton->skeleton.m_joints;
-	//hierarchicSkeleton->insert(nullptr)
-	skeletonPoolTrackingLock.unlock();
-	*/
 
 	m_skeletonPoolLock.lock();
 
@@ -783,17 +778,75 @@ void OVRTracker::calibrateScale() {
 	// Read current hip offset from config
 	Vector3f hipOffset = config->getOffsetPosition(Joint::HIPS);
 
-	Vector3f newHipOffset = hipOffset + Vector3f(0, -toeOffset.y(), 0);
+	Vector3f headToHip = hipPose.position - headPose.position;
+
+	Vector3f hipHeadOffset = projectOnPlane(headToHip, hipPose.rotation * Vector3f(0, 0, 1));
+
+	Vector3f newHipOffset = hipOffset + Vector3f(hipHeadOffset.x(), -toeOffset.y(), 0);
+	//Vector3f newHipOffset = hipOffset + Vector3f(0, -toeOffset.y(), 0);
 	config->setOffsetPosition(Joint::HIPS, newHipOffset);
 
-	// Write scale to config for Unity process
-	config->writeScale(hierarchicSkeleton->getScale());
+	hipPose = config->getPoseWithOffset(Joint::HIPS, false);
+	ikSolverHip->solve(hipPose.position, hipPose.rotation);
+
+	Console::log("Hip y Offset: " + toString(toeOffset.y()));
+
 	Console::logError(toString(distance(betweenToes, newBetweenToes)));
 
-	ikSolverLeftLeg->refresh();
-	ikSolverRightLeg->refresh();
-	ikSolverLeftArm->refresh();
-	ikSolverRightArm->refresh();
+	Vector3f leftHandOffset = leftHandPose.position - lerp(leftHandPose.position, rightHandPose.position, 0.25f);
+	Vector3f rightHandOffset = rightHandPose.position - lerp(rightHandPose.position, leftHandPose.position, 0.25f);
+
+	ikSolverSpine->solve(headPose.position, headPose.rotation);
+	ikSolverLeftArm->solve(leftHandPose.position + leftHandOffset.normalized() * 0.1f, leftHandPose.rotation);
+	ikSolverRightArm->solve(rightHandPose.position + rightHandOffset.normalized() * 0.1f, leftHandPose.rotation);
+
+
+	auto leftFootPose = config->getPoseWithOffset(Joint::FOOT_L, false);
+	auto rightFootPose = config->getPoseWithOffset(Joint::FOOT_R, false);
+	ikSolverLeftLeg->solve(leftFootPose.position + Vector3f(0, -0.5f, 0), leftFootPose.rotation);
+	ikSolverRightLeg->solve(rightFootPose.position + Vector3f(0, -0.5f, 0), rightFootPose.rotation);
+
+	if (CALIBRATE_FEET_OFFSET) {
+		auto leftFootPose = config->getPoseWithOffset(Joint::FOOT_L, false);
+		Vector3f newOffsetL = (hierarchicSkeleton->leftFoot.getGlobalPosition()) - leftFootPose.position;
+
+		Vector3f offsetL = config->getUserOffsetPosition(Joint::FOOT_L);
+		offsetL.y() += newOffsetL.y();
+
+		config->setUserOffsetPosition(Joint::FOOT_L, offsetL);
+
+		auto rightFootPose = config->getPoseWithOffset(Joint::FOOT_R, false);
+		Vector3f newOffsetR = (hierarchicSkeleton->leftFoot.getGlobalPosition()) - rightFootPose.position;
+
+		Vector3f offsetR = config->getUserOffsetPosition(Joint::FOOT_R);
+		offsetR.y() += newOffsetR.y();
+
+		config->setUserOffsetPosition(Joint::FOOT_R, offsetR);
+	}
+
+	float afterSolveDist = distance(hierarchicSkeleton->leftHand.getGlobalPosition(), hierarchicSkeleton->rightHand.getGlobalPosition());
+	Console::logWarning("afterSolveDist: " + toString(afterSolveDist));
+	Console::logWarning("L -> LC: " + toString(distance(hierarchicSkeleton->leftHand.getGlobalPosition(), leftHandPose.position)));
+	Console::logWarning("R -> RC: " + toString(distance(hierarchicSkeleton->rightHand.getGlobalPosition(), rightHandPose.position)));
+
+	float xDelta = afterScaleDist / afterSolveDist;
+	scale.x() *= xDelta;
+	scale.z() *= xDelta;
+
+	hierarchicSkeleton->setScale(scale);
+	hierarchicSkeleton->init();
+
+	if (useTestSkeleton) {
+		testHierarchicSkeleton->setScale(scale);
+		testHierarchicSkeleton->init();
+	}
+
+	refreshIKSolvers(true);
+
+	// Write scale to config for Unity process
+	config->writeScale(scale);
+
+	disableCalibrationMode();
 }
 
 void OVRTracker::calibrateHintOffsets() {

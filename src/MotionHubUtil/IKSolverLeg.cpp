@@ -120,8 +120,15 @@ void IKSolverLeg::loadDefaultState() {
 
 void IKSolverLeg::updateNormal() {
 
-	// TODO: Fallunterscheidung mit und ohne Bend Goal
-	//if (bend == nullptr) {
+
+	// Is hint available & is not calibrationg
+	if (!isCalibrating && hasHint) {
+		// Rotate normal with Hint
+		Vector3f hintNormal = hintRotation * invMiddleDefaultRotation * defaultLocalNormal;
+		normal = hintNormal.normalized();
+
+		return;
+	}
 
 	// Get normal from current rotation
 	Quaternionf upperRotation = upperJoint.getRotation();
@@ -269,6 +276,11 @@ void IKSolverLeg::constraint() {
 
 	// Get direction the limb should point to
 	Vector3f bendDirection = (solvePosition - upperPosition).cross(normal);
+
+	// Get direction to hint if not calibrating
+	if (!isCalibrating && hasHint) {
+		bendDirection = (hintPosition - upperPosition).normalized();
+	}
 
 	// Ortho normalize both directions on limb axis
 	orthoNormalize(limbAxis, currentDirection);

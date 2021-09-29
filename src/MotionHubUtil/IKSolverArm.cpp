@@ -131,25 +131,23 @@ void IKSolverArm::solve(Vector3f position, Quaternionf rotation) {
 
 void IKSolverArm::solve() {
 
-	//IKSolverLeg::solve();
-	//return;
+	shoulderJoint.loadDefaultState();
 
+	// TODO: Ueberarbeiten
 	if (!isCalibrating && hasHint) {
-
-		shoulderJoint.loadDefaultState();
 
 		// Read shoulder positon & relative shoulder rotation
 		Vector3f shoulderPosition = shoulderJoint.getPosition();
 		Quaternionf localShoulderRotation = shoulderJoint.getRotation() * invShoulderDefaultRotation;
 
 		// Calculate vectors from shoulder to current elbow & new elbow (from last frame)
-		Vector3f toUpper = upperJoint.getPosition() - shoulderPosition;
+		Vector3f upperPosition = upperJoint.getPosition();
+		Vector3f toUpper = upperPosition - shoulderPosition;
 
 		Vector3f upperHint = hintPosition + (hintRotation * middleToUpper);
 
 		// lerp hint / shoulder pos
-
-		Vector3f toUpperHint = upperHint - shoulderPosition;
+		Vector3f toUpperHint = lerp(upperPosition, upperHint, 0.9f) - shoulderPosition;
 
 		// Calculate rotation from current elbow to new elbow position 
 		Quaternionf solvedRotation = fromToRotation(toUpper, toUpperHint);
@@ -174,9 +172,8 @@ void IKSolverArm::solve() {
 		}
 	}
 
-	else if (!isCalibrating && solveShoulder) {
+	else if (!isCalibrating) {
 
-		shoulderJoint.loadDefaultState();
 
 		// Read shoulder positon & relative shoulder rotation
 		Vector3f shoulderPosition = shoulderJoint.getPosition();
@@ -329,6 +326,11 @@ void IKSolverArm::solve() {
 void IKSolverArm::constraint() {
 
 	IKSolverLeg::constraint();
+
+	if (isCalibrating || hasHint) {
+		return;
+	}
+
 	// Store solved positions of all 3 joints
 	Vector3f upperPosition = upperJoint.getSolvedPosition();
 	Vector3f middlePosition = middleJoint.getSolvedPosition();
