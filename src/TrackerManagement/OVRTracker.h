@@ -207,17 +207,6 @@ public:
 
 	ButtonHelper buttonHelper;
 
-
-	void ovrTrack();
-
-	std::atomic<bool> isTrackReading;
-
-	std::thread* m_ovrTrackingThread;
-
-
-	std::mutex pointCollectionTrackingLock;
-	std::mutex skeletonPoolTrackingLock;
-
 	Skeleton* skeleton = nullptr;
 	Skeleton* testSkeleton = nullptr;
 

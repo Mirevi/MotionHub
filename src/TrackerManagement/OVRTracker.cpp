@@ -126,7 +126,8 @@ void OVRTracker::start() {
 		Console::log("");
 	}
 
-	m_ovrTrackingThread = new std::thread(&OVRTracker::ovrTrack, this);
+	// TODO: ovr track not needed anymore?
+	//m_ovrTrackingThread = new std::thread(&OVRTracker::ovrTrack, this);
 
 	// start tracking thread
 	Tracker::start();
@@ -177,6 +178,28 @@ void OVRTracker::refresh() {
 		testHierarchicSkeleton->setScale(config->readScale());
 		testHierarchicSkeleton->init();
 	}
+
+	// Update Filters
+	int i = 0;
+	for (auto& device : trackingSystem->Devices) {
+		Joint::JointNames joint = config->getJoint(device.index);
+
+		if (joint == Joint::HAND_L || joint == Joint::FOOT_L) {
+			trackingSystem->positionFilters[i].setParams(1, 1.0f, 0.007f);
+			trackingSystem->rotationFilters[i].setParams(2, 1.0f, 0.007f);
+		}
+		else if (joint == Joint::HIPS) {
+			trackingSystem->positionFilters[i].setParams(60, 1.0f, 0.007f);
+			trackingSystem->rotationFilters[i].setParams(120, 1.0f, 0.007f);
+		}
+		else {
+			trackingSystem->positionFilters[i].setParams(30, 1.0f, 0.007f);
+			trackingSystem->rotationFilters[i].setParams(60, 1.0f, 0.007f);
+		}
+
+		i++;
+	}
+
 	// Refresh IKSolvers (if initialized)
 	refreshIKSolvers(true);
 }
@@ -192,8 +215,8 @@ void OVRTracker::stop() {
 	Tracker::stop();
 
 	//wait for tracking thread to terminate, then dispose of thread object
-	if (m_ovrTrackingThread->joinable()) m_ovrTrackingThread->join();
-	delete m_ovrTrackingThread;
+	//if (m_ovrTrackingThread->joinable()) m_ovrTrackingThread->join();
+	//delete m_ovrTrackingThread;
 }
 
 void OVRTracker::init() {
@@ -237,107 +260,10 @@ void printOvrFPS() {
 	}
 }
 
-void OVRTracker::ovrTrack() {
-
-	return;
-
-	// track while tracking is true
-	while (m_isTracking) {
-
-		if (isTrackReading && m_isEnabled) {
-			//std::this_thread::sleep_for(std::chrono::milliseconds(1));
-		}
-
-		if (!isTrackReading && m_isEnabled) {
-			//auto t1 = std::chrono::high_resolution_clock::now();
-
-			// Poll Events in the Tracking System
-			trackingSystem->pollEvents();
-
-			// Update prediction time
-			float mmhDelay = 0.0f; // 0.05f;
-			trackingSystem->setPredictionTime(mmhDelay);
-
-
-			// Lock point collection mutex
-			pointCollectionTrackingLock.lock();
-
-			// Update device poses
-			trackingSystem->receiveDevicePoses();
-
-			// Unlock point collection mutex
-			pointCollectionTrackingLock.unlock();
-
-			// TODO: IK write nach hinten verschieben -> kuerzers lock & unlock
-
-			Joint::JointConfidence highConf = Joint::JointConfidence::HIGH;
-
-			auto hipPose = getAssignedPose(Joint::HIPS);
-			//auto hipPose = OpenVRTracking::DevicePose();
-
-			if (DEBUG_SKELETON_ROT) {
-				hipPose.rotation = eulerToQuaternion(m_properties->rotationOffset);
-			}
-
-			ikSolverHip->solve(hipPose.position, hipPose.rotation);
-			hierarchicSkeleton->hips.setConfidence(highConf);
-
-			// Solve Spine
-			auto headPose = getAssignedPose(Joint::HEAD);
-			//auto headPose = OpenVRTracking::DevicePose();
-			ikSolverSpine->solve(headPose.position, headPose.rotation);
-			hierarchicSkeleton->head.setConfidence(highConf);
-
-			// Solve LeftLeg
-			auto leftFootPose = getAssignedPose(Joint::FOOT_L);
-			//auto leftFootPose = OpenVRTracking::DevicePose();
-			ikSolverLeftLeg->solve(leftFootPose.position, leftFootPose.rotation);
-			hierarchicSkeleton->leftFoot.setConfidence(highConf);
-
-			// Solve RightLeg
-			auto rightFootPose = getAssignedPose(Joint::FOOT_R);
-			//auto rightFootPose = OpenVRTracking::DevicePose();
-			ikSolverRightLeg->solve(rightFootPose.position, rightFootPose.rotation);
-			hierarchicSkeleton->rightFoot.setConfidence(highConf);
-
-			// Solve LeftArm
-			auto leftHandPose = getAssignedPose(Joint::HAND_L);
-			//auto leftHandPose = OpenVRTracking::DevicePose();
-			ikSolverLeftArm->solve(leftHandPose.position, leftHandPose.rotation);
-			hierarchicSkeleton->leftHand.setConfidence(highConf);
-
-			// Solve RightArm
-			auto rightHandPose = getAssignedPose(Joint::HAND_R);
-			//auto rightHandPose = OpenVRTracking::DevicePose();
-			ikSolverRightArm->solve(rightHandPose.position, rightHandPose.rotation);
-			hierarchicSkeleton->rightHand.setConfidence(highConf);
-
-
-			// Lock skeleton mutex
-			skeletonPoolTrackingLock.lock();
-
-			// Update Skeleton
-			hierarchicSkeleton->insert(nullptr);
-
-			// Unlock skeleton mutex
-			skeletonPoolTrackingLock.unlock();
-
-			//printOvrFPS();
-
-			/*
-			auto t2 = std::chrono::high_resolution_clock::now();
-			auto ms_int2 = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1);
-			Console::logWarning(std::to_string(ms_int2.count()));
-			*/
-		}
-	}
-}
-
 void OVRTracker::track() {
 
+	// Update offsets from Inspector
 	trackingSystem->setOffsets(m_properties->positionOffset, m_rotationOffset, m_properties->scaleOffset);
-
-	isTrackReading = true;
 
 	// Poll Events in the Tracking System
 	trackingSystem->pollEvents();
@@ -475,17 +401,13 @@ void OVRTracker::track() {
 		testHierarchicSkeleton->insert(nullptr);
 	}
 
-	pointCollectionTrackingLock.lock();
 	auto poses = trackingSystem->Poses;
-	pointCollectionTrackingLock.unlock();
 
-	skeletonPoolTrackingLock.lock();
 	skeleton->m_joints = hierarchicSkeleton->skeleton.m_joints;
 	if (useTestSkeleton) {
 		testSkeleton->m_joints = testHierarchicSkeleton->skeleton.m_joints;
 	}
 	//hierarchicSkeleton->insert(nullptr);
-	skeletonPoolTrackingLock.unlock();
 
 
 	// Lock point collection mutex
@@ -514,8 +436,6 @@ void OVRTracker::track() {
 	extractSkeleton();
 
 	m_isDataAvailable = true;
-
-	isTrackReading = false;
 }
 
 void OVRTracker::extractSkeleton() {
