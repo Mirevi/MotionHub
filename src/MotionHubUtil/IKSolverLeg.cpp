@@ -217,8 +217,16 @@ void IKSolverLeg::solve() {
 		upperMultiplicator = 1.0f;
 	}
 
-	// calculate knee hint position
-	Vector3f middleHint = calcInverseKinematic(startPosition, solvePosition, upperJoint.length * upperMultiplicator, middleJoint.length, helpAxis);
+
+	// get or calculate knee hint position
+	Vector3f middleHint = hintPosition;
+	if (!hasHint) {
+		middleHint = calcInverseKinematic(startPosition, solvePosition, upperJoint.length * upperMultiplicator, middleJoint.length, helpAxis);
+	}
+
+	if (hasHint) {
+		middleHint += (solvePosition - hintPosition).cross(normal).normalized() * 0.05f;
+	}
 
 	// Move middle position to knee hint
 	Vector3f middlePosition = startPosition + (middleHint - startPosition).normalized() * upperJoint.length;

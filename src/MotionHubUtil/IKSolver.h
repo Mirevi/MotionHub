@@ -16,7 +16,11 @@
  * CCD Algorithm source: https://github.com/zalo/MathUtilities
  */
 class MotionHubUtil_DLL_import_export IKSolver {
+public:
 
+	Vector3f DebugPos1 = Vector3f::Zero();
+	Vector3f DebugPos2 = Vector3f::Zero();
+	Vector3f DebugPos3 = Vector3f::Zero();
 
 public:
 

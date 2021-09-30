@@ -236,14 +236,10 @@ void OVRTracker::init() {
 
 	// Create IK Skeleton
 	hierarchicSkeleton = new HierarchicSkeleton(m_properties->id);
-	if (useTestSkeleton) {
-		testHierarchicSkeleton = new HierarchicSkeleton(m_properties->id + 1);
-	}
+	testHierarchicSkeleton = new HierarchicSkeleton(m_properties->id + 1);
 
 	skeleton = new Skeleton(m_properties->id);
-	if (useTestSkeleton) {
-		testSkeleton = new Skeleton(m_properties->id + 1);
-	}
+	testSkeleton = new Skeleton(m_properties->id + 1);
 
 	// Init Config & try to write default config values
 	config = new OpenVRConfig(m_configManager, trackingSystem);
