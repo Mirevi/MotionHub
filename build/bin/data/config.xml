@@ -14,28 +14,40 @@
         <prediction>0.025500</prediction>
     </OpenVR>
     <OpenVR id="HMD:HEAD">
-        <position>0.000000 -0.140000 -0.140000</position>
+        <position>0.000000 -0.100000 -0.140000</position>
     </OpenVR>
     <OpenVR id="Controller:HAND_L">
-        <position>0.000000 0.010000 -0.150000</position>
-        <rotation>111.782959 -103.380493 85.955589</rotation>
+        <position>0.015000 0.015000 -0.135000</position>
+        <rotation>130.685593 143.837677 55.517109</rotation>
     </OpenVR>
     <OpenVR id="Controller:HAND_R">
-        <position>0.000000 0.010000 -0.150000</position>
-        <rotation>123.768311 82.072495 -118.443832</rotation>
+        <position>-0.015000 0.015000 -0.135000</position>
+        <rotation>102.319054 169.446320 -85.285103</rotation>
     </OpenVR>
     <OpenVR id="Tracker:HIPS">
-        <position>0.000000 0.013091 -0.100000</position>
-        <rotation>16.492188 176.062302 13.058823</rotation>
-        <scale>1.000000 1.000000 1.000000</scale>
+        <position>0.005562 0.035790 -0.120000</position>
+        <rotation>18.203997 177.579590 7.317719</rotation>
+        <scale>1.077043 1.000170 1.077043</scale>
     </OpenVR>
     <OpenVR id="Tracker:FOOT_L">
         <position>-0.008000 -0.036000 -0.016000</position>
-        <rotation>96.823822 169.451721 48.652096</rotation>
+        <rotation>85.961449 157.787338 53.061771</rotation>
+        <useroffset>0.000000 0.050067 0.000000</useroffset>
     </OpenVR>
     <OpenVR id="Tracker:FOOT_R">
         <position>0.008000 -0.036000 -0.016000</position>
-        <rotation>97.076424 -177.939758 -52.169361</rotation>
+        <rotation>87.051537 -149.796921 -51.258877</rotation>
+        <useroffset>0.000000 0.050365 0.000000</useroffset>
+    </OpenVR>
+    <OpenVR id="Tracker:FOREARM_R">
+        <position>0.000000 0.090000 -0.050000</position>
+        <rotation>162.336746 -31.512222 72.424118</rotation>
+        <useroffset>0.000000 0.00000 0.000000</useroffset>
+    </OpenVR>
+    <OpenVR id="Tracker:FOREARM_L">
+        <position>0.000000 0.090000 -0.050000</position>
+        <rotation>152.418655 34.819328 -54.046986</rotation>
+        <useroffset>0.000000 0.00000 0.000000</useroffset>
     </OpenVR>
     <OpenVR id="LHR-774276F7">
         <joint>HEAD</joint>
