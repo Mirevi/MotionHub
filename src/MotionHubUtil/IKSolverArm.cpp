@@ -134,62 +134,7 @@ void IKSolverArm::solve() {
 	shoulderJoint.loadDefaultState();
 
 	// TODO: Ueberarbeiten
-	if (!isCalibrating && hasHint) {
-
-		// Read shoulder positon & relative shoulder rotation
-		Vector3f shoulderPosition = shoulderJoint.getPosition();
-		Quaternionf localShoulderRotation = shoulderJoint.getRotation() * invShoulderDefaultRotation;
-
-		// Calculate vectors from shoulder to current elbow & new elbow (from last frame)
-		Vector3f upperPosition = upperJoint.getPosition();
-		Vector3f toUpper = upperPosition - shoulderPosition;
-
-		Vector3f upperHint = hintPosition + (hintRotation * middleToUpper);
-
-		// lerp hint / shoulder pos
-		Vector3f toUpperHint = lerp(upperPosition, upperHint, 0.9f) - shoulderPosition;
-
-		// Calculate rotation from current elbow to new elbow position 
-		Quaternionf solvedRotation = fromToRotation(toUpper, toUpperHint);
-
-		// Extract local shoulder y- & z-axis
-		Vector3f yAxis = localShoulderRotation * Vector3f(0, 1, 0);
-		Vector3f zAxis = localShoulderRotation * Vector3f(0, 0, 1);
-
-		if (isLeft) {
-
-			Vector3f reachableHint = upperPosition + (hintPosition - upperPosition).normalized() * upperJoint.length;
-
-			Vector3f shoulderToReachableHint = reachableHint - shoulderPosition;
-			Vector3f shoulderToHint = hintPosition - shoulderPosition;
-
-			solvedRotation = fromToRotation(shoulderToReachableHint, shoulderToHint);
-
-			//DebugPos1 = reachableHint;
-			//DebugPos2 = hintPosition;
-
-			//Console::log(toString(yAngle) + "    " + toString(zAngle));
-			//rotation = solvedRotation;
-		}
-
-		// Decompose y rotation & calculate y angle
-		Quaternionf yRotation = decomposeTwist(solvedRotation, yAxis);
-		//float yAngle = signedAngle(zAxis, yRotation * zAxis, yAxis);
-
-		// Decompose z rotation & calculate z angle
-		Quaternionf zRotation = decomposeTwist(solvedRotation, zAxis);
-		//float zAngle = signedAngle(yAxis, zRotation * yAxis, zAxis);
-
-		Quaternionf rotation = (yRotation * zRotation);
-
-		shoulderJoint.setRotation(rotation * shoulderJoint.getRotation());
-		for (IKJoint* joint : joints) {
-			joint->saveSolvedPosition();
-		}
-	}
-
-	else if (!isCalibrating) {
-
+	if (!isCalibrating) {
 
 		// Read shoulder positon & relative shoulder rotation
 		Vector3f shoulderPosition = shoulderJoint.getPosition();
@@ -206,11 +151,19 @@ void IKSolverArm::solve() {
 		// Estimate elbow position & calculate vector fom shoulder to it
 		Vector3f helpAxis = (shoulderSolvePosition - shoulderPosition).cross(normal);
 		float shoulderDelta = shoulderJoint.length * 0.6f;
-		Vector3f middleHint = calcInverseKinematic(shoulderPosition, shoulderSolvePosition, upperJoint.length + shoulderDelta, middleJoint.length + shoulderDelta, helpAxis);
+
+		// get or calculate hint position
+		Vector3f middleHint = hintPosition;
+		if (!hasHint) {
+			middleHint = calcInverseKinematic(shoulderPosition, shoulderSolvePosition, upperJoint.length + shoulderDelta, middleJoint.length + shoulderDelta, helpAxis);
+		}
 
 		Vector3f toHint = middleHint - shoulderPosition;
 
-		Vector3f toNewMiddle = slerp(lastShoulderToHint, toHint, 0.5f);
+		Vector3f toNewMiddle = toHint;
+		if (!hasHint) {
+			toNewMiddle = slerp(lastShoulderToHint, toHint, 0.5f);
+		}
 
 		// Calculate rotation from current elbow to new elbow position 
 		Quaternionf solvedRotation = fromToRotation(toMiddle, toNewMiddle);
@@ -221,9 +174,6 @@ void IKSolverArm::solve() {
 		//Vector3f xAxis = localShoulderRotation * Vector3f(1, 0, 0);
 		Vector3f yAxis = localShoulderRotation * Vector3f(0, 1, 0);
 		Vector3f zAxis = localShoulderRotation * Vector3f(0, 0, 1);
-
-		// Decompose x rotation & calculate y angle
-		//Quaternionf xRotation = decomposeTwist(solvedRotation, xAxis);
 
 		// Decompose y rotation & calculate y angle
 		Quaternionf yRotation = decomposeTwist(solvedRotation, yAxis);
@@ -317,35 +267,33 @@ void IKSolverArm::solve() {
 		// Get rotation from y- & z-rotation
 		Quaternionf rotation = (yRotation * zRotation);
 
-
 		Quaternionf newShoulderRotation = rotation * shoulderJoint.getRotation();
-		// Set upper joint solved position & shoulder rotation
-		//upperJoint.setSolvedPosition(direction + shoulderPosition);
-		shoulderJoint.setRotation(lastShoulderRotation.slerp(0.5f, newShoulderRotation));
+		
+		// Set shoulder rotation
+		if (!hasHint) {
 
-		if (hasHint) {
+			shoulderJoint.setRotation(lastShoulderRotation.slerp(0.5f, newShoulderRotation));
+		} else {
+
 			shoulderJoint.setRotation(newShoulderRotation);
 
+			// Create vector from hint position to sovled upper
 			Vector3f upperPosition = upperJoint.getPosition();
-			Vector3f newUpperToHint = hintPosition - upperJoint.getPosition();
-			float distanceToHint = distance(hintPosition, upperPosition);
-
 			Vector3f newUp = hintPosition + (upperPosition - hintPosition).normalized() * upperJoint.length;
+			DebugPos3 = newUp;
 
+			// create & apply new rotation
 			Vector3f shoulderToUp = upperPosition - shoulderPosition;
 			Vector3f shoulderToNewUp = newUp - shoulderPosition;
 
 			rotation = fromToRotation(shoulderToUp, shoulderToNewUp);
-
-			//rotation = Quaternion::Identity().slerp(0.9f, rotation);
-
 			newShoulderRotation = rotation * shoulderJoint.getRotation();
-
 			shoulderJoint.setRotation(newShoulderRotation);
 		}
 
 		lastShoulderRotation = newShoulderRotation;
 
+		// update solved positions for chain
 		for (IKJoint* joint : joints) {
 			joint->saveSolvedPosition();
 		}
