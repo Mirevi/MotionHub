@@ -156,13 +156,29 @@ void IKSolverArm::solve() {
 		Vector3f yAxis = localShoulderRotation * Vector3f(0, 1, 0);
 		Vector3f zAxis = localShoulderRotation * Vector3f(0, 0, 1);
 
+		if (isLeft) {
+
+			Vector3f reachableHint = upperPosition + (hintPosition - upperPosition).normalized() * upperJoint.length;
+
+			Vector3f shoulderToReachableHint = reachableHint - shoulderPosition;
+			Vector3f shoulderToHint = hintPosition - shoulderPosition;
+
+			solvedRotation = fromToRotation(shoulderToReachableHint, shoulderToHint);
+
+			//DebugPos1 = reachableHint;
+			//DebugPos2 = hintPosition;
+
+			//Console::log(toString(yAngle) + "    " + toString(zAngle));
+			//rotation = solvedRotation;
+		}
+
 		// Decompose y rotation & calculate y angle
 		Quaternionf yRotation = decomposeTwist(solvedRotation, yAxis);
-		float yAngle = signedAngle(zAxis, yRotation * zAxis, yAxis);
+		//float yAngle = signedAngle(zAxis, yRotation * zAxis, yAxis);
 
 		// Decompose z rotation & calculate z angle
 		Quaternionf zRotation = decomposeTwist(solvedRotation, zAxis);
-		float zAngle = signedAngle(yAxis, zRotation * yAxis, zAxis);
+		//float zAngle = signedAngle(yAxis, zRotation * yAxis, zAxis);
 
 		Quaternionf rotation = (yRotation * zRotation);
 
@@ -301,22 +317,37 @@ void IKSolverArm::solve() {
 		// Get rotation from y- & z-rotation
 		Quaternionf rotation = (yRotation * zRotation);
 
-		bool solve = true;
-		if (GetAsyncKeyState(VK_LSHIFT) & 0x8000) {
-			solve = false;
+
+		Quaternionf newShoulderRotation = rotation * shoulderJoint.getRotation();
+		// Set upper joint solved position & shoulder rotation
+		//upperJoint.setSolvedPosition(direction + shoulderPosition);
+		shoulderJoint.setRotation(lastShoulderRotation.slerp(0.5f, newShoulderRotation));
+
+		if (hasHint) {
+			shoulderJoint.setRotation(newShoulderRotation);
+
+			Vector3f upperPosition = upperJoint.getPosition();
+			Vector3f newUpperToHint = hintPosition - upperJoint.getPosition();
+			float distanceToHint = distance(hintPosition, upperPosition);
+
+			Vector3f newUp = hintPosition + (upperPosition - hintPosition).normalized() * upperJoint.length;
+
+			Vector3f shoulderToUp = upperPosition - shoulderPosition;
+			Vector3f shoulderToNewUp = newUp - shoulderPosition;
+
+			rotation = fromToRotation(shoulderToUp, shoulderToNewUp);
+
+			//rotation = Quaternion::Identity().slerp(0.9f, rotation);
+
+			newShoulderRotation = rotation * shoulderJoint.getRotation();
+
+			shoulderJoint.setRotation(newShoulderRotation);
 		}
 
-		if (solve) {
-			Quaternionf newShoulderRotation = rotation * shoulderJoint.getRotation();
-			// Set upper joint solved position & shoulder rotation
-			//upperJoint.setSolvedPosition(direction + shoulderPosition);
-			shoulderJoint.setRotation(lastShoulderRotation.slerp(0.5f, newShoulderRotation));
+		lastShoulderRotation = newShoulderRotation;
 
-			lastShoulderRotation = newShoulderRotation;
-
-			for (IKJoint* joint : joints) {
-				joint->saveSolvedPosition();
-			}
+		for (IKJoint* joint : joints) {
+			joint->saveSolvedPosition();
 		}
 	}
 

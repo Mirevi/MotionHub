@@ -279,7 +279,12 @@ void IKSolverLeg::constraint() {
 
 	// Get direction to hint if not calibrating
 	if (!isCalibrating && hasHint) {
-		bendDirection = (hintPosition - upperPosition).normalized();
+
+		Vector3f hintOffset = (targetPosition - hintPosition).cross(normal).normalized() * 0.05f;
+
+		DebugPos2 = hintPosition + hintOffset;
+
+		bendDirection = ((hintPosition + hintOffset) - upperPosition).normalized();
 	}
 
 	// Ortho normalize both directions on limb axis
