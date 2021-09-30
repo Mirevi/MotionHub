@@ -17,12 +17,12 @@
         <position>0.000000 -0.100000 -0.140000</position>
     </OpenVR>
     <OpenVR id="Controller:HAND_L">
-        <position>0.015000 0.015000 -0.135000</position>
-        <rotation>130.685593 143.837677 55.517109</rotation>
+        <position>0.04500 0.040000 -0.160000</position>
+        <rotation>130.000000 180.000000 90.000000</rotation>
     </OpenVR>
     <OpenVR id="Controller:HAND_R">
-        <position>-0.015000 0.015000 -0.135000</position>
-        <rotation>102.319054 169.446320 -85.285103</rotation>
+        <position>-0.04500 0.040000 -0.160000</position>
+        <rotation>130.000000 180.000000 -90.000000</rotation>
     </OpenVR>
     <OpenVR id="Tracker:HIPS">
         <position>0.005562 0.035790 -0.120000</position>

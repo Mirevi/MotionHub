@@ -151,17 +151,7 @@ void IKSolverLeg::solve(Vector3f position, Quaternionf rotation) {
 	// TODO: Debug raus
 	clearDebugLines();
 
-	// TODO: position auf length beschränken
-	/*
-	Vector3f upperPosition = upperJoint.getPosition();
-	Vector3f upperToTarget = position - upperPosition;
-	if (upperToTarget.norm() >= (length * 0.98f)) {
-		upperToTarget = upperToTarget.normalized() * length * 0.98f;
-	}
-
 	// Call solve from base class
-	IKSolver::solve(upperToTarget + upperPosition, rotation);
-	*/
 	IKSolver::solve(position, rotation);
 
 	// Restore default state
