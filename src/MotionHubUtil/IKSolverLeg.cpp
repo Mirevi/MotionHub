@@ -282,8 +282,10 @@ void IKSolverLeg::constraint() {
 
 		DebugPos2 = hintPosition + hintOffset;
 
-		bendDirection = ((hintPosition + hintOffset) - upperPosition).normalized();
+		bendDirection = ((hintPosition + hintOffset) - upperPosition);
 	}
+
+	bendDirection = bendDirection.normalized();
 
 	// Ortho normalize both directions on limb axis
 	orthoNormalize(limbAxis, currentDirection);
@@ -308,22 +310,25 @@ void IKSolverLeg::constraintSolvePosition(Vector3f startPosition) {
 
 void IKSolverLeg::apply() {
 
-	// TODO: Use Actual Position (IKSolverArm)
+	// Rotate upper Joint to middle
+	Vector3f middleDirection = middleJoint.getSolvedPosition() - upperJoint.getSolvedPosition();
 
-	// Store middle position 
-	Vector3f middlePosition = middleJoint.getSolvedPosition();
+	Vector3f upperNormal = projectOnPlane(normal, middleDirection.normalized());
+	upperJoint.setRotationTowards(middleDirection, upperNormal);
 
-	// Rotate upper Joint
-	Vector3f middleDirection = middlePosition - upperJoint.getSolvedPosition();
-	upperJoint.setRotationTowards(middleDirection, normal);
+	// Calculate normal for middle joint (between upper & lower)
+	Quaternionf middleRotation = middleJoint.getRotation();
+	Quaternionf fromTo = fromToRotation(middleJoint.getRotation(), targetRotation * invLowerDefaultRotation);
 
-	// Rotate middle Joint
-	Vector3f lowerDirection = lowerJoint.getSolvedPosition() - middlePosition;
-	middleJoint.setRotationTowards(lowerDirection);
+	Vector3f middleNormal = middleRotation.slerp(0.5f, fromTo * middleRotation) * defaultLocalNormal;
 
-	// TODO: preTwist(); ?
+	// Rotate middle Joint to solve position
+	Vector3f lowerDirection = solvePosition - middleJoint.getPosition();
 
-	// Rotate lower Joint
+	middleNormal = projectOnPlane(middleNormal, middleDirection.normalized());
+	middleJoint.setRotationTowards(lowerDirection, middleNormal);
+
+	// Rotate lower Joint to target rotation
 	lowerJoint.setRotation(targetRotation);
 }
 
