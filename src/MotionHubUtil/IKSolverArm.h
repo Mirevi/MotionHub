@@ -86,7 +86,8 @@ protected:
 	Vector3f lastShoulderToHint;
 	Quaternionf lastShoulderRotation;
 
-	Vector3f handToBack;
+	Vector3f handToJoint;
+	Vector3f handToPinky;
 
 	float shoulderBackYAngle = 35.0f; // Back
 	float shoulderForwardYAngle = 45.0f; // Forward
