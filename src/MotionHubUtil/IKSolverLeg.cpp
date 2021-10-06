@@ -89,6 +89,7 @@ void IKSolverLeg::refresh(bool overrideDefault) {
 
 	// Reset lastNormal
 	lastNormal = Vector3f::Zero();
+	lastMiddleNormal = Vector3f::Zero();
 
 	// Reset hint
 	hintPosition = Vector3f::Zero();
@@ -118,8 +119,8 @@ void IKSolverLeg::loadDefaultState() {
 	lowerJoint.loadDefaultState();
 }
 
+/*
 void IKSolverLeg::updateNormal() {
-
 
 	// Is hint available & is not calibrationg
 	if (!isCalibrating && hasHint) {
@@ -132,14 +133,85 @@ void IKSolverLeg::updateNormal() {
 
 	// Get normal from current rotation
 	Quaternionf upperRotation = upperJoint.getRotation();
-	Vector3f currentNormal = upperRotation * defaultLocalNormal;
+	Vector3f upperNormal = upperRotation * defaultLocalNormal;
 
-	// Get target normal relative to lower default rotation 
+	// Get target normal relative to lower default rotation
 	Quaternionf rotation = targetRotation * invLowerDefaultRotation;
 	Vector3f targetNormal = rotation * defaultLocalNormal;
 
 	Quaternionf fromTo = fromToRotation(upperRotation, rotation);
 	normal = upperRotation.slerp(slerpTargetRotationDelta, fromTo * upperRotation) * defaultLocalNormal;
+
+	// normalize normal
+	normal = normal.normalized();
+	lastNormal = normal;
+}
+*/
+
+void IKSolverLeg::updateNormal() {
+
+	// Is hint available & is not calibrationg
+	if (!isCalibrating && hasHint) {
+		// Rotate normal with Hint
+		Vector3f hintNormal = hintRotation * invMiddleDefaultRotation * defaultLocalNormal;
+		normal = hintNormal.normalized();
+
+		return;
+	}
+
+	// Get upper normal from current rotation
+	Quaternionf upperRotation = upperJoint.getRotation();
+	Vector3f upperNormal = upperRotation * defaultLocalNormal;
+
+	// Get target normal relative to lower default rotation 
+	Quaternionf rotation = targetRotation * invLowerDefaultRotation;
+	Vector3f targetNormal = rotation * defaultLocalNormal;
+
+	// Create rotation axis from upper to target
+	Vector3f upAxis = (solvePosition - upperJoint.getPosition()).normalized();
+
+	// Create look rotation to upper normal & target normal
+	Quaternionf lookToUpper = lookRotation(upperNormal, upAxis);
+	Quaternionf lookToTarget = lookRotation(targetNormal, upAxis);
+
+	// Create relative rotation from upper to target
+	Quaternionf fromTo = fromToRotation(lookToUpper, lookToTarget);
+
+	// Cache identity rotation for 2 slerps
+	Quaternionf identity = Quaternionf::Identity();
+
+	// Rotate normal towards target with configured rotation delta
+	Vector3f slerpNormal = identity.slerp(slerpTargetRotationDelta, fromTo) * upperNormal;
+
+	// Rotate normal investe towards target with configured rotation delta
+	float angle = angleBetween(lookToUpper, lookToTarget);
+
+	float angleDelta = (360.0f - angle) / angle;
+	Vector3f invSlerpNormal = identity.slerp(angleDelta * -slerpTargetRotationDelta, fromTo) * upperNormal;
+
+	//DebugPos1 = targetPosition + (lookToUpper * Vector3f(0, 0, 0.1f));
+	//DebugPos2 = targetPosition + (lookToTarget * Vector3f(0, 0, 0.1f));
+
+	angle = angleBetween(lookToUpper * Vector3f(0, 0, 1), lookToTarget * Vector3f(0, 0, 1));
+
+	// Is last normal not initialized or an confident angle?
+	if (lastNormal.isApprox(Vector3f::Zero()) || angle <= 45.0f) {
+		normal = slerpNormal;
+		//DebugPos3 = targetPosition + invSlerpNormal.normalized() * 0.1f;
+	}
+	// Is Normal closer to last normal?
+	else if (angleBetween(lastNormal, slerpNormal) <= angleBetween(lastNormal, invSlerpNormal)) {
+		normal = slerpNormal;
+		//DebugPos3 = targetPosition + invSlerpNormal.normalized() * 0.1f;
+	}
+	// Inverse is closer to last normal
+	else {
+		normal = invSlerpNormal;
+		//DebugPos3 = targetPosition + slerpNormal.normalized() * 0.1f;
+	}
+
+	//DebugPos4 = targetPosition + normal.normalized() * 0.1f;
+	//DebugPos3 = DebugPos4;
 
 	// normalize normal
 	normal = normal.normalized();
@@ -176,9 +248,6 @@ void IKSolverLeg::solve(Vector3f position, Quaternionf rotation) {
 
 	// Apply solution to joints
 	apply();
-
-	// Untwist lower joints based on target rotation
-	untwist();
 }
 
 void IKSolverLeg::hint(Vector3f position, Quaternionf rotation) {
@@ -282,7 +351,7 @@ void IKSolverLeg::constraint() {
 
 		DebugPos2 = hintPosition + hintOffset;
 
-		bendDirection = ((hintPosition + hintOffset) - upperPosition);
+		bendDirection = (hintPosition + hintOffset) - upperPosition;
 	}
 
 	bendDirection = bendDirection.normalized();
@@ -291,12 +360,14 @@ void IKSolverLeg::constraint() {
 	orthoNormalize(limbAxis, currentDirection);
 	orthoNormalize(limbAxis, bendDirection);
 
+	// projectOnPlane anstatt orthoNormalize?
+
 	// Calculate angle difference on limb axis & create rotation on axis
 	float angle = signedAngle(currentDirection, bendDirection, limbAxis);
 	Quaternionf rotation = angleAxis(angle, limbAxis);
 
 	// Rotate the middle bone using the angle
-	Vector3f newMiddlePosition = angleAxis(angle, limbAxis) * (middlePosition - upperPosition) + upperPosition;
+	Vector3f newMiddlePosition = rotation * (middlePosition - upperPosition) + upperPosition;
 	middleJoint.setSolvedPosition(newMiddlePosition);
 }
 
@@ -313,138 +384,76 @@ void IKSolverLeg::apply() {
 	// Rotate upper Joint to middle
 	Vector3f middleDirection = middleJoint.getSolvedPosition() - upperJoint.getSolvedPosition();
 
-	Vector3f upperNormal = projectOnPlane(normal, middleDirection.normalized());
-	upperJoint.setRotationTowards(middleDirection, upperNormal);
+	if (GetAsyncKeyState(VK_LCONTROL) & 0x8000) {
+		upperJoint.setRotationTowards(middleDirection, normal);
+	}
+	else {
+		Vector3f upperNormal = projectOnPlane(normal, middleDirection.normalized());
+		upperJoint.setRotationTowards(middleDirection, upperNormal);
+	}
 
 	// Calculate normal for middle joint (between upper & lower)
 	Quaternionf middleRotation = middleJoint.getRotation();
-	Quaternionf fromTo = fromToRotation(middleJoint.getRotation(), targetRotation * invLowerDefaultRotation);
+	Vector3f middleNormal = middleRotation * defaultLocalNormal;
 
-	Vector3f middleNormal = middleRotation.slerp(0.5f, fromTo * middleRotation) * defaultLocalNormal;
+	// Get target normal relative to lower default rotation 
+	Quaternionf rotation = targetRotation * invLowerDefaultRotation;
+	Vector3f targetNormal = rotation * defaultLocalNormal;
+
+	// Create rotation axis from upper to target
+	Vector3f upAxis = (solvePosition - middleJoint.getPosition()).normalized();
+
+	// Create look rotation to current normal & target normal
+	Quaternionf lookToMiddle = lookRotation(middleNormal, upAxis);
+	Quaternionf lookToTarget = lookRotation(projectOnPlane(targetNormal, upAxis), upAxis);
+
+	// TODO: Testen ob project on plane ergebis verbessert
+	if (DebugBool3) {
+		lookToTarget = lookRotation(targetNormal, upAxis);
+	}
+
+	// Create relative rotation from middle to target
+	Quaternionf fromTo = fromToRotation(lookToMiddle, lookToTarget);
+
+	// Rotate normal towards target with configured rotation delta
+	Vector3f slerpNormal = Quaternionf::Identity().slerp(0.3f, fromTo) * middleNormal;
+
+	// Rotate normal investe towards target with configured rotation delta
+	float angle = angleBetween(lookToMiddle, lookToTarget);
+	float angleDelta = (360.0f - angle) / angle;
+	Vector3f invSlerpNormal = Quaternionf::Identity().slerp(angleDelta * -0.3f, fromTo) * middleNormal;
+
+	// Update angle with both vectors on plane
+	lookToMiddle = lookRotation(projectOnPlane(middleNormal, upAxis), upAxis);
+	lookToTarget = lookRotation(projectOnPlane(targetNormal, upAxis), upAxis);
+	angle = angleBetween(lookToMiddle * Vector3f(0, 0, 1), lookToTarget * Vector3f(0, 0, 1));
+
+	// Is last normal not initialized or an confident angle?
+	if (lastMiddleNormal.isApprox(Vector3f::Zero()) || angle <= 45.0f) {
+		middleNormal = slerpNormal;
+	}
+	// Is Normal closer to last normal?
+	else if (angleBetween(lastMiddleNormal, slerpNormal) <= angleBetween(lastMiddleNormal, invSlerpNormal)) {
+		middleNormal = slerpNormal;
+	}
+	// Inverse is closer to last normal
+	else {
+		middleNormal = invSlerpNormal;
+	}
+
+	// normalize middle normal
+	middleNormal = middleNormal.normalized();
+	lastMiddleNormal = middleNormal;
+
+	if (DebugBool2) {
+		middleNormal = middleRotation * defaultLocalNormal;
+	}
 
 	// Rotate middle Joint to solve position
 	Vector3f lowerDirection = solvePosition - middleJoint.getPosition();
-
-	middleNormal = projectOnPlane(middleNormal, middleDirection.normalized());
+	middleNormal = projectOnPlane(middleNormal, lowerDirection.normalized());
 	middleJoint.setRotationTowards(lowerDirection, middleNormal);
 
 	// Rotate lower Joint to target rotation
 	lowerJoint.setRotation(targetRotation);
-}
-
-void IKSolverLeg::untwist() {
-
-	return;
-
-	// TODO: Wie Shoulder default rotation beruecksichtigen
-
-	// TODO: confident angle? 180 flips
-
-	// TODO: Debug raus
-	if (lowerJoint.joint->getJointName() == Joint::FOOT_R) {
-		return;
-	}
-
-	if (GetAsyncKeyState(VK_CONTROL) & 0x8000) {
-		return;
-	}
-
-	// Store positions for all joints
-	Vector3f upperPosition = upperJoint.getPosition();
-	Vector3f middlePosition = middleJoint.getPosition();
-	Vector3f lowerPosition = lowerJoint.getPosition();
-
-	// Store rotations for all joints
-	Quaternionf upperRotation = upperJoint.getRotation();
-	Quaternionf middleRotation = middleJoint.getRotation();
-	Quaternionf lowerRotation = lowerJoint.getRotation();
-
-	// Untwist middle joint if configured
-	if (middleUntwistWeight > 0) {
-
-		//debugDrawLine(middlePosition, middlePosition + middleJoint.joint->getForward(), Vector3f(1.0f, 1.0f, 1.0f));
-
-		// Store inverse middle rotation
-		Quaternionf invMiddleRotation = middleRotation.inverse();
-
-		// Store middle joint right, up & forward axis
-		Vector3f middleRight = middleRotation * Vector3f(1, 0, 0);
-		Vector3f middleUp = middleRotation * Vector3f(0, 1, 0);
-		Vector3f middleForward = middleRotation * Vector3f(0, 0, 1);
-
-		// Store rotational difference between lower & middle joint
-		Quaternionf diff = lowerRotation * invMiddleRotation;
-
-		// Decompose twist in relation to middle forward axis
-		Quaternionf twist = decomposeTwist(diff, middleForward);
-
-		// Lerp twist by configured weight
-		Quaternionf middleTwist = middleRotation.slerp(middleUntwistWeight, twist);
-
-		/*
-		// old (without to child vector)
-		Vector3f twistMiddleRight = middleTwist * middleRight;
-		orthoNormalize(middleForward, twistMiddleRight);
-		float angle = -signedAngle(middleRight, twistMiddleRight, middleForward);
-		middleRotation = angleAxis(angle, middleUp) * middleRotation; // * middleRotation
-		*/
-
-		// Apply twist to middle right axis & ortho normalize it
-		Vector3f twistMiddleRight = middleTwist * middleRight;
-		orthoNormalize(middleForward, twistMiddleRight);
-
-		//float angle = -signedAngle(middleRight, twistMiddleRight, middleForward);
-
-		// Calculate angle between current right and twisted right on forward
-		float angle = signedAngle(middleRight, twistMiddleRight, middleForward);
-
-		// Calculate rotation axis
-		Vector3f middleToLowerNorm = (lowerPosition - middlePosition).normalized();
-
-		// Apply Rotation
-		middleRotation = angleAxis(angle, middleToLowerNorm) * middleRotation;
-		middleJoint.setRotation(middleRotation);
-
-		// Restore child
-		//lowerJoint.setRotation(lowerRotation);
-	}
-
-	// Untwist upper joint if configured
-	if (upperUntwistWeight > 0) {
-
-		// Store upper joint up & forward axis
-		Vector3f upperUp = upperRotation * Vector3f(0, 1, 0);
-		Vector3f upperForward = upperRotation * Vector3f(0, 0, 1);
-
-		// Store rotational difference between middle & upper joint
-		Quaternionf diff = middleRotation * upperRotation.inverse();
-
-		// Decompose twist in relation to upper up axis
-		Quaternionf twist = decomposeTwist(diff, upperUp);
-
-		// Lerp twist by configured weight
-		Quaternionf upperTwist = upperRotation.slerp(upperUntwistWeight, twist);
-
-		// Apply twist to upper forward axis & ortho normalize it
-		Vector3f twistUpperForward = upperTwist * upperForward;
-		orthoNormalize(upperUp, twistUpperForward);
-
-		// Calculate angle between current forard and twisted forward on up
-		float angle = -signedAngle(upperForward, twistUpperForward, upperUp);
-
-		if (lowerJoint.joint->getJointName() == Joint::FOOT_R) {
-			//angle = 0;
-		}
-
-		Vector3f upperToMiddleNorm = (middlePosition - upperPosition).normalized();
-
-		upperRotation = angleAxis(angle, upperToMiddleNorm) * upperRotation; // * upperRotation
-		upperJoint.setRotation(upperRotation);
-
-		// Restore child rotations
-		middleJoint.setRotation(middleRotation);
-	}
-
-	// Restore child rotation
-	lowerJoint.setRotation(lowerRotation);
 }

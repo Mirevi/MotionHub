@@ -72,16 +72,6 @@ protected:
 	 */
 	virtual void constraint() override;
 
-	/*!
-	 * Applies the solution to the joints
-	 */
-	virtual void apply() override;
-
-	/*!
-	 * Untwists the joints based on the target rotation
-	 */
-	virtual void untwist() override;
-
 public:
 	bool solveShoulder = true;
 
