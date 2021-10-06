@@ -21,6 +21,11 @@ public:
 	Vector3f DebugPos1 = Vector3f::Zero();
 	Vector3f DebugPos2 = Vector3f::Zero();
 	Vector3f DebugPos3 = Vector3f::Zero();
+	Vector3f DebugPos4 = Vector3f::Zero();
+
+	bool DebugBool1 = false;
+	bool DebugBool2 = false;
+	bool DebugBool3 = false;
 
 public:
 
