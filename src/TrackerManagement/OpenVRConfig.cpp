@@ -276,13 +276,27 @@ void OpenVRConfig::calibrateDeviceToJointOffsets() {
 		// Read joint from first element in pair
 		Joint::JointNames joint = jointDevicePair.first;
 
-		// Skip head if device is HMD
-		switch (joint) {
-		case Joint::HEAD:
-			if (trackingSystem->getDevice(getDeviceIndex(joint))->deviceClass == OpenVRTracking::HMD) {
-				continue;
-			}
-			break;
+		// Get device class from tracking system
+		auto device = trackingSystem->getDevice(getDeviceIndex(joint));
+		if (device == nullptr) {
+			continue;
+		}
+
+		auto deviceClass = device->deviceClass;
+
+		// TODO: Hand && Tracker?
+
+		// Skip Head if device is HMD
+		if (joint == Joint::HEAD && deviceClass == OpenVRTracking::HMD) {
+			continue;
+		}
+		// Skip LeftHand if device is Controller
+		else if (joint == Joint::HAND_L && deviceClass == OpenVRTracking::Controller) {
+			continue;
+		}
+		// Skip RightHand if device is Controller
+		else if (joint == Joint::HAND_R && deviceClass == OpenVRTracking::Controller) {
+			continue;
 		}
 
 		// Calibrate offset for joint
@@ -294,7 +308,6 @@ void OpenVRConfig::calibrateDeviceToJointOffset(Joint::JointNames joint) {
 
 	// Try to get hip & requested joint pose
 	auto hipDevicePose = getPose(Joint::HIPS);
-	//auto headDevicePose = getPose(Joint::HEAD);
 	auto jointDevicePose = getPose(joint);
 
 	// Exit if hip pose is null
@@ -505,6 +518,16 @@ std::string OpenVRConfig::generateKey(OpenVRTracking::DeviceClass deviceClass, J
 
 	// return DeviceClass:JointName
 	return OpenVRTracking::toString(deviceClass) + ":" + Joint::toString(joint);
+}
+
+bool OpenVRConfig::isJointAssigned(Joint::JointNames joint) {
+	IKContainer* container = getIKContainer(joint);
+
+	if (container == nullptr || container->deviceIndex == -1) {
+		return false;
+	}
+
+	return true;
 }
 
 IKContainer* OpenVRConfig::getIKContainer(Joint::JointNames joint) {

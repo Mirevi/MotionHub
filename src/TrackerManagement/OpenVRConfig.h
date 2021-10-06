@@ -91,6 +91,8 @@ public:
 
 	Vector3f getCalibratedScale(HierarchicSkeleton* hierarchicSkeleton);
 
+	bool isJointAssigned(Joint::JointNames joint);
+
 private:
 
 	/*!
