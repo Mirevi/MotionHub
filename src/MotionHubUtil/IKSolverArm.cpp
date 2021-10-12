@@ -57,7 +57,7 @@ void IKSolverArm::refresh(bool overrideDefault) {
 	lastShoulderToHint = middleJoint.getPosition() - shoulderJoint.getPosition();
 
 	// Save shoulder to hand distance
-	defaultShoulderHandDistance = (lowerJoint.getLocalPosition() - shoulderJoint.getPosition()).norm();
+	defaultShoulderHandDistance = (lowerJoint.getPosition() - shoulderJoint.getPosition()).norm();
 }
 
 void IKSolverArm::saveDefaultState() {

@@ -83,7 +83,7 @@ void OVRTracker::start() {
 	trackingSystem->start();
 
 	// Refresh values from config
-	refresh();
+	refresh(true);
 
 	// set tracking to true
 	m_isTracking = true;
@@ -135,7 +135,7 @@ void OVRTracker::start() {
 	Tracker::start();
 }
 
-void OVRTracker::refresh() {
+void OVRTracker::refresh(bool overrideDefaults) {
 
 	// Refresh config from xml
 	m_configManager->refresh();
@@ -203,7 +203,7 @@ void OVRTracker::refresh() {
 	}
 
 	// Refresh IKSolvers (if initialized)
-	refreshIKSolvers(true);
+	refreshIKSolvers(overrideDefaults);
 }
 
 void OVRTracker::stop() {
@@ -306,7 +306,7 @@ void OVRTracker::track() {
 	}
 
 	if (GetAsyncKeyState('R') & 0x8000) {
-		refresh();
+		refresh(false);
 	}
 
 	if (SOLVE_IK) {
@@ -322,6 +322,11 @@ void OVRTracker::track() {
 			hipPose.rotation = eulerToQuaternion(m_properties->rotationOffset);
 		}
 
+
+		auto leftFootPose = getAssignedPose(Joint::FOOT_L);
+		auto rightFootPose = getAssignedPose(Joint::FOOT_R);
+
+		ikSolverHip->hint(leftFootPose.position, rightFootPose.position);
 		ikSolverHip->solve(hipPose.position, hipPose.rotation);
 		hierarchicSkeleton->hips.setConfidence(highConf);
 
@@ -346,7 +351,6 @@ void OVRTracker::track() {
 		}
 
 		// Solve LeftLeg
-		auto leftFootPose = getAssignedPose(Joint::FOOT_L);
 		ikSolverLeftLeg->solve(leftFootPose.position, leftFootPose.rotation);
 		hierarchicSkeleton->leftFoot.setConfidence(highConf);
 
@@ -359,7 +363,6 @@ void OVRTracker::track() {
 		}
 
 		// Solve RightLeg
-		auto rightFootPose = getAssignedPose(Joint::FOOT_R);
 		ikSolverRightLeg->solve(rightFootPose.position, rightFootPose.rotation);
 		hierarchicSkeleton->rightFoot.setConfidence(highConf);
 
@@ -495,6 +498,8 @@ void OVRTracker::initIKSolvers() {
 	// Init Hip IKSolver
 	if (ikSolverHip != nullptr) delete ikSolverHip;
 	ikSolverHip = new IKSolverHip(&hierarchicSkeleton->hips);
+	ikSolverHip->setLeftLeg(&hierarchicSkeleton->leftUpLeg, &hierarchicSkeleton->leftFoot);
+	ikSolverHip->setRightLeg(&hierarchicSkeleton->rightUpLeg, &hierarchicSkeleton->rightFoot);
 	ikSolverHip->init();
 
 	// Init Spine IKSolver
@@ -537,6 +542,8 @@ void OVRTracker::initIKSolvers() {
 		// Init Hip IKSolver
 		if (testIkSolverHip != nullptr) delete testIkSolverHip;
 		testIkSolverHip = new IKSolverHip(&testHierarchicSkeleton->hips);
+		testIkSolverHip->setLeftLeg(&testHierarchicSkeleton->leftUpLeg, &testHierarchicSkeleton->leftFoot);
+		testIkSolverHip->setRightLeg(&testHierarchicSkeleton->rightUpLeg, &testHierarchicSkeleton->rightFoot);
 		testIkSolverHip->init();
 
 		// Init Spine IKSolver
@@ -578,6 +585,11 @@ void OVRTracker::initIKSolvers() {
 }
 
 void OVRTracker::refreshIKSolvers(bool overrideDefault) {
+	
+	if (ikSolverHip != nullptr) {
+		ikSolverHip->refresh(overrideDefault);
+	}
+	
 	if (ikSolverLeftLeg != nullptr) {
 		ikSolverLeftLeg->refresh(overrideDefault);
 	}
@@ -598,6 +610,11 @@ void OVRTracker::refreshIKSolvers(bool overrideDefault) {
 		hierarchicSkeleton->invalidateGlobals();
 	}
 
+
+
+	if (testIkSolverHip != nullptr) {
+		testIkSolverHip->refresh(overrideDefault);
+	}
 
 	if (testIkSolverLeftLeg != nullptr) {
 		testIkSolverLeftLeg->refresh(overrideDefault);
