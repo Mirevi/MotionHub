@@ -16,6 +16,7 @@ static bool SOLVE_IK = true;
 static bool SOLVE_ARMS = true;
 
 static bool USE_TEST_SKELETON = true;
+static bool USE_DEBUG_POINT_COLLECTION = true;
 
 static std::string DebugIdentifier(std::string identifier) {
 
@@ -111,6 +112,33 @@ void OVRTracker::start() {
 		if (joint != Joint::NDEF) {
 			m_pointCollection.updatePoint(device.index, joint);
 		}
+	}
+
+	if (USE_DEBUG_POINT_COLLECTION) {
+		m_pointCollection.addPoint(Joint::SPINE, Point::PointType::Rigidbody);
+		m_pointCollection.addPoint(Joint::CHEST, Point::PointType::Rigidbody);
+		m_pointCollection.addPoint(Joint::NECK, Point::PointType::Rigidbody);
+		m_pointCollection.addPoint(Joint::HEAD, Point::PointType::Rigidbody);
+
+		m_pointCollection.addPoint(Joint::UPLEG_L, Point::PointType::Rigidbody);
+		m_pointCollection.addPoint(Joint::LEG_L, Point::PointType::Rigidbody);
+		m_pointCollection.addPoint(Joint::FOOT_L, Point::PointType::Rigidbody);
+		m_pointCollection.addPoint(Joint::TOE_L, Point::PointType::Rigidbody);
+
+		m_pointCollection.addPoint(Joint::UPLEG_R, Point::PointType::Rigidbody);
+		m_pointCollection.addPoint(Joint::LEG_R, Point::PointType::Rigidbody);
+		m_pointCollection.addPoint(Joint::FOOT_R, Point::PointType::Rigidbody);
+		m_pointCollection.addPoint(Joint::TOE_R, Point::PointType::Rigidbody);
+
+		m_pointCollection.addPoint(Joint::SHOULDER_L, Point::PointType::Rigidbody);
+		m_pointCollection.addPoint(Joint::ARM_L, Point::PointType::Rigidbody);
+		m_pointCollection.addPoint(Joint::FOREARM_L, Point::PointType::Rigidbody);
+		m_pointCollection.addPoint(Joint::HAND_L, Point::PointType::Rigidbody);
+
+		m_pointCollection.addPoint(Joint::SHOULDER_R, Point::PointType::Rigidbody);
+		m_pointCollection.addPoint(Joint::ARM_R, Point::PointType::Rigidbody);
+		m_pointCollection.addPoint(Joint::FOREARM_R, Point::PointType::Rigidbody);
+		m_pointCollection.addPoint(Joint::HAND_R, Point::PointType::Rigidbody);
 	}
 
 	// register tracker as observers
@@ -412,6 +440,33 @@ void OVRTracker::track() {
 		m_pointCollection.updatePoint(device.index, pose.position, rotation);
 
 		i++;
+	}
+
+	if (USE_DEBUG_POINT_COLLECTION) {
+		m_pointCollection.updatePoint(Joint::SPINE, ikSolverSpine->DebugPos1, Quaternionf::Identity());
+		m_pointCollection.updatePoint(Joint::CHEST, ikSolverSpine->DebugPos2, Quaternionf::Identity());
+		m_pointCollection.updatePoint(Joint::NECK, ikSolverSpine->DebugPos3, Quaternionf::Identity());
+		m_pointCollection.updatePoint(Joint::HEAD, ikSolverSpine->DebugPos4, Quaternionf::Identity());
+
+		m_pointCollection.updatePoint(Joint::UPLEG_L, ikSolverLeftLeg->DebugPos1, Quaternionf::Identity());
+		m_pointCollection.updatePoint(Joint::LEG_L, ikSolverLeftLeg->DebugPos2, Quaternionf::Identity());
+		m_pointCollection.updatePoint(Joint::FOOT_L, ikSolverLeftLeg->DebugPos3, Quaternionf::Identity());
+		m_pointCollection.updatePoint(Joint::TOE_L, ikSolverLeftLeg->DebugPos4, Quaternionf::Identity());
+
+		m_pointCollection.updatePoint(Joint::UPLEG_R, ikSolverRightLeg->DebugPos1, Quaternionf::Identity());
+		m_pointCollection.updatePoint(Joint::LEG_R, ikSolverRightLeg->DebugPos2, Quaternionf::Identity());
+		m_pointCollection.updatePoint(Joint::FOOT_R, ikSolverRightLeg->DebugPos3, Quaternionf::Identity());
+		m_pointCollection.updatePoint(Joint::TOE_R, ikSolverRightLeg->DebugPos4, Quaternionf::Identity());
+
+		m_pointCollection.updatePoint(Joint::SHOULDER_L, ikSolverLeftArm->DebugPos1, Quaternionf::Identity());
+		m_pointCollection.updatePoint(Joint::ARM_L, ikSolverLeftArm->DebugPos2, Quaternionf::Identity());
+		m_pointCollection.updatePoint(Joint::FOREARM_L, ikSolverLeftArm->DebugPos3, Quaternionf::Identity());
+		m_pointCollection.updatePoint(Joint::HAND_L, ikSolverLeftArm->DebugPos4, Quaternionf::Identity());
+
+		m_pointCollection.updatePoint(Joint::SHOULDER_R, ikSolverRightArm->DebugPos1, Quaternionf::Identity());
+		m_pointCollection.updatePoint(Joint::ARM_R, ikSolverRightArm->DebugPos2, Quaternionf::Identity());
+		m_pointCollection.updatePoint(Joint::FOREARM_R, ikSolverRightArm->DebugPos3, Quaternionf::Identity());
+		m_pointCollection.updatePoint(Joint::HAND_R, ikSolverRightArm->DebugPos4, Quaternionf::Identity());
 	}
 
 	// Unlock point collection mutex
@@ -908,17 +963,49 @@ void OVRTracker::notify(Subject* subject) {
 
 	// subject == OpenVRButtonSubject?
 	if (ovrButtonSubject != nullptr) {
-		Console::log("Is Trigger: " + toString(ovrButtonSubject->getButtonState() == vr::EVRButtonId::k_EButton_SteamVR_Trigger));
 
 		switch (ovrButtonSubject->getButtonState()) {
 
 			// Calibrate on trigger pressed
 		case vr::EVRButtonId::k_EButton_SteamVR_Trigger:
+
+			ikSolverHip->DebugBool2 = !ikSolverHip->DebugBool2;
+			ikSolverSpine->DebugBool2 = !ikSolverSpine->DebugBool2;
+			ikSolverLeftLeg->DebugBool2 = !ikSolverLeftLeg->DebugBool2;
+			ikSolverRightLeg->DebugBool2 = !ikSolverRightLeg->DebugBool2;
+			ikSolverLeftArm->DebugBool2 = !ikSolverLeftArm->DebugBool2;
+			ikSolverRightArm->DebugBool2 = !ikSolverRightArm->DebugBool2;
+
+			Console::log("k_EButton_SteamVR_Trigger: " + toString(ikSolverHip->DebugBool2));
+
 			calibrate();
+
+			break;
+
+		case vr::EVRButtonId::k_EButton_SteamVR_Touchpad:
+
+			ikSolverHip->DebugBool3 = !ikSolverHip->DebugBool3;
+			ikSolverSpine->DebugBool3 = !ikSolverSpine->DebugBool3;
+			ikSolverLeftLeg->DebugBool3 = !ikSolverLeftLeg->DebugBool3;
+			ikSolverRightLeg->DebugBool3 = !ikSolverRightLeg->DebugBool3;
+			ikSolverLeftArm->DebugBool3 = !ikSolverLeftArm->DebugBool3;
+			ikSolverRightArm->DebugBool3 = !ikSolverRightArm->DebugBool3;
+
+			Console::log("k_EButton_SteamVR_Touchpad: " + toString(ikSolverHip->DebugBool3));
+
 			break;
 
 		case vr::EVRButtonId::k_EButton_ApplicationMenu:
-			Console::log("k_EButton_ApplicationMenu");
+
+			ikSolverHip->DebugBool1 = !ikSolverHip->DebugBool1;
+			ikSolverSpine->DebugBool1 = !ikSolverSpine->DebugBool1;
+			ikSolverLeftLeg->DebugBool1 = !ikSolverLeftLeg->DebugBool1;
+			ikSolverRightLeg->DebugBool1 = !ikSolverRightLeg->DebugBool1;
+			ikSolverLeftArm->DebugBool1 = !ikSolverLeftArm->DebugBool1;
+			ikSolverRightArm->DebugBool1 = !ikSolverRightArm->DebugBool1;
+
+			Console::log("k_EButton_ApplicationMenu: " + toString(ikSolverHip->DebugBool1));
+
 			if (shouldCalibrate) {
 				shouldCalibrate = false;
 				calibrateScale();
