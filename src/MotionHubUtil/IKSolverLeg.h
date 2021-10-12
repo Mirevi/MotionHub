@@ -144,17 +144,9 @@ public:
 
 	// Bend weights for target rotation & hint
 	float slerpTargetRotationDelta = 0.5f;
-	float slerpHintDelta = 0.9f;
 
-	// Weights for twisting upper & middle
-	float middleUntwistWeight = 0.4f;
-	float upperUntwistWeight = 0.25f;
-
-
-	float DebugFloat1 = 0;
-	float DebugFloat2 = 0;
-	float DebugFloat3 = 0;
-	float DebugFloat4 = 0;
+	// Weights for twisting middle
+	float middleNormalToTargetDelta = 0.5f;
 
 protected:
 

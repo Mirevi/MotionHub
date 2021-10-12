@@ -366,14 +366,8 @@ void IKSolverLeg::apply() {
 
 	// Rotate upper Joint to middle
 	Vector3f middleDirection = middleJoint.getSolvedPosition() - upperJoint.getSolvedPosition();
-
-	if (GetAsyncKeyState(VK_LCONTROL) & 0x8000) {
-		upperJoint.setRotationTowards(middleDirection, normal);
-	}
-	else {
 		Vector3f upperNormal = projectOnPlane(normal, middleDirection.normalized());
 		upperJoint.setRotationTowards(middleDirection, upperNormal);
-	}
 
 	// Calculate normal for middle joint (between upper & lower)
 	Quaternionf middleRotation = middleJoint.getRotation();
@@ -384,57 +378,24 @@ void IKSolverLeg::apply() {
 	Vector3f targetNormal = rotation * defaultLocalNormal;
 
 	// Create rotation axis from upper to target
-	Vector3f upAxis = (solvePosition - middleJoint.getPosition()).normalized();
+	Vector3f axis = (solvePosition - middleJoint.getPosition()).normalized();
+
+	// Rotate target forward to axis
+	targetNormal = fromToRotation(targetForward, axis) * targetNormal;
 
 	// Create look rotation to current normal & target normal
-	Quaternionf lookToMiddle = lookRotation(middleNormal, upAxis);
-	Quaternionf lookToTarget = lookRotation(projectOnPlane(targetNormal, upAxis), upAxis);
-
-	// TODO: Testen ob project on plane ergebis verbessert
-	if (DebugBool3) {
-		lookToTarget = lookRotation(targetNormal, upAxis);
-	}
+	Quaternionf lookToMiddle = lookRotation(middleNormal, axis);
+	Quaternionf lookToTarget = lookRotation(projectOnPlane(targetNormal, axis), axis);
 
 	// Create relative rotation from middle to target
 	Quaternionf fromTo = fromToRotation(lookToMiddle, lookToTarget);
 
 	// Rotate normal towards target with configured rotation delta
-	Vector3f slerpNormal = Quaternionf::Identity().slerp(0.3f, fromTo) * middleNormal;
-
-	// Rotate normal investe towards target with configured rotation delta
-	float angle = angleBetween(lookToMiddle, lookToTarget);
-	float angleDelta = (360.0f - angle) / angle;
-	Vector3f invSlerpNormal = Quaternionf::Identity().slerp(angleDelta * -0.3f, fromTo) * middleNormal;
-
-	// Update angle with both vectors on plane
-	lookToMiddle = lookRotation(projectOnPlane(middleNormal, upAxis), upAxis);
-	lookToTarget = lookRotation(projectOnPlane(targetNormal, upAxis), upAxis);
-	angle = angleBetween(lookToMiddle * Vector3f(0, 0, 1), lookToTarget * Vector3f(0, 0, 1));
-
-	// Is last normal not initialized or an confident angle?
-	if (lastMiddleNormal.isApprox(Vector3f::Zero()) || angle <= 45.0f) {
-		middleNormal = slerpNormal;
-	}
-	// Is Normal closer to last normal?
-	else if (angleBetween(lastMiddleNormal, slerpNormal) <= angleBetween(lastMiddleNormal, invSlerpNormal)) {
-		middleNormal = slerpNormal;
-	}
-	// Inverse is closer to last normal
-	else {
-		middleNormal = invSlerpNormal;
-	}
-
-	// normalize middle normal
-	middleNormal = middleNormal.normalized();
-	lastMiddleNormal = middleNormal;
-
-	if (DebugBool2) {
-		middleNormal = middleRotation * defaultLocalNormal;
-	}
+	middleNormal = Quaternionf::Identity().slerp(middleNormalToTargetDelta, fromTo) * middleNormal;
 
 	// Rotate middle Joint to solve position
 	Vector3f lowerDirection = solvePosition - middleJoint.getPosition();
-	middleNormal = projectOnPlane(middleNormal, lowerDirection.normalized());
+	middleNormal = projectOnPlane(middleNormal.normalized(), lowerDirection.normalized());
 	middleJoint.setRotationTowards(lowerDirection, middleNormal);
 
 	// Rotate lower Joint to target rotation
