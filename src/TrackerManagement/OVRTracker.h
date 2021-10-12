@@ -58,22 +58,6 @@ public:
 	*/
 	std::string getTrackerType() override;
 
-	// TODO: Debug entfernen
-	std::vector<IKSolver::DebugLine> GetDebugLineLists() {
-		std::vector<IKSolver::DebugLine> lineList;
-
-		/*
-		lineList.insert(lineList.end(), ikSolverHip->debugLineList.begin(), ikSolverHip->debugLineList.end());
-		lineList.insert(lineList.end(), ikSolverSpine->debugLineList.begin(), ikSolverSpine->debugLineList.end());
-		lineList.insert(lineList.end(), ikSolverLeftLeg->debugLineList.begin(), ikSolverLeftLeg->debugLineList.end());
-		lineList.insert(lineList.end(), ikSolverRightLeg->debugLineList.begin(), ikSolverRightLeg->debugLineList.end());
-		lineList.insert(lineList.end(), ikSolverLeftArm->debugLineList.begin(), ikSolverLeftArm->debugLineList.end());
-		lineList.insert(lineList.end(), ikSolverRightArm->debugLineList.begin(), ikSolverRightArm->debugLineList.end());
-		*/
-
-		return lineList;
-	}
-
 private:
 
 	/*!

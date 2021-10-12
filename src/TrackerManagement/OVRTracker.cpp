@@ -215,10 +215,6 @@ void OVRTracker::stop() {
 	trackingSystem->removeButtonPressObserver(this);
 
 	Tracker::stop();
-
-	//wait for tracking thread to terminate, then dispose of thread object
-	//if (m_ovrTrackingThread->joinable()) m_ovrTrackingThread->join();
-	//delete m_ovrTrackingThread;
 }
 
 void OVRTracker::init() {
@@ -244,18 +240,6 @@ void OVRTracker::init() {
 	// Init Config & try to write default config values
 	config = new OpenVRConfig(m_configManager, trackingSystem);
 	config->writeDefaults();
-}
-
-void printOvrFPS() {
-	static std::chrono::time_point<std::chrono::steady_clock> oldOvrTime = std::chrono::high_resolution_clock::now();
-	static int ovrFps; ovrFps++;
-
-	if (std::chrono::duration_cast<std::chrono::seconds>(std::chrono::high_resolution_clock::now() - oldOvrTime) >= std::chrono::seconds{ 1 }) {
-		oldOvrTime = std::chrono::high_resolution_clock::now();
-
-		Console::log("OVR FPS: " + std::to_string(ovrFps));
-		ovrFps = 0;
-	}
 }
 
 void OVRTracker::track() {

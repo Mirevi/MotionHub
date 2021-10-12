@@ -49,15 +49,6 @@ void IKSolverLeg::init() {
 	Quaternionf upperRotation = upperJoint.getRotation();
 	Quaternionf middleRotation = middleJoint.getRotation();
 
-	//upperSquaredNorm = upperToMiddle.squaredNorm();
-	//middleSquaredNorm = middleToLower.squaredNorm();
-
-	//upperLength = sqrtf(upperSquaredNorm);
-	//middleLength = sqrtf(middleSquaredNorm);
-
-	//rotationToSpace(upperRotation, lookRotation(upperToMiddle, defaultNormal));
-	//rotationToSpace(middleRotation, lookRotation(middleToLower, defaultNormal));
-
 	upperJoint.init(upperToMiddle, defaultNormal);
 	middleJoint.init(middleToLower, defaultNormal);
 
@@ -76,15 +67,9 @@ void IKSolverLeg::refresh(bool overrideDefault) {
 	Vector3f middlePosition = middleJoint.getPosition();
 	Vector3f lowerPosition = lowerJoint.getPosition();
 
-	Vector3f upperToMiddle = middlePosition - upperPosition;
-	Vector3f middleToLower = lowerPosition - middlePosition;
-
-	// Store middle to upper direction
-	middleToUpper = upperPosition - middlePosition;
-
 	// Update & Store legnth of joints
-	upperJoint.setLength(upperToMiddle);
-	middleJoint.setLength(middleToLower);
+	upperJoint.setLength(middlePosition - upperPosition);
+	middleJoint.setLength(lowerPosition - middlePosition);
 	length = (upperJoint.length + middleJoint.length);
 
 	// Reset lastNormal
@@ -106,9 +91,8 @@ void IKSolverLeg::saveDefaultState() {
 
 	// TODO: ZU IK Joint
 	// Save lower default rotation
-	invUpperDefaultRotation = upperJoint.joint->getGlobalRotation().inverse();
-	invMiddleDefaultRotation = middleJoint.joint->getGlobalRotation().inverse();
-	invLowerDefaultRotation = lowerJoint.joint->getGlobalRotation().inverse();
+	invMiddleDefaultRotation = middleJoint.getRotation().inverse();
+	invLowerDefaultRotation = lowerJoint.getRotation().inverse();
 }
 
 void IKSolverLeg::loadDefaultState() {
@@ -220,8 +204,7 @@ void IKSolverLeg::updateNormal() {
 
 void IKSolverLeg::solve(Vector3f position, Quaternionf rotation) {
 
-	// TODO: Debug raus
-	clearDebugLines();
+	targetForward = rotation * Vector3f(0, 0, 1);
 
 	// Call solve from base class
 	IKSolver::solve(position, rotation);

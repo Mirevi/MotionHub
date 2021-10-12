@@ -166,8 +166,6 @@ void HierarchicSkeleton::invalidateGlobals() {
 
 void HierarchicSkeleton::insert(Skeleton* currSkeleton) {
 
-	//auto t1 = std::chrono::high_resolution_clock::now();
-
 	// Loop over all Joints and insert into Skeleton
 	for (auto& joint : joints) {
 
@@ -182,17 +180,7 @@ void HierarchicSkeleton::insert(Skeleton* currSkeleton) {
 		auto jointPointer = joint->jointPointer;
 		jointPointer->setPosition(joint->getGlobalPosition4());
 		jointPointer->setRotation(rotation);
-		//joint->jointPointer->setPosition(joint->getGlobalPosition4());
-		//joint->jointPointer->setRotation(rotation);
-
-		//currSkeleton->m_joints.insert({ joint->getJointName(), joint->toJoint(rotation) });
-		//currSkeleton->m_joints.insert({ joint->getJointName(), joint->toJoint() });
 	}
-
-	/*auto t2 = std::chrono::high_resolution_clock::now();
-	auto ms_int2 = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1);
-
-	Console::logWarning(toString(ms_int2.count()));*/
 }
 
 void HierarchicSkeleton::setScale(Vector3f scale) {

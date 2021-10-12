@@ -186,34 +186,6 @@ void OsgQtWidget::updateSkeletonMeshTransform()
 	// get tracker pool from the tracker manager
 	std::vector<Tracker*> trackerTempCopy = m_refTrackerManager->getPoolTracker();
 
-
-	Tracker* tracker = m_refTrackerManager->getTrackerByType(TrackerManager::TrackerType::openVR);
-	if (tracker != nullptr) {
-		OVRTracker* ovrTracker = dynamic_cast<OVRTracker*>(tracker);
-		
-		std::vector<IKSolver::DebugLine> lineList = ovrTracker->GetDebugLineLists();
-
-		if(!lineList.empty()) {
-
-			m_line->clear();
-
-			osg::Vec3f zero = osg::Vec3f(0, 0,0);
-
-			for (auto line : lineList) {
-
-				osg::Vec3f start = osg::Vec3f(line.start.x(), line.start.y(), line.start.z());
-				osg::Vec3f end = osg::Vec3f(line.end.x(), line.end.y(), line.end.z());
-				osg::Vec4f color = osg::Vec4f(line.color.x(), line.color.y(), line.color.z(), 1.0f);
-
-				m_line->draw(start, end, color, color);
-			}
-
-			//osg::Vec4f color = osg::Vec4f(0, 1.0f, 0, 1.0f);
-			//m_line->draw(osg::Vec3f(0,0,0), osg::Vec3f(0, 10, 0), color, color);
-		}
-	}
-
-
 	// loop over all tracker in the pool
 	for (auto itTracker = trackerTempCopy.begin(); itTracker != trackerTempCopy.end(); itTracker++)
 	{

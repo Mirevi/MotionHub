@@ -172,7 +172,6 @@ protected:
 
 	Vector3f defaultLocalNormal;
 
-	Quaternionf invUpperDefaultRotation;
 	Quaternionf invMiddleDefaultRotation;
 	Quaternionf invLowerDefaultRotation;
 
@@ -184,5 +183,7 @@ protected:
 	Quaternionf hintRotation;
 	bool hasHint = false;
 
-	Vector3f middleToUpper;
+	Vector3f targetForward;
+
+	Vector3f lastUpperToTarget;
 };

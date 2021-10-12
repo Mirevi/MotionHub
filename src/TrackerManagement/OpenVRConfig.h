@@ -7,7 +7,7 @@
 
 #include "MotionHubUtil/Console.h"
 
-struct IKContainer { // TODO: Besserer Name
+struct IKContainer {
 	int deviceIndex = -1; // Poses
 
 	Vector3f offsetPosition = Vector3f::Zero();
