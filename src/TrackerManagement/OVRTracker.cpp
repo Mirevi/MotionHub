@@ -10,13 +10,10 @@ static bool DEBUG_SKELETON_POS = false;
 static bool DEBUG_SKELETON_ROT = false;
 
 static bool DEBUG_FOOT = false;
-
 static bool DEBUG_ARM = false;
 
 static bool SOLVE_IK = true;
 static bool SOLVE_ARMS = true;
-
-static bool CALIBRATE_FEET_OFFSET = false;
 
 static bool USE_TEST_SKELETON = true;
 
@@ -128,8 +125,15 @@ void OVRTracker::start() {
 		Console::log("");
 	}
 
-	// TODO: ovr track not needed anymore?
-	//m_ovrTrackingThread = new std::thread(&OVRTracker::ovrTrack, this);
+	// Update Confidence for each tracked joint
+	for (const auto& device : trackingSystem->Devices) {
+		auto deviceJoint = config->getJoint(device.index);
+		auto skeletonJoint = hierarchicSkeleton->getJoint(deviceJoint);
+
+		if (deviceJoint != Joint::NDEF && skeletonJoint != nullptr) {
+			skeletonJoint->setConfidence(Joint::HIGH);
+		}
+	}
 
 	// start tracking thread
 	Tracker::start();
@@ -208,6 +212,7 @@ void OVRTracker::refresh(bool overrideDefaults) {
 
 void OVRTracker::stop() {
 
+	// write settings & calibration to config 
 	config->write();
 	config->writeScale(hierarchicSkeleton->getScale());
 
@@ -294,25 +299,24 @@ void OVRTracker::track() {
 	}
 
 	if (SOLVE_IK) {
-		auto highConf = Joint::JointConfidence::HIGH;
 
-		auto hipPose = getAssignedPose(Joint::HIPS);
-
-		if (DEBUG_SKELETON_POS) {
-			hipPose.position += m_properties->positionOffset;
-		}
-
-		if (DEBUG_SKELETON_ROT) {
-			hipPose.rotation = eulerToQuaternion(m_properties->rotationOffset);
-		}
-
-
+		// Hint Hip with feet
 		auto leftFootPose = getAssignedPose(Joint::FOOT_L);
 		auto rightFootPose = getAssignedPose(Joint::FOOT_R);
 
 		ikSolverHip->hint(leftFootPose.position, rightFootPose.position);
+
+		if (useTestSkeleton) testIkSolverHip->hint(leftFootPose.position, rightFootPose.position);
+
+		// Solve Hip
+		auto hipPose = getAssignedPose(Joint::HIPS);
+		if (DEBUG_SKELETON_POS) {
+			hipPose.position += m_properties->positionOffset;
+		}
+		if (DEBUG_SKELETON_ROT) {
+			hipPose.rotation = eulerToQuaternion(m_properties->rotationOffset);
+		}
 		ikSolverHip->solve(hipPose.position, hipPose.rotation);
-		hierarchicSkeleton->hips.setConfidence(highConf);
 
 		if (useTestSkeleton) testIkSolverHip->solve(hipPose.position, hipPose.rotation);
 
@@ -324,7 +328,6 @@ void OVRTracker::track() {
 		}
 
 		ikSolverSpine->solve(headPose.position, headPose.rotation);
-		hierarchicSkeleton->head.setConfidence(highConf);
 
 		if (useTestSkeleton) testIkSolverSpine->solve(headPose.position, headPose.rotation);
 
@@ -336,7 +339,6 @@ void OVRTracker::track() {
 
 		// Solve LeftLeg
 		ikSolverLeftLeg->solve(leftFootPose.position, leftFootPose.rotation);
-		hierarchicSkeleton->leftFoot.setConfidence(highConf);
 
 		if (useTestSkeleton) testIkSolverLeftLeg->solve(leftFootPose.position, leftFootPose.rotation);
 
@@ -348,7 +350,6 @@ void OVRTracker::track() {
 
 		// Solve RightLeg
 		ikSolverRightLeg->solve(rightFootPose.position, rightFootPose.rotation);
-		hierarchicSkeleton->rightFoot.setConfidence(highConf);
 
 		if (useTestSkeleton) testIkSolverRightLeg->solve(rightFootPose.position, rightFootPose.rotation);
 
@@ -362,7 +363,6 @@ void OVRTracker::track() {
 			// Solve LeftArm
 			auto leftHandPose = getAssignedPose(Joint::HAND_L);
 			ikSolverLeftArm->solve(leftHandPose.position, leftHandPose.rotation);
-			hierarchicSkeleton->leftHand.setConfidence(highConf);
 
 			if (useTestSkeleton) testIkSolverLeftArm->solve(leftHandPose.position, leftHandPose.rotation);
 
@@ -375,7 +375,6 @@ void OVRTracker::track() {
 			// Solve RightArm
 			auto rightHandPose = getAssignedPose(Joint::HAND_R);
 			ikSolverRightArm->solve(rightHandPose.position, rightHandPose.rotation);
-			hierarchicSkeleton->rightHand.setConfidence(highConf);
 
 			if (useTestSkeleton) testIkSolverRightArm->solve(rightHandPose.position, rightHandPose.rotation);
 		}
@@ -797,13 +796,14 @@ void OVRTracker::calibrateScale() {
 	ikSolverLeftArm->solve(leftHandPose.position + leftHandOffset.normalized() * 0.1f, leftHandPose.rotation);
 	ikSolverRightArm->solve(rightHandPose.position + rightHandOffset.normalized() * 0.1f, leftHandPose.rotation);
 
-
+	// Solve LeftFoot & RightFoot lower than Zero to get max stretched distance
 	auto leftFootPose = config->getPoseWithOffset(Joint::FOOT_L, false);
 	auto rightFootPose = config->getPoseWithOffset(Joint::FOOT_R, false);
 	ikSolverLeftLeg->solve(leftFootPose.position + Vector3f(0, -0.5f, 0), leftFootPose.rotation);
 	ikSolverRightLeg->solve(rightFootPose.position + Vector3f(0, -0.5f, 0), rightFootPose.rotation);
 
-	if (CALIBRATE_FEET_OFFSET) {
+	// Is LeftFoot tracked? -> Calculate Y Offset
+	if (config->isJointAssigned(Joint::FOOT_L)) {
 		auto leftFootPose = config->getPoseWithOffset(Joint::FOOT_L, false);
 		Vector3f newOffsetL = (hierarchicSkeleton->leftFoot.getGlobalPosition()) - leftFootPose.position;
 
@@ -811,7 +811,10 @@ void OVRTracker::calibrateScale() {
 		offsetL.y() += newOffsetL.y();
 
 		config->setUserOffsetPosition(Joint::FOOT_L, offsetL);
+	}
 
+	// Is RightFoot tracked? -> Calculate Y Offset
+	if (config->isJointAssigned(Joint::FOOT_R)) {
 		auto rightFootPose = config->getPoseWithOffset(Joint::FOOT_R, false);
 		Vector3f newOffsetR = (hierarchicSkeleton->leftFoot.getGlobalPosition()) - rightFootPose.position;
 
