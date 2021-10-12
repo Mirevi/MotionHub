@@ -280,7 +280,7 @@ static void orthoNormalize(Vector3f& normal, Vector3f& tangent, Vector3f& binorm
  * \return angle in degrees between both vectors.
  * \see https://github.com/Unity-Technologies/UnityCsReference/blob/61f92bd79ae862c4465d35270f9d1d57befd1761/Runtime/Export/Math/Vector3.cs#L305
  */
-static float angleBetween(Vector3f from, Vector3f to) {
+static float angleBetween(const Vector3f& from, const Vector3f& to) {
 	// sqrt(a) * sqrt(b) = sqrt(a * b) -- valid for real numbers
 	float denominator = sqrtf(from.squaredNorm() * to.squaredNorm());
 
@@ -431,7 +431,7 @@ static Vector3f slerp(Vector3f a, Vector3f b, float t) {
  * \return decomposed rotation
  * \see http://allenchou.net/2018/05/game-math-swing-twist-interpolation-sterp/
  */
-static Quaternionf decomposeTwist(const Quaternionf rotation, const Vector3f twistAxis) {
+static Quaternionf decomposeTwist(const Quaternionf& rotation, const Vector3f& twistAxis) {
 	// Create Euler for sqrlength check
 	Vector3f euler = Vector3f(rotation.x(), rotation.y(), rotation.z());
 
@@ -444,6 +444,34 @@ static Quaternionf decomposeTwist(const Quaternionf rotation, const Vector3f twi
 		Vector3f p = project(euler, twistAxis);
 		return Quaternionf(rotation.w(), p.x(), p.y(), p.z()).normalized();
 	}
+}
+
+/*!
+ * Calculates 
+ *
+ * \param point 
+ * \param lineStart the start point of the line
+ * \param lineEnd the end point of the line
+ * \return point between start & end
+ */
+static Vector3f closesPointOnLine(const Vector3f& point, const Vector3f& lineStart, const Vector3f& lineEnd) {
+	
+	// Create line vector from start to end
+	Vector3f line = (lineEnd - lineStart);
+
+	// Calculate length & normalize line
+	float length = line.norm();
+	line.normalize();
+
+	// Create vector from start to point
+	Vector3f v = point - lineStart;
+
+	// Calculate dot product & clamp it within line length
+	float dot = v.dot(line);
+	dot = clamp(dot, 0.0f, length);
+
+	// return point on line
+	return lineStart + line * dot;
 }
 
 /*
