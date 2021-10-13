@@ -46,6 +46,11 @@ void IKSolverHip::refresh(bool overrideDefaults) {
 	Vector3f rightMiddlePosition = rightFoot->getParent()->getGlobalPosition();
 	rightLegLength = (rightMiddlePosition - rightUpperPosition).norm()
 		+ (rightFootPosition - rightMiddlePosition).norm();
+
+	// Reset hint
+	this->leftFootPosition = Vector3f::Zero();
+	this->rightFootPosition = Vector3f::Zero();
+	hasHint = false;
 }
 
 void IKSolverHip::solve(Vector3f position, Quaternionf rotation) {
@@ -53,6 +58,11 @@ void IKSolverHip::solve(Vector3f position, Quaternionf rotation) {
 	// Apply target position & rotation to hip
 	hip->setGlobalPosition(position);
 	hip->setGlobalRotation(rotation);
+
+	// Skip Hip adjustment in calibration mode or without hint
+	if (isCalibrating || !hasHint) {
+		return;
+	}
 
 	// TODO: Reach oder Lenght?
 
@@ -102,6 +112,8 @@ void IKSolverHip::hint(Vector3f leftFoot, Vector3f rightFoot) {
 
 	leftFootPosition = leftFoot;
 	rightFootPosition = rightFoot;
+
+	hasHint = true;
 }
 
 void IKSolverHip::saveDefaultState() {

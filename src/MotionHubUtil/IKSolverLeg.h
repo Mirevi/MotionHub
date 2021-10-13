@@ -173,7 +173,6 @@ protected:
 
 	Vector3f hintPosition;
 	Quaternionf hintRotation;
-	bool hasHint = false;
 
 	Vector3f targetForward;
 

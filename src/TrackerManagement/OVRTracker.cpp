@@ -332,8 +332,9 @@ void OVRTracker::track() {
 		auto leftFootPose = getAssignedPose(Joint::FOOT_L);
 		auto rightFootPose = getAssignedPose(Joint::FOOT_R);
 
-		ikSolverHip->hint(leftFootPose.position, rightFootPose.position);
-
+		if (!leftFootPose.isNull() && !rightFootPose.isNull()) {
+			ikSolverHip->hint(leftFootPose.position, rightFootPose.position);
+		}
 		if (useTestSkeleton) testIkSolverHip->hint(leftFootPose.position, rightFootPose.position);
 
 		// Solve Hip
@@ -623,11 +624,11 @@ void OVRTracker::initIKSolvers() {
 }
 
 void OVRTracker::refreshIKSolvers(bool overrideDefault) {
-	
+
 	if (ikSolverHip != nullptr) {
 		ikSolverHip->refresh(overrideDefault);
 	}
-	
+
 	if (ikSolverLeftLeg != nullptr) {
 		ikSolverLeftLeg->refresh(overrideDefault);
 	}

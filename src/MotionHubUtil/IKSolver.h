@@ -134,4 +134,5 @@ protected:
 	Quaternionf targetRotation;
 
 	bool isCalibrating = false;
+	bool hasHint = false;
 };

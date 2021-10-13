@@ -145,6 +145,7 @@ private:
 
 	void enableCalibrationMode() {
 
+		ikSolverHip->enableCalibrationMode();
 		ikSolverSpine->enableCalibrationMode();
 		ikSolverLeftLeg->enableCalibrationMode();
 		ikSolverRightLeg->enableCalibrationMode();
@@ -154,6 +155,7 @@ private:
 
 	void disableCalibrationMode() {
 
+		ikSolverHip->disableCalibrationMode();
 		ikSolverSpine->disableCalibrationMode();
 		ikSolverLeftLeg->disableCalibrationMode();
 		ikSolverRightLeg->disableCalibrationMode();
