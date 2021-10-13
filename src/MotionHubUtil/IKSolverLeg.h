@@ -142,10 +142,10 @@ public:
 	// Break Condition: threshold for progress in beteween iterations (in meters) 
 	float progressTolerance = 0.000001f; // 0.00001f
 
-	// Bend weights for target rotation & hint
-	float slerpTargetRotationDelta = 0.5f;
+	// Delta for rotating upper to target rotation
+	float upperNormalToTargetDelta = 0.5f;
 
-	// Weights for twisting middle
+	// Delta for rotating middle to target rotation
 	float middleNormalToTargetDelta = 0.5f;
 
 protected:

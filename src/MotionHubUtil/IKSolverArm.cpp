@@ -80,57 +80,34 @@ void IKSolverArm::loadDefaultState() {
 	IKSolverLeg::loadDefaultState();
 }
 
-/*
 void IKSolverArm::updateNormal() {
 
-	slerpTargetRotationDelta = 0.25f;
+	targetForward = targetRotation * -handToJoint;
 
-	if (hasHint) {
+	//upperNormalToTargetDelta = 0.5f;
+
+	// Use leg normal calculation
 		IKSolverLeg::updateNormal();
+
+	// Exit if in calibration mode or hint exists
+	if (isCalibrating || hasHint) {
+		return;
 	}
-	else {
+
 		// Get normal from current rotation
 		Quaternionf upperRotation = upperJoint.getRotation();
 		Vector3f upperNormal = upperRotation * defaultLocalNormal;
 
-		// Get target normal relative to lower default rotation
-		Quaternionf rotation = targetRotation * invLowerDefaultRotation;
-		Vector3f targetNormal = rotation * defaultLocalNormal;
+	// Create axis from upper joint to target
+	Vector3f upperPosition = upperJoint.getPosition();
+	Vector3f axis = (solvePosition - upperPosition).normalized();
 
-		float angle = angleBetween(upperRotation, rotation);
-		Quaternionf fromTo = fromToRotation(upperRotation, rotation);
+	// Rotate upperNormal towards axis
+	Vector3f upperToChild = (middleJoint.getPosition() - upperPosition).normalized();
+	upperNormal = fromToRotation(upperToChild, axis) * upperNormal;
 
-		Vector3f slerpNormal = upperRotation.slerp(slerpTargetRotationDelta, fromTo * upperRotation) * defaultLocalNormal;
-
-		float angleDelta = (360.0f - angle) / angle;
-		Vector3f invSlerpNormal = upperRotation.slerp(angleDelta * -slerpTargetRotationDelta, fromTo * upperRotation) * defaultLocalNormal;
-
-		//if(!isLeft)
-		//Console::log(toString(angleBetween(lastNormal, slerpNormal)) + " <= " + toString(angleBetween(lastNormal, invSlerpNormal)));
-
-		//if (angleBetween(upperNormal, targetNormal) <= 30.0f || lastNormal.isApprox(Vector3f::Zero())) {
-		if (lastNormal.isApprox(Vector3f::Zero())) {
-			normal = slerpNormal;
-		}
-		else if (angleBetween(lastNormal, slerpNormal) <= angleBetween(lastNormal, invSlerpNormal)) {
-			normal = slerpNormal;
-		}
-		else {
-			normal = invSlerpNormal;
-		}
-
-		// normalize normal
-		normal = normal.normalized();
-		lastNormal = normal;
-	}
-}
-*/
-
-void IKSolverArm::updateNormal() {
-
-	slerpTargetRotationDelta = 0.3f;
-
-	IKSolverLeg::updateNormal();
+	// Slerp normal between upper & calculated leg normal
+	normal = slerp(upperNormal.normalized(), normal.normalized(), 0.6f).normalized();
 }
 
 void IKSolverArm::solve(Vector3f position, Quaternionf rotation) {

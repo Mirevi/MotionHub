@@ -147,12 +147,12 @@ void IKSolverLeg::updateNormal() {
 
 	// Slerp from identity towards target
 	Quaternionf identity = Quaternionf::Identity();
-	Vector3f slerpNormal = identity.slerp(slerpTargetRotationDelta, fromTo) * upperNormal;
+	Vector3f slerpNormal = identity.slerp(upperNormalToTargetDelta, fromTo) * upperNormal;
 
 	// Slerp from identity towards target in reverse direction
 	float angle = angleBetween(identity, fromTo);
 	float angleDelta = (360.0f - angle) / fmax(angle, powf(0.1f, FLT_DECIMAL_DIG));
-	Vector3f invSlerpNormal = identity.slerp(angleDelta * -slerpTargetRotationDelta, fromTo) * upperNormal;
+	Vector3f invSlerpNormal = identity.slerp(angleDelta * -upperNormalToTargetDelta, fromTo) * upperNormal;
 
 	// Create direction towards last
 	Vector3f upperToLastTarget = upperRotation * lastUpperToTarget;
