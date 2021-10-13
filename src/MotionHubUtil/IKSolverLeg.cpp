@@ -103,8 +103,9 @@ void IKSolverLeg::loadDefaultState() {
 	lowerJoint.loadDefaultState();
 }
 
-/*
 void IKSolverLeg::updateNormal() {
+
+	// TODO: slerp/invSlerp auf Plausibilitaet pruefen?
 
 	// Is hint available & is not calibrationg
 	if (!isCalibrating && hasHint) {
@@ -123,83 +124,63 @@ void IKSolverLeg::updateNormal() {
 	Quaternionf rotation = targetRotation * invLowerDefaultRotation;
 	Vector3f targetNormal = rotation * defaultLocalNormal;
 
-	Quaternionf fromTo = fromToRotation(upperRotation, rotation);
-	normal = upperRotation.slerp(slerpTargetRotationDelta, fromTo * upperRotation) * defaultLocalNormal;
+	// Create axis from upper joint to target
+	Vector3f upperPosition = upperJoint.getPosition();
+	Vector3f axis = (solvePosition - upperPosition).normalized();
 
-	// normalize normal
-	normal = normal.normalized();
-	lastNormal = normal;
-}
-*/
-
-void IKSolverLeg::updateNormal() {
-
-	// Is hint available & is not calibrationg
-	if (!isCalibrating && hasHint) {
-		// Rotate normal with Hint
-		Vector3f hintNormal = hintRotation * invMiddleDefaultRotation * defaultLocalNormal;
-		normal = hintNormal.normalized();
-
-		return;
+	if (angleBetween(targetForward, axis) >= 90) {
 	}
 
-	// Get upper normal from current rotation
-	Quaternionf upperRotation = upperJoint.getRotation();
-	Vector3f upperNormal = upperRotation * defaultLocalNormal;
+	// Rotate upperNormal towards axis
+	Vector3f upperToChild = (middleJoint.getPosition() - upperPosition).normalized();
+	upperNormal = fromToRotation(upperToChild, axis) * upperNormal;
 
-	// Get target normal relative to lower default rotation 
-	Quaternionf rotation = targetRotation * invLowerDefaultRotation;
-	Vector3f targetNormal = rotation * defaultLocalNormal;
+	// Rotate tagetNormal towards axis
+	targetNormal = fromToRotation(targetForward, axis) * targetNormal;
 
-	// Create rotation axis from upper to target
-	Vector3f upAxis = (solvePosition - upperJoint.getPosition()).normalized();
+	// Create look rotations for upper & target normals
+	Quaternionf lookToUpper = lookRotation(upperNormal, axis);
+	Quaternionf lookToTarget = lookRotation(targetNormal, axis);
 
-	// Create look rotation to upper normal & target normal
-	Quaternionf lookToUpper = lookRotation(upperNormal, upAxis);
-	Quaternionf lookToTarget = lookRotation(targetNormal, upAxis);
-
-	// Create relative rotation from upper to target
+	// Create from upper to target look rotation
 	Quaternionf fromTo = fromToRotation(lookToUpper, lookToTarget);
 
-	// Cache identity rotation for 2 slerps
+	// Slerp from identity towards target
 	Quaternionf identity = Quaternionf::Identity();
-
-	// Rotate normal towards target with configured rotation delta
 	Vector3f slerpNormal = identity.slerp(slerpTargetRotationDelta, fromTo) * upperNormal;
 
-	// Rotate normal investe towards target with configured rotation delta
-	float angle = angleBetween(lookToUpper, lookToTarget);
-
-	float angleDelta = (360.0f - angle) / angle;
+	// Slerp from identity towards target in reverse direction
+	float angle = angleBetween(identity, fromTo);
+	float angleDelta = (360.0f - angle) / fmax(angle, powf(0.1f, FLT_DECIMAL_DIG));
 	Vector3f invSlerpNormal = identity.slerp(angleDelta * -slerpTargetRotationDelta, fromTo) * upperNormal;
 
-	//DebugPos1 = targetPosition + (lookToUpper * Vector3f(0, 0, 0.1f));
-	//DebugPos2 = targetPosition + (lookToTarget * Vector3f(0, 0, 0.1f));
+	// Create direction towards last
+	Vector3f upperToLastTarget = upperRotation * lastUpperToTarget;
 
-	angle = angleBetween(lookToUpper * Vector3f(0, 0, 1), lookToTarget * Vector3f(0, 0, 1));
+	// Create direction to last target for each last, slerp & inverse slerp
+	Vector3f lastBendDirection = (upperToLastTarget).cross(lastNormal).normalized();
+	Vector3f bendDirectionA = (upperToLastTarget).cross(slerpNormal).normalized();
+	Vector3f bendDirectionB = (upperToLastTarget).cross(invSlerpNormal).normalized();
 
-	// Is last normal not initialized or an confident angle?
-	if (lastNormal.isApprox(Vector3f::Zero()) || angle <= 45.0f) {
-		normal = slerpNormal;
-		//DebugPos3 = targetPosition + invSlerpNormal.normalized() * 0.1f;
+	Vector3f lastMiddle = upperPosition + lastBendDirection;
+	Vector3f middleA = upperPosition + bendDirectionA;
+	Vector3f middleB = upperPosition + bendDirectionB;
+
+	if (lastNormal.isApprox(Vector3f::Zero())) {
+		normal = slerpNormal.normalized();
 	}
-	// Is Normal closer to last normal?
-	else if (angleBetween(lastNormal, slerpNormal) <= angleBetween(lastNormal, invSlerpNormal)) {
-		normal = slerpNormal;
-		//DebugPos3 = targetPosition + invSlerpNormal.normalized() * 0.1f;
+	// use closest normal to last direction
+	else if (distance(middleA, lastMiddle) < distance(middleB, lastMiddle)) {
+		normal = slerpNormal.normalized();
 	}
-	// Inverse is closer to last normal
 	else {
-		normal = invSlerpNormal;
-		//DebugPos3 = targetPosition + slerpNormal.normalized() * 0.1f;
+		normal = invSlerpNormal.normalized();
 	}
 
-	//DebugPos4 = targetPosition + normal.normalized() * 0.1f;
-	//DebugPos3 = DebugPos4;
 
-	// normalize normal
-	normal = normal.normalized();
+	// Save last normal & direction to target for next iteration
 	lastNormal = normal;
+	lastUpperToTarget = upperRotation.inverse() * (solvePosition - upperPosition);
 }
 
 void IKSolverLeg::solve(Vector3f position, Quaternionf rotation) {
@@ -258,7 +239,6 @@ void IKSolverLeg::solve() {
 	if (isCalibrating) {
 		upperMultiplicator = 1.0f;
 	}
-
 
 	// get or calculate knee hint position
 	Vector3f middleHint = hintPosition;
