@@ -163,6 +163,9 @@ void OVRTracker::start() {
 		}
 	}
 
+	// Refresh IK Solvers
+	refreshIKSolvers(false);
+
 	// start tracking thread
 	Tracker::start();
 }
@@ -328,15 +331,15 @@ void OVRTracker::track() {
 
 	if (SOLVE_IK) {
 
-		// Hint Hip with feet
+		// Hint Hip with both feets
 		auto leftFootPose = getAssignedPose(Joint::FOOT_L);
 		auto rightFootPose = getAssignedPose(Joint::FOOT_R);
 
 		if (!leftFootPose.isNull() && !rightFootPose.isNull()) {
 			ikSolverHip->hint(leftFootPose.position, rightFootPose.position);
+			if (useTestSkeleton) testIkSolverHip->hint(leftFootPose.position, rightFootPose.position);
 		}
-		if (useTestSkeleton) testIkSolverHip->hint(leftFootPose.position, rightFootPose.position);
-
+		
 		// Solve Hip
 		auto hipPose = getAssignedPose(Joint::HIPS);
 		if (DEBUG_SKELETON_POS) {
@@ -924,34 +927,20 @@ void OVRTracker::calibrateHintOffsets() {
 			continue;
 		}
 
-		// get joint from skeleton
+		// get joint from hierarchic skeleton
 		HierarchicJoint* joint = hierarchicSkeleton->getJoint(limbJoint);
 
-
+		// get device pose for joint
 		auto limbDevicePose = config->getPose(limbJoint);
 
-
-		//config->calibrateDeviceToJointOffset(limbJoint);
-
-		Quaternionf offsetRot = limbDevicePose->rotation.inverse() * joint->getGlobalRotation();
-		config->setOffsetRotation(limbJoint, offsetRot);
-
-		/*
-		// Save user offset & set it to zero
-		Vector3f oldOffset = config->getUserOffsetPosition(limbJoint);
-		config->setUserOffsetPosition(limbJoint, Vector3f::Zero());
-		config->setOffsetPosition(limbJoint, Vector3f::Zero());
-
-		// TODO: Position Offset ermitteln und speichern
-		auto limbPose = config->getPoseWithOffset(limbJoint, false);
-
-		Vector3f offset = (joint->getGlobalPosition() - limbPose.position);
-
-		config->setOffsetPosition(limbJoint, offset);
-
-		// Restore old user offset
-		config->setUserOffsetPosition(limbJoint, oldOffset);
-		*/
+		// TODO: Kalibrierung der Rotation testen
+		if (limbJoint == Joint::FOREARM_L) {
+			config->calibrateDeviceToJointOffset(limbJoint);
+		}
+		else {
+			Quaternionf offsetRot = limbDevicePose->rotation.inverse() * joint->getGlobalRotation();
+			config->setOffsetRotation(limbJoint, offsetRot);
+		}
 	}
 
 	disableCalibrationMode();
