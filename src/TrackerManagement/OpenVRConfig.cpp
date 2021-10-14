@@ -411,16 +411,16 @@ void OpenVRConfig::writeDefaults() {
 	configKey = generateKey(OpenVRTracking::Tracker, Joint::FOOT_L);
 	if (OVERRIDE_DEFAULTS || !configManager->exists(trackerType, configKey)) {
 
-		configManager->writeVec3f("position", Vector3f(-0.008f, -0.036f, -0.016f), trackerType, configKey);
-		configManager->writeVec3f("rotation", Vector3f(90.0f, 160.0f, 50.0f), trackerType, configKey);
+		configManager->writeVec3f("position", Vector3f(0, 0.1f, 0), trackerType, configKey);
+		configManager->writeVec3f("rotation", Vector3f(60.0f, -10.0f, 10.0f), trackerType, configKey);
 	}
 
 	// Write Tracker:FOOT_R data if not exist
 	configKey = generateKey(OpenVRTracking::Tracker, Joint::FOOT_R);
 	if (OVERRIDE_DEFAULTS || !configManager->exists(trackerType, configKey)) {
 
-		configManager->writeVec3f("position", Vector3f(0.008f, -0.036f, -0.016f), trackerType, configKey);
-		configManager->writeVec3f("rotation", Vector3f(90.0f, -160.0f, -55.0f), trackerType, configKey);
+		configManager->writeVec3f("position", Vector3f(0, 0.1f, 0), trackerType, configKey);
+		configManager->writeVec3f("rotation", Vector3f(60.0f, 10.0f, 10.0f), trackerType, configKey);
 	}
 
 	// Write Tracker:FOREARM_L if not exist
@@ -437,6 +437,22 @@ void OpenVRConfig::writeDefaults() {
 
 		//configManager->writeVec3f("position", Vector3f(0.01f, 0.1f, -0.05f), trackerType, configKey);
 		configManager->writeVec3f("position", Vector3f(0, 0.1f, -0.05f), trackerType, configKey);
+	}
+
+	// Write Tracker:HAND_L if not exist
+	configKey = generateKey(OpenVRTracking::Tracker, Joint::HAND_L);
+	if (OVERRIDE_DEFAULTS || !configManager->exists(trackerType, configKey)) {
+
+		configManager->writeVec3f("position", Vector3f(0, -0.04f, 0.05f), trackerType, configKey);
+		configManager->writeVec3f("rotation", Vector3f(90.0f, 90.0f, -90.0f), trackerType, configKey);
+	}
+
+	// Write Tracker:HAND_R if not exist
+	configKey = generateKey(OpenVRTracking::Tracker, Joint::HAND_R);
+	if (OVERRIDE_DEFAULTS || !configManager->exists(trackerType, configKey)) {
+
+		configManager->writeVec3f("position", Vector3f(0, -0.04f, 0.05f), trackerType, configKey);
+		configManager->writeVec3f("rotation", Vector3f(-90.0f, -90.0f, -90.0f), trackerType, configKey);
 	}
 }
 
