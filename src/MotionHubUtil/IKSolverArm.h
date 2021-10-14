@@ -71,7 +71,7 @@ protected:
 	 * Constraints the solution
 	 */
 	virtual void constraint() override;
-
+	
 public:
 	bool solveShoulder = true;
 
@@ -82,9 +82,6 @@ protected:
 	HierarchicJoint* chest;
 
 	Quaternionf invShoulderDefaultRotation;
-
-	Vector3f lastShoulderToHint;
-	Quaternionf lastShoulderRotation;
 
 	Vector3f handToJoint;
 	Vector3f handToPinky;
