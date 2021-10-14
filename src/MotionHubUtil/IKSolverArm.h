@@ -88,11 +88,11 @@ protected:
 	Vector3f handToJoint;
 	Vector3f handToPinky;
 
-	float shoulderBackYAngle = 35.0f; // Back
-	float shoulderForwardYAngle = 45.0f; // Forward
-	float shoulderUpZAngle = 45.0f; // Up
-	float shoulderDownZAngle = 20.0f; // Down
+	float shoulderBackYAngle = 25.0f; // Back
+	float shoulderForwardYAngle = 40.0f; // Forward
+	float shoulderUpZAngle = 40.0f; // Up
+	float shoulderDownZAngle = 15.0f; // Down
 
 	float defaultShoulderHandDistance;
-	float shoulderHandMaxAngle = 20.0f;
+	float shoulderHandMaxAngle = 10.0f;
 };

@@ -934,13 +934,16 @@ void OVRTracker::calibrateHintOffsets() {
 		auto limbDevicePose = config->getPose(limbJoint);
 
 		// TODO: Kalibrierung der Rotation testen
-		if (limbJoint == Joint::FOREARM_L) {
+		/*if (limbJoint == Joint::FOREARM_L) {
 			config->calibrateDeviceToJointOffset(limbJoint);
 		}
 		else {
 			Quaternionf offsetRot = limbDevicePose->rotation.inverse() * joint->getGlobalRotation();
 			config->setOffsetRotation(limbJoint, offsetRot);
-		}
+		}*/
+
+		Quaternionf offsetRot = limbDevicePose->rotation.inverse() * joint->getGlobalRotation();
+		config->setOffsetRotation(limbJoint, offsetRot);
 	}
 
 	disableCalibrationMode();

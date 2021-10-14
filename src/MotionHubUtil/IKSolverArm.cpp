@@ -25,6 +25,7 @@ void IKSolverArm::init() {
 	Vector3f shoulderToUpper = upperJoint.getPosition() - shoulderJoint.getPosition();
 	shoulderJoint.init(shoulderToUpper, normal);
 
+	// Create vectors from hand center to pinky & joint
 	handToPinky = Vector3f(0, 0, -1);
 
 	handToJoint = Vector3f(1, 0, 0);
@@ -32,6 +33,7 @@ void IKSolverArm::init() {
 		handToJoint = Vector3f(-1, 0, 0);
 	}
 
+	// swap shoulder angles on left arm
 	if (isLeft) {
 		float tempAngle = shoulderUpZAngle;
 		shoulderUpZAngle = shoulderDownZAngle;
@@ -49,6 +51,7 @@ void IKSolverArm::refresh(bool overrideDefault) {
 		shoulderJoint.saveDefaultState();
 	}
 
+	// Recalculate shoulder length
 	Vector3f shoulderToUpper = upperJoint.getPosition() - shoulderJoint.getPosition();
 	shoulderJoint.setLength(shoulderToUpper);
 
@@ -68,9 +71,6 @@ void IKSolverArm::saveDefaultState() {
 }
 
 void IKSolverArm::loadDefaultState() {
-
-	// Save default state for shoulder
-	//shoulderJoint.loadDefaultState();
 
 	// Call load on base class
 	IKSolverLeg::loadDefaultState();
@@ -247,30 +247,25 @@ void IKSolverArm::solve() {
 		// Get rotation from y- & z-rotation
 		Quaternionf rotation = (yRotation * zRotation);
 
-		Quaternionf newShoulderRotation = rotation * shoulderJoint.getRotation();
-
 		// Set shoulder rotation
 		if (!hasHint) {
 
 			//shoulderJoint.setRotation(lastShoulderRotation.slerp(0.5f, newShoulderRotation));
-			shoulderJoint.setRotation(newShoulderRotation);
+			shoulderJoint.setRotation(rotation * shoulderJoint.getRotation());
 		}
 		else {
 
-			shoulderJoint.setRotation(newShoulderRotation);
+			// Roatate towards 50% of calculated shoulderrotation
+			rotation = Quaternionf::Identity().slerp(0.5f, rotation);
+			shoulderJoint.setRotation(rotation * shoulderJoint.getRotation());
 
-			// Create vector from hint position to sovled upper
+			// Create vector from hint position to solved upper
 			Vector3f upperPosition = upperJoint.getPosition();
-			Vector3f newUp = hintPosition + (upperPosition - hintPosition).normalized() * upperJoint.length;
-			DebugPos3 = newUp;
+			Vector3f hintUpperPosition = hintPosition + (upperPosition - hintPosition).normalized() * upperJoint.length;
 
 			// create & apply new rotation
-			Vector3f shoulderToUp = upperPosition - shoulderPosition;
-			Vector3f shoulderToNewUp = newUp - shoulderPosition;
-
-			rotation = fromToRotation(shoulderToUp, shoulderToNewUp);
-			newShoulderRotation = rotation * shoulderJoint.getRotation();
-			shoulderJoint.setRotation(newShoulderRotation);
+			rotation = fromToRotation(upperPosition - shoulderPosition, hintUpperPosition - shoulderPosition);
+			shoulderJoint.setRotation(rotation * shoulderJoint.getRotation());
 		}
 
 		// update solved positions for chain

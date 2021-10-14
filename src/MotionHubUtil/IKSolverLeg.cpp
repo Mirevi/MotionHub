@@ -75,6 +75,7 @@ void IKSolverLeg::refresh(bool overrideDefault) {
 	// Reset lastNormal
 	lastNormal = Vector3f::Zero();
 	lastMiddleNormal = Vector3f::Zero();
+	lastUpperToTarget = upperJoint.getRotation().inverse() * (lowerJoint.getPosition() - upperJoint.getPosition());
 
 	// Reset hint
 	hintPosition = Vector3f::Zero();
