@@ -71,6 +71,8 @@ protected:
 	 * Constraints the solution
 	 */
 	virtual void constraint() override;
+
+	virtual Vector3f createBendDirection(const Vector3f& currentDirection, const Vector3f& limbAxis);
 	
 public:
 	bool solveShoulder = true;

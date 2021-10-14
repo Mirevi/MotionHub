@@ -102,7 +102,7 @@ void IKSolverArm::updateNormal() {
 	Vector3f upperToChild = (middleJoint.getPosition() - upperPosition).normalized();
 	upperNormal = fromToRotation(upperToChild, axis) * upperNormal;
 
-	// Slerp normal between upper & calculated leg normal
+	// Slerp normal betweenUpperLower upper & calculated leg normal
 	normal = slerp(upperNormal.normalized(), normal.normalized(), 0.6f).normalized();
 }
 
@@ -273,8 +273,6 @@ void IKSolverArm::solve() {
 			shoulderJoint.setRotation(newShoulderRotation);
 		}
 
-		lastShoulderRotation = newShoulderRotation;
-
 		// update solved positions for chain
 		for (IKJoint* joint : joints) {
 			joint->saveSolvedPosition();
@@ -292,7 +290,7 @@ void IKSolverArm::constraint() {
 		return;
 	}
 
-	// Store solved positions of all 3 joints
+	// Store solved positions of upper, middle & lower position
 	Vector3f upperPosition = upperJoint.getSolvedPosition();
 	Vector3f middlePosition = middleJoint.getSolvedPosition();
 	Vector3f lowerPosition = lowerJoint.getSolvedPosition();
@@ -300,119 +298,14 @@ void IKSolverArm::constraint() {
 	// Get the rotation limb axis from upper to lower joint
 	Vector3f limbAxis = (lowerPosition - upperPosition).normalized();
 
-	// Store current direction
+	// Store current direction: upper to middle
 	Vector3f currentDirection = (middlePosition - upperPosition).normalized();
-	currentDirection += (solvePosition - upperPosition).cross(normal).normalized() * 0.01f;
 
+	// Move current direction outside
+	currentDirection += (solvePosition - upperPosition).cross(normal).normalized() * 0.1f;
 
-	DebugPos4 = upperPosition + (Quaternionf::Identity().slerp(0.8f, fromToRotation(currentDirection, -chest->getUp())) * currentDirection).normalized() * upperJoint.length;
-
-	Vector3f bendDirection = lerp(currentDirection, (upperPosition - chest->getGlobalPosition()).normalized(), 0.5f);
-
-	// TODO: bend direction nicht lerpen und so uebernehmen?
-
-	DebugPos1 = upperPosition + currentDirection.normalized() * upperJoint.length;
-	DebugPos2 = upperPosition + (upperPosition - chest->getGlobalPosition()).normalized() * upperJoint.length;
-	DebugPos3 = upperPosition + bendDirection.normalized() * upperJoint.length;
-
-	Vector3f line_start = upperPosition + bendDirection.normalized() * upperJoint.length;
-
-	Quaternionf toDown = fromToRotation(bendDirection, -chest->getUp());
-	bendDirection = (Quaternionf::Identity().slerp(0.8f, toDown) * bendDirection);
-
-	Vector3f line_end = upperPosition + bendDirection.normalized() * upperJoint.length;
-
-	Vector3f toHandJoint = targetRotation * (handToJoint * 0.5f);
-	Vector3f toHandPinky = targetRotation * (handToPinky * 0.2f);
-
-	Vector3f chestPosition = chest->getGlobalPosition();
-	Vector3f chestForward = chest->getForward();
-	Vector3f chestUp = chest->getUp();
-
-	Vector3f chestToTarget = solvePosition - chestPosition;
-	Vector3f chestToTargetOnUp = projectOnPlane(chestToTarget, chestUp);
-
-	float angleToBack = signedAngle(-chestForward, chestToTargetOnUp, chestUp);
-	if (isLeft) {
-		angleToBack = fabs(angleToBack);
-	}
-	else {
-		// TODO: Testen
-		angleToBack = -fabs(angleToBack);
-	}
-
-	Vector3f towardsBack = angleAxis(angleToBack * 0.2f, chestUp) * chestToTarget.normalized() * (upperJoint.length * 2.0f) + chestPosition;
-	Vector3f towardsBackOnUp = projectOnPlane(towardsBack - solvePosition, chestUp).normalized() * middleJoint.length;
-
-	//DebugPos1 = line_start;
-	//DebugPos3 = line_end;
-
-	line_start += towardsBackOnUp + Vector3f(0, middleJoint.length * 0.5f, 0);
-	line_end += (towardsBackOnUp * 0.5f) + Vector3f(0, -middleJoint.length, 0);
-
-	//DebugPos2 = line_start;
-	//DebugPos4 = line_end;
-
-	Vector3f between = lerp(line_start, line_end, 0.6f);
-	Vector3f point = solvePosition + slerp((between - solvePosition).normalized(), (toHandJoint + toHandPinky).normalized(), 0.5f) * middleJoint.length;
-
-	Vector3f closestPoint = closesPointOnLine(point, line_start, line_end);
-
-	//closestPoint = lerp(closestPoint, line_end, 0.5f);
-	//closestPoint = lerp(closestPoint, line_end, 0.3f);
-
-	Vector3f hintOffset = Vector3f::Zero();
-
-	Vector3f shoulderToUpper = (upperPosition - shoulderJoint.getPosition()).normalized();
-
-	float angle3 = angleBetween(projectOnPlane(limbAxis, chestUp), -chestForward);
-
-	if (angle3 <= 120.0f) {
-		float mappedAngle = mapClamp(angle3, 120, 0, 0, 1);
-		hintOffset = -chestForward.normalized() * mappedAngle;
-
-		hintOffset += shoulderToUpper * (mappedAngle * 0.5f);
-
-		float angle4 = signedAngle(projectOnPlane(limbAxis, chestForward), shoulderToUpper, chestForward);
-
-		if (isLeft && angle4 <= 0.0f) {
-			//Console::log("L");
-
-			float map2 = mapClamp(fabs(angle4), 0, 90, 0, mappedAngle * 0.5f);
-			hintOffset += -chestUp.normalized() * map2;
-
-			hintOffset += shoulderToUpper * (map2 * 0.5f);
-
-		}
-		else if (!isLeft && angle4 >= 0.0f) {
-			//Console::log("R");
-			float map2 = mapClamp(angle4, 0, 90, 0, mappedAngle * 0.5f);
-			hintOffset += -chestUp.normalized() * map2;
-
-			hintOffset += shoulderToUpper * (map2 * 0.5f);
-		}
-	}
-
-	if (DebugBool2) {
-		//bendDirection = (closestPoint + hintOffset) - upperPosition;
-		bendDirection = (closestPoint)-upperPosition;
-		bendDirection = bendDirection.normalized();
-	}
-	else {
-		bendDirection = (closestPoint + hintOffset) - upperPosition;
-		bendDirection = bendDirection.normalized();
-	}
-
-	if (DebugBool3) {
-		bendDirection = lerp(currentDirection, (upperPosition - chest->getGlobalPosition()).normalized(), 0.75f);
-
-		Vector3f chestDown = -chest->getUp();
-		Quaternionf toDown = fromToRotation(bendDirection, -chest->getUp());
-		bendDirection = (Quaternionf::Identity().slerp(0.5f, toDown) * bendDirection);
-
-		//bendDirection += Vector3f(0, -0.5f, 0);
-		bendDirection += targetRotation * (handToJoint * 0.2f);
-	}
+	// Create direction from current direction 
+	Vector3f bendDirection = createBendDirection(currentDirection, limbAxis);
 
 	// project both directions on limb axis plane
 	currentDirection = projectOnPlane(currentDirection.normalized(), limbAxis);
@@ -430,4 +323,62 @@ void IKSolverArm::constraint() {
 	// Rotate the middle bone using the angle
 	Vector3f newMiddlePosition = rotation * (middlePosition - upperPosition) + upperPosition;
 	middleJoint.setSolvedPosition(newMiddlePosition);
+}
+
+Vector3f IKSolverArm::createBendDirection(const Vector3f& currentDirection, const Vector3f& limbAxis) {
+
+	// Store solved positions of upper solved position
+	Vector3f upperPosition = upperJoint.getSolvedPosition();
+	Vector3f lowerPosition = lowerJoint.getSolvedPosition();
+
+	// Get the rotation limb axis from upper to lower joint
+	// Store current direction
+	Vector3f bendDirection = currentDirection;
+
+	// Calculate upper candidate for middle with bend direction
+	Vector3f upperCandidate = upperPosition + bendDirection.normalized() * upperJoint.length;
+
+	// Rotate bend direction towards chest down
+	Vector3f chestUp = chest->getUp();
+	Vector3f chestDown = -chestUp;
+	Quaternionf towardsChestDown = fromToRotation(bendDirection, chestDown);
+	bendDirection = (Quaternionf::Identity().slerp(0.8f, towardsChestDown) * bendDirection);
+
+	// Calculate lower candidate for middle with rotated bend direction
+	Vector3f lowerCandidate = upperPosition + bendDirection.normalized() * upperJoint.length;
+
+	// Move upper & lower candidate up by half middle length
+	float halfMiddleJointLength = middleJoint.length * 0.5f;
+	upperCandidate += Vector3f(0, halfMiddleJointLength, 0);
+	lowerCandidate += Vector3f(0, -halfMiddleJointLength, 0);
+
+	// Calculate angle between target & chest up
+	Vector3f chestForward = chest->getForward();
+	float angleUp = angleBetween(projectOnPlane(limbAxis, chestForward), chestUp);
+
+	// Is hand position above shoulder?
+	if (angleUp <= 120.0f) {
+
+		// move upper candidate towards down
+		float mappedAngleUp = mapClamp(angleUp, 120, 0, 0, 0.9f);
+		upperCandidate += Vector3f(0, -halfMiddleJointLength * mappedAngleUp, 0);
+	}
+
+	// Create position & vector between upper & lower candidate
+	Vector3f centerUpperLower = lerp(upperCandidate, lowerCandidate, 0.5f);
+	Vector3f toCenterUpperLower = (centerUpperLower - solvePosition).normalized();
+
+	// Create Hand back vector
+	Vector3f toHandJoint = targetRotation * (handToJoint * 0.5f);
+	Vector3f toHandPinky = targetRotation * (handToPinky * 0.2f);
+
+	// Create point by slerping between center upper/lower candidat & hand back vectors
+	float slerpPointBetweenBack = 0.4f;
+	Vector3f point = solvePosition + slerp(toCenterUpperLower, (toHandJoint + toHandPinky).normalized(), slerpPointBetweenBack) * middleJoint.length;
+
+	// Calculate closest point between upper & lower candidate
+	Vector3f closestPoint = closesPointOnLine(point, upperCandidate, lowerCandidate);
+
+	// Return normalized direction from upper to closest point
+	return (closestPoint - upperPosition).normalized();
 }
