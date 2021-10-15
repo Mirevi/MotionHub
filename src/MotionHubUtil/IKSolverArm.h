@@ -74,6 +74,11 @@ protected:
 
 	virtual Vector3f createBendDirection(const Vector3f& currentDirection, const Vector3f& limbAxis);
 	
+	/*!
+	 * Applies the solution to the joints
+	 */
+	virtual void apply();
+
 public:
 	bool solveShoulder = true;
 
@@ -95,4 +100,7 @@ protected:
 
 	float defaultShoulderHandDistance;
 	float shoulderHandMaxAngle = 10.0f;
+
+	Vector3f shoulderNormal;
+	float shoulderNormalToUpperDelta = 0.5f;
 };
