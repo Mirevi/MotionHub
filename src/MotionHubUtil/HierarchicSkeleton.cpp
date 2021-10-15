@@ -60,12 +60,17 @@ void HierarchicSkeleton::init() {
 	leftToe.setParent(&leftFoot);
 	addJoint(&leftToe, Joint::JointNames::TOE_L);
 
+	//leftToeEnd = HierarchicJoint(Vector3f(0, 0, 0.06f), eulerToQuaternion(Vector3f(0, 0, 0)), scale);
+	//leftToeEnd.setParent(&leftToe);
+
 	// RightToe
 	//rightToe = HierarchicJoint(Vector3f(0, 0.162f, 0), eulerToQuaternion(Vector3f(33, 0, 0)));
 	rightToe = HierarchicJoint(Vector3f(0.011f, -0.091f, 0.134f), eulerToQuaternion(Vector3f(0, 0, 0)), scale);
 	rightToe.setParent(&rightFoot);
 	addJoint(&rightToe, Joint::JointNames::TOE_R);
 
+	//rightToeEnd = HierarchicJoint(Vector3f(0, 0, 0.06f), eulerToQuaternion(Vector3f(0, 0, 0)), scale);
+	//rightToeEnd.setParent(&rightToe);
 
 	// Spine
 	spine = HierarchicJoint(Vector3f(0, 0.097f, -0.01f), eulerToQuaternion(Vector3f(-6.925f, 0, 0)), scale);

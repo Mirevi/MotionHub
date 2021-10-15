@@ -379,8 +379,9 @@ void IKSolverLeg::apply() {
 	Quaternionf rotation = targetRotation * invLowerDefaultRotation;
 	Vector3f targetNormal = rotation * defaultLocalNormal;
 
-	// Create rotation axis from upper to target
-	Vector3f axis = (solvePosition - middleJoint.getPosition()).normalized();
+	// Create rotation axis from middle to target
+	Vector3f lowerDirection = solvePosition - middleJoint.getPosition();
+	Vector3f axis = lowerDirection.normalized();
 
 	// Rotate target forward to axis
 	targetNormal = fromToRotation(targetForward, axis) * targetNormal;
@@ -396,8 +397,7 @@ void IKSolverLeg::apply() {
 	middleNormal = Quaternionf::Identity().slerp(middleNormalToTargetDelta, fromTo) * middleNormal;
 
 	// Rotate middle Joint to solve position
-	Vector3f lowerDirection = solvePosition - middleJoint.getPosition();
-	middleNormal = projectOnPlane(middleNormal.normalized(), lowerDirection.normalized());
+	middleNormal = projectOnPlane(middleNormal.normalized(), axis);
 	middleJoint.setRotationTowards(lowerDirection, middleNormal);
 
 	// Rotate lower Joint to target rotation

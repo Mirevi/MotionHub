@@ -21,9 +21,16 @@ void IKSolverArm::init() {
 
 	IKSolverLeg::init();
 
+	// Store upper, middle & lower position
+	Vector3f upperPosition = upperJoint.getPosition();
+	Vector3f middlePosition = middleJoint.getPosition();
+	Vector3f lowerPosition = lowerJoint.getPosition();
+
 	// Initiate joint
-	Vector3f shoulderToUpper = upperJoint.getPosition() - shoulderJoint.getPosition();
-	shoulderJoint.init(shoulderToUpper, normal);
+	Vector3f shoulderToUpper = upperPosition - shoulderJoint.getPosition();
+
+	Vector3f defaultNormal = (middlePosition - upperPosition).cross(lowerPosition - middlePosition);
+	shoulderJoint.init(shoulderToUpper, defaultNormal);
 
 	// Create vectors from hand center to pinky & joint
 	handToPinky = Vector3f(0, 0, -1);
@@ -377,4 +384,36 @@ Vector3f IKSolverArm::createBendDirection(const Vector3f& currentDirection, cons
 
 	// Return normalized direction from upper to closest point
 	return (closestPoint - upperPosition).normalized();
+}
+
+void IKSolverArm::apply() {
+
+	// Get direction from shoulder to upper
+	Vector3f upperPosition = upperJoint.getSolvedPosition();
+	Vector3f upperDirection = upperPosition - shoulderJoint.getPosition();
+
+	// Project upper normal onto to upper direction
+	Vector3f upperForward = middleJoint.getSolvedPosition() - upperPosition;
+	Vector3f axis = upperDirection.normalized();
+	Vector3f upperNormal = fromToRotation(upperForward, axis) * normal;
+
+	// Create look rotation to shoulder normal & upper normal
+	shoulderNormal = projectOnPlane(shoulderNormal, axis);
+	Quaternionf lookToShoulder = lookRotation(shoulderNormal, axis);
+	Quaternionf lookToUpper = lookRotation(projectOnPlane(upperNormal, axis), axis);
+
+	// Create relative rotation from shoulder to upper
+	Quaternionf fromTo = fromToRotation(lookToShoulder, lookToUpper);
+
+	shoulderNormal = Quaternionf::Identity().slerp(shoulderNormalToUpperDelta, fromTo) * shoulderNormal;
+
+	if (DebugBool3) {
+		// TODO: testen
+		// Rotate shoulder Joint to upper
+		shoulderNormal = projectOnPlane(shoulderNormal, axis);
+		shoulderJoint.setRotationTowards(upperDirection, shoulderNormal);
+	}
+	
+	// Apply the rest of the joints
+	IKSolverLeg::apply();
 }

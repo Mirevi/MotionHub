@@ -61,11 +61,13 @@ public:
 	HierarchicJoint leftLeg;
 	HierarchicJoint leftFoot;
 	HierarchicJoint leftToe;
+	//HierarchicJoint leftToeEnd;
 
 	HierarchicJoint rightUpLeg;
 	HierarchicJoint rightLeg;
 	HierarchicJoint rightFoot;
 	HierarchicJoint rightToe;
+	//HierarchicJoint rightToeEnd;
 
 	HierarchicJoint spine;
 	HierarchicJoint chest;

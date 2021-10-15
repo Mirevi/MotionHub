@@ -20,22 +20,25 @@ void IKSolverHip::setRightLeg(HierarchicJoint* upper, HierarchicJoint* foot) {
 
 void IKSolverHip::init() {
 
-	refresh();
+	refresh(true);
 }
 
 void IKSolverHip::refresh(bool overrideDefaults) {
 
 	// TODO: sqr norm?
 
-	// LeftLeg: Store length from upper to foot
 	Vector3f leftUpperPosition = leftUpperLeg->getGlobalPosition();
-	Vector3f leftFootPosition = leftFoot->getGlobalPosition();
-	leftLegReach = (leftFootPosition - leftUpperPosition).norm();
-
-	// RightLeg: Store length from upper to foot
 	Vector3f rightUpperPosition = rightUpperLeg->getGlobalPosition();
-	Vector3f rightFootPosition = rightFoot->getGlobalPosition();
-	rightLegReach = (rightFootPosition - rightUpperPosition).norm();
+
+	if (overrideDefaults) {
+		// LeftLeg: Store length from upper to foot
+		Vector3f leftFootPosition = leftFoot->getGlobalPosition();
+		leftLegReach = (leftFootPosition - leftUpperPosition).norm();
+
+		// RightLeg: Store length from upper to foot
+		Vector3f rightFootPosition = rightFoot->getGlobalPosition();
+		rightLegReach = (rightFootPosition - rightUpperPosition).norm();		
+	}
 
 	// LeftLeg: Store length from each joint
 	Vector3f leftMiddlePosition = leftFoot->getParent()->getGlobalPosition();
