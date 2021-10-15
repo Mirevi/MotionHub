@@ -124,47 +124,66 @@ void IKSolverArm::solve() {
 
 	shoulderJoint.loadDefaultState();
 
+	Quaternionf localShoulderRotation = shoulderJoint.getRotation() * invShoulderDefaultRotation;
+	shoulderNormal = localShoulderRotation * defaultLocalNormal;
+
+	// DEBUG
+	//IKSolverLeg::solve();
+	//return;
+
+
 	// TODO: Ueberarbeiten
 	if (!isCalibrating) {
 
 		// Read shoulder positon & relative shoulder rotation
 		Vector3f shoulderPosition = shoulderJoint.getPosition();
-		Quaternionf localShoulderRotation = shoulderJoint.getRotation() * invShoulderDefaultRotation;
+		Vector3f middlePosition = middleJoint.getPosition();
+		
+		// Extract local shoulder y- & z-axis
+		Vector3f xAxis = localShoulderRotation * Vector3f(1, 0, 0);
+		Vector3f yAxis = localShoulderRotation * Vector3f(0, 1, 0);
+		Vector3f zAxis = localShoulderRotation * Vector3f(0, 0, 1);
+
+		// Calculate shoulder to target and project on chest up & forward
+		Vector3f shoulderToTarget = targetPosition - shoulderPosition;
+		Vector3f shoulderToTargetOnUp = projectOnPlane(shoulderToTarget, yAxis);
+		Vector3f shoulderToTargetOnForward = projectOnPlane(shoulderToTarget, zAxis);
 
 		// Calculate vector from shoulder to current elbow 
-		Vector3f toMiddle = middleJoint.getPosition() - shoulderPosition;
+		Vector3f toMiddle = middlePosition - shoulderPosition;
 
 		Vector3f shoulderSolvePosition = targetPosition;
 		if (distance(shoulderPosition, targetPosition) >= length + shoulderJoint.length) {
 			shoulderSolvePosition = shoulderPosition + (targetPosition - shoulderPosition).normalized() * (length + shoulderJoint.length);
 		}
 
-		// Estimate elbow position & calculate vector fom shoulder to it
-		Vector3f helpAxis = (shoulderSolvePosition - shoulderPosition).cross(normal);
-		float shoulderDelta = shoulderJoint.length * 0.6f;
-
 		// get or calculate hint position
 		Vector3f middleHint = hintPosition;
+
 		if (!hasHint) {
-			middleHint = calcInverseKinematic(shoulderPosition, shoulderSolvePosition, upperJoint.length + shoulderDelta, middleJoint.length + shoulderDelta, helpAxis);
+
+			Vector3f upperPosition = upperJoint.getPosition();
+			// Estimate elbow position & calculate vector fom shoulder to it
+			Vector3f helpAxis = (shoulderSolvePosition - upperPosition).cross(normal).normalized();
+
+			float shoulderDelta = shoulderJoint.length * 0.5f;
+			middleHint = calcInverseKinematic(upperPosition, shoulderSolvePosition, upperJoint.length + shoulderDelta, middleJoint.length + shoulderDelta, helpAxis);
+
+			Vector3f shoulderToHint = middleHint - upperPosition;
+			auto reflectedToHint = reflect(shoulderToHint, xAxis);
+
+			Vector3f invMiddleHint = upperPosition + lerp(reflectedToHint, shoulderToHint, 0.5f);
+			invMiddleHint += project(upperPosition - upperPosition, xAxis);
+
+			//DebugPos3 = middleHint + Vector3f(0, 0.2f, 0);
+			if (distance(invMiddleHint, middlePosition) < distance(middleHint, middlePosition)) {
+				middleHint = invMiddleHint;
+			}
 		}
 
+		// Create vector & rotation towards hint
 		Vector3f toHint = middleHint - shoulderPosition;
-
-		Vector3f toNewMiddle = toHint;
-		if (!hasHint) {
-			toNewMiddle = slerp(lastShoulderToHint, toHint, 0.5f);
-		}
-
-		// Calculate rotation from current elbow to new elbow position 
-		Quaternionf solvedRotation = fromToRotation(toMiddle, toNewMiddle);
-
-		lastShoulderToHint = toHint;
-
-		// Extract local shoulder y- & z-axis
-		//Vector3f xAxis = localShoulderRotation * Vector3f(1, 0, 0);
-		Vector3f yAxis = localShoulderRotation * Vector3f(0, 1, 0);
-		Vector3f zAxis = localShoulderRotation * Vector3f(0, 0, 1);
+		Quaternionf solvedRotation = fromToRotation(toMiddle, toHint);
 
 		// Decompose y rotation & calculate y angle
 		Quaternionf yRotation = decomposeTwist(solvedRotation, yAxis);

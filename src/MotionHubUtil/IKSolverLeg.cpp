@@ -341,9 +341,9 @@ void IKSolverLeg::constraint() {
 
 	bendDirection = bendDirection.normalized();
 
-	// Ortho normalize both directions on limb axis
-	orthoNormalize(limbAxis, currentDirection);
-	orthoNormalize(limbAxis, bendDirection);
+	// project both directions on limb axis plane
+	currentDirection = projectOnPlane(currentDirection.normalized(), limbAxis);
+	bendDirection = projectOnPlane(bendDirection.normalized(), limbAxis);
 
 	// projectOnPlane anstatt orthoNormalize?
 
