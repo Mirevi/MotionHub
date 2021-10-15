@@ -29,6 +29,11 @@ public:
 	IKSolverLeg(HierarchicJoint* upper, HierarchicJoint* middle, HierarchicJoint* lower);
 
 	/*!
+	 * Stores a reference to toe joint
+	 */
+	//void seToe(HierarchicJoint* joint);
+
+	/*!
 	 * Initializes the IKSolver and stores default values
 	 */
 	virtual void init() override;
@@ -153,6 +158,15 @@ protected:
 	IKJoint upperJoint;
 	IKJoint middleJoint;
 	IKJoint lowerJoint;
+
+	/*
+	HierarchicJoint* toe = nullptr;
+	float toeCalibratedY = 0;
+	float toeLength = 0;
+
+	Vector3f toeDefaultPosition;
+	Quaternionf toeDefaultRotation;
+	*/
 
 	std::vector<IKJoint*> joints;
 

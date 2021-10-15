@@ -81,7 +81,7 @@ protected:
 
 	IKJoint shoulderJoint;
 
-	HierarchicJoint* chest;
+	HierarchicJoint* chest = nullptr;
 
 	Quaternionf invShoulderDefaultRotation;
 

@@ -17,6 +17,13 @@ IKSolverLeg::IKSolverLeg(HierarchicJoint* upper, HierarchicJoint* middle, Hierar
 	joints.push_back(&lowerJoint);
 }
 
+/*
+void IKSolverLeg::seToe(HierarchicJoint* joint) {
+
+	toe = joint;
+}
+*/
+
 void IKSolverLeg::init() {
 
 	// Get joint name from upper joint
@@ -60,14 +67,17 @@ void IKSolverLeg::refresh(bool overrideDefault) {
 	// Save default state for joints if configured
 	if (overrideDefault) {
 		saveDefaultState();
-	}
 
+		/*if (toe != nullptr) {
+			toeCalibratedY = toe->getGlobalPosition().y();
+		}*/
+	}
 	// Store upper, middle & lower position
 	Vector3f upperPosition = upperJoint.getPosition();
 	Vector3f middlePosition = middleJoint.getPosition();
 	Vector3f lowerPosition = lowerJoint.getPosition();
 
-	// Update & Store legnth of joints
+	// Update & Store length of joints
 	upperJoint.setLength(middlePosition - upperPosition);
 	middleJoint.setLength(lowerPosition - middlePosition);
 	length = (upperJoint.length + middleJoint.length);
@@ -94,6 +104,12 @@ void IKSolverLeg::saveDefaultState() {
 	// Save lower default rotation
 	invMiddleDefaultRotation = middleJoint.getRotation().inverse();
 	invLowerDefaultRotation = lowerJoint.getRotation().inverse();
+
+	/*if (toe != nullptr) {
+		toeDefaultPosition = toe->getLocalPosition();
+		toeDefaultRotation = toe->getLocalRotation();
+	}*/
+
 }
 
 void IKSolverLeg::loadDefaultState() {
@@ -102,6 +118,11 @@ void IKSolverLeg::loadDefaultState() {
 	upperJoint.loadDefaultState();
 	middleJoint.loadDefaultState();
 	lowerJoint.loadDefaultState();
+
+	/*if (toe != nullptr) {
+		toe->setLocalPosition(toeDefaultPosition);
+		toe->setLocalRotation(toeDefaultRotation);
+	}*/
 }
 
 void IKSolverLeg::updateNormal() {
@@ -347,8 +368,8 @@ void IKSolverLeg::apply() {
 
 	// Rotate upper Joint to middle
 	Vector3f middleDirection = middleJoint.getSolvedPosition() - upperJoint.getSolvedPosition();
-		Vector3f upperNormal = projectOnPlane(normal, middleDirection.normalized());
-		upperJoint.setRotationTowards(middleDirection, upperNormal);
+	Vector3f upperNormal = projectOnPlane(normal, middleDirection.normalized());
+	upperJoint.setRotationTowards(middleDirection, upperNormal);
 
 	// Calculate normal for middle joint (between upper & lower)
 	Quaternionf middleRotation = middleJoint.getRotation();
@@ -381,4 +402,22 @@ void IKSolverLeg::apply() {
 
 	// Rotate lower Joint to target rotation
 	lowerJoint.setRotation(targetRotation);
+
+	/*
+	if (toe != nullptr) {
+
+		Vector3f toePosition = toe->getGlobalPosition();
+
+		if (toePosition.y() < toeCalibratedY) {
+
+			Vector3f toToe = toePosition - lowerJoint.getPosition();
+			Vector3f toToeAbove = Vector3f(toePosition.x(), toeCalibratedY,toePosition.z()) - lowerJoint.getPosition();
+
+			DebugPos2 = Vector3f(toePosition.x(), toeCalibratedY, toePosition.z());
+
+			Quaternionf toToeRotation = fromToRotation(toToe, toToeAbove);
+			toe->setGlobalRotation(toToeRotation * toe->getGlobalRotation());
+		}
+	}
+	*/
 }

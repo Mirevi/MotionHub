@@ -75,7 +75,7 @@ protected:
 	IKJoint neckJoint;
 	IKJoint headJoint;
 
-	HierarchicJoint* hip;
+	HierarchicJoint* hip = nullptr;
 
 	Quaternionf headRelativeToHip;
 

@@ -553,11 +553,13 @@ void OVRTracker::initIKSolvers() {
 	// Init LeftLeg IKSolver
 	if (ikSolverLeftLeg != nullptr) delete ikSolverLeftLeg;
 	ikSolverLeftLeg = new IKSolverLeg(&hierarchicSkeleton->leftUpLeg, &hierarchicSkeleton->leftLeg, &hierarchicSkeleton->leftFoot);
+	//ikSolverLeftLeg->seToe(&hierarchicSkeleton->leftToe);
 	ikSolverLeftLeg->init();
 
 	// Init RightLeg IKSolver
 	if (ikSolverRightLeg != nullptr) delete ikSolverRightLeg;
 	ikSolverRightLeg = new IKSolverLeg(&hierarchicSkeleton->rightUpLeg, &hierarchicSkeleton->rightLeg, &hierarchicSkeleton->rightFoot);
+	//ikSolverRightLeg->seToe(&hierarchicSkeleton->rightToe);
 	ikSolverRightLeg->init();
 
 	// Init LeftArm IKSolver

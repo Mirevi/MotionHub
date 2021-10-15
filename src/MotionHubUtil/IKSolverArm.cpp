@@ -47,6 +47,7 @@ void IKSolverArm::refresh(bool overrideDefault) {
 
 	IKSolverLeg::refresh(overrideDefault);
 
+	// Save default state for joints if configured
 	if (overrideDefault) {
 		shoulderJoint.saveDefaultState();
 	}
