@@ -403,7 +403,7 @@ void OpenVRConfig::writeDefaults() {
 	configKey = generateKey(OpenVRTracking::Tracker, Joint::HIPS);
 	if (OVERRIDE_DEFAULTS || !configManager->exists(trackerType, configKey)) {
 
-		configManager->writeVec3f("position", Vector3f(0, -0.03f, -0.1f), trackerType, configKey);
+		configManager->writeVec3f("position", Vector3f(0, -0.04f, -0.16f), trackerType, configKey);
 		configManager->writeVec3f("rotation", Vector3f(0, 180.0f, 0), trackerType, configKey);
 	}
 
@@ -428,7 +428,7 @@ void OpenVRConfig::writeDefaults() {
 	if (OVERRIDE_DEFAULTS || !configManager->exists(trackerType, configKey)) {
 
 		//configManager->writeVec3f("position", Vector3f(-0.01f, 0.1f, -0.05f), trackerType, configKey);
-		configManager->writeVec3f("position", Vector3f(0, 0.1f, -0.05f), trackerType, configKey);
+		configManager->writeVec3f("position", Vector3f(0, 0.09f, -0.05f), trackerType, configKey);
 	}
 
 	// Write Tracker:FOREARM_R if not exist
@@ -436,7 +436,7 @@ void OpenVRConfig::writeDefaults() {
 	if (OVERRIDE_DEFAULTS || !configManager->exists(trackerType, configKey)) {
 
 		//configManager->writeVec3f("position", Vector3f(0.01f, 0.1f, -0.05f), trackerType, configKey);
-		configManager->writeVec3f("position", Vector3f(0, 0.1f, -0.05f), trackerType, configKey);
+		configManager->writeVec3f("position", Vector3f(0, 0.09f, -0.05f), trackerType, configKey);
 	}
 
 	// Write Tracker:HAND_L if not exist
