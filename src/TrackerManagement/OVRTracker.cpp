@@ -221,7 +221,8 @@ void OVRTracker::refresh(bool overrideDefaults) {
 	for (auto& device : trackingSystem->Devices) {
 		Joint::JointNames joint = config->getJoint(device.index);
 
-		if (joint == Joint::HAND_L || joint == Joint::FOOT_L) {
+
+		if (joint == Joint::HAND_L || joint == Joint::FOREARM_L || joint == Joint::FOOT_L || joint == Joint::LEG_L) {
 			trackingSystem->positionFilters[i].setParams(1, 1.0f, 0.007f);
 			trackingSystem->rotationFilters[i].setParams(2, 1.0f, 0.007f);
 		}

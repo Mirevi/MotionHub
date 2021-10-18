@@ -299,8 +299,12 @@ void Tracker::update()
 		//Console::log("Tracker::update()");
 		// if no new data is procressed
 		if (!m_isDataAvailable && m_isEnabled) {
+			using namespace std::chrono;
 
-			//auto t1 = std::chrono::high_resolution_clock::now();
+			using fps = duration<int64_t, std::ratio<1, 240>>;
+
+			auto start = high_resolution_clock::now();
+			auto nextFrame = (start + fps{1}) - start;
 
 			// get new data
 			track();
@@ -318,13 +322,17 @@ void Tracker::update()
 			//printFPS();
 
 			if(shouldSleep) {
-				std::this_thread::sleep_until(std::chrono::steady_clock::now() + std::chrono::milliseconds(1));
+				while((high_resolution_clock::now() - start) < nextFrame) {
+					// Do nothing...
+				}
+
+				//std::this_thread::sleep_until(std::chrono::steady_clock::now() + std::chrono::milliseconds(1));
 			}
 
 			/*
-			auto t2 = std::chrono::high_resolution_clock::now();
-			auto ms_int2 = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1);
-			Console::logWarning(std::to_string(ms_int2.count()));
+			auto end = std::chrono::high_resolution_clock::now();
+			auto timing = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+			Console::logWarning(std::to_string(timing.count()));
 			*/
 		}
 	}
