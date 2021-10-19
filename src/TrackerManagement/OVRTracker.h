@@ -8,7 +8,7 @@
 #include "MotionHubUtil/IKSolverSpine.h"
 #include "MotionHubUtil/IKSolverLeg.h"
 #include "MotionHubUtil/IKSolverArm.h"
-#include "MotionHubUtil/ButtonHelper.h"
+//#include "MotionHubUtil/ButtonHelper.h"
 #include "OpenVRButtonSubject.h"
 
 #include "MotionHubUtil/OneEuroFilter.h"
@@ -191,7 +191,7 @@ public:
 
 	bool shouldCalibrate = false;
 
-	ButtonHelper buttonHelper;
+	//ButtonHelper buttonHelper;
 
 	Skeleton* skeleton = nullptr;
 	Skeleton* testSkeleton = nullptr;

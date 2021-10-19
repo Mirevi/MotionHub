@@ -894,14 +894,14 @@ void OpenVRTracking::receiveDevicePoses() {
 	pVRSystem->GetDeviceToAbsoluteTrackingPose(vr::TrackingUniverseStanding, predictedSecondsFromNow, devicePoses, trackedPoseCount);
 
 	// Read microseconds from current date
-	long long microseconds = std::chrono::duration_cast<std::chrono::microseconds>(
-		std::chrono::system_clock::now().time_since_epoch()
-	).count();
+	//long long microseconds = std::chrono::duration_cast<std::chrono::microseconds>(
+	//	std::chrono::system_clock::now().time_since_epoch()
+	//).count();
 
 	//Console::log(std::to_string(microseconds) + " " + std::to_string(microseconds / 1000000.0));
 
 	// Create timestamp by converting microseconds to seconds
-	double timestamp = microseconds / 1000000.0;
+	//double timestamp = microseconds / 1000000.0;
 
 	// Loop over devices & convert Pose Array to MMH Format
 	for (int i = 0; i < Devices.size(); i++) {

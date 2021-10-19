@@ -207,6 +207,39 @@ Vector3f HierarchicJoint::inverseTransformDirection(Vector3f direction) {
 	//return getLocalPosition(local.inverse()) * direction;
 }
 
+void HierarchicJoint::convertFromSkeleton(Joint joint) {
+
+	// Convert Vector4 to Vector3
+	Vector4f otherPos = joint.getJointPosition();
+	Vector3f position = Vector3f(otherPos.x(), otherPos.y(), otherPos.z());
+
+	// Is Root? -> Copy global position
+	if (parent == nullptr) {
+		setGlobalPosition(position);
+	} 
+	// Convert global to local
+	else {
+		Vector3f localPosition = position - parent->getGlobalPosition();
+		localPosition = parent->getGlobalRotation().inverse() * localPosition;
+
+		setLocalPosition(localPosition);
+	}
+
+	// Convert Rotation
+	Quaternionf rotation = joint.getJointRotation();
+
+	// Conversion from OptiTrack Tracker:
+	// rot = Quaternionf(rbData.qw, rbData.qx, -rbData.qy, -rbData.qz);
+	// rot = Quaternionf(rot.y(), rot.z(), rot.w(), rot.x());
+	// simplified: (-y, -z, w, x)
+	// reversed: (y, z, -w, -x)
+
+	rotation = Quaternionf(rotation.y(), rotation.z(), -rotation.w(), -rotation.x());
+
+	// Copy global rotation
+	setGlobalRotation(rotation);
+}
+
 Matrix4f HierarchicJoint::combineParentMatrixRecursive(HierarchicJoint* hierarchicJoint) {
 	// Is parent not null? -> Joint
 	if (hierarchicJoint->parent != nullptr) {

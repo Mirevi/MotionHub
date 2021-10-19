@@ -152,6 +152,75 @@ void HierarchicSkeleton::init() {
 	invalidateGlobals();
 }
 
+void HierarchicSkeleton::init(Skeleton otherSkeleton) {
+
+	init();
+
+	for (auto& joint : joints) {
+		joint->setLocalRotation(Quaternionf::Identity());
+	}
+
+	for (auto& joint : joints) {
+		joint->invalidateGlobal();
+	}
+
+	hips.convertFromSkeleton(otherSkeleton.m_joints[Joint::HIPS]);
+
+	leftUpLeg.convertFromSkeleton(otherSkeleton.m_joints[Joint::UPLEG_L]);
+	rightUpLeg.convertFromSkeleton(otherSkeleton.m_joints[Joint::UPLEG_R]);
+
+	leftLeg.convertFromSkeleton(otherSkeleton.m_joints[Joint::LEG_L]);
+	rightLeg.convertFromSkeleton(otherSkeleton.m_joints[Joint::LEG_R]);
+
+	leftFoot.convertFromSkeleton(otherSkeleton.m_joints[Joint::FOOT_L]);
+	rightFoot.convertFromSkeleton(otherSkeleton.m_joints[Joint::FOOT_R]);
+
+	leftToe.convertFromSkeleton(otherSkeleton.m_joints[Joint::TOE_L]);
+	rightToe.convertFromSkeleton(otherSkeleton.m_joints[Joint::TOE_R]);
+
+	spine.convertFromSkeleton(otherSkeleton.m_joints[Joint::SPINE]);
+	chest.convertFromSkeleton(otherSkeleton.m_joints[Joint::CHEST]);
+	neck.convertFromSkeleton(otherSkeleton.m_joints[Joint::NECK]);
+	head.convertFromSkeleton(otherSkeleton.m_joints[Joint::HEAD]);
+
+	leftShoulder.convertFromSkeleton(otherSkeleton.m_joints[Joint::SHOULDER_L]);
+	rightShoulder.convertFromSkeleton(otherSkeleton.m_joints[Joint::SHOULDER_R]);
+
+	leftArm.convertFromSkeleton(otherSkeleton.m_joints[Joint::ARM_L]);
+	rightArm.convertFromSkeleton(otherSkeleton.m_joints[Joint::ARM_R]);
+
+	leftForeArm.convertFromSkeleton(otherSkeleton.m_joints[Joint::FOREARM_L]);
+	rightForeArm.convertFromSkeleton(otherSkeleton.m_joints[Joint::FOREARM_R]);
+
+	leftHand.convertFromSkeleton(otherSkeleton.m_joints[Joint::HAND_L]);
+	rightHand.convertFromSkeleton(otherSkeleton.m_joints[Joint::HAND_R]);
+
+	for (auto& joint : joints) {
+		joint->setLocalRotation(Quaternionf::Identity());
+	}
+
+	leftLeg.setLocalRotation(eulerToQuaternion(Vector3f(0.1f, 0, 0)));
+	rightLeg.setLocalRotation(eulerToQuaternion(Vector3f(0.1f, 0, 0)));
+
+	leftFoot.setLocalRotation(eulerToQuaternion(Vector3f(-0.1f, 0, 0)));
+	rightFoot.setLocalRotation(eulerToQuaternion(Vector3f(-0.1f, 0, 0)));
+
+	spine.setLocalRotation(eulerToQuaternion(Vector3f(-6.925f, 0, 0)));
+	neck.setLocalRotation(eulerToQuaternion(Vector3f(6.925f, 0, 0)));
+	
+	leftShoulder.setLocalRotation(eulerToQuaternion(Vector3f(6.925f, 0, 0)));
+	rightShoulder.setLocalRotation(eulerToQuaternion(Vector3f(6.925f, 0, 0)));
+
+	leftForeArm.setLocalRotation(eulerToQuaternion(Vector3f(0, -0.1f, 0)));
+	rightForeArm.setLocalRotation(eulerToQuaternion(Vector3f(0, 0.1f, 0)));
+
+	leftHand.setLocalRotation(eulerToQuaternion(Vector3f(0, 0.1f, 0)));
+	rightHand.setLocalRotation(eulerToQuaternion(Vector3f(0, -0.1f, 0)));
+
+	// TODO scale
+	//scale = Vector3f::Ones();
+}
+
 void HierarchicSkeleton::reset() {
 
 	//hips.setScale(Vector3f::Ones());
@@ -169,7 +238,7 @@ void HierarchicSkeleton::invalidateGlobals() {
 	}
 }
 
-void HierarchicSkeleton::insert(Skeleton* currSkeleton) {
+void HierarchicSkeleton::insert() {
 
 	// Loop over all Joints and insert into Skeleton
 	for (auto& joint : joints) {

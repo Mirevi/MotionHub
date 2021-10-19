@@ -21,16 +21,16 @@ public:
 	 */
 	void init();
 
+	void init(Skeleton otherSkeleton);
+
 	void reset();
 
 	void invalidateGlobals();
 
 	/*!
 	 * Inserts all Joints from HierarchicSkeleton into given Skeleton
-	 * 
-	 * \param currSkeleton pointer to Skeleton
 	 */
-	void insert(Skeleton* currSkeleton);
+	void insert();
 
 	void setScale(Vector3f scale);
 

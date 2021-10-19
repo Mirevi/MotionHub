@@ -2,7 +2,7 @@
     <ipAddress>127.0.0.1</ipAddress>
     <recordPath>C:/dev/projects/MotionHub/build/bin/data/recording/</recordPath>
     <MMH>
-        <position>0.000000 1.000000 0.000000</position>
+        <position>0.000000 0.000000 0.000000</position>
     </MMH>
     <Azure id="000040394012">
         <position>0.000000 1.000000 0.000000</position>
@@ -11,43 +11,49 @@
         <position>0.000000 0.000000 0.000000</position>
         <rotation>0.000000 0.000000 0.000000</rotation>
         <scale>1.000000 1.000000 1.000000</scale>
-        <prediction>0.025500</prediction>
+        <prediction>0.027500</prediction>
     </OpenVR>
     <OpenVR id="HMD:HEAD">
         <position>0.000000 -0.100000 -0.140000</position>
     </OpenVR>
     <OpenVR id="Controller:HAND_L">
-        <position>0.04500 0.040000 -0.160000</position>
-        <rotation>130.000000 180.000000 90.000000</rotation>
+        <position>0.045000 0.040000 -0.160000</position>
+        <rotation>130.000000 -179.999985 89.999992</rotation>
     </OpenVR>
     <OpenVR id="Controller:HAND_R">
-        <position>-0.04500 0.040000 -0.160000</position>
-        <rotation>130.000000 180.000000 -90.000000</rotation>
+        <position>-0.045000 0.040000 -0.160000</position>
+        <rotation>130.000000 -179.999985 -90.000015</rotation>
     </OpenVR>
     <OpenVR id="Tracker:HIPS">
-        <position>0.005562 0.035790 -0.120000</position>
-        <rotation>18.203997 177.579590 7.317719</rotation>
-        <scale>1.077043 1.000170 1.077043</scale>
+        <position>-0.010360 0.044720 -0.120000</position>
+        <rotation>23.193533 175.888397 9.499821</rotation>
+        <scale>1.000000 1.000000 1.000000</scale>
     </OpenVR>
     <OpenVR id="Tracker:FOOT_L">
-        <position>-0.008000 -0.036000 -0.016000</position>
-        <rotation>85.961449 157.787338 53.061771</rotation>
-        <useroffset>0.000000 0.050067 0.000000</useroffset>
+        <position>0.000000 0.100000 0.000000</position>
+        <rotation>64.042076 -20.598902 10.319073</rotation>
+        <useroffset>0.000000 -0.022709 0.000000</useroffset>
     </OpenVR>
     <OpenVR id="Tracker:FOOT_R">
-        <position>0.008000 -0.036000 -0.016000</position>
-        <rotation>87.051537 -149.796921 -51.258877</rotation>
-        <useroffset>0.000000 0.050365 0.000000</useroffset>
+        <position>0.008000 0.100000 0.000000</position>
+        <rotation>67.306488 26.439436 -17.681358</rotation>
+        <useroffset>0.000000 -0.020296 0.000000</useroffset>
+    </OpenVR>
+    <OpenVR id="Tracker:HAND_L">
+        <position>0.000000 -0.040000 0.050000</position>
+        <rotation>90.000000 89.999992 -89.999992</rotation>
+    </OpenVR>
+    <OpenVR id="Tracker:HAND_R">
+        <position>0.000000 -0.040000 0.050000</position>
+        <rotation>-90.000000 -89.999992 -89.999992</rotation>
     </OpenVR>
     <OpenVR id="Tracker:FOREARM_R">
         <position>0.000000 0.090000 -0.050000</position>
-        <rotation>162.336746 -31.512222 72.424118</rotation>
-        <useroffset>0.000000 0.00000 0.000000</useroffset>
+        <rotation>4.592264 -115.914536 -87.350517</rotation>
     </OpenVR>
     <OpenVR id="Tracker:FOREARM_L">
         <position>0.000000 0.090000 -0.050000</position>
-        <rotation>152.418655 34.819328 -54.046986</rotation>
-        <useroffset>0.000000 0.00000 0.000000</useroffset>
+        <rotation>165.925659 73.431282 -74.286278</rotation>
     </OpenVR>
     <OpenVR id="LHR-774276F7">
         <joint>HEAD</joint>
@@ -66,5 +72,11 @@
     </OpenVR>
     <OpenVR id="LHR-61441A45">
         <joint>HIPS</joint>
+    </OpenVR>
+    <OpenVR id="LHR-227770AA">
+        <joint>FOREARM_L</joint>
+    </OpenVR>
+    <OpenVR id="LHR-EB83669E">
+        <joint>FOREARM_R</joint>
     </OpenVR>
 </config>

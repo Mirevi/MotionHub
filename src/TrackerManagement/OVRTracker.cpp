@@ -340,7 +340,7 @@ void OVRTracker::track() {
 			ikSolverHip->hint(leftFootPose.position, rightFootPose.position);
 			if (useTestSkeleton) testIkSolverHip->hint(leftFootPose.position, rightFootPose.position);
 		}
-		
+
 		// Solve Hip
 		auto hipPose = getAssignedPose(Joint::HIPS);
 		if (DEBUG_SKELETON_POS) {
@@ -413,9 +413,9 @@ void OVRTracker::track() {
 		}
 	}
 
-	hierarchicSkeleton->insert(nullptr);
+	hierarchicSkeleton->insert();
 	if (testHierarchicSkeleton != nullptr) {
-		testHierarchicSkeleton->insert(nullptr);
+		testHierarchicSkeleton->insert();
 	}
 
 	auto poses = trackingSystem->Poses;
@@ -425,7 +425,6 @@ void OVRTracker::track() {
 		testSkeleton->m_joints = testHierarchicSkeleton->skeleton.m_joints;
 	}
 	//hierarchicSkeleton->insert(nullptr);
-
 
 	// Lock point collection mutex
 	m_pointCollectionLock.lock();
@@ -489,7 +488,7 @@ void OVRTracker::extractSkeleton() {
 	// Get id from tracker properties
 	int id = m_properties->id;
 
-	// Try to find skeleton with wid
+	// Try to find skeleton with id
 	auto skeletonIterator = m_skeletonPool.find(id);
 
 	// Skeleton found -> update joints

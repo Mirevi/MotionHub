@@ -96,6 +96,8 @@ public:
 
 	Vector3f inverseTransformDirection(Vector3f direction);
 
+	void convertFromSkeleton(Joint joint);
+
 protected:
 
 	Matrix4f combineParentMatrixRecursive(HierarchicJoint* hierarchicJoint);
