@@ -46,6 +46,12 @@ public:
 	 */
 	virtual void solve(Vector3f position, Quaternionf rotation) override;
 
+	void solve4(Vector4f position, Quaternionf rotation) {
+
+		rotation = Quaternionf(rotation.y(), rotation.z(), -rotation.w(), -rotation.x());
+		solve(Vector3f(position.x(), position.y(), position.z()), rotation);
+	}
+
 protected:
 
 	/*!

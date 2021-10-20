@@ -48,7 +48,19 @@ public:
 	 */
 	virtual void solve(Vector3f position, Quaternionf rotation) override;
 
+	void solve4(Vector4f position, Quaternionf rotation) {
+
+		rotation = Quaternionf(rotation.y(), rotation.z(), -rotation.w(), -rotation.x());
+		solve(Vector3f(position.x(), position.y(), position.z()), rotation);
+	}
+
 	virtual void hint(Vector3f position, Quaternionf rotation);
+
+	void hint4(Vector4f position, Quaternionf rotation) {
+
+		rotation = Quaternionf(rotation.y(), rotation.z(), -rotation.w(), -rotation.x());
+		hint(Vector3f(position.x(), position.y(), position.z()), rotation);
+	}
 
 protected:
 
@@ -171,6 +183,7 @@ protected:
 	std::vector<IKJoint*> joints;
 
 	bool isLeft;
+	bool isLeg;
 
 	Vector3f normal;
 	Vector3f lastNormal;

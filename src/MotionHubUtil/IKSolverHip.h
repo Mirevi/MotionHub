@@ -56,7 +56,17 @@ public:
 	 */
 	virtual void solve(Vector3f position, Quaternionf rotation);
 
+	void solve4(Vector4f position, Quaternionf rotation) {
+
+		rotation = Quaternionf(rotation.y(), rotation.z(), -rotation.w(), -rotation.x());
+		solve(Vector3f(position.x(), position.y(), position.z()), rotation);
+	}
+
 	virtual void hint(Vector3f leftFoot, Vector3f rightFoot);
+
+	void hint4(Vector4f leftFoot, Vector4f rightFoot) {
+		hint(Vector3f(leftFoot.x(), leftFoot.y(), leftFoot.z()), Vector3f(rightFoot.x(), rightFoot.y(), rightFoot.z()));
+	}
 
 protected:
 

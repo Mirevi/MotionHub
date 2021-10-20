@@ -35,6 +35,12 @@ void IKSolverLeg::init() {
 		isLeft = true;
 	}
 
+	// Cache if this is a Leg Solver
+	isLeg = false;
+	if (upperJointName == Joint::UPLEG_L || upperJointName == Joint::UPLEG_R) {
+		isLeg = true;
+	}
+
 	// Store upper, middle & lower position
 	Vector3f upperPosition = upperJoint.getPosition();
 	Vector3f middlePosition = middleJoint.getPosition();
