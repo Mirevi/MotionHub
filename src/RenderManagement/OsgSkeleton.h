@@ -16,11 +16,6 @@ class RenderManagement_DLL_import_export OsgSkeleton
 {
 
 public:
-	/*!
-	 *
-	 * default constructor
-	 *
-	 */
 	OsgSkeleton(osg::ref_ptr<osg::Group> parentNode);
 	~OsgSkeleton();
 
@@ -32,13 +27,20 @@ public:
 	void toggleSolidBoneRendering(bool menuValue);
 	void toggleConfidenceSpheresRendering(bool menuValue);
 
-
 	/*!
+	 * getter for skeleton ID
 	 *
-	 * joint mesh array representing all 21 skeleton joints
+	 * \return m_sid
+	 */
+	int getSid();
+
+private:
+	 /*!
+	 * skeleton ID from skeleton received in update(Skeleton skeleton)
 	 *
 	 */
-private:
+	int m_sid;
+
 	osg::ref_ptr<osg::Group> m_parentNode;
 	osg::ref_ptr<osg::Group> m_skeletonRootNode;
 	osg::ref_ptr<osg::Group> m_boneGroup;

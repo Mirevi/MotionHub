@@ -133,7 +133,7 @@ OsgSkeleton::~OsgSkeleton()
 
 void OsgSkeleton::update(Skeleton skeleton)
 {
-
+	m_sid = skeleton.getSid();
 	int indexJoint = 0;
 
 	// update each joint and RGB joint axes
@@ -218,9 +218,9 @@ void OsgSkeleton::update(Skeleton skeleton)
 void OsgSkeleton::removeAndDelete()
 {
 	m_skeletonRootNode->removeChildren(0, m_skeletonRootNode->getNumChildren());
-	//std::cout << "m_skeletonRootNode->referenceCount"<< m_skeletonRootNode->referenceCount() << std::endl;
-	//std::cout << "m_bones" << m_skeletonRootNode->referenceCount() << std::endl;
-	//std::cout << "remove and delete called from OsgSkeleton" << std::endl;
+	std::cout << "m_skeletonRootNode->referenceCount: "<< m_skeletonRootNode->referenceCount() << std::endl;
+	std::cout << "m_bones->referenceCount(): " << m_skeletonRootNode->referenceCount() << std::endl;
+	std::cout << "remove and delete called from OsgSkeleton" << std::endl;
 	m_skeletonRootNode = NULL; // Should be removed by OSG
 
 	for (int i = 0; i < m_bones.size(); i++)
@@ -290,6 +290,12 @@ void OsgSkeleton::toggleConfidenceSpheresRendering(bool menuValue)
 		m_confidenceSpheresGroup->setNodeMask(0x0); //Hide from scenegraph
 	}
 
+}
+
+
+int OsgSkeleton::getSid()
+{
+	return m_sid;
 }
 
 
