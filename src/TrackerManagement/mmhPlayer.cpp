@@ -19,8 +19,14 @@ mmhPlayer::mmhPlayer(int id, NetworkManager* networkManager, ConfigManager* conf
 	m_properties->id = id;
 	m_properties->name = "tracker_mmhPlayer_" + toString(id);
 
+	m_isLooping = true;
+
 	//tracker is enabled
 	m_isEnabled = true;
+
+	m_paused = false;
+	m_loopEnded = false;
+
 
 
 	//set default values for offsets
@@ -130,7 +136,7 @@ void mmhPlayer::update()
 		Timer::reset();
 
 
-		if (!m_timelineDragging)
+		if (!m_timelineDragging && m_isEnabled)
 		{
 			
 			// get new data
@@ -151,6 +157,7 @@ void mmhPlayer::update()
 		std::this_thread::sleep_for(std::chrono::milliseconds(sleepTime));
 
 
+
 	}
 
 	//clean skeleton pool after tracking
@@ -167,6 +174,12 @@ void mmhPlayer::track()
 	if (m_currFrameIdx >= m_frameCount)
 	{
 		m_currFrameIdx = 0;
+
+		if (!m_isLooping)
+		{
+			m_paused = true;
+			m_loopEnded = true;
+		}
 	}
 
 
@@ -218,7 +231,12 @@ void mmhPlayer::track()
 
 	}
 
-	m_currFrameIdx++;
+	//Console::log("mmhPlayer::track(): m_paused = " + toString(m_paused));
+
+	if (!m_paused)
+	{
+		m_currFrameIdx++;
+	}
 
 	m_skeletonPoolLock.unlock();
 
@@ -284,6 +302,8 @@ void mmhPlayer::applyModChange(Joint::JointNames type, Vector3f mod, bool invert
 {
 
 }
+
+
 
 
 Quaternionf mmhPlayer::convertJointRotation(Quaternionf raw, Joint::JointNames type)

@@ -9,7 +9,6 @@ static const char* LOGFILE = "log.txt";
 #include <filesystem>
 
 
-
 /*!
  * converts bool to string
  * 
@@ -84,18 +83,29 @@ static bool checkAndFixPath(std::string pathname)
 	struct stat info;
 	if (stat(pathname.c_str(), &info) != 0)
 	{
-		//Console::logError("cannot access " + pathname + ". Creating new folder.");
+		std::cout << "cannot access " << pathname << ". Creating new folder." << std::endl;
 
-		if (std::filesystem::create_directory(pathname))
+		try
 		{
-			//Console::log("successfully created new folder.");
-			return true;
+			//try to create path
+			if (std::filesystem::create_directory(pathname))
+			{
+				std::cout << "successfully created new folder." << std::endl;
+				return true;
+			}
+			else
+			{
+				std::cout << "ERROR creating new folder!" << std::endl;
+				return false;
+			}
 		}
-		else
+		catch (const std::exception&)
 		{
-			//Console::logError("ERROR creating new folder!");
+			std::cout << "ERROR creating new folder! Please check if the drive " << pathname.at(0) << " exist." << std::endl;
 			return false;
 		}
+
+
 
 	}
 	else

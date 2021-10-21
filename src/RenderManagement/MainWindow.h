@@ -85,6 +85,8 @@ public:
 
 	QTreeWidget* getTreeWidgetTrackerRef();
 
+	void setTimelinePlayButton(bool state);
+
 private slots:
 	/*!
 	 * called when user clicks start/stop button 
@@ -164,6 +166,14 @@ private slots:
 	void slotRecord();
 
 	void slotTimelineLableModeChanged(int idx);
+
+
+	void slotOsgWidgetPressed	(osg::Vec2 position2d);
+	void slotOsgWidgetReleased	(osg::Vec2 position2d);
+	void slotOsgWidgetMoved		(osg::Vec2 position2d);
+
+	void slotTimelinePlay();
+	void slotLoop();
 
 
 
@@ -274,5 +284,11 @@ private:
 
 
 	void startProgressBar(int maxValue, int* currentValue, QProgressBar* barWidget);
+
+	osg::Vec2 m_cameraManipulatorStartPosition;
+	bool m_cameraManipulatorIsRotating;
+
+	bool m_isTimelinePlaying;
+	bool m_isLooping;
 
 };

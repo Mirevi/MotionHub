@@ -31,6 +31,17 @@ MainWindow::MainWindow(TrackerManager* trackerManager, ConfigManager* configMana
 	QSizePolicy sizePolicyOsgQtWidget(QSizePolicy::Expanding, QSizePolicy::Preferred);
 	m_osgQtWidget->setSizePolicy(sizePolicyOsgQtWidget);
 	ui->gridLayout_main->addWidget(m_osgQtWidget);
+
+	m_isTimelinePlaying = true;
+	m_isLooping = true;
+
+
+	connect(m_osgQtWidget, SIGNAL(osgWidgetPressed(osg::Vec2 position2d)),	this, SLOT(slotOsgWidgetPressed(osg::Vec2 position2d))	);
+	connect(m_osgQtWidget, SIGNAL(osgWidgetReleased(osg::Vec2 position2d)), this, SLOT(slotOsgWidgetReleased(osg::Vec2 position2d))	);
+	connect(m_osgQtWidget, SIGNAL(osgWidgetMoved(osg::Vec2 position2d)),	this, SLOT(slotOsgWidgetMoved(osg::Vec2 position2d)	)	);
+
+
+
 	m_osgQtWidget->show();
 
 	//add timeline-Widget to MainWindow
@@ -501,6 +512,10 @@ void MainWindow::slotToggleTracking()
 	}
 	else
 	{
+		if (Recorder::instance().isRecording())
+		{
+			Record();
+		}
 
 		m_refTrackerManager->stopTracker(); // stop tracking if true
 		//m_timelineActive = false;
@@ -636,7 +651,7 @@ void MainWindow::slotInspectorItemChanged(QTableWidgetItem* item)
 
 		switch (item->row())
 		{
-		case 3:
+		case 3: //isEnabled
 		{
 
 			// set the curser to wait circle
@@ -789,9 +804,88 @@ void MainWindow::slotTimelineLableModeChanged(int idx)
 	}
 }
 
-QTreeWidget* MainWindow::getTreeWidgetTrackerRef()
+void MainWindow::slotOsgWidgetPressed(osg::Vec2 position2d)
 {
-	return ui->treeWidget_tracker;
+	m_cameraManipulatorIsRotating = true;
+	m_cameraManipulatorStartPosition = position2d;
+
+	Console::log("MainWindow::slotOsgWidgetPressed(): " + toString((float)position2d.x()) + ", " + toString((float)position2d.y()));
+
+
+}
+
+void MainWindow::slotOsgWidgetReleased(osg::Vec2 position2d)
+{
+	m_cameraManipulatorIsRotating = false;
+
+}
+
+void MainWindow::slotOsgWidgetMoved(osg::Vec2 position2d)
+{
+	if (m_cameraManipulatorIsRotating)
+	{
+		//m_osgQtWidget->setCameraTransform();
+	}
+}
+
+void MainWindow::slotTimelinePlay()
+{
+	m_isTimelinePlaying = ui->pushButton_timeline_play->isChecked();
+
+	Tracker* currTracker = m_refTrackerManager->getFirstTrackerFromType(TrackerManager::mmh);
+
+	if (currTracker == nullptr)
+	{
+		return;
+	}
+
+	//start/stop playing mmh-player
+	if (m_isTimelinePlaying)
+	{
+		//currTracker->enable();
+
+		if (currTracker->isTracking())
+		{
+
+			currTracker->setPaused(false);
+		}
+	}
+	else
+	{
+		//currTracker->disable();
+
+
+		if (currTracker->isTracking())
+		{
+
+			currTracker->setPaused(true);
+			//currTracker->stop();
+		}
+	}
+}
+
+void MainWindow::slotLoop()
+{
+	m_isLooping = !m_isLooping;
+
+	Tracker* currTracker = m_refTrackerManager->getFirstTrackerFromType(TrackerManager::mmh);
+
+	if (currTracker == nullptr)
+	{
+		return;
+	}
+
+	//start/stop playing mmh-player
+	if (m_isLooping)
+	{
+		
+		currTracker->setLooping(true);
+	}
+	else
+	{
+		currTracker->setLooping(false);
+	}
+
 }
 
 
@@ -1340,4 +1434,16 @@ void MainWindow::startProgressBar(int maxValue, int* currentValue, QProgressBar*
 
 
 	barWidget->hide();
+}
+
+QTreeWidget* MainWindow::getTreeWidgetTrackerRef()
+{
+	return ui->treeWidget_tracker;
+}
+
+void MainWindow::setTimelinePlayButton(bool state)
+{
+	ui->pushButton_timeline_play->setChecked(state);
+
+	m_isTimelinePlaying = state;
 }

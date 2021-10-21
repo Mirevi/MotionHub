@@ -162,7 +162,7 @@ void RecordingSession::save(int* progression)
 	//if folder is missing, create it
 	if (!checkAndFixPath(pathStr))
 	{
-		Console::logError("RecordingSession::save(): path fix not working");
+		Console::logError("RecordingSession::save(): path fix not working!");
 	}
 
 

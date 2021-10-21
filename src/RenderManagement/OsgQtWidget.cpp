@@ -28,12 +28,19 @@ OsgQtWidget::OsgQtWidget(osgQt::GraphicsWindowQt* gw, TrackerManager* trackerMan
 	camera->setViewport(new osg::Viewport(0, 0, traits->width, traits->height));
 	camera->setProjectionMatrixAsPerspective(30.0f, static_cast<double>(traits->width) / static_cast<double>(traits->height), 0.1f, 1000.0f);
 
+
+
 	//osg::Node* scene = osgDB::readNodeFile("cow.osg");
 	m_sceneRoot = new osg::Group();
 	m_sceneRoot->setName("m_sceneRoot");
 	m_viewer.setSceneData(m_sceneRoot);
 	m_viewer.addEventHandler(new osgViewer::StatsHandler);
 	m_cameraManipulator = new osgGA::TrackballManipulator();
+
+	m_cameraManipulator->setVerticalAxisFixed(false);
+
+	camera->setViewMatrixAsLookAt(osg::Vec3f(0.0, 1.5, 6.0), osg::Vec3f(0.0, 1.0, 0.0), osg::Vec3f(0.0, 1.0, 0.0));
+
 	m_cameraManipulator->setHomePosition(osg::Vec3f(0.0, 1.5, 6.0), osg::Vec3f(0.0, 1.0, 0.0), osg::Vec3f(0.0, 1.0, 0.0), false);
 	m_viewer.setCameraManipulator(m_cameraManipulator);
 	m_viewer.setThreadingModel(osgViewer::Viewer::SingleThreaded);
@@ -65,6 +72,7 @@ OsgQtWidget::OsgQtWidget(osgQt::GraphicsWindowQt* gw, TrackerManager* trackerMan
 	m_colorRed = osg::Vec4f(0.75f, 0.0f, 0.0f, 1.0f);
 	m_colorYellow = osg::Vec4f(0.75f, 0.75f, 0.0f, 1.0f);
 	m_colorGreen = osg::Vec4f(0.0f, 0.75f, 0.0f, 1.0f);
+
 }
 
 //Is envoked, when no (global) tracking is active and a new tracker is added or removed
@@ -308,6 +316,46 @@ void OsgQtWidget::drawLine(const osg::Vec3 start, const osg::Vec3 end, const osg
 	//m_colors->push_back(colorEnd);
 	////RedrawLines();
 	//m_isDirty = true;
+}
+
+void OsgQtWidget::setCameraTransform(const osg::Vec3d& eye, const osg::Vec3d& center, const osg::Vec3d& up)
+{
+	m_viewer.getCamera()->setViewMatrixAsLookAt(eye, center, up);
+}
+
+void OsgQtWidget::mouseMoveEvent(QMouseEvent* event)
+{
+	QPoint globalCursorPos = QCursor::pos();
+
+	emit osgWidgetMoved(osg::Vec2(globalCursorPos.x(), globalCursorPos.y()));
+
+	QWidget::mouseMoveEvent(event);
+
+}
+
+void OsgQtWidget::mousePressEvent(QMouseEvent* event)
+{
+	QPoint globalCursorPos = QCursor::pos();
+
+	//Console::log("MainWindow::slotOsgWidgetPressed(): " + toString(globalCursorPos.x()) + ", " + toString(globalCursorPos.y()));
+	Console::log("MainWindow::slotOsgWidgetPressed()"); 
+
+	emit osgWidgetPressed(osg::Vec2(globalCursorPos.x(), globalCursorPos.y()));
+
+	QWidget::mousePressEvent(event);
+
+	//doesn't work :(
+
+}
+
+void OsgQtWidget::mouseReleaseEvent(QMouseEvent* event)
+{
+	QPoint globalCursorPos = QCursor::pos();
+
+	emit osgWidgetReleased(osg::Vec2(globalCursorPos.x(), globalCursorPos.y()));
+
+	QWidget::mouseReleaseEvent(event);
+
 }
 
 
