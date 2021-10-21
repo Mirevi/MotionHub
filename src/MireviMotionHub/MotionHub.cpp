@@ -97,7 +97,14 @@ void MotionHub::update()
 				if (!isEscapePressed) {
 					// Toggle ui refresh flag
 					isUiRefreshAllowed = !isUiRefreshAllowed;
-					Console::logWarning("UI-Events allowed: " + std::to_string(isUiRefreshAllowed));
+					if (isUiRefreshAllowed)
+					{
+						Console::logWarning("UI activated again. HSP-Mode deactivated.");
+					}
+					else 
+					{
+						Console::logWarning("UI deactivated for High Speed Processing Mode (HSP-Mode). Press ESC to activate UI again and to disable HSP-Mode.");
+					}
 				}
 
 				// set escape pressed flag
