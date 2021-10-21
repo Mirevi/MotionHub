@@ -49,10 +49,11 @@ The developer, API and user documentation including a class collaboration diagra
 | [OptiTrack](https://optitrack.com/)                                     |
 | [The Captury](https://thecaptury.com/)                                				|
 | [XSens MVN Animate (only compatibel with MVN Pro License due to network streaming capabilities)](https://www.xsens.com/products/mvn-animate)                    |
+| [OpenVR](https://github.com/ValveSoftware/openvr)                                     |
 
 | Planned                                                                             							|
 | --------------------------------------------------------------------------------------------------------------|
-| [Perception Neuron 2 and 3 (planned for Q4 2021)](https://neuronmocap.com/content/product/32-neuron-edition-v2) |
+| [Perception Neuron 2 and 3 (planned when neuronmocap release a new version of its C++ SDK with absolut tracking data available](https://neuronmocap.com/content/product/32-neuron-edition-v2) --- [Link to old SDK](https://neuronmocap.com/software/neuron-data-reader-sdk)|
 
 # Installer (for users, not for developers)
 
