@@ -4,9 +4,12 @@
 
 
 //CTOR for start and end joint
-OsgBone::OsgBone(osg::ref_ptr<osg::PositionAttitudeTransform> startJoint, osg::ref_ptr<osg::PositionAttitudeTransform> endJoint,
-	osg::ref_ptr<osg::Group> stickManGroup, osg::Quat rotationOffset)
-	: m_startJoint(startJoint), m_endJoint(endJoint)
+OsgBone::OsgBone(osg::ref_ptr<osg::PositionAttitudeTransform> startJoint,
+	osg::ref_ptr<osg::PositionAttitudeTransform> endJoint,
+	osg::ref_ptr<osg::Group> stickManGroup,
+	bool isStickManRenderingActive,
+	osg::Quat rotationOffset)
+	: m_startJoint(startJoint), m_endJoint(endJoint), m_isStickManRenderingActive(isStickManRenderingActive)
 {
 
 	initialize(stickManGroup, rotationOffset);
@@ -15,9 +18,11 @@ OsgBone::OsgBone(osg::ref_ptr<osg::PositionAttitudeTransform> startJoint, osg::r
 
 
 //CTOR for leaf joint with only one joint
-OsgBone::OsgBone(osg::ref_ptr<osg::PositionAttitudeTransform> startJoint, osg::ref_ptr<osg::Group> stickManGroup,
+OsgBone::OsgBone(osg::ref_ptr<osg::PositionAttitudeTransform> startJoint,
+	osg::ref_ptr<osg::Group> stickManGroup,
+	bool isStickManRenderingActive,
 	osg::Quat rotationOffset)
-	: m_startJoint(startJoint)
+	: m_startJoint(startJoint), m_isStickManRenderingActive(isStickManRenderingActive)
 {
 
 	// m_endJoint won`t be initialzed and is the hint for being an end joint - a "end joint" without any further connections  
@@ -34,7 +39,6 @@ void OsgBone::initialize(osg::ref_ptr<osg::Group> stickManGroup, osg::Quat rotat
 	m_startJointOffset->setAttitude(rotationOffset);
 	m_startJoint->addChild(m_startJointOffset);
 	m_line = new OsgLine(stickManGroup, true);
-	m_toggleStickManRendering = true;
 	m_isGlLookAtSolidBoneRotationActivated = false;
 
 }
@@ -82,7 +86,7 @@ void OsgBone::update()
 		}
 
 		// Perform line rendering for stick man rendering
-		if (m_toggleStickManRendering)
+		if (m_isStickManRenderingActive)
 		{
 			m_line->clear();
 			// create a  line
@@ -104,7 +108,7 @@ void OsgBone::update()
 
 		//TODO1:if (m_isGlLookAtSolidBoneRotationActivated)
 
-		if (m_toggleStickManRendering)
+		if (m_isStickManRenderingActive)
 		{
 			m_line->clear();
 			// create a  line
@@ -147,5 +151,5 @@ void OsgBone::createLeafJoint()
 
 void OsgBone::updateStickManRenderingState(bool renderStickMan)
 {
-	m_toggleStickManRendering = renderStickMan;
+	m_isStickManRenderingActive = renderStickMan;
 }

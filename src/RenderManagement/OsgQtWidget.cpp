@@ -73,6 +73,11 @@ OsgQtWidget::OsgQtWidget(osgQt::GraphicsWindowQt* gw, TrackerManager* trackerMan
 	m_colorYellow = osg::Vec4f(0.75f, 0.75f, 0.0f, 1.0f);
 	m_colorGreen = osg::Vec4f(0.0f, 0.75f, 0.0f, 1.0f);
 
+	m_renderConfidenceSpheres = false;
+	m_renderSolidBoneRendering = true;
+	m_renderJointAxes = true;
+	m_renderStickManRendering = true;
+
 }
 
 //Is envoked, when no (global) tracking is active and a new tracker is added or removed
@@ -179,8 +184,11 @@ void OsgQtWidget::updateSkeletonMeshCount()
 				while (m_skeletonMeshPool.find((*itTracker)->getProperties()->id)->second.size() < skeletonPoolTempCopy.size())
 				{
 					// add new skeletonMesh to skeltonMeshPool
-					m_skeletonMeshPool.find((*itTracker)->getProperties()->id)->second.push_back(OsgSkeleton(m_sceneRoot));
-
+					m_skeletonMeshPool.find((*itTracker)->getProperties()->id)->second.push_back(OsgSkeleton(m_sceneRoot,
+						m_renderConfidenceSpheres,
+						m_renderSolidBoneRendering,
+						m_renderJointAxes,
+						m_renderStickManRendering));
 				}
 			}
 			// remove skeleton mesh from skeleton mesh pool when skeletonMeshPoolSize is bigger than skeletonPoolSize
@@ -338,7 +346,7 @@ void OsgQtWidget::mousePressEvent(QMouseEvent* event)
 	QPoint globalCursorPos = QCursor::pos();
 
 	//Console::log("MainWindow::slotOsgWidgetPressed(): " + toString(globalCursorPos.x()) + ", " + toString(globalCursorPos.y()));
-	Console::log("MainWindow::slotOsgWidgetPressed()"); 
+	Console::log("MainWindow::slotOsgWidgetPressed()");
 
 	emit osgWidgetPressed(osg::Vec2(globalCursorPos.x(), globalCursorPos.y()));
 
@@ -359,8 +367,10 @@ void OsgQtWidget::mouseReleaseEvent(QMouseEvent* event)
 }
 
 
-void OsgQtWidget::toggleJointAxes(bool menuValue)
+void OsgQtWidget::setFlagForJointAxes(bool menuValue)
 {
+	m_renderJointAxes = menuValue;
+
 	// get tracker pool from the tracker manager
 	std::vector<Tracker*> trackerTempCopy = m_refTrackerManager->getPoolTracker();
 
@@ -377,7 +387,7 @@ void OsgQtWidget::toggleJointAxes(bool menuValue)
 		{
 
 			//Toggle RGB joint axes for each skeleton
-			m_skeletonMeshPool.find((*itTracker)->getProperties()->id)->second.at(indexSkeleton).toggleJointAxes(menuValue);
+			m_skeletonMeshPool.find((*itTracker)->getProperties()->id)->second.at(indexSkeleton).setRenderJointAxes(menuValue);
 
 			indexSkeleton++;
 
@@ -385,8 +395,10 @@ void OsgQtWidget::toggleJointAxes(bool menuValue)
 	}
 }
 
-void OsgQtWidget::toggleStickManRendering(bool menuValue)
+void OsgQtWidget::setFlagForStickManRendering(bool menuValue)
 {
+	m_renderStickManRendering = menuValue;
+
 	// get tracker pool from the tracker manager
 	std::vector<Tracker*> trackerTempCopy = m_refTrackerManager->getPoolTracker();
 
@@ -403,34 +415,7 @@ void OsgQtWidget::toggleStickManRendering(bool menuValue)
 		{
 
 			//Toggle RGB joint axes for each skeleton
-			m_skeletonMeshPool.find((*itTracker)->getProperties()->id)->second.at(indexSkeleton).toggleStickManRendering(menuValue);
-
-			indexSkeleton++;
-
-		}
-	}
-}
-
-
-void OsgQtWidget::toggleSolidBoneRendering(bool menuValue)
-{
-	// get tracker pool from the tracker manager
-	std::vector<Tracker*> trackerTempCopy = m_refTrackerManager->getPoolTracker();
-
-	// loop over all tracker in the pool
-	for (auto itTracker = trackerTempCopy.begin(); itTracker != trackerTempCopy.end(); itTracker++)
-	{
-		// get skeletonPoolCache from tracker and create skeletonPoolTempCopy
-		std::map<int, Skeleton> skeletonPoolTempCopy = (*itTracker)->getSkeletonPoolCache();
-
-		int indexSkeleton = 0;
-
-		// update each skeleton
-		for (int i = 0; i < m_skeletonMeshPool.find((*itTracker)->getProperties()->id)->second.size(); i++)
-		{
-
-			//Toggle RGB joint axes for each skeleton
-			m_skeletonMeshPool.find((*itTracker)->getProperties()->id)->second.at(indexSkeleton).toggleSolidBoneRendering(menuValue);
+			m_skeletonMeshPool.find((*itTracker)->getProperties()->id)->second.at(indexSkeleton).setRenderStickManRendering(menuValue);
 
 			indexSkeleton++;
 
@@ -439,8 +424,9 @@ void OsgQtWidget::toggleSolidBoneRendering(bool menuValue)
 }
 
 
-void OsgQtWidget::toggleConfidenceSpheresRendering(bool menuValue)
+void OsgQtWidget::setFlagForSolidBoneRendering(bool menuValue)
 {
+	m_renderSolidBoneRendering = menuValue;
 
 	// get tracker pool from the tracker manager
 	std::vector<Tracker*> trackerTempCopy = m_refTrackerManager->getPoolTracker();
@@ -458,7 +444,36 @@ void OsgQtWidget::toggleConfidenceSpheresRendering(bool menuValue)
 		{
 
 			//Toggle RGB joint axes for each skeleton
-			m_skeletonMeshPool.find((*itTracker)->getProperties()->id)->second.at(indexSkeleton).toggleConfidenceSpheresRendering(menuValue);
+			m_skeletonMeshPool.find((*itTracker)->getProperties()->id)->second.at(indexSkeleton).setRenderSolidBoneRendering(menuValue);
+
+			indexSkeleton++;
+
+		}
+	}
+}
+
+
+void OsgQtWidget::setFlagForConfidenceSpheresRendering(bool menuValue)
+{
+	m_renderConfidenceSpheres = menuValue;
+
+	// get tracker pool from the tracker manager
+	std::vector<Tracker*> trackerTempCopy = m_refTrackerManager->getPoolTracker();
+
+	// loop over all tracker in the pool
+	for (auto itTracker = trackerTempCopy.begin(); itTracker != trackerTempCopy.end(); itTracker++)
+	{
+		// get skeletonPoolCache from tracker and create skeletonPoolTempCopy
+		std::map<int, Skeleton> skeletonPoolTempCopy = (*itTracker)->getSkeletonPoolCache();
+
+		int indexSkeleton = 0;
+
+		// update each skeleton
+		for (int i = 0; i < m_skeletonMeshPool.find((*itTracker)->getProperties()->id)->second.size(); i++)
+		{
+
+			//Toggle RGB joint axes for each skeleton
+			m_skeletonMeshPool.find((*itTracker)->getProperties()->id)->second.at(indexSkeleton).setRenderConfidenceSpheresRendering(menuValue);
 
 			indexSkeleton++;
 

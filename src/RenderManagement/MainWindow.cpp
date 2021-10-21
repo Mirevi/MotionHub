@@ -708,7 +708,7 @@ void MainWindow::on_actionExit_triggered()
 void MainWindow::on_actionToggle_JointAxes(bool menuValue)
 {
 
-	m_osgQtWidget->toggleJointAxes(menuValue);
+	m_osgQtWidget->setFlagForJointAxes(menuValue);
 
 }
 
@@ -717,7 +717,7 @@ void MainWindow::on_actionToggle_JointAxes(bool menuValue)
 void MainWindow::on_actionToggle_StickManRendering(bool menuValue)
 {
 
-	m_osgQtWidget->toggleStickManRendering(menuValue);
+	m_osgQtWidget->setFlagForStickManRendering(menuValue);
 
 }
 
@@ -726,7 +726,7 @@ void MainWindow::on_actionToggle_StickManRendering(bool menuValue)
 void MainWindow::on_actionToggle_SolidBoneRendering(bool menuValue)
 {
 
-	m_osgQtWidget->toggleSolidBoneRendering(menuValue);
+	m_osgQtWidget->setFlagForSolidBoneRendering(menuValue);
 
 }
 
@@ -734,7 +734,7 @@ void MainWindow::on_actionToggle_SolidBoneRendering(bool menuValue)
 void MainWindow::on_actionToggle_TrackingConfidenceSpheres(bool menuValue)
 {
 
-	m_osgQtWidget->toggleConfidenceSpheresRendering(menuValue);
+	m_osgQtWidget->setFlagForConfidenceSpheresRendering(menuValue);
 
 }
 

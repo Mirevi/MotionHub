@@ -4,8 +4,17 @@
 #include "OsgSphere.h"
 #include <osg/Program>
 
-OsgSkeleton::OsgSkeleton(osg::ref_ptr<osg::Group> parentNode) : m_parentNode(parentNode)
+OsgSkeleton::OsgSkeleton(osg::ref_ptr<osg::Group> parentNode,
+	bool renderConfidenceSpheres,
+	bool renderSolidBoneRendering,
+	bool renderJointAxes,
+	bool renderStickManRendering) : m_parentNode(parentNode)
 {
+	m_isConfidenceSpheresRenderingActive = renderConfidenceSpheres;
+	m_isSolidBoneRenderingActive = renderSolidBoneRendering;
+	m_isJointAxesRenderingActive = renderJointAxes;
+	m_isStickManRenderingActive = renderStickManRendering;
+
 	m_skeletonRootNode = new osg::Group();
 	m_boneGroup = new osg::Group();
 	m_stickManGroup = new osg::Group();
@@ -15,9 +24,9 @@ OsgSkeleton::OsgSkeleton(osg::ref_ptr<osg::Group> parentNode) : m_parentNode(par
 	m_skeletonRootNode->addChild(m_stickManGroup);
 	m_skeletonRootNode->addChild(m_axesCrossGroup);
 	m_skeletonRootNode->addChild(m_confidenceSpheresGroup);
-	
-	m_toggleStickManRendering = true;
-	m_toggleConfidenceSpheres = false;
+
+	//m_toggleStickManRendering = true;
+	//m_toggleConfidenceSpheres = false;
 	m_confidenceSpheresGroup->setNodeMask(0x0); //Hide from scenegraph
 
 	osg::ref_ptr<osg::Program> program = new osg::Program;
@@ -49,59 +58,59 @@ OsgSkeleton::OsgSkeleton(osg::ref_ptr<osg::Group> parentNode) : m_parentNode(par
 
 	//Build the skeleton
 	//HIPS to SPINE bone
-	m_bones.push_back(new OsgBone(m_joints.at(0), m_joints.at(1), m_stickManGroup, osg::Quat(osg::DegreesToRadians(-90.0), osg::Z_AXIS)));
+	m_bones.push_back(new OsgBone(m_joints.at(0), m_joints.at(1), m_stickManGroup, m_isStickManRenderingActive, osg::Quat(osg::DegreesToRadians(-90.0), osg::Z_AXIS)));
 	//SPINE to CHEST bone
-	m_bones.push_back(new OsgBone(m_joints.at(1), m_joints.at(2), m_stickManGroup, osg::Quat(osg::DegreesToRadians(-90.0), osg::Z_AXIS)));
+	m_bones.push_back(new OsgBone(m_joints.at(1), m_joints.at(2), m_stickManGroup, m_isStickManRenderingActive, osg::Quat(osg::DegreesToRadians(-90.0), osg::Z_AXIS)));
 	//CHEST to NECK bone
-	m_bones.push_back(new OsgBone(m_joints.at(2), m_joints.at(3), m_stickManGroup, osg::Quat(osg::DegreesToRadians(-90.0), osg::Z_AXIS)));
+	m_bones.push_back(new OsgBone(m_joints.at(2), m_joints.at(3), m_stickManGroup, m_isStickManRenderingActive, osg::Quat(osg::DegreesToRadians(-90.0), osg::Z_AXIS)));
 	//NECK to SHOULDER_L bone
-	m_bones.push_back(new OsgBone(m_joints.at(3), m_joints.at(4), m_stickManGroup, osg::Quat(osg::DegreesToRadians(45.0), osg::Z_AXIS)));
+	m_bones.push_back(new OsgBone(m_joints.at(3), m_joints.at(4), m_stickManGroup, m_isStickManRenderingActive, osg::Quat(osg::DegreesToRadians(45.0), osg::Z_AXIS)));
 	//SHOULDER_L to ARM_L bone
-	m_bones.push_back(new OsgBone(m_joints.at(4), m_joints.at(5), m_stickManGroup));
+	m_bones.push_back(new OsgBone(m_joints.at(4), m_joints.at(5), m_stickManGroup, m_isStickManRenderingActive));
 	//ARM_L to FOREARM_L bone
-	m_bones.push_back(new OsgBone(m_joints.at(5), m_joints.at(6), m_stickManGroup));
+	m_bones.push_back(new OsgBone(m_joints.at(5), m_joints.at(6), m_stickManGroup, m_isStickManRenderingActive));
 	//FOREARM_L to HAND_L bone
-	m_bones.push_back(new OsgBone(m_joints.at(6), m_joints.at(7), m_stickManGroup));
+	m_bones.push_back(new OsgBone(m_joints.at(6), m_joints.at(7), m_stickManGroup, m_isStickManRenderingActive));
 	//HAND_L ### leaf bone ###
-	m_bones.push_back(new OsgBone(m_joints.at(7), m_stickManGroup));
+	m_bones.push_back(new OsgBone(m_joints.at(7), m_stickManGroup, m_isStickManRenderingActive));
 	//NECK to SHOULDER_R bone
-	m_bones.push_back(new OsgBone(m_joints.at(3), m_joints.at(8), m_stickManGroup, osg::Quat(osg::DegreesToRadians(135.0), osg::Z_AXIS))); // 
+	m_bones.push_back(new OsgBone(m_joints.at(3), m_joints.at(8), m_stickManGroup, m_isStickManRenderingActive, osg::Quat(osg::DegreesToRadians(135.0), osg::Z_AXIS))); // 
 	//SHOULDER_R to ARM_R bone
-	m_bones.push_back(new OsgBone(m_joints.at(8), m_joints.at(9), m_stickManGroup, osg::Quat(osg::DegreesToRadians(180.0), osg::Z_AXIS)));
+	m_bones.push_back(new OsgBone(m_joints.at(8), m_joints.at(9), m_stickManGroup, m_isStickManRenderingActive, osg::Quat(osg::DegreesToRadians(180.0), osg::Z_AXIS)));
 	//ARM_R to FOREARM_R bone
-	m_bones.push_back(new OsgBone(m_joints.at(9), m_joints.at(10), m_stickManGroup, osg::Quat(osg::DegreesToRadians(180.0), osg::Z_AXIS)));
+	m_bones.push_back(new OsgBone(m_joints.at(9), m_joints.at(10), m_stickManGroup, m_isStickManRenderingActive, osg::Quat(osg::DegreesToRadians(180.0), osg::Z_AXIS)));
 	//FOREARM_R to HAND_R bone
-	m_bones.push_back(new OsgBone(m_joints.at(10), m_joints.at(11), m_stickManGroup, osg::Quat(osg::DegreesToRadians(180.0), osg::Z_AXIS)));
+	m_bones.push_back(new OsgBone(m_joints.at(10), m_joints.at(11), m_stickManGroup, m_isStickManRenderingActive, osg::Quat(osg::DegreesToRadians(180.0), osg::Z_AXIS)));
 	//HAND_R ### leaf bone ###
-	m_bones.push_back(new OsgBone(m_joints.at(11), m_stickManGroup, osg::Quat(osg::DegreesToRadians(180.0), osg::Z_AXIS)));
+	m_bones.push_back(new OsgBone(m_joints.at(11), m_stickManGroup, m_isStickManRenderingActive, osg::Quat(osg::DegreesToRadians(180.0), osg::Z_AXIS)));
 	//HIPS to UPLEG_L
-	m_bones.push_back(new OsgBone(m_joints.at(0), m_joints.at(12), m_stickManGroup)); //-180 // , osg::Quat(osg::DegreesToRadians(90.0), osg::Z_AXIS)
+	m_bones.push_back(new OsgBone(m_joints.at(0), m_joints.at(12), m_stickManGroup, m_isStickManRenderingActive)); //-180 // , osg::Quat(osg::DegreesToRadians(90.0), osg::Z_AXIS)
 	//UPLEG_L to LEG_L 
-	m_bones.push_back(new OsgBone(m_joints.at(12), m_joints.at(13), m_stickManGroup, osg::Quat(osg::DegreesToRadians(90.0), osg::Z_AXIS)));
+	m_bones.push_back(new OsgBone(m_joints.at(12), m_joints.at(13), m_stickManGroup, m_isStickManRenderingActive, osg::Quat(osg::DegreesToRadians(90.0), osg::Z_AXIS)));
 	//LEG_L to FOOT_L
-	m_bones.push_back(new OsgBone(m_joints.at(13), m_joints.at(14), m_stickManGroup, osg::Quat(osg::DegreesToRadians(90.0), osg::Z_AXIS)));
+	m_bones.push_back(new OsgBone(m_joints.at(13), m_joints.at(14), m_stickManGroup, m_isStickManRenderingActive, osg::Quat(osg::DegreesToRadians(90.0), osg::Z_AXIS)));
 	//FOOT_L to TOE_L - Rotation to TOE_L was visually adjusted in the render view
-	m_bones.push_back(new OsgBone(m_joints.at(14), m_joints.at(15), m_stickManGroup, osg::Quat(osg::DegreesToRadians(-90.0), osg::Y_AXIS) * osg::Quat(osg::DegreesToRadians(-37.0), osg::X_AXIS)));
+	m_bones.push_back(new OsgBone(m_joints.at(14), m_joints.at(15), m_stickManGroup, m_isStickManRenderingActive, osg::Quat(osg::DegreesToRadians(-90.0), osg::Y_AXIS) * osg::Quat(osg::DegreesToRadians(-37.0), osg::X_AXIS)));
 	//TOE_L ### leaf bone ###
-	m_bones.push_back(new OsgBone(m_joints.at(15), m_stickManGroup, osg::Quat(osg::DegreesToRadians(-90.0), osg::Y_AXIS)));
+	m_bones.push_back(new OsgBone(m_joints.at(15), m_stickManGroup, m_isStickManRenderingActive, osg::Quat(osg::DegreesToRadians(-90.0), osg::Y_AXIS)));
 	//HIPS to UPLEG_R
-	m_bones.push_back(new OsgBone(m_joints.at(0), m_joints.at(16), m_stickManGroup, osg::Quat(osg::DegreesToRadians(180.0), osg::Z_AXIS)));
+	m_bones.push_back(new OsgBone(m_joints.at(0), m_joints.at(16), m_stickManGroup, m_isStickManRenderingActive, osg::Quat(osg::DegreesToRadians(180.0), osg::Z_AXIS)));
 	//UPLEG_R to LEG_R
-	m_bones.push_back(new OsgBone(m_joints.at(16), m_joints.at(17), m_stickManGroup, osg::Quat(osg::DegreesToRadians(90.0), osg::Z_AXIS)));
+	m_bones.push_back(new OsgBone(m_joints.at(16), m_joints.at(17), m_stickManGroup, m_isStickManRenderingActive, osg::Quat(osg::DegreesToRadians(90.0), osg::Z_AXIS)));
 	//LEG_R to Foot_R
-	m_bones.push_back(new OsgBone(m_joints.at(17), m_joints.at(18), m_stickManGroup, osg::Quat(osg::DegreesToRadians(90.0), osg::Z_AXIS)));
+	m_bones.push_back(new OsgBone(m_joints.at(17), m_joints.at(18), m_stickManGroup, m_isStickManRenderingActive, osg::Quat(osg::DegreesToRadians(90.0), osg::Z_AXIS)));
 	//FOOT_R to TOE_R - Rotation to TOE_R was visually adjusted in the render view
-	m_bones.push_back(new OsgBone(m_joints.at(18), m_joints.at(19), m_stickManGroup, osg::Quat(osg::DegreesToRadians(-90.0), osg::Y_AXIS) * osg::Quat(osg::DegreesToRadians(-37.0), osg::X_AXIS)));
+	m_bones.push_back(new OsgBone(m_joints.at(18), m_joints.at(19), m_stickManGroup, m_isStickManRenderingActive, osg::Quat(osg::DegreesToRadians(-90.0), osg::Y_AXIS) * osg::Quat(osg::DegreesToRadians(-37.0), osg::X_AXIS)));
 	//TOE_R ### leaf bone ###
-	m_bones.push_back(new OsgBone(m_joints.at(19), m_stickManGroup, osg::Quat(osg::DegreesToRadians(90.0), osg::Y_AXIS)));
+	m_bones.push_back(new OsgBone(m_joints.at(19), m_stickManGroup, m_isStickManRenderingActive, osg::Quat(osg::DegreesToRadians(90.0), osg::Y_AXIS)));
 	//NECK to HEAD
-	m_bones.push_back(new OsgBone(m_joints.at(3), m_joints.at(20), m_stickManGroup, osg::Quat(osg::DegreesToRadians(-90.0), osg::Z_AXIS)));
+	m_bones.push_back(new OsgBone(m_joints.at(3), m_joints.at(20), m_stickManGroup, m_isStickManRenderingActive, osg::Quat(osg::DegreesToRadians(-90.0), osg::Z_AXIS)));
 	//HEAD ### leaf bone ###
-	m_bones.push_back(new OsgBone(m_joints.at(20), m_stickManGroup, osg::Quat(osg::DegreesToRadians(-90.0), osg::Z_AXIS)));
+	m_bones.push_back(new OsgBone(m_joints.at(20), m_stickManGroup, m_isStickManRenderingActive, osg::Quat(osg::DegreesToRadians(-90.0), osg::Z_AXIS)));
 
 
 	//RGB axes for each joint
-	m_toggleJointAxes = false;
+	//m_isJointAxesRenderingActive = false;
 	//m_axesCrossGroup->setNodeMask(0x0t); //Hide from scenegraph
 	//setup RGB joint axes and confidence spheres
 	for (int i = 0; i <= 20; i++)
@@ -116,6 +125,7 @@ OsgSkeleton::OsgSkeleton(osg::ref_ptr<osg::Group> parentNode) : m_parentNode(par
 	m_colorYellow = osg::Vec4f(0.75f, 0.75f, 0.0f, 1.0f);
 	m_colorGreen = osg::Vec4f(0.0f, 0.75f, 0.0f, 1.0f);
 
+	updateRenderingModes();
 }
 
 
@@ -169,10 +179,10 @@ void OsgSkeleton::update(Skeleton skeleton)
 	for (int i = 0; i < m_bones.size(); i++)
 	{
 		m_bones.at(i)->update();
-		m_bones.at(i)->updateStickManRenderingState(m_toggleStickManRendering);
+		m_bones.at(i)->updateStickManRenderingState(m_isStickManRenderingActive);
 	}
 
-	if (!m_toggleSolidBoneRendering && !m_toggleJointAxes && !m_toggleStickManRendering & !m_toggleConfidenceSpheres & (m_consoleOutputModuloDelay % 60 == 0)) //Print this warning only each 60frames
+	if (!m_isSolidBoneRenderingActive && !m_isJointAxesRenderingActive && !m_isStickManRenderingActive & !m_isConfidenceSpheresRenderingActive & (m_consoleOutputModuloDelay % 60 == 0)) //Print this warning only each 60frames
 	{
 		Console::logWarning("No tracking data can be seen, because bone, stick man, joint axes or confidence sphere rendering is deactivated. Press A, S, B or C to activate one of these options.");
 		m_consoleOutputModuloDelay = 0;
@@ -218,7 +228,7 @@ void OsgSkeleton::update(Skeleton skeleton)
 void OsgSkeleton::removeAndDelete()
 {
 	m_skeletonRootNode->removeChildren(0, m_skeletonRootNode->getNumChildren());
-	std::cout << "m_skeletonRootNode->referenceCount: "<< m_skeletonRootNode->referenceCount() << std::endl;
+	std::cout << "m_skeletonRootNode->referenceCount: " << m_skeletonRootNode->referenceCount() << std::endl;
 	std::cout << "m_bones->referenceCount(): " << m_skeletonRootNode->referenceCount() << std::endl;
 	std::cout << "remove and delete called from OsgSkeleton" << std::endl;
 	m_skeletonRootNode = NULL; // Should be removed by OSG
@@ -230,11 +240,42 @@ void OsgSkeleton::removeAndDelete()
 }
 
 
-void OsgSkeleton::toggleJointAxes(bool menuValue)
+void OsgSkeleton::setRenderJointAxes(bool menuValue)
+{
+	m_isJointAxesRenderingActive = menuValue;
+	updateRenderingModes();
+
+}
+
+
+void OsgSkeleton::setRenderStickManRendering(bool menuValue)
 {
 
-	m_toggleJointAxes = menuValue;
-	if (m_toggleJointAxes)
+	m_isStickManRenderingActive = menuValue;
+	updateRenderingModes();
+
+}
+
+void OsgSkeleton::setRenderSolidBoneRendering(bool menuValue)
+{
+
+	m_isSolidBoneRenderingActive = menuValue;
+	updateRenderingModes();
+
+}
+
+
+void OsgSkeleton::setRenderConfidenceSpheresRendering(bool menuValue)
+{
+
+	m_isConfidenceSpheresRenderingActive = menuValue;
+	updateRenderingModes();
+
+}
+
+void OsgSkeleton::updateRenderingModes()
+{
+	if (m_isJointAxesRenderingActive)
 	{
 		m_axesCrossGroup->setNodeMask(0x1); //Show to scenegraph
 	}
@@ -243,29 +284,16 @@ void OsgSkeleton::toggleJointAxes(bool menuValue)
 		m_axesCrossGroup->setNodeMask(0x0); //Hide from scenegraph
 	}
 
-}
-
-
-void OsgSkeleton::toggleStickManRendering(bool menuValue)
-{
-
-	m_toggleStickManRendering = menuValue;
-	if (m_toggleStickManRendering)
+	if (m_isConfidenceSpheresRenderingActive)
 	{
-		m_stickManGroup->setNodeMask(0x1); //Show to scenegraph
+		m_confidenceSpheresGroup->setNodeMask(0x1); //Show to scenegraph
 	}
 	else
 	{
-		m_stickManGroup->setNodeMask(0x0); //Hide from scenegraph
+		m_confidenceSpheresGroup->setNodeMask(0x0); //Hide from scenegraph
 	}
 
-}
-
-void OsgSkeleton::toggleSolidBoneRendering(bool menuValue)
-{
-
-	m_toggleSolidBoneRendering = menuValue;
-	if (m_toggleSolidBoneRendering)
+	if (m_isSolidBoneRenderingActive)
 	{
 		m_boneGroup->setNodeMask(0x1); //Show to scenegraph
 	}
@@ -274,20 +302,13 @@ void OsgSkeleton::toggleSolidBoneRendering(bool menuValue)
 		m_boneGroup->setNodeMask(0x0); //Hide from scenegraph
 	}
 
-}
-
-
-void OsgSkeleton::toggleConfidenceSpheresRendering(bool menuValue)
-{
-
-	m_toggleConfidenceSpheres = menuValue;
-	if (m_toggleConfidenceSpheres)
+	if (m_isStickManRenderingActive)
 	{
-		m_confidenceSpheresGroup->setNodeMask(0x1); //Show to scenegraph
+		m_stickManGroup->setNodeMask(0x1); //Show to scenegraph
 	}
 	else
 	{
-		m_confidenceSpheresGroup->setNodeMask(0x0); //Hide from scenegraph
+		m_stickManGroup->setNodeMask(0x0); //Hide from scenegraph
 	}
 
 }

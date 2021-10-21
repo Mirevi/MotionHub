@@ -43,10 +43,10 @@ public:
 	void updateSkeletonMeshPoolSize();
 	void updateSkeletonMeshTransform();
 	void updateSkeletonMeshCount();
-	void toggleJointAxes(bool menuValue);
-	void toggleStickManRendering(bool menuValue);
-	void toggleSolidBoneRendering(bool menuValue);
-	void toggleConfidenceSpheresRendering(bool menuValue);
+	void setFlagForJointAxes(bool menuValue);
+	void setFlagForStickManRendering(bool menuValue);
+	void setFlagForSolidBoneRendering(bool menuValue);
+	void setFlagForConfidenceSpheresRendering(bool menuValue);
 
 	void drawLine(osg::Vec3 start, osg::Vec3 end, osg::Vec4 colorStart, osg::Vec4 colorEnd);
 
@@ -92,4 +92,9 @@ protected:
 	std::vector<osg::ref_ptr<osg::MatrixTransform>> m_sphereTransforms;
 
 	OsgLine* m_line;
+
+	bool m_renderConfidenceSpheres;
+	bool m_renderSolidBoneRendering;
+	bool m_renderJointAxes;
+	bool m_renderStickManRendering;
 };

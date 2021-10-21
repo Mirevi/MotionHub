@@ -12,11 +12,18 @@ class RenderManagement_DLL_import_export OsgBone : public osg::Node
 
 public:
     //Bone, connected with two known joints. By default, an identity quaternion ("no rotation") is set
-	OsgBone(osg::ref_ptr<osg::PositionAttitudeTransform> startJoint, osg::ref_ptr<osg::PositionAttitudeTransform> endJoint,
-        osg::ref_ptr<osg::Group> stickManGroup, osg::Quat rotationOffset = osg::Quat(0, 0, 0, 1));
-    //Leaf Bone, connected with only one joint. By default, an identity quaternion ("no rotation") is set
-	OsgBone(osg::ref_ptr<osg::PositionAttitudeTransform> startJoint, osg::ref_ptr<osg::Group> stickManGroup,
+	OsgBone(osg::ref_ptr<osg::PositionAttitudeTransform> startJoint,
+        osg::ref_ptr<osg::PositionAttitudeTransform> endJoint,
+        osg::ref_ptr<osg::Group> stickManGroup,
+        bool isStickManRenderingActive,
         osg::Quat rotationOffset = osg::Quat(0, 0, 0, 1));
+
+    //Leaf Bone, connected with only one joint. By default, an identity quaternion ("no rotation") is set
+	OsgBone(osg::ref_ptr<osg::PositionAttitudeTransform> startJoint,
+        osg::ref_ptr<osg::Group> stickManGroup,
+        bool isStickManRenderingActive,
+        osg::Quat rotationOffset = osg::Quat(0, 0, 0, 1));
+    
     ~OsgBone();
 
     void setStartJoint(Joint joint);
@@ -43,7 +50,7 @@ private:
     //bool isLeafJoint;
 
     OsgLine* m_line;
-    bool m_toggleStickManRendering;
+    bool m_isStickManRenderingActive;
     bool m_isGlLookAtSolidBoneRotationActivated;
 
 };
