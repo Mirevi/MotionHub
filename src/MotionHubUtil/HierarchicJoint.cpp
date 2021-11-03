@@ -240,6 +240,42 @@ void HierarchicJoint::convertFromSkeleton(Joint joint) {
 	setGlobalRotation(rotation);
 }
 
+void HierarchicJoint::convertFromSkeleton(Joint joint, Joint jointParent) {
+
+	// Convert Vector4 to Vector3
+	Vector4f otherPos4 = joint.getJointPosition();
+	Vector3f position = Vector3f(otherPos4.x(), otherPos4.y(), otherPos4.z());
+
+	// Is Root? -> Copy global position
+	if (parent == nullptr) {
+		setGlobalPosition(position);
+	}
+	// Convert global to local
+	else {
+		Vector4f parentPos4 = jointParent.getJointPosition();
+		Vector3f parentPos = Vector3f(parentPos4.x(), parentPos4.y(), parentPos4.z());
+
+		Vector3f localPosition = position - parentPos;
+		localPosition = parent->getGlobalRotation().inverse() * localPosition;
+
+		setLocalPosition(localPosition);
+	}
+
+	// Convert Rotation
+	Quaternionf rotation = joint.getJointRotation();
+
+	// Conversion from OptiTrack Tracker:
+	// rot = Quaternionf(rbData.qw, rbData.qx, -rbData.qy, -rbData.qz);
+	// rot = Quaternionf(rot.y(), rot.z(), rot.w(), rot.x());
+	// simplified: (-y, -z, w, x)
+	// reversed: (y, z, -w, -x)
+
+	rotation = Quaternionf(rotation.y(), rotation.z(), -rotation.w(), -rotation.x());
+
+	// Copy global rotation
+	setGlobalRotation(rotation);
+}
+
 Matrix4f HierarchicJoint::combineParentMatrixRecursive(HierarchicJoint* hierarchicJoint) {
 	// Is parent not null? -> Joint
 	if (hierarchicJoint->parent != nullptr) {

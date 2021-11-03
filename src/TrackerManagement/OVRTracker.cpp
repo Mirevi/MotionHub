@@ -6,17 +6,67 @@ static bool DEBUG_DEVICES_ON_START = true;
 static bool DEBUG_HMD = false;
 
 static bool DEBUG_HIP = false;
-static bool DEBUG_SKELETON_POS = false;
-static bool DEBUG_SKELETON_ROT = false;
-
-static bool DEBUG_FOOT = false;
-static bool DEBUG_ARM = false;
 
 static bool SOLVE_IK = true;
-static bool SOLVE_ARMS = true;
 
 static bool USE_TEST_SKELETON = true;
 static bool USE_DEBUG_POINT_COLLECTION = true;
+
+static bool USE_XSENS_SKELETON = true;
+
+#include <vector>
+#include <numeric>
+
+class Evaluation {
+
+public:
+
+	Evaluation() {
+		values = new std::vector<float>();
+	}
+
+	~Evaluation() {
+		delete values;
+	}
+
+	void clearValues() {
+		values->clear();
+	}
+
+	void addValue(float value) {
+		values->push_back(value);
+	}
+
+	float getAverage() {
+		return std::reduce(values->begin(), values->end()) / static_cast<float>(values->size());
+	}
+
+	float getMedian() {
+		size_t n = values->size() / 2;
+		std::nth_element(values->begin(), values->begin() + n, values->end());
+		return values->at(n);
+	}
+
+	float getMin() {
+		return *std::min_element(values->begin(), values->end());
+	}
+
+	float getMax() {
+		return *std::max_element(values->begin(), values->end());
+	}
+
+private:
+	std::vector<float>* values;
+
+};
+
+
+static Evaluation timingIK;
+static Evaluation timingIKTest;
+
+static float distance4(Vector4f a, Vector4f b) {
+	return distance(Vector3f(a.x(), a.y(), a.z()), Vector3f(b.x(), b.y(), b.z()));
+}
 
 static std::string DebugIdentifier(std::string identifier) {
 
@@ -168,6 +218,9 @@ void OVRTracker::start() {
 
 	// start tracking thread
 	Tracker::start();
+
+	timingIK.clearValues();
+	timingIKTest.clearValues();
 }
 
 void OVRTracker::refresh(bool overrideDefaults) {
@@ -209,11 +262,21 @@ void OVRTracker::refresh(bool overrideDefaults) {
 
 	// Init skeleton & set scale from config
 	hierarchicSkeleton->setScale(config->readScale());
+	if (USE_XSENS_SKELETON) {
+		hierarchicSkeleton->initXsens();
+	}
+	else {
 	hierarchicSkeleton->init();
+	}
 
 	if (useTestSkeleton) {
 		testHierarchicSkeleton->setScale(config->readScale());
+		if (USE_XSENS_SKELETON) {
+			testHierarchicSkeleton->initXsens();
+		}
+		else {
 		testHierarchicSkeleton->init();
+	}
 	}
 
 	// Update Filters
@@ -252,6 +315,11 @@ void OVRTracker::stop() {
 	trackingSystem->removeButtonPressObserver(this);
 
 	Tracker::stop();
+
+	Console::logWarning("avg:" + toString(timingIK.getAverage()) + " median:" + toString(timingIK.getMedian()) + " min:" + toString(timingIK.getMin()) + " max:" + toString(timingIK.getMax()));
+	if (useTestSkeleton) {
+		Console::log("avg:" + toString(timingIKTest.getAverage()) + " median:" + toString(timingIKTest.getMedian()) + " min:" + toString(timingIKTest.getMin()) + " max:" + toString(timingIKTest.getMax()));
+	}
 }
 
 void OVRTracker::init() {
@@ -269,10 +337,10 @@ void OVRTracker::init() {
 
 	// Create IK Skeleton
 	hierarchicSkeleton = new HierarchicSkeleton(m_properties->id);
-	testHierarchicSkeleton = new HierarchicSkeleton(m_properties->id + 1);
+	testHierarchicSkeleton = new HierarchicSkeleton(m_properties->id + 100);
 
 	skeleton = new Skeleton(m_properties->id);
-	testSkeleton = new Skeleton(m_properties->id + 1);
+	testSkeleton = new Skeleton(m_properties->id + 100);
 
 	// Init Config & try to write default config values
 	config = new OpenVRConfig(m_configManager, trackingSystem);
@@ -332,84 +400,118 @@ void OVRTracker::track() {
 
 	if (SOLVE_IK) {
 
-		// Hint Hip with both feets
+
+		// Read Poses from TrackingSystem
+		auto hipPose = getAssignedPose(Joint::HIPS);
+		auto headPose = getAssignedPose(Joint::HEAD);
+
+		auto leftLegPose = getAssignedPose(Joint::LEG_L);
 		auto leftFootPose = getAssignedPose(Joint::FOOT_L);
+
+		auto rightLegPose = getAssignedPose(Joint::LEG_R);
 		auto rightFootPose = getAssignedPose(Joint::FOOT_R);
 
-		if (!leftFootPose.isNull() && !rightFootPose.isNull()) {
+		auto leftForearmPose = getAssignedPose(Joint::FOREARM_L);
+		auto leftHandPose = getAssignedPose(Joint::HAND_L);
+
+		auto rightForearmPose = getAssignedPose(Joint::FOREARM_R);
+		auto rightHandPose = getAssignedPose(Joint::HAND_R);
+
+
+		bool hasLeftFootPose = !leftFootPose.isNull();
+		bool hasRightFootPose = !rightFootPose.isNull();
+
+		bool hasLeftLegPose = !leftLegPose.isNull();
+		bool hasRightLegPose = !rightLegPose.isNull();
+
+		bool hasLeftForearmPose = !leftForearmPose.isNull();
+		bool hasRightForearmPose = !rightForearmPose.isNull();
+
+		auto start = std::chrono::high_resolution_clock::now();
+
+		// Hint Hip with both feets
+		if (hasLeftFootPose && hasRightFootPose) {
 			ikSolverHip->hint(leftFootPose.position, rightFootPose.position);
-			if (useTestSkeleton) testIkSolverHip->hint(leftFootPose.position, rightFootPose.position);
 		}
 
 		// Solve Hip
-		auto hipPose = getAssignedPose(Joint::HIPS);
-		if (DEBUG_SKELETON_POS) {
-			hipPose.position += m_properties->positionOffset;
-		}
-		if (DEBUG_SKELETON_ROT) {
-			hipPose.rotation = eulerToQuaternion(m_properties->rotationOffset);
-		}
 		ikSolverHip->solve(hipPose.position, hipPose.rotation);
 
-		if (useTestSkeleton) testIkSolverHip->solve(hipPose.position, hipPose.rotation);
-
 		// Solve Spine
-		auto headPose = getAssignedPose(Joint::HEAD);
-
-		if (DEBUG_SKELETON_POS) {
-			headPose.position += m_properties->positionOffset;
-		}
-
 		ikSolverSpine->solve(headPose.position, headPose.rotation);
 
-		if (useTestSkeleton) testIkSolverSpine->solve(headPose.position, headPose.rotation);
-
 		// Hint LeftLeg
-		auto leftLegPose = getAssignedPose(Joint::LEG_L);
-		if (!leftLegPose.isNull()) {
+		if (hasLeftLegPose) {
 			ikSolverLeftLeg->hint(leftLegPose.position, leftLegPose.rotation);
 		}
 
 		// Solve LeftLeg
 		ikSolverLeftLeg->solve(leftFootPose.position, leftFootPose.rotation);
 
-		if (useTestSkeleton) testIkSolverLeftLeg->solve(leftFootPose.position, leftFootPose.rotation);
-
 		// Hint RightLeg
-		auto rightLegPose = getAssignedPose(Joint::LEG_R);
-		if (!rightLegPose.isNull()) {
+		if (hasRightLegPose) {
 			ikSolverRightLeg->hint(rightLegPose.position, rightLegPose.rotation);
 		}
 
 		// Solve RightLeg
 		ikSolverRightLeg->solve(rightFootPose.position, rightFootPose.rotation);
 
-		if (useTestSkeleton) testIkSolverRightLeg->solve(rightFootPose.position, rightFootPose.rotation);
-
-		if (SOLVE_ARMS) {
 			// Hint LeftArm
-			auto leftForearmPose = getAssignedPose(Joint::FOREARM_L);
-			if (!leftForearmPose.isNull()) {
+		if (hasLeftForearmPose) {
 				ikSolverLeftArm->hint(leftForearmPose.position, leftForearmPose.rotation);
 			}
 
 			// Solve LeftArm
-			auto leftHandPose = getAssignedPose(Joint::HAND_L);
 			ikSolverLeftArm->solve(leftHandPose.position, leftHandPose.rotation);
 
-			if (useTestSkeleton) testIkSolverLeftArm->solve(leftHandPose.position, leftHandPose.rotation);
-
 			// Hint RightArm
-			auto rightForearmPose = getAssignedPose(Joint::FOREARM_R);
-			if (!rightForearmPose.isNull()) {
+		if (hasRightForearmPose) {
 				ikSolverRightArm->hint(rightForearmPose.position, rightForearmPose.rotation);
 			}
 
 			// Solve RightArm
-			auto rightHandPose = getAssignedPose(Joint::HAND_R);
 			ikSolverRightArm->solve(rightHandPose.position, rightHandPose.rotation);
 
-			if (useTestSkeleton) testIkSolverRightArm->solve(rightHandPose.position, rightHandPose.rotation);
+		auto end = std::chrono::high_resolution_clock::now();
+
+		auto microseconds = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+
+		timingIK.addValue(microseconds);
+		//Console::logWarning(toString(evaluation.getAverage()) + " " + toString(evaluation.getMedian()) + " " + toString(evaluation.getMin()) + " " + toString(evaluation.getMax()));
+
+
+		if (useTestSkeleton) {
+
+			start = std::chrono::high_resolution_clock::now();
+
+			// Hint Hip with both feets
+			if (hasLeftFootPose && hasRightFootPose) {
+				testIkSolverHip->hint(leftFootPose.position, rightFootPose.position);
+			}
+
+			// Solve Hip
+			testIkSolverHip->solve(hipPose.position, hipPose.rotation);
+
+			// Solve Spine
+			testIkSolverSpine->solve(headPose.position, headPose.rotation);
+
+			// Solve LeftLeg
+			testIkSolverLeftLeg->solve(leftFootPose.position, leftFootPose.rotation);
+
+			// Solve RightLeg
+			testIkSolverRightLeg->solve(rightFootPose.position, rightFootPose.rotation);
+
+			// Solve LeftArm
+			testIkSolverLeftArm->solve(leftHandPose.position, leftHandPose.rotation);
+
+			// Solve RightArm
+			testIkSolverRightArm->solve(rightHandPose.position, rightHandPose.rotation);
+
+			end = std::chrono::high_resolution_clock::now();
+
+			microseconds = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+
+			timingIKTest.addValue(microseconds);
 		}
 	}
 
@@ -509,7 +611,7 @@ void OVRTracker::extractSkeleton() {
 	}
 
 	if (useTestSkeleton) {
-		id = id + 1;
+		id = id + 100;
 
 		skeletonIterator = m_skeletonPool.find(id);
 

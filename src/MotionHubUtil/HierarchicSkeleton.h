@@ -20,6 +20,7 @@ public:
 	 * Initializes the HierarchicSkeleton with default values
 	 */
 	void init();
+	void initXsens();
 
 	void init(Skeleton otherSkeleton);
 
