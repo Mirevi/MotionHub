@@ -98,6 +98,8 @@ public:
 
 	void convertFromSkeleton(Joint joint);
 
+	void convertFromSkeleton(Joint joint, Joint parentJoint);
+
 protected:
 
 	Matrix4f combineParentMatrixRecursive(HierarchicJoint* hierarchicJoint);
