@@ -83,7 +83,7 @@ OsgQtWidget::OsgQtWidget(osgQt::GraphicsWindowQt* gw, TrackerManager* trackerMan
 //Is envoked, when no (global) tracking is active and a new tracker is added or removed
 void OsgQtWidget::updateSkeletonMeshPoolSize()
 {
-
+	//std::cout << "updateSkeletonMeshPoolSize()" << std::endl;
 	// get tracker pool from the tracker manager
 	std::vector<Tracker*> trackerTempCopy = m_refTrackerManager->getPoolTracker();
 	// lock the tracker pool
@@ -158,6 +158,7 @@ void OsgQtWidget::updateSkeletonMeshPoolSize()
 //Is envoked, when (global) tracking is active and a new skeleton of a tracker (for example spawned by Azure Kinect) appears in the tracking data
 void OsgQtWidget::updateSkeletonMeshCount()
 {
+	//std::cout << "updateSkeletonMeshCount()" << std::endl;
 	// get tracker pool from the tracker manager
 	std::vector<Tracker*> trackerTempCopy = m_refTrackerManager->getPoolTracker();
 	// lock the tracker pool
@@ -166,19 +167,20 @@ void OsgQtWidget::updateSkeletonMeshCount()
 	// loop over all tracker
 	for (auto itTracker = trackerTempCopy.begin(); itTracker != trackerTempCopy.end(); itTracker++)
 	{
-		// get skeletonPoolCache from tracker and create skeletonPoolTempCopy
+		// get skeletonPoolCache from tracker and create skeletonPoolTempCopy 
+		// (because the SkeletonPool of the tracker can be changed by the external tracking thread at any time and can't be locked for a 'long' time)
 		std::map<int, Skeleton> skeletonPoolTempCopy = (*itTracker)->getSkeletonPoolCache();
 
 		// if tracker is active update
 		if ((*itTracker)->isTracking())
 		{
-			// get skeletonPoolSize
-			int skeletonPoolSize = skeletonPoolTempCopy.size();
+			// get skeletonPoolTempCopySize
+			int skeletonPoolTempCopySize = skeletonPoolTempCopy.size();
 			// get skeletonMeshPoolSize by id of current tracker
 			int skeletonMeshPoolSize = m_skeletonMeshPool.find((*itTracker)->getProperties()->id)->second.size();
 
-			// add skeleton mesh to skeleton mesh pool when skeletonMeshPoolSize is smaller than skeletonPoolSize
-			if (skeletonMeshPoolSize < skeletonPoolSize)
+			// add a skeleton mesh to skeletonMeshPool when skeletonMeshPoolSize is smaller than skeletonPoolTempCopySize
+			if (skeletonMeshPoolSize < skeletonPoolTempCopySize)
 			{
 
 				while (m_skeletonMeshPool.find((*itTracker)->getProperties()->id)->second.size() < skeletonPoolTempCopy.size())
@@ -191,16 +193,17 @@ void OsgQtWidget::updateSkeletonMeshCount()
 						m_renderStickManRendering));
 				}
 			}
-			// remove skeleton mesh from skeleton mesh pool when skeletonMeshPoolSize is bigger than skeletonPoolSize
-			else if (skeletonMeshPoolSize > skeletonPoolSize)
+			// remove skeleton mesh from skeleton mesh pool when skeletonMeshPoolSize is bigger than skeletonPoolTempCopySize
+			else if (skeletonMeshPoolSize > skeletonPoolTempCopySize)
 			{
 				while (m_skeletonMeshPool.find((*itTracker)->getProperties()->id)->second.size() > skeletonPoolTempCopy.size())
 				{
+					int loopSID = 0;
 					//remove skeletonMesh from skeletonMeshPool. Walk over all skeletons in the m_skeletonMeshPool...
 					for (int i = 0; i < m_skeletonMeshPool.find((*itTracker)->getProperties()->id)->second.size(); i++)
 					{
-						//..and get the according sid of the skeleton ("skelton id" is "sid")...
-						int loopSID = m_skeletonMeshPool.find((*itTracker)->getProperties()->id)->second.at(i).getSid();
+						//..and get the according SID of the skeleton ("skelton id" is "SID")...
+						loopSID = m_skeletonMeshPool.find((*itTracker)->getProperties()->id)->second.at(i).getSid();
 						// (store a flag)
 						bool isSkeletonInSkeletonPoolTempCopy = false;
 						//... and walk over all skeletons stored in skeletonPoolTempCopy
@@ -210,6 +213,7 @@ void OsgQtWidget::updateSkeletonMeshCount()
 							if (loopSID == itSkeleton->second.getSid())
 							{
 								isSkeletonInSkeletonPoolTempCopy = true;
+								break;
 							}
 						}
 						//if no skeleton with loopSID could be found in skeletonPoolTempCopy then remove it from the member m_skeletonMeshPool
@@ -218,10 +222,13 @@ void OsgQtWidget::updateSkeletonMeshCount()
 							//remove skeleton with loopSID
 							for (int j = 0; j < m_skeletonMeshPool.find((*itTracker)->getProperties()->id)->second.size(); j++)
 							{
-								//call destrcutor for managing the scenegraph (and avoid mem holes)
-								m_skeletonMeshPool.find((*itTracker)->getProperties()->id)->second.at(j).removeAndDelete();
-								//and finally remove it from the vector
-								m_skeletonMeshPool.find((*itTracker)->getProperties()->id)->second.erase(m_skeletonMeshPool.find((*itTracker)->getProperties()->id)->second.begin() + j);
+								if (loopSID == m_skeletonMeshPool.find((*itTracker)->getProperties()->id)->second.at(j).getSid())
+								{
+									//call destrcutor for managing the scenegraph (and avoid mem holes)
+									m_skeletonMeshPool.find((*itTracker)->getProperties()->id)->second.at(j).removeAndDelete();
+									//and finally remove it from the vector
+									m_skeletonMeshPool.find((*itTracker)->getProperties()->id)->second.erase(m_skeletonMeshPool.find((*itTracker)->getProperties()->id)->second.begin() + j);
+								}
 							}
 						}
 					}
@@ -233,10 +240,10 @@ void OsgQtWidget::updateSkeletonMeshCount()
 	m_refTrackerManager->getTrackerPoolLock()->unlock();
 }
 
-
 // Loop every MotionHub GLWindow frame
 void OsgQtWidget::updateSkeletonMeshTransform()
 {
+	//std::cout << "updateSkeletonMeshTransform()" << std::endl;
 	// get tracker pool from the tracker manager
 	std::vector<Tracker*> trackerTempCopy = m_refTrackerManager->getPoolTracker();
 
