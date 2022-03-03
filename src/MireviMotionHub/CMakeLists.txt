@@ -55,6 +55,7 @@ target_link_libraries(MireviMotionHub
 	debug GestureManagement${CMAKE_DEBUG_POSTFIX} optimized GestureManagement
 	debug RenderManagement${CMAKE_DEBUG_POSTFIX} optimized RenderManagement
 	debug NetworkManagement${CMAKE_DEBUG_POSTFIX} optimized NetworkManagement
+	debug FaceSynthesizing${CMAKE_DEBUG_POSTFIX} optimized FaceSynthesizing
 	${OpenCV_LIBS}
 
 )

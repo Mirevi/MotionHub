@@ -1,7 +1,10 @@
 # top level cmake file MireviMotionHub
 
-cmake_minimum_required (VERSION 2.6 FATAL_ERROR)
+cmake_minimum_required (VERSION 3.8 FATAL_ERROR)
 project (MireviMotionHub)
+
+# enable cuda
+enable_language(CUDA)
 
 include_directories("${CMAKE_SOURCE_DIR}/src")
 
@@ -42,12 +45,18 @@ function(getsTheDepsNameFromURL "${URL}")
 endfunction(getsTheDepsNameFromURL)
 
 # CMake Modules
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
+set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${CMAKE_SOURCE_DIR}/cmake;${CMAKE_SOURCE_DIR}/cmake/Modules/")
 #FIND_PACKAGE( OpenSceneGraph REQUIRED ) # Cmake will look for cmake scripts in /cmake/Modules/. This examples searches "FindOpenSceneGraph.cmake"
 #FIND_PACKAGE( AzureKinectBodyTrackingSDK REQUIRED )
 #FIND_PACKAGE( AzureKinectSensorSDK REQUIRED )
 #FIND_PACKAGE( OSCPack REQUIRED )
 #FIND_PACKAGE( Cudnn REQUIRED )
+FIND_PACKAGE( PythonLibs REQUIRED )
+FIND_PACKAGE( Python3 REQUIRED COMPONENTS Interpreter )
+FIND_PACKAGE( Boost COMPONENTS python numpy REQUIRED )
+
+# install Face synthesizer
+include(InstallFaceSynthesizer)
 
 #QT5ForMireviMotionHub -> downloads dependency from web
 cmake_policy(SET CMP0020 NEW) #supresses CMake Warnings to CMP2020
@@ -120,7 +129,6 @@ FIND_PACKAGE( OpenCVForMotionHub REQUIRED)
 file(COPY ${CURRENT_DEPS_PATH}x64/vc15/bin/opencv_world420.dll DESTINATION ${CMAKE_BINARY_DIR}/bin)
 file(COPY ${CURRENT_DEPS_PATH}x64/vc15/bin/opencv_world420d.dll DESTINATION ${CMAKE_BINARY_DIR}/bin)
 
-
 # Add subdir with additional CMakeLists.txt and files
 add_subdirectory("${CMAKE_SOURCE_DIR}/src/MireviMotionHub") # CMake look for further CMakeLists.txt in that directory
 add_subdirectory("${CMAKE_SOURCE_DIR}/src/TrackerManagement")
@@ -129,6 +137,7 @@ add_subdirectory("${CMAKE_SOURCE_DIR}/src/RenderManagement")
 # add_subdirectory("${CMAKE_SOURCE_DIR}/src/3DRenderManagement")
 add_subdirectory("${CMAKE_SOURCE_DIR}/src/GestureManagement")
 add_subdirectory("${CMAKE_SOURCE_DIR}/src/MotionHubUtil")
+add_subdirectory("${CMAKE_SOURCE_DIR}/src/FaceSynthesizing")
 
 message(STATUS "Copiyng files to bin")
 
