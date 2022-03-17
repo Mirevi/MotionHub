@@ -4,7 +4,7 @@ message(STATUS "Download/Update Face-Synthesizer")
 FetchContent_Declare(
   face-synthesizer
   GIT_REPOSITORY git@gitlab.com:reauso/face-synthesizer.git
-  GIT_TAG origin/main
+  GIT_TAG origin/dev
 )
 FetchContent_MakeAvailable(face-synthesizer)
 

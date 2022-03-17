@@ -1,33 +1,24 @@
 # CmakeLists for FaceSynthesizing
 
-#k4a
 include_directories(${CMAKE_BINARY_DIR}/src
 ${K4A_INCLUDE_DIR}
-${K4ABT_INCLUDE_DIR}
 ${Cudnn_INCLUDE_DIR}
 ${NATNET_SDK_INCLUDE_DIR}
 ${OSCp_INCLUDE_DIR}
 ${EIGEN_INCLUDE_DIR}
 ${OpenCV_INCLUDE_DIRS}
+${PYTHON_INCLUDE_DIRS}
+${Boost_INCLUDE_DIRS}
 )
 
-
-#link_directories(${CMAKE_BINARY_DIR}/lib "${CMAKE_BINARY_DIR}/lib" )
-#k4abt
-#link_directories(${CMAKE_BINARY_DIR}/lib "${CMAKE_BINARY_DIR}/lib" )
-#Cudnn
-#link_directories(${CMAKE_BINARY_DIR}/lib "${CMAKE_BINARY_DIR}/lib" )
-#NatNetSDK
-#link_directories(${CMAKE_BINARY_DIR}/lib "${CMAKE_BINARY_DIR}/lib" )
-
-#eigen
 link_directories(${CMAKE_BINARY_DIR}/lib
  "${CMAKE_BINARY_DIR}/lib"
-${K4A_LIBRARIES_DIR}
-${K4ABT_LIBRARIES_DIR}
-${Cudnn_LIBRARIES_DIR}
-${NATNET_SDK_LIBRARIES_DIR}
-${OSCp_LIBRARIES_DIR}
+	${K4A_LIBRARIES_DIR}
+	${Cudnn_LIBRARIES_DIR}
+	${NATNET_SDK_LIBRARIES_DIR}
+	${OSCp_LIBRARIES_DIR}
+	${Boost_LIBRARIES} 
+	${PYTHON_LIBRARIES}
 )
 
 # Find includes in corresponding build directories
@@ -62,4 +53,7 @@ target_link_libraries(FaceSynthesizing
 	#debug Qt5Core${CMAKE_DEBUG_POSTFIX} optimized Qt5Core
 	#debug Qt5Widgets${CMAKE_DEBUG_POSTFIX} optimized Qt5Widgets
 	${OpenCV_LIBS}
+	${Boost_LIBRARIES} 
+	${PYTHON_LIBRARIES}
+	Boost::dynamic_linking
 )

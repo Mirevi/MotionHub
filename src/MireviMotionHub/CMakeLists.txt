@@ -18,6 +18,12 @@ link_directories(${CMAKE_BINARY_DIR}/lib "${CMAKE_BINARY_DIR}/lib" ${Qt5ForMirev
 #NatNetSDK
 include_directories(${CMAKE_BINARY_DIR}/src ${NATNET_SDK_INCLUDE_DIR})
 link_directories(${CMAKE_BINARY_DIR}/lib "${CMAKE_BINARY_DIR}/lib" ${NATNET_SDK_LIBRARIES_DIR})
+#Python
+include_directories(${CMAKE_BINARY_DIR}/src ${PYTHON_INCLUDE_DIRS})
+link_directories(${CMAKE_BINARY_DIR}/lib "${CMAKE_BINARY_DIR}/lib" ${PYTHON_LIBRARIES})
+#Boost
+include_directories(${CMAKE_BINARY_DIR}/src ${Boost_INCLUDE_DIRS})
+link_directories(${CMAKE_BINARY_DIR}/lib "${CMAKE_BINARY_DIR}/lib" ${PYTHON_LIBRARIES})
 #OpenCV
 include_directories(${CMAKE_BINARY_DIR}/src ${OpenCV_INCLUDE_DIRS})
 
@@ -55,8 +61,9 @@ target_link_libraries(MireviMotionHub
 	debug GestureManagement${CMAKE_DEBUG_POSTFIX} optimized GestureManagement
 	debug RenderManagement${CMAKE_DEBUG_POSTFIX} optimized RenderManagement
 	debug NetworkManagement${CMAKE_DEBUG_POSTFIX} optimized NetworkManagement
-	debug FaceSynthesizing${CMAKE_DEBUG_POSTFIX} optimized FaceSynthesizing
 	${OpenCV_LIBS}
+	${PYTHON_LIBRARIES}
+	${Boost_LIBRARIES}
 
 )
 add_compile_definitions(NOMINMAX)

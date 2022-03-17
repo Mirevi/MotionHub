@@ -9,18 +9,10 @@ ${NATNET_SDK_INCLUDE_DIR}
 ${OSCp_INCLUDE_DIR}
 ${EIGEN_INCLUDE_DIR}
 ${OpenCV_INCLUDE_DIRS}
+${PYTHON_INCLUDE_DIRS}
+${Boost_INCLUDE_DIRS}
 )
 
-
-#link_directories(${CMAKE_BINARY_DIR}/lib "${CMAKE_BINARY_DIR}/lib" )
-#k4abt
-#link_directories(${CMAKE_BINARY_DIR}/lib "${CMAKE_BINARY_DIR}/lib" )
-#Cudnn
-#link_directories(${CMAKE_BINARY_DIR}/lib "${CMAKE_BINARY_DIR}/lib" )
-#NatNetSDK
-#link_directories(${CMAKE_BINARY_DIR}/lib "${CMAKE_BINARY_DIR}/lib" )
-
-#eigen
 link_directories(${CMAKE_BINARY_DIR}/lib
  "${CMAKE_BINARY_DIR}/lib"
 ${K4A_LIBRARIES_DIR}
@@ -28,6 +20,8 @@ ${K4ABT_LIBRARIES_DIR}
 ${Cudnn_LIBRARIES_DIR}
 ${NATNET_SDK_LIBRARIES_DIR}
 ${OSCp_LIBRARIES_DIR}
+${Boost_LIBRARIES} 
+${PYTHON_LIBRARIES}
 )
 
 # Find includes in corresponding build directories
@@ -56,6 +50,7 @@ target_link_libraries(RenderManagement
 	debug MotionHubUtil${CMAKE_DEBUG_POSTFIX} optimized MotionHubUtil
 	debug TrackerManagement${CMAKE_DEBUG_POSTFIX} optimized TrackerManagement
 	debug NetworkManagement${CMAKE_DEBUG_POSTFIX} optimized NetworkManagement
+	debug FaceSynthesizing${CMAKE_DEBUG_POSTFIX} optimized FaceSynthesizing
 
 	
 	debug k4a optimized k4a
@@ -65,4 +60,6 @@ target_link_libraries(RenderManagement
 	#debug Qt5Core${CMAKE_DEBUG_POSTFIX} optimized Qt5Core
 	#debug Qt5Widgets${CMAKE_DEBUG_POSTFIX} optimized Qt5Widgets
 	${OpenCV_LIBS}
+	${Boost_LIBRARIES} 
+	${PYTHON_LIBRARIES}
 )

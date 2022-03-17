@@ -5,6 +5,7 @@
 #include "GlWidget.h"
 #include "MotionHubUtil/Console.h"
 #include "NetworkSettingsWindow.h"
+#include "FaceSynthesizing/construction/FaceSynthesizingBuilder.h"
 
 
 #include <QtWidgets/QMainWindow>
@@ -17,8 +18,6 @@
 #include <math.h>
 #include <MotionHubUtil/MMHmath.h>
 
-
-
 #define GET_VARIABLE_NAME(Variable) (#Variable)
 
 
@@ -26,6 +25,7 @@
 #include <atomic>
 #include <list>
 #include <map>
+#include <memory>
 
 namespace Ui
 {
@@ -33,6 +33,7 @@ namespace Ui
 	class MainWindow;
 
 }
+namespace faceSynthesizing = facesynthesizing::construction;
 
 /*!
  * \class MainWindow
@@ -98,6 +99,7 @@ private slots:
 	void slotNetworkSettings();
 
 	void slotOpenGANCapture();
+	void slotOpenFaceSynthesizer();
 
 	void slotInspectorInputPosX(QString text);
 	void slotInspectorInputPosY(QString text);
@@ -129,8 +131,9 @@ private:
 	NetworkManager* m_networkManager;
 
 	NetworkSettingsWindow* m_netwokSettingsWindow;
-	
+
 	RGBDCaptureForGANWindow* m_RGBDCaptureForGANWindow;
+	std::shared_ptr<faceSynthesizing::FaceSynthesizingBuilder> m_faceSynthesizingBuilder;
 
 	/*!
 	 * reference to the tracker manager 

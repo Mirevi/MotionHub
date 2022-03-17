@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1920</width>
-    <height>1080</height>
+    <width>1760</width>
+    <height>1056</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -1222,7 +1222,7 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1920</width>
+     <width>1760</width>
      <height>22</height>
     </rect>
    </property>
@@ -1246,6 +1246,7 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
      <string>Tools</string>
     </property>
     <addaction name="actionCreate_dataset_for_GAN"/>
+    <addaction name="actionFace_Synthesizer"/>
    </widget>
    <addaction name="menu_file"/>
    <addaction name="menuEdit"/>
@@ -1265,6 +1266,14 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
   <action name="actionCreate_dataset_for_GAN">
    <property name="text">
     <string>Create dataset for GAN</string>
+   </property>
+  </action>
+  <action name="actionFace_Synthesizer">
+   <property name="text">
+    <string>Face-Synthesizer</string>
+   </property>
+   <property name="toolTip">
+    <string>Opens the Face Synthesizer interface.</string>
    </property>
   </action>
  </widget>
@@ -1296,12 +1305,12 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
    <slot>slotInspectorItemChanged(QTableWidgetItem*)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1907</x>
-     <y>530</y>
+     <x>1368</x>
+     <y>487</y>
     </hint>
     <hint type="destinationlabel">
-     <x>778</x>
-     <y>-15</y>
+     <x>1063</x>
+     <y>436</y>
     </hint>
    </hints>
   </connection>
@@ -1312,12 +1321,12 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
    <slot>slotToggleTracking()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1525</x>
+     <x>1419</x>
      <y>74</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1659</x>
-     <y>-11</y>
+     <x>1339</x>
+     <y>51</y>
     </hint>
    </hints>
   </connection>
@@ -1328,12 +1337,12 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
    <slot>slotRemoveTracker()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1490</x>
+     <x>1384</x>
      <y>74</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1767</x>
-     <y>-3</y>
+     <x>1447</x>
+     <y>59</y>
     </hint>
    </hints>
   </connection>
@@ -1344,12 +1353,12 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
    <slot>slotAddTracker()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1350</x>
+     <x>1244</x>
      <y>74</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1800</x>
-     <y>-11</y>
+     <x>1480</x>
+     <y>51</y>
     </hint>
    </hints>
   </connection>
@@ -1360,12 +1369,12 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
    <slot>slotAddGroup()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1411</x>
+     <x>1319</x>
      <y>65</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1220</x>
-     <y>89</y>
+     <x>924</x>
+     <y>202</y>
     </hint>
    </hints>
   </connection>
@@ -1376,12 +1385,12 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
    <slot>slotTrackerSelectionChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1436</x>
+     <x>1368</x>
      <y>176</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1170</x>
-     <y>133</y>
+     <x>993</x>
+     <y>250</y>
     </hint>
    </hints>
   </connection>
@@ -1397,7 +1406,7 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
     </hint>
     <hint type="destinationlabel">
      <x>959</x>
-     <y>539</y>
+     <y>396</y>
     </hint>
    </hints>
   </connection>
@@ -1413,11 +1422,26 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
     </hint>
     <hint type="destinationlabel">
      <x>959</x>
-     <y>539</y>
+     <y>396</y>
     </hint>
    </hints>
   </connection>
-  
+  <connection>
+   <sender>actionFace_Synthesizer</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>slotOpenFaceSynthesizer()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>879</x>
+     <y>527</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>slotToggleTracking()</slot>
@@ -1428,5 +1452,7 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
   <slot>slotInspectorItemChanged(QTableWidgetItem*)</slot>
   <slot>slotAddGroup()</slot>
   <slot>slotNetworkSettings()</slot>
+  <slot>slotOpenGANCapture()</slot>
+  <slot>slotOpenFaceSynthesizer()</slot>
  </slots>
 </ui>

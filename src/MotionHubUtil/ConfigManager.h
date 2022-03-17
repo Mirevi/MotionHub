@@ -9,6 +9,7 @@
 
 #include <map>
 #include <string>
+#include <filesystem>
 
 #include "tinyxml2.h"
 
@@ -35,10 +36,13 @@ private:
 	tinyxml2::XMLDocument m_xmlFile;
 	tinyxml2::XMLElement const* m_startUpConfigNode;
 
-
-
 public:
 	DebugLevel getDebugLevel();
+	void writeToConfig(std::string mapKeyIn, std::string value, std::string trackerType = "");
+	void createNewConfigFile();
+	bool readConfigFile(const char * filePath);
+	static void printDebugMessage(const char * message);
+
 	//TODO: Remove Warning for not dll exported stl class ->look here: http://stackoverflow.com/questions/4145605/stdvector-needs-to-have-dll-interface-to-be-used-by-clients-of-class-xt-war
 	std::string getStringFromStartupConfig(std::string mapKeyIn);
 	float getFloatFromStartupConfig(std::string mapKeyIn);
@@ -46,22 +50,5 @@ public:
 	bool getBoolFromStartupConfig(std::string mapKeyIn);
 	//osg::Vec3f getVec3fFromStartupConfig(std::string mapKeyIn);
 	//osg::Vec4f getVec4fFromStartupConfig(std::string mapKeyIn);
-
-
-	void writeToConfig(std::string mapKeyIn, std::string value, std::string trackerType = "");
-
-
-
-
-	void createNewConfigFile();
-
-	bool readConfigFile(const char * filePath);
-
-	static void printDebugMessage(const char * message);
-
-
-
-
-
 
 };

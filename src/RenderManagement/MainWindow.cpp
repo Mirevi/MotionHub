@@ -618,6 +618,19 @@ void MainWindow::slotOpenGANCapture()
 
 }
 
+void MainWindow::slotOpenFaceSynthesizer()
+{
+	//TODO with config
+	if (m_faceSynthesizingBuilder == nullptr) {
+		m_faceSynthesizingBuilder = std::make_shared<faceSynthesizing::FaceSynthesizingBuilder>();
+		m_faceSynthesizingBuilder->build(m_configManager);
+	}
+	std::shared_ptr<QDialog> gui = m_faceSynthesizingBuilder->getQtGUI();
+
+	gui->setModal(true);
+	gui->exec();
+}
+
 
 
 #pragma endregion Slots

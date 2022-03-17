@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>QtTabView</class>
+ <widget class="QDialog" name="QtTabView">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1228</width>
+    <height>703</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Face-Synthesizer</string>
+  </property>
+  <widget class="QTabWidget" name="tabWidget">
+   <property name="geometry">
+    <rect>
+     <x>-4</x>
+     <y>-1</y>
+     <width>1231</width>
+     <height>701</height>
+    </rect>
+   </property>
+   <property name="currentIndex">
+    <number>-1</number>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>tabWidget</sender>
+   <signal>currentChanged(int)</signal>
+   <receiver>QtTabView</receiver>
+   <slot>onTabChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>611</x>
+     <y>349</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>613</x>
+     <y>351</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>onTabChanged()</slot>
+ </slots>
+</ui>

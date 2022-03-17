@@ -6,25 +6,19 @@
 
 //Must be declared in .cpp since it is static
 
-
 ConfigManager::ConfigManager()
 {
-
 	// load config file
 	if (!readConfigFile(CONFIG_PATH))
 	{
-
 		Console::logError("MotionHub::MotionHub(): no config.xml found");
 
 		createNewConfigFile();
 
 		if (!readConfigFile(CONFIG_PATH))
 		{
-
 			Console::logError("MotionHub::MotionHub(): cannot create config.xml");
-
 		}
-
 	}
 
 }
@@ -177,8 +171,6 @@ bool ConfigManager::readConfigFile(const char * filePath)
 					}
 				}
 			}
-
-
 		}
 	}
 	return true;
@@ -192,16 +184,12 @@ void ConfigManager::printDebugMessage(const char * message)
 
 void ConfigManager::writeToConfig(std::string mapKeyIn, std::string value, std::string trackerType)
 {
-
-
 	m_startupConfig[mapKeyIn + trackerType] = value;
 
 	tinyxml2::XMLElement* currElem = m_xmlFile.RootElement()->FirstChildElement("startup_config")->FirstChildElement((mapKeyIn + trackerType).c_str())->ToElement();
 
-
 	currElem->SetText(value.c_str());
 	m_xmlFile.SaveFile(CONFIG_PATH);
-
 }
 
 void ConfigManager::createNewConfigFile()
@@ -222,8 +210,6 @@ void ConfigManager::createNewConfigFile()
 	tinyxml2::XMLElement* ipAddress = newXmlDoc.NewElement("ipAddress");
 	ipAddress->SetText("127.0.0.1");
 	pStartup->InsertEndChild(ipAddress);
-
-
 
 	//create Azure offset Elements to startup and set value
 	tinyxml2::XMLElement* xPosAzure = newXmlDoc.NewElement("xPosAzure");
@@ -247,6 +233,11 @@ void ConfigManager::createNewConfigFile()
 	tinyxml2::XMLElement* ySclOptiTrack = newXmlDoc.NewElement("ySclOptiTrack");
 	tinyxml2::XMLElement* zSclOptiTrack = newXmlDoc.NewElement("zSclOptiTrack");
 
+	//Face Synthesizing Elements
+	tinyxml2::XMLElement* fsDatasetRoot = newXmlDoc.NewElement("faceSynthesizingDatasetRoot");
+	tinyxml2::XMLElement* fsCheckpointRoot = newXmlDoc.NewElement("faceSynthesizingCheckpointsRoot");
+	tinyxml2::XMLElement* fsCameraType = newXmlDoc.NewElement("faceSynthesizingCameraType");
+
 	//set Azure values
 	xPosAzure->SetText("0");
 	yPosAzure->SetText("1.175");
@@ -268,6 +259,11 @@ void ConfigManager::createNewConfigFile()
 	xSclOptiTrack->SetText("1");
 	ySclOptiTrack->SetText("1");
 	zSclOptiTrack->SetText("1");
+
+	//set Face Synthesizing values
+	fsDatasetRoot->SetText((std::filesystem::current_path() / "data\\FaceSynthesizing\\datasets").string().c_str());
+	fsCheckpointRoot->SetText((std::filesystem::current_path() / "data\\FaceSynthesizing\\checkpoints").string().c_str());
+	fsCameraType->SetText("AzureKinect");
 
 	//add Azure to node
 	pStartup->InsertEndChild(xPosAzure);
@@ -291,24 +287,20 @@ void ConfigManager::createNewConfigFile()
 	pStartup->InsertEndChild(ySclOptiTrack);
 	pStartup->InsertEndChild(zSclOptiTrack);
 
-
+	//add FaceSynthesizing to node
+	pStartup->InsertEndChild(fsDatasetRoot);
+	pStartup->InsertEndChild(fsCheckpointRoot);
+	pStartup->InsertEndChild(fsCameraType);
 
 
 	//save file at the CONFIG_PATH directory, throw Error if it fails
 	if (newXmlDoc.SaveFile(CONFIG_PATH) == tinyxml2::XMLError::XML_SUCCESS)
 	{
-
 		Console::log("ConfigManager::createNewConfigFile(): Created new config.xml");
-
-
 	}
 	else
 	{
-
 		Console::logError("ConfigManager::createNewConfigFile(): ERROR saving file");
-
 	}
-
-
 
 }
