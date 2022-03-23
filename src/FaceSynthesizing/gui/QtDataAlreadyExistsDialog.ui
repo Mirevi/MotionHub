@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>QtDataAlreadyExistsDialog</class>
+ <widget class="QDialog" name="QtDataAlreadyExistsDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>477</width>
+    <height>214</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Data Already Exists</string>
+  </property>
+  <property name="modal">
+   <bool>false</bool>
+  </property>
+  <widget class="QWidget" name="horizontalLayoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>50</x>
+     <y>160</y>
+     <width>381</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <property name="spacing">
+     <number>12</number>
+    </property>
+    <item>
+     <widget class="QPushButton" name="overwritePushButton">
+      <property name="text">
+       <string>Overwrite</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="continuePushButton">
+      <property name="text">
+       <string>Continue</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="cancelPushButton">
+      <property name="text">
+       <string>Cancel</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QLabel" name="messageLabel">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>20</y>
+     <width>451</width>
+     <height>121</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>message</string>
+   </property>
+   <property name="wordWrap">
+    <bool>true</bool>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>overwritePushButton</sender>
+   <signal>clicked()</signal>
+   <receiver>QtDataAlreadyExistsDialog</receiver>
+   <slot>onOverwrite()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>45</x>
+     <y>124</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>34</x>
+     <y>104</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>continuePushButton</sender>
+   <signal>clicked()</signal>
+   <receiver>QtDataAlreadyExistsDialog</receiver>
+   <slot>onContinue()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>208</x>
+     <y>129</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>192</x>
+     <y>106</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cancelPushButton</sender>
+   <signal>clicked()</signal>
+   <receiver>QtDataAlreadyExistsDialog</receiver>
+   <slot>onCancel()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>332</x>
+     <y>130</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>335</x>
+     <y>105</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>onOverwrite()</slot>
+  <slot>onContinue()</slot>
+  <slot>onCancel()</slot>
+  <slot>onDone()</slot>
+ </slots>
+</ui>

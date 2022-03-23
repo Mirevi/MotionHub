@@ -2,9 +2,11 @@
 
 #include "../usecases/FaceSynthesizingGUIPresenter.h"
 #include "GUITab.h"
-#include "TabViewModel.h"
-#include "MessageViewModel.h"
-#include "CaptureDataViewModel.h"
+#include "GUITabViewModel.h"
+#include "GUIMessageViewModel.h"
+#include "GUICaptureDataViewModel.h"
+#include "GUIConvertDataViewModel.h"
+#include "GUITrainingViewModel.h"
 
 #include <memory>
 
@@ -20,24 +22,30 @@ namespace facesynthesizing::domain::adapters::gui {
 		void cameraIsInitialized();
 		void dataPairCaptureStarted();
 		void endOfTask();
+		void dataAlreadyExistsUserPrompt();
 
 		void addNote(std::string message);
 		void newStatusMessage(std::string message);
 		void updateStatusMessage(std::string message);
 		void statusMessageToNotes();
 
+		void presentAllCaptureNames(std::vector<std::string> allNames);
+		void presentTrainingDatasetNames(std::vector<std::string> allNames);
+		void presentAllCheckpointNames(std::vector<std::string> allNames);
+
 		//construction purpose
 		void setTabViewModel(std::shared_ptr<TabViewModel> tabViewModel);
 		void setMessageViewModel(std::shared_ptr<MessageViewModel> messageViewModel);
 		void setCaptureDataViewModel(std::shared_ptr<CaptureDataViewModel> captureDataViewModel);
-		//void setConvertDataViewModel(std::shared_ptr<ConvertDataViewModel> convertDataViewModel);
-		//void setTrainViewModel(std::shared_ptr<TrainViewModel> trainViewModel);
+		void setConvertDataViewModel(std::shared_ptr<ConvertDataViewModel> convertDataViewModel);
+		void setTrainingViewModel(std::shared_ptr<TrainingViewModel> trainingViewModel);
 		//void setInferenceViewModel(std::shared_ptr<InferenceViewModel> inferenceViewModel);
 	private:
 		void notifyImageChange(usecases::ImageType imageType);
 		void captureCameraInitializationStarted();
 		void captureCameraIsInitialized();
 		void endOfDataCaptureTask();
+		std::string getDataAlreadyExistsPromprMessage();
 
 		void lockCurrentView();
 		void unlockCurrentView();
@@ -45,8 +53,8 @@ namespace facesynthesizing::domain::adapters::gui {
 		std::shared_ptr<TabViewModel> tabViewModel;
 		std::shared_ptr<MessageViewModel> messageViewModel;
 		std::shared_ptr<CaptureDataViewModel> captureDataViewModel;
-		//std::shared_ptr<gui::ConvertDataViewModel> convertDataViewModel;
-		//std::shared_ptr<gui::TrainViewModel> trainViewModel;
+		std::shared_ptr<gui::ConvertDataViewModel> convertDataViewModel;
+		std::shared_ptr<gui::TrainingViewModel> trainingViewModel;
 		//std::shared_ptr<gui::InferenceViewModel> inferenceViewModel;
 	};
 }

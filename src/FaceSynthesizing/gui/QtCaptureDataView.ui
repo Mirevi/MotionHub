@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>965</width>
-    <height>643</height>
+    <width>1712</width>
+    <height>940</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,9 +16,9 @@
   <widget class="QGroupBox" name="configuration">
    <property name="geometry">
     <rect>
-     <x>20</x>
+     <x>10</x>
      <y>20</y>
-     <width>721</width>
+     <width>1501</width>
      <height>151</height>
     </rect>
    </property>
@@ -30,7 +30,7 @@
      <rect>
       <x>10</x>
       <y>20</y>
-      <width>701</width>
+      <width>1481</width>
       <height>121</height>
      </rect>
     </property>
@@ -244,7 +244,7 @@
   <widget class="QGroupBox" name="actions">
    <property name="geometry">
     <rect>
-     <x>760</x>
+     <x>1520</x>
      <y>20</y>
      <width>181</width>
      <height>151</height>
@@ -290,26 +290,26 @@
   <widget class="QGroupBox" name="visualization">
    <property name="geometry">
     <rect>
-     <x>20</x>
+     <x>10</x>
      <y>170</y>
-     <width>921</width>
-     <height>361</height>
+     <width>1691</width>
+     <height>631</height>
     </rect>
    </property>
    <property name="title">
     <string>Visualization</string>
    </property>
-   <widget class="QWidget" name="verticalLayoutWidget_2">
+   <widget class="QWidget" name="gridLayoutWidget_2">
     <property name="geometry">
      <rect>
-      <x>9</x>
-      <y>19</y>
-      <width>901</width>
-      <height>331</height>
+      <x>10</x>
+      <y>20</y>
+      <width>1671</width>
+      <height>601</height>
      </rect>
     </property>
-    <layout class="QVBoxLayout" name="verticalLayout_2">
-     <item>
+    <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,1,1">
+     <item row="0" column="0">
       <widget class="QCheckBox" name="visualizeCheckBox">
        <property name="layoutDirection">
         <enum>Qt::LeftToRight</enum>
@@ -319,44 +319,51 @@
        </property>
       </widget>
      </item>
-     <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_3">
-       <property name="spacing">
-        <number>20</number>
+     <item row="0" column="1">
+      <widget class="QLabel" name="label_7">
+       <property name="text">
+        <string>Camera RGB</string>
        </property>
-       <property name="leftMargin">
-        <number>10</number>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
        </property>
-       <property name="topMargin">
-        <number>10</number>
+      </widget>
+     </item>
+     <item row="0" column="2">
+      <widget class="QLabel" name="label_8">
+       <property name="text">
+        <string>Face Alignment</string>
        </property>
-       <property name="rightMargin">
-        <number>10</number>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
        </property>
-       <property name="bottomMargin">
-        <number>10</number>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLabel" name="imageColorLabel">
+       <property name="text">
+        <string>Image1</string>
        </property>
-       <item>
-        <widget class="QLabel" name="imageColorLabel">
-         <property name="text">
-          <string/>
-         </property>
-         <property name="scaledContents">
-          <bool>false</bool>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="imageAlignmentLabel">
-         <property name="text">
-          <string/>
-         </property>
-         <property name="scaledContents">
-          <bool>false</bool>
-         </property>
-        </widget>
-       </item>
-      </layout>
+       <property name="scaledContents">
+        <bool>false</bool>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="2">
+      <widget class="QLabel" name="imageAlignmentLabel">
+       <property name="text">
+        <string>Image2</string>
+       </property>
+       <property name="scaledContents">
+        <bool>false</bool>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
      </item>
     </layout>
    </widget>
@@ -364,10 +371,10 @@
   <widget class="QGroupBox" name="messages">
    <property name="geometry">
     <rect>
-     <x>20</x>
-     <y>530</y>
-     <width>921</width>
-     <height>91</height>
+     <x>10</x>
+     <y>800</y>
+     <width>1691</width>
+     <height>131</height>
     </rect>
    </property>
    <property name="title">
@@ -378,8 +385,8 @@
      <rect>
       <x>10</x>
       <y>20</y>
-      <width>901</width>
-      <height>61</height>
+      <width>1671</width>
+      <height>101</height>
      </rect>
     </property>
     <property name="tabChangesFocus">
@@ -487,8 +494,8 @@ p, li { white-space: pre-wrap; }
    <slot>onConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>549</x>
-     <y>86</y>
+     <x>877</x>
+     <y>94</y>
     </hint>
     <hint type="destinationlabel">
      <x>586</x>
@@ -535,8 +542,8 @@ p, li { white-space: pre-wrap; }
    <slot>onInitializeCamera()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>854</x>
-     <y>64</y>
+     <x>921</x>
+     <y>69</y>
     </hint>
     <hint type="destinationlabel">
      <x>856</x>
@@ -551,8 +558,8 @@ p, li { white-space: pre-wrap; }
    <slot>onStartCapture()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>894</x>
-     <y>103</y>
+     <x>921</x>
+     <y>110</y>
     </hint>
     <hint type="destinationlabel">
      <x>952</x>
@@ -567,8 +574,8 @@ p, li { white-space: pre-wrap; }
    <slot>onCancel()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>908</x>
-     <y>132</y>
+     <x>921</x>
+     <y>143</y>
     </hint>
     <hint type="destinationlabel">
      <x>954</x>

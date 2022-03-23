@@ -2,7 +2,7 @@
 
 #include "../usecases/FaceSynthesizingProject.h"
 #include "../usecases/FaceSynthesizingProjectInteractor.h"
-#include "IncludeBoostPython.h"
+#include "PythonIncludeBoost.h"
 #include "PythonImporter.h"
 #include "PythonImageWrapper.h"
 

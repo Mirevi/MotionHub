@@ -1,8 +1,8 @@
 #pragma once
 
-#include "IncludeBoostPython.h"
+#include "PythonIncludeBoost.h"
 #include "PythonImageWrapper.h"
-#include "FaceSynthesizer.h"
+#include "PythonFaceSynthesizer.h"
 
 #include <memory>
 #include <vector>

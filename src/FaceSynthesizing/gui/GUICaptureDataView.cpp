@@ -1,9 +1,14 @@
-#include "CaptureDataView.h"
+#include "GUICaptureDataView.h"
 
 namespace facesynthesizing::domain::adapters::gui {
-	FaceSynthesizingGUITabType CaptureDataView::getTabType()
+	CaptureDataView::~CaptureDataView()
 	{
-		return FaceSynthesizingGUITabType::CAPTURE;
+		messageViewModel->detachListener(this);
+		captureDataViewModel->detachListener(this);
+	}
+	GUITabType CaptureDataView::getTabType()
+	{
+		return GUITabType::CAPTURE;
 	}
 
 	void CaptureDataView::setGUIEventForwarder(std::shared_ptr<GUIEventForwarder> guiEventForwarder)

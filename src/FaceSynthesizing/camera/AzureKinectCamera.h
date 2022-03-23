@@ -1,6 +1,6 @@
 #pragma once
 
-#include "RGBDICamera.h"
+#include "CameraRGBDI.h"
 
 #include <memory>
 #include <iterator>
@@ -10,7 +10,7 @@
 namespace camera = facesynthesizing::domain::adapters::camera;
 
 namespace facesynthesizing::infrastructure::azurekinect {
-	class AzureKinectCamera : public camera::RGBDICamera {
+	class AzureKinectCamera : public camera::CameraRGBDI {
 	public:
 		AzureKinectCamera();
 		void initiate();

@@ -9,8 +9,6 @@ namespace facesynthesizing::infrastructure::qtgui{
         connectSignalsAndSlots();
         addItemsToBoundingBoxComboBox();
         addItemsToFaceAlignmentComboBox();
-
-        isInitialized = true;
     }
     void QtCaptureDataView::connectSignalsAndSlots()
     {
@@ -39,15 +37,22 @@ namespace facesynthesizing::infrastructure::qtgui{
             ui->faAlgorithmComboBox->addItem(QString::fromStdString(algorithmName));
         }
     }
-
     QtCaptureDataView::~QtCaptureDataView() {
         delete ui;
-        this->captureDataViewModel->detachListener(this);
     }
 
     void QtCaptureDataView::changeListenerTriggered(util::ChangeObservable* source)
     {
-        if (source == captureDataViewModel.get()) {
+        if (!isInitialized) {
+            // Synchronized !!!
+            updateConfigurationGroup();
+            updateTaskGroup();
+            updateVisualizationGroup();
+            updateMessages();
+
+            isInitialized = true;
+        }
+        else if (source == captureDataViewModel.get()) {
             updateConfigurationGroupAsync();
             updateTaskGroupAsync();
             updateVisualizationGroupAsync();
@@ -58,6 +63,7 @@ namespace facesynthesizing::infrastructure::qtgui{
     }
     void QtCaptureDataView::updateConfigurationGroup()
     {
+        isUpdating = true;
         ui->nameLineEdit->setText(QString::fromStdString(captureDataViewModel->name));
         ui->trainImagesSpinBox->setValue(captureDataViewModel->train_images);
         ui->evalImagesSpinBox->setValue(captureDataViewModel->evaluation_images);
@@ -77,44 +83,33 @@ namespace facesynthesizing::infrastructure::qtgui{
         ui->maxPitchDoubleSpinBox->setDisabled(!captureDataViewModel->isConfigurationActivated);
         ui->maxRollDoubleSpinBox->setDisabled(!captureDataViewModel->isConfigurationActivated);
         ui->maxYawDoubleSpinBox->setDisabled(!captureDataViewModel->isConfigurationActivated);
+        isUpdating = false;
     }
     void QtCaptureDataView::updateTaskGroup()
     {
-        ui->initializeCameraPushButton->setDisabled(!captureDataViewModel->isInitializeButtonActivated);
-        ui->startCapturePushButton->setDisabled(!captureDataViewModel->isCaptureButtonActivated);
-        ui->cancelPushButton->setDisabled(!captureDataViewModel->isCancelButtonActivated);
+        isUpdating = true;
+        ui->initializeCameraPushButton->setEnabled(captureDataViewModel->isInitializeButtonActivated);
+        ui->startCapturePushButton->setEnabled(captureDataViewModel->isCaptureButtonActivated);
+        ui->cancelPushButton->setEnabled(captureDataViewModel->isCancelButtonActivated);
+        isUpdating = false;
     }
     void QtCaptureDataView::updateVisualizationGroup()
     {
+        isUpdating = true;
         ui->visualizeCheckBox->setChecked(captureDataViewModel->visualize);
         if (captureDataViewModel->visualize) {
-            QImage qimage;
-            usecases::Image* image;
-            image = captureDataViewModel->colorImage.get();
-            if (image != nullptr) {
-                qimage = QImage(image->data.get(), image->width, image->height, QImage::Format_ARGB32);
-                qimage = qimage.scaled(256, 256, Qt::AspectRatioMode::KeepAspectRatio);
-                ui->imageColorLabel->setPixmap(QPixmap::fromImage(qimage));
-            }
-            else 
-                ui->imageColorLabel->clear();
-            
-            image = captureDataViewModel->faceAlignmentImage.get();
-            if (image != nullptr) {
-                qimage = QImage(image->data.get(), image->width, image->height, QImage::Format_ARGB32);
-                qimage = qimage.scaled(256, 256, Qt::AspectRatioMode::KeepAspectRatio);
-                ui->imageAlignmentLabel->setPixmap(QPixmap::fromImage(qimage));
-            }
-            else
-                ui->imageAlignmentLabel->clear();
+            visualizeImage(captureDataViewModel->colorImage, ui->imageColorLabel, QImage::Format_ARGB32);
+            visualizeImage(captureDataViewModel->faceAlignmentImage, ui->imageAlignmentLabel, QImage::Format_ARGB32);
         }
         else {
-            ui->imageColorLabel->setPixmap(QPixmap());
-            ui->imageAlignmentLabel->setPixmap(QPixmap());
-        }        
+            ui->imageColorLabel->clear();
+            ui->imageAlignmentLabel->clear();
+        }
+        isUpdating = false;
     }
     void QtCaptureDataView::updateMessages()
     {
+        isUpdating = true;
         std::string allMessages = "";
         QString messages;
         for (std::string message : messageViewModel->notes) 
@@ -124,44 +119,49 @@ namespace facesynthesizing::infrastructure::qtgui{
         ui->statusMessagesContainer->setText(QString::fromStdString(allMessages));
         auto scrollBarBottom = ui->statusMessagesContainer->verticalScrollBar()->maximum();
         ui->statusMessagesContainer->verticalScrollBar()->setValue(scrollBarBottom);
+        isUpdating = false;
     }
 
     void QtCaptureDataView::onConfigurationGroupChanged() {
-        if (isInitialized) {
-            captureDataViewModel->name = ui->nameLineEdit->text().toStdString();
-            captureDataViewModel->train_images = ui->trainImagesSpinBox->value();
-            captureDataViewModel->evaluation_images = ui->evalImagesSpinBox->value();
-            auto bbAlgorithmName = ui->bbAlgorithmComboBox->currentText().toStdString();
-            captureDataViewModel->boundingBoxAlgorithm = usecases::stringToBoundingBoxAlgorithm(bbAlgorithmName);
-            auto faAlgorithmName = ui->bbAlgorithmComboBox->currentText().toStdString();
-            captureDataViewModel->faceAlignmentAlgorithm = usecases::stringToFaceAlignmentAlgorithm(faAlgorithmName);
-            captureDataViewModel->maxPitch = static_cast<float>(ui->maxPitchDoubleSpinBox->value());
-            captureDataViewModel->maxRoll = static_cast<float>(ui->maxRollDoubleSpinBox->value());
-            captureDataViewModel->maxYaw = static_cast<float>(ui->maxYawDoubleSpinBox->value());
+        if (isUpdating || !isInitialized)
+            return;
 
-            captureDataViewModel->notify();
-        }
+        captureDataViewModel->name = ui->nameLineEdit->text().toStdString();
+        captureDataViewModel->train_images = ui->trainImagesSpinBox->value();
+        captureDataViewModel->evaluation_images = ui->evalImagesSpinBox->value();
+        auto bbAlgorithmName = ui->bbAlgorithmComboBox->currentText().toStdString();
+        captureDataViewModel->boundingBoxAlgorithm = usecases::stringToBoundingBoxAlgorithm(bbAlgorithmName);
+        auto faAlgorithmName = ui->bbAlgorithmComboBox->currentText().toStdString();
+        captureDataViewModel->faceAlignmentAlgorithm = usecases::stringToFaceAlignmentAlgorithm(faAlgorithmName);
+        captureDataViewModel->maxPitch = static_cast<float>(ui->maxPitchDoubleSpinBox->value());
+        captureDataViewModel->maxRoll = static_cast<float>(ui->maxRollDoubleSpinBox->value());
+        captureDataViewModel->maxYaw = static_cast<float>(ui->maxYawDoubleSpinBox->value());
+
+        captureDataViewModel->notify();
     }
     void QtCaptureDataView::onInitializeCamera() {
-        if (isInitialized) {
-            guiEventForwarder->initializeCamera();
-        }
+        if (isUpdating || !isInitialized)
+            return;
+
+        guiEventForwarder->initializeCamera();
     }
     void QtCaptureDataView::onStartCapture() {
-        if (isInitialized) {
-            guiEventForwarder->startCaptureData();
-        }
+        if (isUpdating || !isInitialized)
+            return;
+
+        guiEventForwarder->startCaptureData();
     }
     void QtCaptureDataView::onCancel() {
-        if (isInitialized) {
-            guiEventForwarder->cancel();
-        }
+        if (isUpdating || !isInitialized)
+            return;
+
+        guiEventForwarder->cancel();
     }
     void QtCaptureDataView::onVisualizationGroupChanged() {
-        if (isInitialized) {
-            captureDataViewModel->visualize = ui->visualizeCheckBox->isChecked();
+        if (isUpdating || !isInitialized)
+            return;
 
-            captureDataViewModel->notify();
-        }
+        captureDataViewModel->visualize = ui->visualizeCheckBox->isChecked();
+        captureDataViewModel->notify();
     }
 }

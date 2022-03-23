@@ -7,15 +7,15 @@ namespace facesynthesizing::construction {
 		// QT Views
 		qtTabView = std::make_shared<qtgui::QtTabView>();
 		qtCaptureDataView = std::make_shared<qtgui::QtCaptureDataView>();
-		//qtConvertDataView = std::make_shared<qtgui::QtConvertDataView>();
-		//qtTrainView = std::make_shared<qtgui::QtTrainView>();
+		qtConvertDataView = std::make_shared<qtgui::QtConvertDataView>();
+		qtTrainingView = std::make_shared<qtgui::QtTrainingView>();
 		//qtInferenceDataView = std::make_shared<qtgui::QtInferenceDataView>();
 
 		// Views
 		tabView = std::shared_ptr<qtgui::QtTabView>(qtTabView);
 		captureDataView = std::shared_ptr<qtgui::QtCaptureDataView>(qtCaptureDataView);
-		//convertDataView = std::shared_ptr<qtgui::QtConvertDataView>(qtConvertDataView);
-		//trainView = std::shared_ptr<qtgui::QtTrainView>(qtTrainView);
+		convertDataView = std::shared_ptr<qtgui::QtConvertDataView>(qtConvertDataView);
+		trainingView = std::shared_ptr<qtgui::QtTrainingView>(qtTrainingView);
 		//inferenceView = std::shared_ptr<qtgui::QtInferenceDataView>(qtInferenceDataView);
 	}
 
@@ -25,17 +25,9 @@ namespace facesynthesizing::construction {
 
 		// add Tabs to qtTabView
 		qtTabView->addTab(qtCaptureDataView.get(), "Capture Data");
-		//qtTabView->addTab(qtConvertDataView.get(), "Convert Data");
-		//qtTabView->addTab(qtTrainView.get(), "Train");
+		qtTabView->addTab(qtConvertDataView.get(), "Convert Data");
+		qtTabView->addTab(qtTrainingView.get(), "Training");
 		//qtTabView->addTab(qtInferenceDataView.get(), "Inference");
-
-		// View and View Model consistency
-		tabViewModel->notify();
-		messageViewModel->notify();
-		captureDataViewModel->notify();
-		//convertDataViewModel->notify();
-		//trainViewModel->notify();
-		//inferenceViewModel->notify();
 	}
 
 	std::shared_ptr<GuiMainWindow> QtGUIConstructor::getMainWindow()

@@ -1,10 +1,12 @@
 #pragma once
 
-#include "CaptureDataView.h"
+#include "GUICaptureDataView.h"
+#include "QtUtil.h"
 
 #include <list>
 #include <QtWidgets/QWidget>
 #include <QScrollBar>
+#include <QLabel>
 
 namespace gui = facesynthesizing::domain::adapters::gui;
 
@@ -27,21 +29,22 @@ namespace facesynthesizing::infrastructure::qtgui{
 		void updateVisualizationGroupAsync();
 		void updateMessagesAsync();
 	private slots:
+		void updateConfigurationGroup();
+		void updateTaskGroup();
+		void updateVisualizationGroup();
+		void updateMessages();
+
 		void onConfigurationGroupChanged();
 		void onInitializeCamera();
 		void onStartCapture();
 		void onCancel();
 		void onVisualizationGroupChanged();
-
-		void updateConfigurationGroup();
-		void updateTaskGroup();
-		void updateVisualizationGroup();
-		void updateMessages();
 	private:
 		void connectSignalsAndSlots();
 		void addItemsToBoundingBoxComboBox();
 		void addItemsToFaceAlignmentComboBox();
 
+		bool isUpdating = false;
 		bool isInitialized = false;
 		Ui::QtCaptureDataView* ui;
 	};

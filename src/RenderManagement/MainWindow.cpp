@@ -628,7 +628,7 @@ void MainWindow::slotOpenFaceSynthesizer()
 	std::shared_ptr<QDialog> gui = m_faceSynthesizingBuilder->getQtGUI();
 
 	gui->setModal(true);
-	gui->exec();
+	gui->open();
 }
 
 

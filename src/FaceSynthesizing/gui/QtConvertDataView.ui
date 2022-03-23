@@ -1,0 +1,1162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>QtConvertDataView</class>
+ <widget class="QWidget" name="QtConvertDataView">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1712</width>
+    <height>940</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <widget class="QGroupBox" name="configuration">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>1561</width>
+     <height>321</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>Configuration</string>
+   </property>
+   <widget class="QGroupBox" name="depthConversion">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>170</y>
+      <width>1541</width>
+      <height>141</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Depth Conversion</string>
+    </property>
+    <widget class="QWidget" name="gridLayoutWidget_2">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>20</y>
+       <width>1521</width>
+       <height>111</height>
+      </rect>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="3" column="5">
+       <widget class="QSpinBox" name="depthFillingPatchSizeSpinBox">
+        <property name="maximum">
+         <number>999999999</number>
+        </property>
+        <property name="value">
+         <number>17</number>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="6">
+       <widget class="QLabel" name="label_6">
+        <property name="text">
+         <string>Depth Filling extended Patch Size in Pixel:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="3">
+       <widget class="QSpinBox" name="depthFillingImageSizeSpinBox">
+        <property name="maximum">
+         <number>999999999</number>
+        </property>
+        <property name="value">
+         <number>400</number>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="QLabel" name="label_9">
+        <property name="text">
+         <string>Depth Padding in Pixel:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QSpinBox" name="faceDepthSpinBox">
+        <property name="maximum">
+         <number>999999999</number>
+        </property>
+        <property name="value">
+         <number>200</number>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_10">
+        <property name="text">
+         <string>Face Depth in mm:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="2">
+       <widget class="QLabel" name="label_7">
+        <property name="text">
+         <string>Depth Filling Image Size in Pixel: </string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="3">
+       <widget class="QSpinBox" name="depthPaddingSpinBox">
+        <property name="maximum">
+         <number>999999999</number>
+        </property>
+        <property name="value">
+         <number>20</number>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>Depth Filling Algorithm:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QCheckBox" name="useDepthFillingCheckBox">
+        <property name="text">
+         <string>Use Depth Filling</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QComboBox" name="depthFillingAlgorithmComboBox"/>
+      </item>
+      <item row="3" column="4">
+       <widget class="QLabel" name="label_4">
+        <property name="text">
+         <string>Depth Filling Patch Size in Pixel:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="7">
+       <widget class="QSpinBox" name="depthFillingExtendedPatchSizeSpinBox">
+        <property name="maximum">
+         <number>999999999</number>
+        </property>
+        <property name="value">
+         <number>29</number>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>Depth Filling Padding in Pixel: </string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QSpinBox" name="depthFillingPaddingSpinBox">
+        <property name="maximum">
+         <number>999999999</number>
+        </property>
+        <property name="value">
+         <number>150</number>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="2">
+       <widget class="QLabel" name="label_5">
+        <property name="text">
+         <string>Depth Filling Source Amount in Pixel:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="4">
+       <widget class="QCheckBox" name="depthFillingUseBlurCheckBox">
+        <property name="text">
+         <string>Depth Filling Use Blur</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+        <property name="tristate">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="6">
+       <widget class="QLabel" name="label_8">
+        <property name="text">
+         <string>Depth Filling Blur Kernel Size in Pixel: </string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="7">
+       <widget class="QSpinBox" name="depthFillingBlurkSizeSpinBox">
+        <property name="maximum">
+         <number>999999999</number>
+        </property>
+        <property name="value">
+         <number>9</number>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="3">
+       <widget class="QSpinBox" name="depthFillingSourceAmountSpinBox">
+        <property name="maximum">
+         <number>999999999</number>
+        </property>
+        <property name="value">
+         <number>10000</number>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </widget>
+   <widget class="QGroupBox" name="general">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>20</y>
+      <width>1541</width>
+      <height>81</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>General</string>
+    </property>
+    <widget class="QWidget" name="gridLayoutWidget">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>20</y>
+       <width>1521</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_14">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>PCA Landmark Components:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3">
+       <widget class="QDoubleSpinBox" name="horizontalCameraFOVDoubleSpinBox">
+        <property name="minimum">
+         <double>0.000000000000000</double>
+        </property>
+        <property name="maximum">
+         <double>180.000000000000000</double>
+        </property>
+        <property name="value">
+         <double>90.000000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QDoubleSpinBox" name="pcaLandmarkComponentsDoubleSpinBox">
+        <property name="decimals">
+         <number>6</number>
+        </property>
+        <property name="maximum">
+         <double>10000000000000000000000.000000000000000</double>
+        </property>
+        <property name="value">
+         <double>0.999900000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QLabel" name="label_11">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Horizontal Camera FoV in degree:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="5">
+       <widget class="QSpinBox" name="outputImageSizeSpinBox">
+        <property name="minimum">
+         <number>1</number>
+        </property>
+        <property name="maximum">
+         <number>999999999</number>
+        </property>
+        <property name="value">
+         <number>512</number>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="3">
+       <widget class="QDoubleSpinBox" name="pcaImageComponentsDoubleSpinBox">
+        <property name="decimals">
+         <number>6</number>
+        </property>
+        <property name="maximum">
+         <double>10000000000000000000000.000000000000000</double>
+        </property>
+        <property name="value">
+         <double>0.999900000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="7">
+       <widget class="QSpinBox" name="paddingSpinBox">
+        <property name="maximum">
+         <number>999999999</number>
+        </property>
+        <property name="value">
+         <number>20</number>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Name:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="5">
+       <widget class="QSpinBox" name="flmLineThicknessSpinBox">
+        <property name="minimum">
+         <number>1</number>
+        </property>
+        <property name="maximum">
+         <number>999999999</number>
+        </property>
+        <property name="value">
+         <number>4</number>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="4">
+       <widget class="QLabel" name="label_12">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Output Image Size in Pixel:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="6">
+       <widget class="QLabel" name="label_13">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Padding in Pixel:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2">
+       <widget class="QLabel" name="label_15">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>PCA Image Components:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="4">
+       <widget class="QLabel" name="label_16">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>FLM Line Thickness in Pixel:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QComboBox" name="nameComboBox"/>
+      </item>
+     </layout>
+    </widget>
+   </widget>
+   <widget class="QGroupBox" name="landmarkTracking">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>110</y>
+      <width>1541</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Landmark Tracking</string>
+    </property>
+    <widget class="QWidget" name="gridLayoutWidget_3">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>20</y>
+       <width>1521</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_3">
+      <item row="0" column="1">
+       <widget class="QComboBox" name="faceTrackingAlgorithmComboBox"/>
+      </item>
+      <item row="0" column="4">
+       <widget class="QLabel" name="label_19">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Eye Tracking Stride:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="5">
+       <widget class="QSpinBox" name="eyeTrackingStrideSpinBox">
+        <property name="minimum">
+         <number>1</number>
+        </property>
+        <property name="maximum">
+         <number>999999999</number>
+        </property>
+        <property name="value">
+         <number>1</number>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QLabel" name="label_17">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Eye Tracking Algorithm:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="6">
+       <widget class="QLabel" name="label_20">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Eye Tracking Threshold:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3">
+       <widget class="QComboBox" name="eyeTrackingAlgorithmComboBox"/>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_18">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Face Tracking Algorithm:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="7">
+       <widget class="QSpinBox" name="eyeTrackingThresholdSpinBox">
+        <property name="maximum">
+         <number>999999999</number>
+        </property>
+        <property name="value">
+         <number>89</number>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </widget>
+  </widget>
+  <widget class="QGroupBox" name="messages">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>820</y>
+     <width>1691</width>
+     <height>111</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>Status Messages</string>
+   </property>
+   <widget class="QTextBrowser" name="statusMessagesContainer">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>20</y>
+      <width>1671</width>
+      <height>81</height>
+     </rect>
+    </property>
+    <property name="tabChangesFocus">
+     <bool>false</bool>
+    </property>
+    <property name="readOnly">
+     <bool>true</bool>
+    </property>
+    <property name="html">
+     <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QGroupBox" name="actions">
+   <property name="geometry">
+    <rect>
+     <x>1580</x>
+     <y>10</y>
+     <width>121</width>
+     <height>321</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>Tasks</string>
+   </property>
+   <widget class="QWidget" name="verticalLayoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>30</y>
+      <width>101</width>
+      <height>54</height>
+     </rect>
+    </property>
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="QPushButton" name="convertDataPushButton">
+       <property name="text">
+        <string>Convert Data</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="cancelPushButton">
+       <property name="text">
+        <string>Cancel</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QGroupBox" name="visualization">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>330</y>
+     <width>1691</width>
+     <height>481</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>Visualization</string>
+   </property>
+   <widget class="QWidget" name="gridLayoutWidget_4">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>20</y>
+      <width>1671</width>
+      <height>451</height>
+     </rect>
+    </property>
+    <layout class="QGridLayout" name="gridLayout_4" columnstretch="0,0,1,1,1">
+     <item row="1" column="3">
+      <widget class="QLabel" name="imageDepthLabel">
+       <property name="text">
+        <string>TextLabel</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="2">
+      <widget class="QLabel" name="imageColorLabel">
+       <property name="text">
+        <string>TextLabel</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="4">
+      <widget class="QLabel" name="imageFLMLabel">
+       <property name="text">
+        <string>TextLabel</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="4">
+      <widget class="QLabel" name="label_23">
+       <property name="text">
+        <string>FLM</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="2">
+      <widget class="QLabel" name="label_21">
+       <property name="text">
+        <string>RGB</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="3">
+      <widget class="QLabel" name="label_22">
+       <property name="text">
+        <string>Depth</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QCheckBox" name="visualizeCheckBox">
+       <property name="layoutDirection">
+        <enum>Qt::LeftToRight</enum>
+       </property>
+       <property name="text">
+        <string>Visualize</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>nameComboBox</sender>
+   <signal>currentTextChanged(QString)</signal>
+   <receiver>QtConvertDataView</receiver>
+   <slot>onGeneralConfigurationGroupChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>304</x>
+     <y>39</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>372</x>
+     <y>0</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>horizontalCameraFOVDoubleSpinBox</sender>
+   <signal>editingFinished()</signal>
+   <receiver>QtConvertDataView</receiver>
+   <slot>onGeneralConfigurationGroupChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>609</x>
+     <y>46</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>865</x>
+     <y>7</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>paddingSpinBox</sender>
+   <signal>editingFinished()</signal>
+   <receiver>QtConvertDataView</receiver>
+   <slot>onGeneralConfigurationGroupChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1079</x>
+     <y>50</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>886</x>
+     <y>8</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pcaImageComponentsDoubleSpinBox</sender>
+   <signal>editingFinished()</signal>
+   <receiver>QtConvertDataView</receiver>
+   <slot>onGeneralConfigurationGroupChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>609</x>
+     <y>76</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>647</x>
+     <y>0</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>outputImageSizeSpinBox</sender>
+   <signal>editingFinished()</signal>
+   <receiver>QtConvertDataView</receiver>
+   <slot>onGeneralConfigurationGroupChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>860</x>
+     <y>50</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>394</x>
+     <y>1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pcaLandmarkComponentsDoubleSpinBox</sender>
+   <signal>editingFinished()</signal>
+   <receiver>QtConvertDataView</receiver>
+   <slot>onGeneralConfigurationGroupChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>304</x>
+     <y>76</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>422</x>
+     <y>3</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>flmLineThicknessSpinBox</sender>
+   <signal>editingFinished()</signal>
+   <receiver>QtConvertDataView</receiver>
+   <slot>onGeneralConfigurationGroupChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>860</x>
+     <y>76</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>433</x>
+     <y>9</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>eyeTrackingAlgorithmComboBox</sender>
+   <signal>currentTextChanged(QString)</signal>
+   <receiver>QtConvertDataView</receiver>
+   <slot>onLandmarkTrackingConfigurationGroupChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>552</x>
+     <y>129</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>16</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>eyeTrackingStrideSpinBox</sender>
+   <signal>editingFinished()</signal>
+   <receiver>QtConvertDataView</receiver>
+   <slot>onLandmarkTrackingConfigurationGroupChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>815</x>
+     <y>129</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>13</x>
+     <y>48</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>faceTrackingAlgorithmComboBox</sender>
+   <signal>currentTextChanged(QString)</signal>
+   <receiver>QtConvertDataView</receiver>
+   <slot>onLandmarkTrackingConfigurationGroupChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>288</x>
+     <y>129</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1103</x>
+     <y>26</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>eyeTrackingThresholdSpinBox</sender>
+   <signal>editingFinished()</signal>
+   <receiver>QtConvertDataView</receiver>
+   <slot>onLandmarkTrackingConfigurationGroupChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1079</x>
+     <y>129</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1103</x>
+     <y>58</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>depthPaddingSpinBox</sender>
+   <signal>editingFinished()</signal>
+   <receiver>QtConvertDataView</receiver>
+   <slot>onDepthConversionConfigurationGroupChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>536</x>
+     <y>179</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1103</x>
+     <y>137</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>depthFillingImageSizeSpinBox</sender>
+   <signal>editingFinished()</signal>
+   <receiver>QtConvertDataView</receiver>
+   <slot>onDepthConversionConfigurationGroupChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>536</x>
+     <y>228</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1103</x>
+     <y>164</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>depthFillingExtendedPatchSizeSpinBox</sender>
+   <signal>editingFinished()</signal>
+   <receiver>QtConvertDataView</receiver>
+   <slot>onDepthConversionConfigurationGroupChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1079</x>
+     <y>228</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1103</x>
+     <y>193</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>depthFillingSourceAmountSpinBox</sender>
+   <signal>editingFinished()</signal>
+   <receiver>QtConvertDataView</receiver>
+   <slot>onDepthConversionConfigurationGroupChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>536</x>
+     <y>253</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1103</x>
+     <y>218</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>depthFillingBlurkSizeSpinBox</sender>
+   <signal>editingFinished()</signal>
+   <receiver>QtConvertDataView</receiver>
+   <slot>onDepthConversionConfigurationGroupChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1079</x>
+     <y>253</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1103</x>
+     <y>245</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>faceDepthSpinBox</sender>
+   <signal>editingFinished()</signal>
+   <receiver>QtConvertDataView</receiver>
+   <slot>onDepthConversionConfigurationGroupChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>264</x>
+     <y>179</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>12</x>
+     <y>88</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>depthFillingAlgorithmComboBox</sender>
+   <signal>currentTextChanged(QString)</signal>
+   <receiver>QtConvertDataView</receiver>
+   <slot>onDepthConversionConfigurationGroupChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>264</x>
+     <y>228</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>10</x>
+     <y>115</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>depthFillingPatchSizeSpinBox</sender>
+   <signal>editingFinished()</signal>
+   <receiver>QtConvertDataView</receiver>
+   <slot>onDepthConversionConfigurationGroupChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>783</x>
+     <y>228</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>8</x>
+     <y>148</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>depthFillingPaddingSpinBox</sender>
+   <signal>editingFinished()</signal>
+   <receiver>QtConvertDataView</receiver>
+   <slot>onDepthConversionConfigurationGroupChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>264</x>
+     <y>253</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>13</x>
+     <y>174</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>useDepthFillingCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>QtConvertDataView</receiver>
+   <slot>onDepthConversionConfigurationGroupChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>54</x>
+     <y>203</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>10</x>
+     <y>202</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>depthFillingUseBlurCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>QtConvertDataView</receiver>
+   <slot>onDepthConversionConfigurationGroupChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>697</x>
+     <y>252</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>8</x>
+     <y>236</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>visualizeCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>QtConvertDataView</receiver>
+   <slot>onVisualizationGroupChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>35</x>
+     <y>418</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>9</x>
+     <y>387</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>convertDataPushButton</sender>
+   <signal>clicked()</signal>
+   <receiver>QtConvertDataView</receiver>
+   <slot>onConvert()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1043</x>
+     <y>323</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1101</x>
+     <y>397</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cancelPushButton</sender>
+   <signal>clicked()</signal>
+   <receiver>QtConvertDataView</receiver>
+   <slot>onCancel()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1060</x>
+     <y>352</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1102</x>
+     <y>430</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>onGeneralConfigurationGroupChanged()</slot>
+  <slot>onLandmarkTrackingConfigurationGroupChanged()</slot>
+  <slot>onDepthConversionConfigurationGroupChanged()</slot>
+  <slot>onConvert()</slot>
+  <slot>onCancel()</slot>
+  <slot>onVisualizationGroupChanged()</slot>
+ </slots>
+</ui>

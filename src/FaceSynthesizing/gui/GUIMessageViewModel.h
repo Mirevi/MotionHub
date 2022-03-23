@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ViewModel.h"
+#include "GUIViewModel.h"
 
 #include <vector>
 #include <string>

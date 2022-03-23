@@ -4,17 +4,17 @@
 #include "../usecases/FaceSynthesizingGUIInteractor.h"
 #include "../gui/GUIPresenter.h"
 #include "../gui/GUIEventForwarder.h"
-#include "../gui/TabViewModel.h"
-#include "../gui/MessageViewModel.h"
-#include "../gui/CaptureDataViewModel.h"
-//#include "../gui/ConvertDataViewModel.h"
-//#include "../gui/TrainViewModel.h"
-//#include "../gui/InferenceViewModel.h"
-#include "../gui/TabView.h"
-#include "../gui/CaptureDataView.h"
-//#include "../gui/ConvertDataView.h"
-//#include "../gui/TrainView.h"
-//#include "../gui/InferenceView.h"
+#include "../gui/GUITabViewModel.h"
+#include "../gui/GUIMessageViewModel.h"
+#include "../gui/GUICaptureDataViewModel.h"
+#include "../gui/GUIConvertDataViewModel.h"
+#include "../gui/GUITrainingViewModel.h"
+//#include "../gui/GUIInferenceViewModel.h"
+#include "../gui/GUITabView.h"
+#include "../gui/GUICaptureDataView.h"
+#include "../gui/GUIConvertDataView.h"
+#include "../gui/GUITrainingView.h"
+//#include "../gui/GUIInferenceView.h"
 
 #include <memory>
 
@@ -42,15 +42,15 @@ namespace facesynthesizing::construction {
 		std::shared_ptr<gui::TabViewModel> tabViewModel;
 		std::shared_ptr<gui::MessageViewModel> messageViewModel;
 		std::shared_ptr<gui::CaptureDataViewModel> captureDataViewModel;
-		//std::shared_ptr<gui::ConvertDataViewModel> convertDataViewModel;
-		//std::shared_ptr<gui::TrainViewModel> trainViewModel;
+		std::shared_ptr<gui::ConvertDataViewModel> convertDataViewModel;
+		std::shared_ptr<gui::TrainingViewModel> trainingViewModel;
 		//std::shared_ptr<gui::InferenceViewModel> inferenceViewModel;
 		
 		// Views
 		std::shared_ptr<gui::TabView> tabView;
 		std::shared_ptr<gui::CaptureDataView> captureDataView;
-		//std::shared_ptr<gui::ConvertDataView> convertDataView;
-		//std::shared_ptr<gui::TrainView> trainView;
+		std::shared_ptr<gui::ConvertDataView> convertDataView;
+		std::shared_ptr<gui::TrainingView> trainingView;
 		//std::shared_ptr<gui::InferenceDataView> inferenceView;
 	};
 }

@@ -1,4 +1,4 @@
-#include "ViewModel.h"
+#include "GUIViewModel.h"
 
 //TODO implement
 namespace facesynthesizing::domain::adapters::gui{

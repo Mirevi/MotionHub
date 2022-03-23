@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Constructor.h"
-#include "../python/IncludeBoostPython.h"
-#include "../python/FaceSynthesizer.h"
+#include "../python/PythonIncludeBoost.h"
+#include "../python/PythonFaceSynthesizer.h"
 #include "../python/PythonBoostModules.h"
 
 namespace python = facesynthesizing::infrastructure::python;

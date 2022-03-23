@@ -23,7 +23,6 @@ void ThreadPool::workerLoopFunction()
 		if (terminated)
 			continue;
 
-
 		currentJob = jobs.front();
 		jobs.pop();
 		lock.unlock();

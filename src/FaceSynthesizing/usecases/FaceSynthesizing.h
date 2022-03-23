@@ -7,10 +7,13 @@
 #include "FaceSynthesizingProjectInteractor.h"
 #include "FaceSynthesizingProject.h"
 #include "FaceSynthesizingFileSystem.h"
+#include "MotionHubUtil/ThreadPool.h"
 
 #include <memory>
 #include <thread>
+#include <mutex>
 #include <cmath>
+#include <functional>
 
 namespace facesynthesizing::domain::usecases {
 
@@ -18,12 +21,19 @@ namespace facesynthesizing::domain::usecases {
 		public FaceSynthesizingGUIInteractor, 
 		public FaceSynthesizingProjectInteractor {
 	public: 
+		FaceSynthesizing();
 		~FaceSynthesizing();
 		void startInitializeCameraTask();
 		void startCaptureDataTask(std::shared_ptr<CaptureDataInformation> captureDataInfo);
 		void cancelTask();
+		void setDataAlreadyExistsPromptResult(DataAlreadyExistsResult result);
 		void noImageAvailable(ImageType imageType);
 		void visualizeImage(std::shared_ptr<Image> image);
+
+		void asyncGUIRequest(GUIRequest requestType);
+		void processAllCaptureNamesRequest();
+		void processAllTrainingDatasetNames();
+		void processAllCheckpointNames();
 
 		// construction purpose
 		void setGuiPresenter(std::shared_ptr<FaceSynthesizingGUIPresenter> guiPresenter);
@@ -44,10 +54,14 @@ namespace facesynthesizing::domain::usecases {
 		std::shared_ptr<FaceSynthesizingFileSystem> fileSystem;
 
 		Task currentTask = Task::NO_TASK;
-		std::unique_ptr<std::thread> taskThread;
+		std::unique_ptr<std::thread> mainTaskThread;
+		std::mutex threadLock;
+		std::condition_variable dataAlreadyExistsCondition;
+		std::unique_ptr<ThreadPool> minorTasksThreadPool;
 
 		bool cameraIsInitiated = false;
 
 		std::shared_ptr<CaptureDataInformation> captureDataInfo;
+		DataAlreadyExistsResult dataAlreadyExistsResult = DataAlreadyExistsResult::No_Result;
 	};
 }

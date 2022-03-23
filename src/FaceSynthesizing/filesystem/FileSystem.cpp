@@ -8,10 +8,26 @@ namespace facesynthesizing::infrastructure::filesystem {
 	{
 		threadPool = std::make_unique<ThreadPool>(6);
 	}
-	void FileSystem::prepareSavingCaptureDataPairs(std::string captureName)
+	bool FileSystem::doesCaptureExists(std::string captureName)
 	{
-		fs::path trainingRoot = datasetRoot / "unprocessed" / captureName / "train";
-		fs::path evaluationRoot = datasetRoot / "unprocessed" / captureName / "eval";
+		if (captureName.empty())
+			return false;
+
+		fs::path captureRoot = datasetRoot / "unprocessed" / captureName;
+		return fs::exists(captureRoot);
+	}
+	std::vector<std::string> FileSystem::getAllExistingCaptureNames()
+	{
+		std::cout << "datasetRoot: " << datasetRoot.string() << std::endl;
+		fs::path unprocessedRoot = datasetRoot / "unprocessed";
+		return allNames(unprocessedRoot,
+			std::bind(&FileSystem::doesCaptureExists, this, std::placeholders::_1));
+	}
+	void FileSystem::prepareCaptureLocation(std::shared_ptr<usecases::CaptureDataInformation> captureInfos, bool overwrite)
+	{
+		fs::path captureRoot = datasetRoot / "unprocessed" / captureInfos->name;
+		fs::path trainingRoot = captureRoot / "train";
+		fs::path evaluationRoot = captureRoot / "eval";
 
 		fs::path trainingColorImageDir = trainingRoot / "Color";
 		fs::path trainingDepthImageDir = trainingRoot / "Depth";
@@ -20,12 +36,35 @@ namespace facesynthesizing::infrastructure::filesystem {
 		fs::path evaluationDepthImageDir = evaluationRoot / "Depth";
 		fs::path evaluationInfraredImageDir = evaluationRoot / "Infrared";
 
-		fs::create_directories(trainingColorImageDir);
-		fs::create_directories(trainingDepthImageDir);
-		fs::create_directories(trainingInfraredImageDir);
-		fs::create_directories(evaluationColorImageDir);
-		fs::create_directories(evaluationDepthImageDir);
-		fs::create_directories(evaluationInfraredImageDir);
+		if (overwrite && fs::exists(captureRoot) && !fs::remove_all(captureRoot))
+			throw "Could not remove root dir and content: " + captureRoot.string();
+		if (captureInfos->train_images > 0) {
+			fs::create_directories(trainingColorImageDir);
+			fs::create_directories(trainingDepthImageDir);
+			fs::create_directories(trainingInfraredImageDir);
+		}
+		if (captureInfos->evaluation_images > 0) {
+			fs::create_directories(evaluationColorImageDir);
+			fs::create_directories(evaluationDepthImageDir);
+			fs::create_directories(evaluationInfraredImageDir);
+		}
+	}
+	int FileSystem::countExistingCaptureDataPairs(std::string captureName)
+	{
+		if (!doesCaptureExists(captureName))
+			return 0;
+
+		fs::path trainColorDir = datasetRoot / "unprocessed" / captureName / "train" / "Color";
+		fs::path evalColorDir = datasetRoot / "unprocessed" / captureName / "eval" / "Color";
+
+		int trainDataPairs = 0;
+		int evalDataPairs = 0;
+		if (fs::exists(trainColorDir))
+			trainDataPairs = std::distance(fs::directory_iterator(trainColorDir), fs::directory_iterator{});
+		if (fs::exists(evalColorDir))
+			evalDataPairs = std::distance(fs::directory_iterator(evalColorDir), fs::directory_iterator{});
+
+		return trainDataPairs + evalDataPairs;
 	}
 	void FileSystem::saveCaptureDataPair(usecases::CaptureDataPair dataPair, std::string captureName, std::string filename, usecases::CaptureDataPairType type)
 	{
@@ -42,6 +81,61 @@ namespace facesynthesizing::infrastructure::filesystem {
 		threadPool->addJob(std::bind(&FileSystem::saveImage, this, dataPair.colorImage, colorImageFile));
 		threadPool->addJob(std::bind(&FileSystem::saveImage, this, dataPair.depthImage, depthImageFile));
 		threadPool->addJob(std::bind(&FileSystem::saveImage, this, dataPair.infraredImage, infraredImageFile));
+	}
+
+	bool FileSystem::doesDatasetExists(std::string datasetName)
+	{
+		if (datasetName.empty())
+			return false;
+
+		fs::path dataRoot = datasetRoot / "processed" / datasetName;
+		return fs::exists(dataRoot);
+	}
+	bool FileSystem::datasetContainsTrainingData(std::string datasetName)
+	{
+		fs::path dataRoot = datasetRoot / "processed" / datasetName / "train";
+		return fs::exists(dataRoot);
+	}
+	bool FileSystem::datasetContainsEvaluationData(std::string datasetName)
+	{
+		fs::path dataRoot = datasetRoot / "processed" / datasetName / "eval";
+		return fs::exists(dataRoot);
+	}
+	std::vector<std::string> FileSystem::getAllExistingDatasetNames()
+	{
+		fs::path processedRoot = datasetRoot / "processed";
+		return allNames(processedRoot,
+			std::bind(&FileSystem::doesDatasetExists, this, std::placeholders::_1));
+	}
+
+	bool FileSystem::doesCheckpointExists(std::string checkpointName)
+	{
+		if (checkpointName.empty())
+			return false;
+
+		fs::path modelRoot = checkpointsRoot / checkpointName;
+		return fs::exists(modelRoot);
+	}
+	std::vector<std::string> FileSystem::getAllExistingCheckpointNames()
+	{
+		return allNames(checkpointsRoot, 
+			std::bind(&FileSystem::doesCheckpointExists, this, std::placeholders::_1));
+	}
+	
+	std::vector<std::string> FileSystem::allNames(fs::path root, std::function<bool(std::string)> filenameValidator)
+	{
+		if (!fs::exists(root))
+			return {};
+
+		std::vector<std::string> allNames;
+		for (auto& entry : fs::directory_iterator(root)) {
+			if (entry.is_directory()) {
+				std::string filename = entry.path().filename().string();
+				if (filenameValidator(filename))
+					allNames.push_back(filename);
+			}
+		}
+		return allNames;
 	}
 	void FileSystem::saveImage(std::shared_ptr<usecases::Image> image, fs::path fullFilePath)
 	{

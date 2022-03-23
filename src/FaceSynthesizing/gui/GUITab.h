@@ -2,15 +2,15 @@
 # include <unordered_map>
 
 namespace facesynthesizing::domain::adapters::gui {
-	enum class FaceSynthesizingGUITabType {
+	enum class GUITabType {
 		CAPTURE,
 		CONVERT,
-		TRAIN,
+		TRAINING,
 		INFERENCE,
 	};
 
 	class GUITab {
 	public:
-		virtual FaceSynthesizingGUITabType getTabType() = 0;
+		virtual GUITabType getTabType() = 0;
 	};
 }

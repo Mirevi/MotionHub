@@ -1,17 +1,19 @@
 #pragma once
 
-#include "View.h"
-#include "CaptureDataViewModel.h"
-#include "MessageViewModel.h"
-#include "GUIEventForwarder.h"
+#include "GUIView.h"
 #include "GUITab.h"
+#include "GUIEventForwarder.h"
+#include "GUICaptureDataViewModel.h"
+#include "GUIMessageViewModel.h"
 
 #include <memory>
 
 namespace facesynthesizing::domain::adapters::gui {
 	class CaptureDataView: public View, public GUITab {
 	public:
-		FaceSynthesizingGUITabType getTabType();
+		~CaptureDataView();
+		GUITabType getTabType();
+
 		//construction purpose
 		void setGUIEventForwarder(std::shared_ptr<GUIEventForwarder> guiEventForwarder);
 		void setMessageViewModel(std::shared_ptr<MessageViewModel> messageViewModel);

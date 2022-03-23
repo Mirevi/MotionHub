@@ -1,4 +1,4 @@
-#include "FaceSynthesizer.h"
+#include "PythonFaceSynthesizer.h"
 
 #include <iostream>
 

@@ -42,7 +42,7 @@ namespace facesynthesizing::domain::adapters::gui {
 	void GUIPresenter::cameraInitializationStarted()
 	{
 		switch (tabViewModel->currentTab) {
-		case FaceSynthesizingGUITabType::CAPTURE:
+		case GUITabType::CAPTURE:
 			captureCameraInitializationStarted();
 			break;
 		}
@@ -60,7 +60,7 @@ namespace facesynthesizing::domain::adapters::gui {
 	void GUIPresenter::cameraIsInitialized()
 	{
 		switch (tabViewModel->currentTab) {
-		case FaceSynthesizingGUITabType::CAPTURE:
+		case GUITabType::CAPTURE:
 			captureCameraIsInitialized();
 			break;
 		}
@@ -88,7 +88,7 @@ namespace facesynthesizing::domain::adapters::gui {
 	void GUIPresenter::endOfTask()
 	{
 		switch (tabViewModel->currentTab) {
-		case FaceSynthesizingGUITabType::CAPTURE:
+		case GUITabType::CAPTURE:
 			endOfDataCaptureTask();
 			break;
 		}
@@ -102,6 +102,31 @@ namespace facesynthesizing::domain::adapters::gui {
 		captureDataViewModel->isCaptureButtonActivated = false;
 		captureDataViewModel->isCancelButtonActivated = false;
 		captureDataViewModel->notify();
+	}
+	void GUIPresenter::dataAlreadyExistsUserPrompt()
+	{
+		std::string message = getDataAlreadyExistsPromprMessage();
+
+		tabViewModel->showDataAlreadyExistsUserPrompt = true;
+		tabViewModel->dialogMessage = message;
+		tabViewModel->notify();
+	}
+	std::string GUIPresenter::getDataAlreadyExistsPromprMessage()
+	{
+		std::string message = "";
+		switch (tabViewModel->currentTab) {
+		case GUITabType::CAPTURE:
+			message = "Capture already exists! If you want to override the existing Data press 'Overwrite'. If you want to Continue the Capture Process press the 'Continue' Button.";
+			break;
+		case GUITabType::CONVERT:
+			message = "Dataset already exists! If you want to override the existing Dataset press 'Overwrite'. If you want to Continue the Data Conversion Process press the 'Continue' Button.";
+			break;
+		case GUITabType::TRAINING:
+			message = "Checkpoint already exists! If you want to override the existing Model press 'Overwrite'. If you want to Continue the Training Process press the 'Continue' Button.";
+			break;
+		}
+
+		return message;
 	}
 
 	void GUIPresenter::lockCurrentView()
@@ -138,6 +163,33 @@ namespace facesynthesizing::domain::adapters::gui {
 		newStatusMessage("");
 	}
 
+	void GUIPresenter::presentAllCaptureNames(std::vector<std::string> allNames)
+	{
+		convertDataViewModel->allNames = allNames;
+		if (convertDataViewModel->allNames.size() > 0 && convertDataViewModel->name.empty())
+			convertDataViewModel->name = allNames[0];
+
+		convertDataViewModel->notify();
+	}
+	void GUIPresenter::presentTrainingDatasetNames(std::vector<std::string> allNames)
+	{
+		trainingViewModel->allDatasetNames = allNames;
+		if (trainingViewModel->allDatasetNames.size() > 0 && trainingViewModel->datasetName.empty())
+			trainingViewModel->datasetName = allNames[0];
+
+		trainingViewModel->notify();
+	}
+	void GUIPresenter::presentAllCheckpointNames(std::vector<std::string> allNames)
+	{
+		//TODO implement when Inference Model exists
+		/*inferenceViewModel->allCheckpointNames = allNames;
+		if (inferenceViewModel->allCheckpointNames.size() > 0 && 
+			inferenceViewModel->checkpointName.empty())
+			inferenceViewModel->checkpointName = allNames[0];
+
+		inferenceViewModel->notify();*/
+	}
+
 	void GUIPresenter::setTabViewModel(std::shared_ptr<TabViewModel> tabViewModel) {
 		this->tabViewModel = tabViewModel;
 	}
@@ -148,12 +200,13 @@ namespace facesynthesizing::domain::adapters::gui {
 	void GUIPresenter::setCaptureDataViewModel(std::shared_ptr<CaptureDataViewModel> captureDataViewModel) {
 		this->captureDataViewModel = captureDataViewModel;
 	}
-	/*void GUIPresenter::setConvertDataViewModel(std::shared_ptr<ConvertDataViewModel> convertDataViewModel) {
+	void GUIPresenter::setConvertDataViewModel(std::shared_ptr<ConvertDataViewModel> convertDataViewModel)
+	{
 		this->convertDataViewModel = convertDataViewModel;
 	}
-	void GUIPresenter::setTrainViewModel(std::shared_ptr<TrainViewModel> trainViewModel) {
-		this->trainViewModel = trainViewModel;
-	}
+	void GUIPresenter::setTrainingViewModel(std::shared_ptr<TrainingViewModel> trainingViewModel) {
+		this->trainingViewModel = trainingViewModel;
+	}/*
 	void GUIPresenter::setInferenceViewModel(std::shared_ptr<InferenceViewModel> inferenceViewModel) {
 		this->inferenceViewModel = inferenceViewModel;
 	}*/

@@ -3,6 +3,7 @@
 #include "FaceSynthesizingDataStructures.h"
 
 #include <string>
+#include <vector>
 
 namespace facesynthesizing::domain::usecases {
 	class FaceSynthesizingGUIPresenter {
@@ -14,10 +15,15 @@ namespace facesynthesizing::domain::usecases {
 		virtual void cameraIsInitialized() = 0;
 		virtual void dataPairCaptureStarted() = 0;
 		virtual void endOfTask() = 0;
+		virtual void dataAlreadyExistsUserPrompt() = 0;
 
 		virtual void addNote(std::string message) = 0;
 		virtual void newStatusMessage(std::string message) = 0;
 		virtual void updateStatusMessage(std::string message) = 0;
 		virtual void statusMessageToNotes() = 0;
+
+		virtual void presentAllCaptureNames(std::vector<std::string> allNames) = 0;
+		virtual void presentTrainingDatasetNames(std::vector<std::string> allNames) = 0;
+		virtual void presentAllCheckpointNames(std::vector<std::string> allNames) = 0;
 	};
 }

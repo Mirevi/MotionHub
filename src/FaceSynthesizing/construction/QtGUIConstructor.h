@@ -3,6 +3,8 @@
 #include "GUIConstructor.h"
 #include "../gui/QtTabView.h"
 #include "../gui/QtCaptureDataView.h"
+#include "../gui/QtConvertDataView.h"
+#include "../gui/QtTrainingView.h"
 
 #include <QtWidgets/QDialog>
 
@@ -21,8 +23,8 @@ namespace facesynthesizing::construction {
 	private:
 		std::shared_ptr<qtgui::QtTabView> qtTabView;
 		std::shared_ptr<qtgui::QtCaptureDataView> qtCaptureDataView;
-		//std::shared_ptr<qtgui::QtConvertDataView> qtConvertDataView;
-		//std::shared_ptr<qtgui::QtTrainView> qtTrainView;
+		std::shared_ptr<qtgui::QtConvertDataView> qtConvertDataView;
+		std::shared_ptr<qtgui::QtTrainingView> qtTrainingView;
 		//std::shared_ptr<qtgui::QtInferenceDataView> qtInferenceDataView;
 	};
 }

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ViewModel.h"
+#include "GUIViewModel.h"
 #include "../usecases/FaceSynthesizingEnums.h"
 #include "../usecases/FaceSynthesizingDataStructures.h"
 
