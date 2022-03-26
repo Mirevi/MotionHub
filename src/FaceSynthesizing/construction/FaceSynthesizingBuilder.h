@@ -10,15 +10,17 @@
 #include "FileSystemConstructor.h"
 
 #include <exception>
+#include <filesystem>
 #include <format>
 #include <memory>
 #include <QtWidgets/QDialog>
 
+namespace fs = std::filesystem;
+
 namespace facesynthesizing::construction {
-	class ModuleConstructionException : std::exception {
+	class ModuleConstructionException : public std::exception {
 	public:
 		explicit ModuleConstructionException(std::string message) {
-			std::exception();
 			this->message = message;
 		};
 		const char* what() const throw () {
@@ -58,7 +60,8 @@ namespace facesynthesizing::construction {
 		// Config values
 		FaceSynthesizingGUIType guiType;
 		FaceSynthesizingCameraType cameraType;
-		std::string datasetRoot;
-		std::string checkpointsRoot;
+		fs::path captureRoot;
+		fs::path datasetRoot;
+		fs::path checkpointsRoot;
 	};
 }

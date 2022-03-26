@@ -3,7 +3,11 @@
 namespace facesynthesizing::infrastructure::python {
     BOOST_PYTHON_MODULE(mmh_wrapper)
     {
-
+		py::class_<FaceSynthesizer>("MMHFaceSynthesizer")
+			.def("new_python_image", &FaceSynthesizer::newPythonImage)
+			.def("new_python_status", &FaceSynthesizer::newPythonStatus)
+			.def("update_python_status", &FaceSynthesizer::updatePythonStatus)
+			.def("is_execution_stop_requested", &FaceSynthesizer::isExecutionStopRequested);
     }
 	void addPythonModules()
 	{

@@ -61,7 +61,7 @@ p, li { white-space: pre-wrap; }
    <property name="title">
     <string>Configuration</string>
    </property>
-   <widget class="QGroupBox" name="groupBox_2">
+   <widget class="QGroupBox" name="general">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -157,7 +157,7 @@ p, li { white-space: pre-wrap; }
      </layout>
     </widget>
    </widget>
-   <widget class="QGroupBox" name="groupBox_3">
+   <widget class="QGroupBox" name="dataset">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -179,22 +179,6 @@ p, li { white-space: pre-wrap; }
       </rect>
      </property>
      <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,0,0,0,0,0,0,0">
-      <item row="0" column="6">
-       <widget class="QLabel" name="label_7">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string>Data Loader Threads:</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-      </item>
       <item row="1" column="3">
        <widget class="QSpinBox" name="maxDatasetSizeSpinBox">
         <property name="minimum">
@@ -205,19 +189,6 @@ p, li { white-space: pre-wrap; }
         </property>
         <property name="value">
          <number>999999999</number>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="7">
-       <widget class="QSpinBox" name="dataLoaderThreadsSpinBox">
-        <property name="minimum">
-         <number>1</number>
-        </property>
-        <property name="maximum">
-         <number>10</number>
-        </property>
-        <property name="value">
-         <number>4</number>
         </property>
        </widget>
       </item>
@@ -379,7 +350,7 @@ p, li { white-space: pre-wrap; }
         </property>
        </widget>
       </item>
-      <item row="1" column="7">
+      <item row="0" column="6">
        <widget class="QCheckBox" name="useDepthMaskCheckBox">
         <property name="text">
          <string>Use Depth Mask</string>
@@ -395,7 +366,7 @@ p, li { white-space: pre-wrap; }
      </layout>
     </widget>
    </widget>
-   <widget class="QGroupBox" name="groupBox_4">
+   <widget class="QGroupBox" name="model">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -667,7 +638,7 @@ p, li { white-space: pre-wrap; }
      </layout>
     </widget>
    </widget>
-   <widget class="QGroupBox" name="groupBox_5">
+   <widget class="QGroupBox" name="training">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -1103,7 +1074,7 @@ p, li { white-space: pre-wrap; }
      </layout>
     </widget>
    </widget>
-   <widget class="QGroupBox" name="groupBox_6">
+   <widget class="QGroupBox" name="evaluation">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -1125,7 +1096,152 @@ p, li { white-space: pre-wrap; }
       </rect>
      </property>
      <layout class="QGridLayout" name="gridLayout_5">
+      <item row="1" column="4">
+       <widget class="QLabel" name="label_37">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Visdom Server Port:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="6">
+       <widget class="QLabel" name="label_36">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Visdom Image Columns:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="7">
+       <widget class="QSpinBox" name="visdomImageColumnsSpinBox">
+        <property name="minimum">
+         <number>1</number>
+        </property>
+        <property name="maximum">
+         <number>999999999</number>
+        </property>
+        <property name="value">
+         <number>5</number>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="6">
+       <widget class="QLabel" name="label_38">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Visdom Server URL:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="7">
+       <widget class="QLineEdit" name="visdomServerURLLineEdit">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>http://localhost</string>
+        </property>
+       </widget>
+      </item>
       <item row="0" column="0">
+       <widget class="QLabel" name="label_45">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Evaluation Frequency in Epochs:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="4">
+       <widget class="QLabel" name="label_34">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Visdom Environment:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="5">
+       <widget class="QSpinBox" name="visdomServerPortSpinBox">
+        <property name="minimum">
+         <number>1</number>
+        </property>
+        <property name="maximum">
+         <number>65535</number>
+        </property>
+        <property name="value">
+         <number>8097</number>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="5">
+       <widget class="QLineEdit" name="visdomEnvironmentLineEdit">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>main</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QSpinBox" name="evaluationFrequencySpinBox">
+        <property name="minimum">
+         <number>1</number>
+        </property>
+        <property name="maximum">
+         <number>999999999</number>
+        </property>
+        <property name="value">
+         <number>10</number>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
        <widget class="QLabel" name="label_35">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
@@ -1142,32 +1258,6 @@ p, li { white-space: pre-wrap; }
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QCheckBox" name="startNewVisdomServerCheckBox">
-        <property name="text">
-         <string>Start new Visdom Server</string>
-        </property>
-        <property name="checked">
-         <bool>false</bool>
-        </property>
-        <property name="tristate">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QCheckBox" name="useVisdomCheckBox">
-        <property name="text">
-         <string>Use Visdom</string>
-        </property>
-        <property name="checked">
-         <bool>false</bool>
-        </property>
-        <property name="tristate">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
        <widget class="QSpinBox" name="pixelAccuracyMetricThresholdSpinBox">
         <property name="minimum">
          <number>1</number>
@@ -1180,119 +1270,16 @@ p, li { white-space: pre-wrap; }
         </property>
        </widget>
       </item>
-      <item row="0" column="2">
-       <widget class="QLabel" name="label_34">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string>Visdom Environment:</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-      </item>
       <item row="0" column="3">
-       <widget class="QLineEdit" name="visdomEnvironmentLineEdit">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
+       <widget class="QCheckBox" name="useVisdomCheckBox">
         <property name="text">
-         <string>main</string>
+         <string>Use Visdom</string>
         </property>
-       </widget>
-      </item>
-      <item row="0" column="4">
-       <widget class="QLabel" name="label_36">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
+        <property name="checked">
+         <bool>false</bool>
         </property>
-        <property name="text">
-         <string>Visdom Image Columns:</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="5">
-       <widget class="QSpinBox" name="visdomImageColumnsSpinBox">
-        <property name="minimum">
-         <number>1</number>
-        </property>
-        <property name="maximum">
-         <number>999999999</number>
-        </property>
-        <property name="value">
-         <number>5</number>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="2">
-       <widget class="QLabel" name="label_37">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string>Visdom Server Port:</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="3">
-       <widget class="QSpinBox" name="visdomServerPortSpinBox">
-        <property name="minimum">
-         <number>1</number>
-        </property>
-        <property name="maximum">
-         <number>65535</number>
-        </property>
-        <property name="value">
-         <number>8097</number>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="4">
-       <widget class="QLabel" name="label_38">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string>Visdom Server URL:</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="5">
-       <widget class="QLineEdit" name="visdomServerURLLineEdit">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string>http://localhost</string>
+        <property name="tristate">
+         <bool>false</bool>
         </property>
        </widget>
       </item>
@@ -1505,6 +1492,59 @@ p, li { white-space: pre-wrap; }
    </widget>
   </widget>
  </widget>
+ <tabstops>
+  <tabstop>nameLineEdit</tabstop>
+  <tabstop>colorFormatComboBox</tabstop>
+  <tabstop>continueEpochSpinBox</tabstop>
+  <tabstop>datasetNameComboBox</tabstop>
+  <tabstop>batchSizeSpinBox</tabstop>
+  <tabstop>evalBatchSizeSpinBox</tabstop>
+  <tabstop>datasetImageSizeSpinBox</tabstop>
+  <tabstop>maxDatasetSizeSpinBox</tabstop>
+  <tabstop>maxEvaluationDatasetSizeSpinBox</tabstop>
+  <tabstop>useSerialBatchesCheckBox</tabstop>
+  <tabstop>modelTypeComboBox</tabstop>
+  <tabstop>generatorArchitectureComboBox</tabstop>
+  <tabstop>discriminatorArchitectureComboBox</tabstop>
+  <tabstop>ganModeComboBox</tabstop>
+  <tabstop>generatorFiltersSpinBox</tabstop>
+  <tabstop>discriminatorFiltersSpinBox</tabstop>
+  <tabstop>normalizationLayerTypeComboBox</tabstop>
+  <tabstop>useDropoutCheckBox</tabstop>
+  <tabstop>numDiscriminatorsSpinBox</tabstop>
+  <tabstop>numDLayersSpinBox</tabstop>
+  <tabstop>useMappingNetworkCheckBox</tabstop>
+  <tabstop>mappingNetworkComboBox</tabstop>
+  <tabstop>epochsSpinBox</tabstop>
+  <tabstop>decayingEpochsSpinBox</tabstop>
+  <tabstop>beta1SpinBox</tabstop>
+  <tabstop>learningRateSpinBox</tabstop>
+  <tabstop>LearningRatePolicyComboBox</tabstop>
+  <tabstop>stepDecayIterationsSpinBox</tabstop>
+  <tabstop>weightInitTypeComboBox</tabstop>
+  <tabstop>weightInitGainSpinBox</tabstop>
+  <tabstop>useL1CheckBox</tabstop>
+  <tabstop>useFeatureMatchingCheckBox</tabstop>
+  <tabstop>useLPIPSCheckBox</tabstop>
+  <tabstop>useCycleCheckBox</tabstop>
+  <tabstop>lambdaL1SpinBox</tabstop>
+  <tabstop>lambdaFeatureMatchingSpinBox</tabstop>
+  <tabstop>lambdaLPIPSSpinBox</tabstop>
+  <tabstop>lambdaCycleForwardSpinBox</tabstop>
+  <tabstop>saveEpochFrequencySpinBox</tabstop>
+  <tabstop>lambdaCycleBackwardSpinBox</tabstop>
+  <tabstop>evaluationFrequencySpinBox</tabstop>
+  <tabstop>useVisdomCheckBox</tabstop>
+  <tabstop>visdomEnvironmentLineEdit</tabstop>
+  <tabstop>visdomImageColumnsSpinBox</tabstop>
+  <tabstop>pixelAccuracyMetricThresholdSpinBox</tabstop>
+  <tabstop>visdomServerPortSpinBox</tabstop>
+  <tabstop>visdomServerURLLineEdit</tabstop>
+  <tabstop>visualizeCheckBox</tabstop>
+  <tabstop>trainPushButton</tabstop>
+  <tabstop>cancelPushButton</tabstop>
+  <tabstop>statusMessagesContainer</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>
@@ -1514,8 +1554,8 @@ p, li { white-space: pre-wrap; }
    <slot>onCancel()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1269</x>
-     <y>495</y>
+     <x>1591</x>
+     <y>580</y>
     </hint>
     <hint type="destinationlabel">
      <x>1310</x>
@@ -1530,8 +1570,8 @@ p, li { white-space: pre-wrap; }
    <slot>onTrain()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1236</x>
-     <y>457</y>
+     <x>1591</x>
+     <y>551</y>
     </hint>
     <hint type="destinationlabel">
      <x>1309</x>
@@ -1546,8 +1586,8 @@ p, li { white-space: pre-wrap; }
    <slot>onGeneralConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>134</x>
-     <y>26</y>
+     <x>173</x>
+     <y>41</y>
     </hint>
     <hint type="destinationlabel">
      <x>11</x>
@@ -1562,8 +1602,8 @@ p, li { white-space: pre-wrap; }
    <slot>onVisualizationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>30</x>
-     <y>441</y>
+     <x>31</x>
+     <y>541</y>
     </hint>
     <hint type="destinationlabel">
      <x>5</x>
@@ -1578,8 +1618,8 @@ p, li { white-space: pre-wrap; }
    <slot>onGeneralConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1061</x>
-     <y>32</y>
+     <x>1512</x>
+     <y>41</y>
     </hint>
     <hint type="destinationlabel">
      <x>988</x>
@@ -1594,28 +1634,12 @@ p, li { white-space: pre-wrap; }
    <slot>onGeneralConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1213</x>
-     <y>30</y>
+     <x>1679</x>
+     <y>41</y>
     </hint>
     <hint type="destinationlabel">
      <x>1205</x>
      <y>-5</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>dataLoaderThreadsSpinBox</sender>
-   <signal>editingFinished()</signal>
-   <receiver>QtTrainingView</receiver>
-   <slot>onDatasetConfigurationGroupChanged()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>1255</x>
-     <y>78</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>1308</x>
-     <y>6</y>
     </hint>
    </hints>
   </connection>
@@ -1626,8 +1650,8 @@ p, li { white-space: pre-wrap; }
    <slot>onDatasetConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1153</x>
-     <y>106</y>
+     <x>1679</x>
+     <y>134</y>
     </hint>
     <hint type="destinationlabel">
      <x>1307</x>
@@ -1642,8 +1666,8 @@ p, li { white-space: pre-wrap; }
    <slot>onDatasetConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>991</x>
-     <y>103</y>
+     <x>1472</x>
+     <y>131</y>
     </hint>
     <hint type="destinationlabel">
      <x>1305</x>
@@ -1658,8 +1682,8 @@ p, li { white-space: pre-wrap; }
    <slot>onDatasetConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>921</x>
-     <y>82</y>
+     <x>1265</x>
+     <y>92</y>
     </hint>
     <hint type="destinationlabel">
      <x>1309</x>
@@ -1674,8 +1698,8 @@ p, li { white-space: pre-wrap; }
    <slot>onDatasetConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>928</x>
-     <y>107</y>
+     <x>1265</x>
+     <y>135</y>
     </hint>
     <hint type="destinationlabel">
      <x>1308</x>
@@ -1690,8 +1714,8 @@ p, li { white-space: pre-wrap; }
    <slot>onDatasetConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>216</x>
-     <y>80</y>
+     <x>424</x>
+     <y>92</y>
     </hint>
     <hint type="destinationlabel">
      <x>9</x>
@@ -1706,8 +1730,8 @@ p, li { white-space: pre-wrap; }
    <slot>onDatasetConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>533</x>
-     <y>81</y>
+     <x>852</x>
+     <y>92</y>
     </hint>
     <hint type="destinationlabel">
      <x>8</x>
@@ -1722,8 +1746,8 @@ p, li { white-space: pre-wrap; }
    <slot>onDatasetConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>195</x>
-     <y>104</y>
+     <x>403</x>
+     <y>132</y>
     </hint>
     <hint type="destinationlabel">
      <x>5</x>
@@ -1738,8 +1762,8 @@ p, li { white-space: pre-wrap; }
    <slot>onDatasetConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>517</x>
-     <y>100</y>
+     <x>852</x>
+     <y>128</y>
     </hint>
     <hint type="destinationlabel">
      <x>7</x>
@@ -1754,8 +1778,8 @@ p, li { white-space: pre-wrap; }
    <slot>onModelConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>240</x>
-     <y>143</y>
+     <x>438</x>
+     <y>173</y>
     </hint>
     <hint type="destinationlabel">
      <x>5</x>
@@ -1770,8 +1794,8 @@ p, li { white-space: pre-wrap; }
    <slot>onModelConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>244</x>
-     <y>168</y>
+     <x>438</x>
+     <y>200</y>
     </hint>
     <hint type="destinationlabel">
      <x>5</x>
@@ -1786,8 +1810,8 @@ p, li { white-space: pre-wrap; }
    <slot>onModelConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>268</x>
-     <y>190</y>
+     <x>438</x>
+     <y>245</y>
     </hint>
     <hint type="destinationlabel">
      <x>6</x>
@@ -1802,8 +1826,8 @@ p, li { white-space: pre-wrap; }
    <slot>onModelConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>525</x>
-     <y>136</y>
+     <x>852</x>
+     <y>173</y>
     </hint>
     <hint type="destinationlabel">
      <x>4</x>
@@ -1818,8 +1842,8 @@ p, li { white-space: pre-wrap; }
    <slot>onModelConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>538</x>
-     <y>161</y>
+     <x>852</x>
+     <y>200</y>
     </hint>
     <hint type="destinationlabel">
      <x>6</x>
@@ -1834,8 +1858,8 @@ p, li { white-space: pre-wrap; }
    <slot>onModelConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>528</x>
-     <y>193</y>
+     <x>852</x>
+     <y>245</y>
     </hint>
     <hint type="destinationlabel">
      <x>5</x>
@@ -1850,8 +1874,8 @@ p, li { white-space: pre-wrap; }
    <slot>onModelConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>873</x>
-     <y>146</y>
+     <x>1265</x>
+     <y>173</y>
     </hint>
     <hint type="destinationlabel">
      <x>1312</x>
@@ -1866,8 +1890,8 @@ p, li { white-space: pre-wrap; }
    <slot>onModelConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1201</x>
-     <y>146</y>
+     <x>1679</x>
+     <y>173</y>
     </hint>
     <hint type="destinationlabel">
      <x>1310</x>
@@ -1882,8 +1906,8 @@ p, li { white-space: pre-wrap; }
    <slot>onModelConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>897</x>
-     <y>161</y>
+     <x>1265</x>
+     <y>200</y>
     </hint>
     <hint type="destinationlabel">
      <x>1311</x>
@@ -1898,8 +1922,8 @@ p, li { white-space: pre-wrap; }
    <slot>onModelConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1009</x>
-     <y>168</y>
+     <x>1472</x>
+     <y>200</y>
     </hint>
     <hint type="destinationlabel">
      <x>1312</x>
@@ -1914,8 +1938,8 @@ p, li { white-space: pre-wrap; }
    <slot>onModelConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>856</x>
-     <y>188</y>
+     <x>1265</x>
+     <y>244</y>
     </hint>
     <hint type="destinationlabel">
      <x>1313</x>
@@ -1930,8 +1954,8 @@ p, li { white-space: pre-wrap; }
    <slot>onModelConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1147</x>
-     <y>194</y>
+     <x>1679</x>
+     <y>245</y>
     </hint>
     <hint type="destinationlabel">
      <x>1312</x>
@@ -1946,8 +1970,8 @@ p, li { white-space: pre-wrap; }
    <slot>onTrainingConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>226</x>
-     <y>224</y>
+     <x>434</x>
+     <y>284</y>
     </hint>
     <hint type="destinationlabel">
      <x>5</x>
@@ -1962,8 +1986,8 @@ p, li { white-space: pre-wrap; }
    <slot>onTrainingConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>218</x>
-     <y>251</y>
+     <x>426</x>
+     <y>312</y>
     </hint>
     <hint type="destinationlabel">
      <x>5</x>
@@ -1978,8 +2002,8 @@ p, li { white-space: pre-wrap; }
    <slot>onTrainingConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>536</x>
-     <y>218</y>
+     <x>852</x>
+     <y>284</y>
     </hint>
     <hint type="destinationlabel">
      <x>5</x>
@@ -1994,8 +2018,8 @@ p, li { white-space: pre-wrap; }
    <slot>onTrainingConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>581</x>
-     <y>248</y>
+     <x>852</x>
+     <y>312</y>
     </hint>
     <hint type="destinationlabel">
      <x>4</x>
@@ -2010,8 +2034,8 @@ p, li { white-space: pre-wrap; }
    <slot>onTrainingConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>89</x>
-     <y>266</y>
+     <x>90</x>
+     <y>340</y>
     </hint>
     <hint type="destinationlabel">
      <x>3</x>
@@ -2026,8 +2050,8 @@ p, li { white-space: pre-wrap; }
    <slot>onTrainingConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>233</x>
-     <y>270</y>
+     <x>438</x>
+     <y>340</y>
     </hint>
     <hint type="destinationlabel">
      <x>3</x>
@@ -2042,8 +2066,8 @@ p, li { white-space: pre-wrap; }
    <slot>onTrainingConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>419</x>
-     <y>276</y>
+     <x>645</x>
+     <y>340</y>
     </hint>
     <hint type="destinationlabel">
      <x>4</x>
@@ -2058,8 +2082,8 @@ p, li { white-space: pre-wrap; }
    <slot>onTrainingConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>564</x>
-     <y>263</y>
+     <x>852</x>
+     <y>340</y>
     </hint>
     <hint type="destinationlabel">
      <x>3</x>
@@ -2074,8 +2098,8 @@ p, li { white-space: pre-wrap; }
    <slot>onTrainingConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>271</x>
-     <y>291</y>
+     <x>438</x>
+     <y>378</y>
     </hint>
     <hint type="destinationlabel">
      <x>3</x>
@@ -2090,8 +2114,8 @@ p, li { white-space: pre-wrap; }
    <slot>onTrainingConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>244</x>
-     <y>315</y>
+     <x>438</x>
+     <y>413</y>
     </hint>
     <hint type="destinationlabel">
      <x>6</x>
@@ -2106,8 +2130,8 @@ p, li { white-space: pre-wrap; }
    <slot>onTrainingConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>561</x>
-     <y>294</y>
+     <x>852</x>
+     <y>381</y>
     </hint>
     <hint type="destinationlabel">
      <x>4</x>
@@ -2122,8 +2146,8 @@ p, li { white-space: pre-wrap; }
    <slot>onTrainingConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>895</x>
-     <y>220</y>
+     <x>1265</x>
+     <y>284</y>
     </hint>
     <hint type="destinationlabel">
      <x>1313</x>
@@ -2138,8 +2162,8 @@ p, li { white-space: pre-wrap; }
    <slot>onTrainingConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1232</x>
-     <y>221</y>
+     <x>1679</x>
+     <y>284</y>
     </hint>
     <hint type="destinationlabel">
      <x>1313</x>
@@ -2154,8 +2178,8 @@ p, li { white-space: pre-wrap; }
    <slot>onTrainingConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>943</x>
-     <y>243</y>
+     <x>1265</x>
+     <y>312</y>
     </hint>
     <hint type="destinationlabel">
      <x>1312</x>
@@ -2170,8 +2194,8 @@ p, li { white-space: pre-wrap; }
    <slot>onTrainingConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1254</x>
-     <y>242</y>
+     <x>1679</x>
+     <y>312</y>
     </hint>
     <hint type="destinationlabel">
      <x>1311</x>
@@ -2186,8 +2210,8 @@ p, li { white-space: pre-wrap; }
    <slot>onTrainingConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>907</x>
-     <y>288</y>
+     <x>1265</x>
+     <y>375</y>
     </hint>
     <hint type="destinationlabel">
      <x>1311</x>
@@ -2202,8 +2226,8 @@ p, li { white-space: pre-wrap; }
    <slot>onTrainingConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1220</x>
-     <y>299</y>
+     <x>1679</x>
+     <y>385</y>
     </hint>
     <hint type="destinationlabel">
      <x>1311</x>
@@ -2218,8 +2242,8 @@ p, li { white-space: pre-wrap; }
    <slot>onTrainingConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1181</x>
-     <y>326</y>
+     <x>1679</x>
+     <y>413</y>
     </hint>
     <hint type="destinationlabel">
      <x>1311</x>
@@ -2234,8 +2258,8 @@ p, li { white-space: pre-wrap; }
    <slot>onEvaluationConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>278</x>
-     <y>368</y>
+     <x>497</x>
+     <y>478</y>
     </hint>
     <hint type="destinationlabel">
      <x>5</x>
@@ -2250,28 +2274,12 @@ p, li { white-space: pre-wrap; }
    <slot>onEvaluationConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>89</x>
-     <y>391</y>
+     <x>563</x>
+     <y>452</y>
     </hint>
     <hint type="destinationlabel">
      <x>6</x>
      <y>623</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>startNewVisdomServerCheckBox</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>QtTrainingView</receiver>
-   <slot>onEvaluationConfigurationGroupChanged()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>277</x>
-     <y>392</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>18</x>
-     <y>661</y>
     </hint>
    </hints>
   </connection>
@@ -2282,8 +2290,8 @@ p, li { white-space: pre-wrap; }
    <slot>onEvaluationConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>720</x>
-     <y>372</y>
+     <x>1206</x>
+     <y>452</y>
     </hint>
     <hint type="destinationlabel">
      <x>1308</x>
@@ -2298,8 +2306,8 @@ p, li { white-space: pre-wrap; }
    <slot>onEvaluationConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>755</x>
-     <y>391</y>
+     <x>1206</x>
+     <y>478</y>
     </hint>
     <hint type="destinationlabel">
      <x>1310</x>
@@ -2314,8 +2322,8 @@ p, li { white-space: pre-wrap; }
    <slot>onEvaluationConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1101</x>
-     <y>368</y>
+     <x>1679</x>
+     <y>452</y>
     </hint>
     <hint type="destinationlabel">
      <x>1315</x>
@@ -2330,12 +2338,28 @@ p, li { white-space: pre-wrap; }
    <slot>onEvaluationConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1152</x>
-     <y>394</y>
+     <x>1679</x>
+     <y>478</y>
     </hint>
     <hint type="destinationlabel">
      <x>1312</x>
      <y>575</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>evaluationFrequencySpinBox</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>QtTrainingView</receiver>
+   <slot>onEvaluationConfigurationGroupChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>285</x>
+     <y>465</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>3</x>
+     <y>685</y>
     </hint>
    </hints>
   </connection>

@@ -33,7 +33,7 @@ namespace facesynthesizing::domain::adapters::gui {
 		int eyeTrackingThreshold = 89;
 
 		// Depth Conversion Configuration
-		int faceDepth = 200;
+		int faceDepth = 80;
 		int depthPadding = 20;
 		bool useDepthFilling = true;
 		usecases::DepthFillingAlgorithm depthFillingAlgorithm = usecases::DepthFillingAlgorithm::FDCBOP;
@@ -51,9 +51,37 @@ namespace facesynthesizing::domain::adapters::gui {
 
 		// Visualization
 		bool visualize = true;
-		std::shared_ptr<usecases::Image> colorImage = nullptr;
-		std::shared_ptr<usecases::Image> depthImage = nullptr;
-		std::shared_ptr<usecases::Image> flmImage = nullptr;
+		std::shared_ptr<usecases::Image> firstImage = nullptr;
+		std::shared_ptr<usecases::Image> secondImage = nullptr;
+		std::shared_ptr<usecases::Image> thirdImage = nullptr;
 	};
+
+	const inline std::shared_ptr<usecases::ConvertDataInformation> convertDataInfoFromModel(ConvertDataViewModel* model) {
+		auto infos = std::make_shared<usecases::ConvertDataInformation>();
+		infos->name = model->name;
+		infos->horizontalFoV = model->horizontalFoV;
+		infos->outputImageSize = model->outputImageSize;
+		infos->padding = model->padding;
+		infos->pcaLandmarkComponents = model->pcaLandmarkComponents;
+		infos->pcaImageComponents = model->pcaImageComponents;
+		infos->flmLineThickness = model->flmLineThickness;
+		infos->eyeTrackingAlgorithm = model->eyeTrackingAlgorithm;
+		infos->faceTrackingAlgorithm = model->faceTrackingAlgorithm;
+		infos->eyeTrackingStride = model->eyeTrackingStride;
+		infos->eyeTrackingThreshold = model->eyeTrackingThreshold;
+		infos->faceDepth = model->faceDepth;
+		infos->depthPadding = model->depthPadding;
+		infos->useDepthFilling = model->useDepthFilling;
+		infos->depthFillingAlgorithm = model->depthFillingAlgorithm;
+		infos->depthFillingImageSize = model->depthFillingImageSize;
+		infos->depthFillingPatchSize = model->depthFillingPatchSize;
+		infos->depthFillingExtendedPatchSize = model->depthFillingExtendedPatchSize;
+		infos->depthFillingPadding = model->depthFillingPadding;
+		infos->depthFillingSourceAmount = model->depthFillingSourceAmount;
+		infos->depthFillingUseBlur = model->depthFillingUseBlur;
+		infos->depthFillingBlurKernelSize = model->depthFillingBlurKernelSize;
+
+		return infos;
+	}
 }
 

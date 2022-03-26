@@ -5,28 +5,58 @@
 namespace facesynthesizing::domain::adapters::gui {
 	void GUIPresenter::clearImage(usecases::ImageType imageType)
 	{
-		switch (imageType) {
-		case usecases::ImageType::Camera_Color:
-			captureDataViewModel->colorImage = nullptr;
-			break;
-		case usecases::ImageType::Capture_FaceAlignment:
-			captureDataViewModel->faceAlignmentImage = nullptr;
-			break;
-		}
-		notifyImageChange(imageType);
+		processImageChange(imageType, nullptr);
 	}
 	void GUIPresenter::visualizeImage(std::shared_ptr<usecases::Image> image)
 	{
-		// set
-		switch (image->type) {
+		processImageChange(image->type, image);
+	}
+	void GUIPresenter::processImageChange(usecases::ImageType imageType, std::shared_ptr<usecases::Image> image)
+	{
+		switch (imageType) {
 		case usecases::ImageType::Camera_Color:
 			captureDataViewModel->colorImage = image;
 			break;
 		case usecases::ImageType::Capture_FaceAlignment:
 			captureDataViewModel->faceAlignmentImage = image;
 			break;
+		case usecases::ImageType::Convert_Face_Bounding_box:
+			convertDataViewModel->firstImage = image;
+			break;
+		case usecases::ImageType::Convert_Landmarks:
+			convertDataViewModel->secondImage = image;
+			break;
+		case usecases::ImageType::Convert_Depth_Holes:
+			convertDataViewModel->thirdImage = image;
+			break;
+		case usecases::ImageType::Dataset_Color:
+			if (tabViewModel->currentTab == GUITabType::CONVERT)
+				convertDataViewModel->firstImage = image;
+			else if (tabViewModel->currentTab == GUITabType::TRAINING)
+				trainingViewModel->colorRealImage = image;
+			break;
+		case usecases::ImageType::Dataset_Depth:
+			if (tabViewModel->currentTab == GUITabType::CONVERT)
+				convertDataViewModel->secondImage = image;
+			else if (tabViewModel->currentTab == GUITabType::TRAINING)
+				trainingViewModel->depthRealImage = image;
+			break;
+		case usecases::ImageType::Dataset_FLM:
+			if (tabViewModel->currentTab == GUITabType::CONVERT)
+				convertDataViewModel->thirdImage = image;
+			else if (tabViewModel->currentTab == GUITabType::TRAINING)
+				trainingViewModel->flmImage = image;
+			break;
+		case usecases::ImageType::Synthesized_Color:
+			trainingViewModel->colorFakeImage = image;
+			break;
+		case usecases::ImageType::Synthesized_Depth:
+			trainingViewModel->depthFakeImage = image;
+			break;
+		default:
+			return;
 		}
-		notifyImageChange(image->type);
+		notifyImageChange(imageType);
 	}
 	void GUIPresenter::notifyImageChange(usecases::ImageType imageType)
 	{
@@ -36,6 +66,33 @@ namespace facesynthesizing::domain::adapters::gui {
 		case usecases::ImageType::Capture_FaceAlignment:
 			captureDataViewModel->notify();
 			break;
+		case usecases::ImageType::Convert_Face_Bounding_box:
+		case usecases::ImageType::Convert_Landmarks:
+		case usecases::ImageType::Convert_Depth_Holes:
+			convertDataViewModel->notify();
+			break;
+		case usecases::ImageType::Dataset_Color:
+		case usecases::ImageType::Dataset_Depth:
+		case usecases::ImageType::Dataset_FLM:
+			viewDataModelFromCurrentTab()->notify();
+			break;
+		case usecases::ImageType::Synthesized_Color:
+		case usecases::ImageType::Synthesized_Depth:
+			trainingViewModel->notify();
+			break;
+		}
+	}
+	std::shared_ptr<ViewModel> GUIPresenter::viewDataModelFromCurrentTab()
+	{
+		switch (tabViewModel->currentTab) {
+		case GUITabType::CAPTURE:
+			return captureDataViewModel;
+		case GUITabType::CONVERT:
+			return convertDataViewModel;
+		case GUITabType::TRAINING:
+			return trainingViewModel;
+		default:
+			throw std::exception("Unknown Data View Model");
 		}
 	}
 
@@ -85,11 +142,35 @@ namespace facesynthesizing::domain::adapters::gui {
 		captureDataViewModel->isCancelButtonActivated = true;
 		captureDataViewModel->notify();
 	}
+	void GUIPresenter::dataPairConversionStarted()
+	{
+		lockCurrentView();
+
+		convertDataViewModel->isConfigurationActivated = false;
+		convertDataViewModel->isConvertButtonActivated = false;
+		convertDataViewModel->isCancelButtonActivated = true;
+		convertDataViewModel->notify();
+	}
+	void GUIPresenter::trainingStarted()
+	{
+		lockCurrentView();
+
+		trainingViewModel->isConfigurationActivated = false;
+		trainingViewModel->isTrainingButtonActivated = false;
+		trainingViewModel->isCancelButtonActivated = true;
+		trainingViewModel->notify();
+	}
 	void GUIPresenter::endOfTask()
 	{
 		switch (tabViewModel->currentTab) {
 		case GUITabType::CAPTURE:
 			endOfDataCaptureTask();
+			break;
+		case GUITabType::CONVERT:
+			endOfDataConvertTask();
+			break;
+		case GUITabType::TRAINING:
+			endOfTrainingTask();
 			break;
 		}
 	}
@@ -103,15 +184,33 @@ namespace facesynthesizing::domain::adapters::gui {
 		captureDataViewModel->isCancelButtonActivated = false;
 		captureDataViewModel->notify();
 	}
+	void GUIPresenter::endOfDataConvertTask()
+	{
+		unlockCurrentView();
+
+		convertDataViewModel->isConfigurationActivated = true;
+		convertDataViewModel->isConvertButtonActivated = true;
+		convertDataViewModel->isCancelButtonActivated = false;
+		convertDataViewModel->notify();
+	}
+	void GUIPresenter::endOfTrainingTask()
+	{
+		unlockCurrentView();
+
+		trainingViewModel->isConfigurationActivated = true;
+		trainingViewModel->isTrainingButtonActivated = true;
+		trainingViewModel->isCancelButtonActivated = false;
+		trainingViewModel->notify();
+	}
 	void GUIPresenter::dataAlreadyExistsUserPrompt()
 	{
-		std::string message = getDataAlreadyExistsPromprMessage();
+		std::string message = getDataAlreadyExistsPromptMessage();
 
 		tabViewModel->showDataAlreadyExistsUserPrompt = true;
 		tabViewModel->dialogMessage = message;
 		tabViewModel->notify();
 	}
-	std::string GUIPresenter::getDataAlreadyExistsPromprMessage()
+	std::string GUIPresenter::getDataAlreadyExistsPromptMessage()
 	{
 		std::string message = "";
 		switch (tabViewModel->currentTab) {

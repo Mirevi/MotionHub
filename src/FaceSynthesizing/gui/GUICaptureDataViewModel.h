@@ -33,17 +33,16 @@ namespace facesynthesizing::domain::adapters::gui {
 		std::shared_ptr<usecases::Image> faceAlignmentImage = nullptr;
 	};
 
-	const inline std::shared_ptr<usecases::CaptureDataInformation> captureDataInfoFromModel(CaptureDataViewModel* viewModel) {
+	const inline std::shared_ptr<usecases::CaptureDataInformation> captureDataInfoFromModel(CaptureDataViewModel* model) {
 		auto infos = std::make_shared<usecases::CaptureDataInformation>();
-		infos->name = viewModel->name;
-		infos->train_images = viewModel->train_images;
-		infos->evaluation_images = viewModel->evaluation_images;
-		infos->boundingBoxAlgorithm = viewModel->boundingBoxAlgorithm;
-		infos->faceAlignmentAlgorithm = viewModel->faceAlignmentAlgorithm;
-		infos->maxPitch = viewModel->maxPitch;
-		infos->maxRoll = viewModel->maxRoll;
-		infos->maxYaw = viewModel->maxYaw;
-		infos->visualize = viewModel->visualize;
+		infos->name = model->name;
+		infos->train_images = model->train_images;
+		infos->evaluation_images = model->evaluation_images;
+		infos->boundingBoxAlgorithm = model->boundingBoxAlgorithm;
+		infos->faceAlignmentAlgorithm = model->faceAlignmentAlgorithm;
+		infos->maxPitch = model->maxPitch;
+		infos->maxRoll = model->maxRoll;
+		infos->maxYaw = model->maxYaw;
 
 		return infos;
 	}

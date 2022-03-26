@@ -30,6 +30,7 @@ namespace facesynthesizing::infrastructure::filesystem {
 		std::vector<std::string> getAllExistingCheckpointNames();
 
 		// Construction purpose
+		void setCaptureRoot(fs::path root);
 		void setDatasetRoot(fs::path root);
 		void setCheckpointsRoot(fs::path root);
 	private:
@@ -38,6 +39,7 @@ namespace facesynthesizing::infrastructure::filesystem {
 		int getAccordingCvMatType(std::shared_ptr<usecases::Image> image);
 
 		std::unique_ptr<ThreadPool> threadPool;
+		fs::path captureRoot;
 		fs::path datasetRoot;
 		fs::path checkpointsRoot;
 	};

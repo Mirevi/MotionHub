@@ -2,8 +2,6 @@
 
 #include <iostream>
 
-//TODO implement
-
 namespace facesynthesizing::domain::usecases {
 	FaceSynthesizing::FaceSynthesizing()
 	{
@@ -15,6 +13,7 @@ namespace facesynthesizing::domain::usecases {
 	}
 	void FaceSynthesizing::startInitializeCameraTask()
 	{
+		std::unique_lock<std::mutex> lockTaskStart(taskStartLock);
 		if (currentTask != Task::NO_TASK) {
 			std::cout << "Cant initialize Camera when another Task is currently executed!" << std::endl;
 			guiPresenter->newStatusMessage("Cant initialize Camera when another Task is currently executed!");
@@ -29,6 +28,8 @@ namespace facesynthesizing::domain::usecases {
 	void FaceSynthesizing::initializeCameraThreadMethod()
 	{
 		try {
+			guiPresenter->newStatusMessage("Initialize Camera");
+
 			initializeCamera();
 
 			currentTask = Task::NO_TASK;
@@ -43,7 +44,6 @@ namespace facesynthesizing::domain::usecases {
 	}
 	void FaceSynthesizing::initializeCamera()
 	{
-		guiPresenter->newStatusMessage("Initialize Camera");
 		camera->initiate();
 		cameraIsInitiated = true;
 		guiPresenter->cameraIsInitialized();
@@ -57,13 +57,13 @@ namespace facesynthesizing::domain::usecases {
 
 	void FaceSynthesizing::startCaptureDataTask(std::shared_ptr<CaptureDataInformation> captureDataInfo)
 	{
+		std::unique_lock<std::mutex> lockTaskStart(taskStartLock);
 		if (!cameraIsInitiated) {
 			std::cout << "Cant Capture Data when another Task is currently executed!" << std::endl;
 			guiPresenter->newStatusMessage("Cant Capture Data when another Task is currently executed!");
 			return;
 		}
 		this->captureDataInfo = captureDataInfo;
-		faceSynthesizer->setCaptureInfos(captureDataInfo);
 		currentTask = Task::NO_TASK;
 		waitForTaskThreadTermination();
 
@@ -74,10 +74,16 @@ namespace facesynthesizing::domain::usecases {
 	void FaceSynthesizing::captureDataThreadMethod()
 	{
 		try {
+			guiPresenter->newStatusMessage("Capture Data Pairs");
+
 			captureData();
 
-			currentTask = Task::NO_TASK;
+			if (currentTask == Task::CAPTURE)
+				guiPresenter->newStatusMessage("Finished Data Pair Capture.");
+
+			guiPresenter->endOfTask();
 			camera->close();
+			currentTask = Task::NO_TASK;
 			cameraIsInitiated = false;
 		}
 		catch (const std::exception& e) {
@@ -90,16 +96,12 @@ namespace facesynthesizing::domain::usecases {
 	}
 	void FaceSynthesizing::captureData()
 	{
-		guiPresenter->newStatusMessage("Capture Data Pairs");
+		faceSynthesizer->setCaptureInfos(captureDataInfo);
+
 		bool overwrite = true;
 		if (fileSystem->doesCaptureExists(captureDataInfo->name)) {
-			std::cout << "Data Already Exists" << std::endl;
-			dataAlreadyExistsResult = DataAlreadyExistsResult::No_Result;
-			guiPresenter->dataAlreadyExistsUserPrompt();
-
-			std::unique_lock<std::mutex> lock(threadLock);
-			dataAlreadyExistsCondition.wait(lock, [this]() {
-				return currentTask != Task::CAPTURE || dataAlreadyExistsResult != DataAlreadyExistsResult::No_Result; });
+			std::cout << "Capture Already Exists" << std::endl;
+			showDataAlreadyExistsPrompt();
 
 			if (dataAlreadyExistsResult == DataAlreadyExistsResult::No_Result)
 				return;
@@ -142,11 +144,6 @@ namespace facesynthesizing::domain::usecases {
 			std::string message = "Saved Capture Data Pair: " + std::to_string(counter) + "/" + std::to_string(dataPairsToCapture);
 			guiPresenter->updateStatusMessage(message);
 		}
-
-		if (currentTask == Task::CAPTURE) {
-			guiPresenter->endOfTask();
-			guiPresenter->newStatusMessage("Finished Data Pair Capture.");
-		}
 	}
 	float FaceSynthesizing::computeEvalDataPairRate(int imageCount)
 	{
@@ -156,15 +153,137 @@ namespace facesynthesizing::domain::usecases {
 			return static_cast<float>(INT_MAX);
 	}
 
+	void FaceSynthesizing::startConvertDataTask(std::shared_ptr<ConvertDataInformation> convertDataInfo)
+	{
+		std::unique_lock<std::mutex> lockTaskStart(taskStartLock);
+		if (currentTask != Task::NO_TASK) {
+			std::cout << "Cant start Converting Data when another Task is currently executed!" << std::endl;
+			guiPresenter->newStatusMessage("Cant start Converting Data when another Task is currently executed!");
+			return;
+		}
+		this->convertDataInfo = convertDataInfo;
+		waitForTaskThreadTermination();
+
+		currentTask = Task::CONVERT;
+		guiPresenter->dataPairConversionStarted();
+		mainTaskThread = std::make_unique<std::thread>(&FaceSynthesizing::convertDataThreadMethod, this);
+	}
+	void FaceSynthesizing::convertDataThreadMethod()
+	{
+		try {
+			guiPresenter->newStatusMessage("Convert Data Pairs");
+
+			convertData();
+
+			if (currentTask == Task::CONVERT)
+				guiPresenter->newStatusMessage("Finished Data Pair Conversion.");
+
+			guiPresenter->endOfTask();
+			currentTask = Task::NO_TASK;
+		}
+		catch (const std::exception& e) {
+			std::cout << e.what() << std::endl;
+			std::string message = "Exception during Convert Data Task: " + std::string(e.what());
+			currentTask = Task::NO_TASK;
+			guiPresenter->newStatusMessage(message);
+			guiPresenter->endOfTask();
+		}
+	}
+	void FaceSynthesizing::convertData()
+	{
+		if (fileSystem->doesDatasetExists(convertDataInfo->name)) {
+			std::cout << "Dataset Already Exists" << std::endl;
+			showDataAlreadyExistsPrompt();
+
+			if (dataAlreadyExistsResult == DataAlreadyExistsResult::No_Result)
+				return;
+			convertDataInfo->overwrite = dataAlreadyExistsResult == DataAlreadyExistsResult::Overwrite;
+			convertDataInfo->continueProcess = dataAlreadyExistsResult == DataAlreadyExistsResult::Continue;
+		}
+		else {
+			convertDataInfo->overwrite = true;
+			convertDataInfo->continueProcess = false;
+		}
+
+		faceSynthesizer->setConvertInfos(convertDataInfo);
+		faceSynthesizer->convertData();
+	}
+
+	void FaceSynthesizing::startTrainingTask(std::shared_ptr<TrainingInformation> trainingInfo)
+	{
+		std::unique_lock<std::mutex> lockTaskStart(taskStartLock);
+		if (currentTask != Task::NO_TASK) {
+			std::cout << "Cant start Training when another Task is currently executed!" << std::endl;
+			guiPresenter->newStatusMessage("Cant initialize Camera when another Task is currently executed!");
+			return;
+		}
+		this->trainingInfo = trainingInfo;
+		waitForTaskThreadTermination();
+
+		currentTask = Task::TRAINING;
+		guiPresenter->trainingStarted();
+		mainTaskThread = std::make_unique<std::thread>(&FaceSynthesizing::trainingThreadMethod, this);
+	}
+	void FaceSynthesizing::trainingThreadMethod()
+	{
+		try {
+			guiPresenter->newStatusMessage("Train Model");
+
+			train();
+
+			guiPresenter->endOfTask();
+			currentTask = Task::NO_TASK;
+		}
+		catch (const std::exception& e) {
+			std::cout << e.what() << std::endl;
+			std::string message = "Exception during Training Task: " + std::string(e.what());
+			currentTask = Task::NO_TASK;
+			guiPresenter->newStatusMessage(message);
+			guiPresenter->endOfTask();
+		}
+	}
+	void FaceSynthesizing::train()
+	{
+		if (fileSystem->doesCheckpointExists(trainingInfo->name)) {
+			std::cout << "Checkpoint Already Exists" << std::endl;
+			showDataAlreadyExistsPrompt();
+
+			if (dataAlreadyExistsResult == DataAlreadyExistsResult::No_Result)
+				return;
+			trainingInfo->overwrite = dataAlreadyExistsResult == DataAlreadyExistsResult::Overwrite;
+			trainingInfo->continueProcess = dataAlreadyExistsResult == DataAlreadyExistsResult::Continue;
+		}
+		else {
+			trainingInfo->overwrite = true;
+			trainingInfo->continueProcess = false;
+		}
+
+		faceSynthesizer->setTrainInfos(trainingInfo);
+		faceSynthesizer->train();
+	}
+
+	void FaceSynthesizing::showDataAlreadyExistsPrompt()
+	{
+		dataAlreadyExistsResult = DataAlreadyExistsResult::No_Result;
+		guiPresenter->dataAlreadyExistsUserPrompt();
+
+		std::unique_lock<std::mutex> lock(threadLock);
+		dataAlreadyExistsCondition.wait(lock, [this]() {
+			return currentTask == Task::NO_TASK || dataAlreadyExistsResult != DataAlreadyExistsResult::No_Result; });
+	}
+
 	void FaceSynthesizing::cancelTask()
 	{
+		std::unique_lock<std::mutex> lockTaskStart(taskStartLock);
 		std::unique_lock<std::mutex> lock(threadLock);
 		currentTask = Task::NO_TASK;
 		dataAlreadyExistsCondition.notify_all();
+		faceSynthesizer->requestExecutionStopAsync();
 		lock.unlock();
 
 		waitForTaskThreadTermination();
 
+		faceSynthesizer->resetExecutionStop();
 		guiPresenter->endOfTask();
 		guiPresenter->newStatusMessage("Task Canceled!");
 
@@ -196,6 +315,14 @@ namespace facesynthesizing::domain::usecases {
 	{
 		guiPresenter->visualizeImage(image);
 	}
+	void FaceSynthesizing::newProjectStatusMessage(std::string statusMessage)
+	{
+		guiPresenter->newStatusMessage(statusMessage);
+	}
+	void FaceSynthesizing::updateProjectStatusMessage(std::string statusMessage)
+	{
+		guiPresenter->updateStatusMessage(statusMessage);
+	}
 
 	void FaceSynthesizing::asyncGUIRequest(GUIRequest requestType)
 	{
@@ -213,7 +340,6 @@ namespace facesynthesizing::domain::usecases {
 			throw "Unknown/Not implemented GUIRequest.";
 		}
 	}
-
 	void FaceSynthesizing::processAllCaptureNamesRequest()
 	{
 		std::vector<std::string> allNames = fileSystem->getAllExistingCaptureNames();
@@ -234,7 +360,7 @@ namespace facesynthesizing::domain::usecases {
 	void FaceSynthesizing::processAllCheckpointNames()
 	{
 		std::vector<std::string> allNames = fileSystem->getAllExistingCheckpointNames();
-		//guiPresenter->presentAllCheckpointNames(allNames);
+		guiPresenter->presentAllCheckpointNames(allNames);
 	}
 
 	void FaceSynthesizing::setGuiPresenter(std::shared_ptr<FaceSynthesizingGUIPresenter> guiPresenter)

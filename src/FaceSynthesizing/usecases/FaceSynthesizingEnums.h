@@ -6,9 +6,9 @@
 
 namespace facesynthesizing::domain::usecases {
 	template<class T>
-	const std::string getAlgorithmNameFromMapping(T algorithm, std::map<T, std::string> mapping);
+	const std::string getNameFromMapping(T enumValue, std::map<T, std::string> mapping);
 	template<class T>
-	const T getAlgorithmFromMapping(std::string algorithmName, std::map<std::string, T> mapping);
+	const T getEnumValueFromMapping(std::string name, std::map<std::string, T> mapping);
 
 	enum class BoundingBoxAlgorithm {
 		SynergyNet,
@@ -66,7 +66,8 @@ namespace facesynthesizing::domain::usecases {
 
 	enum class GeneratorArchitecture {
 		UNet,
-		ResNet,
+		ResNet_6_Blocks,
+		ResNet_9_Blocks,
 	};
 	const std::list<GeneratorArchitecture> allGeneratorArchitectures();
 	const std::string generatorArchitectureToString(GeneratorArchitecture architecture);
@@ -127,17 +128,30 @@ namespace facesynthesizing::domain::usecases {
 	const std::string mappingNetworkToString(MappingNetwork network);
 	const MappingNetwork stringToMappingNetwork(std::string networkName);
 
-	enum class Task {
-		NO_TASK,
-		INITIATE_CAMERA,
-		CAPTURE,
-	};
-
 	enum class ImageType {
 		Unknown,
 		Camera_Color,
 		Camera_Depth,
 		Camera_Infrared,
 		Capture_FaceAlignment,
+		Convert_Face_Bounding_box,
+		Convert_Landmarks,
+		Convert_Depth_Holes,
+		Dataset_Color,
+		Dataset_Depth,
+		Dataset_FLM,
+		Synthesized_Color,
+		Synthesized_Depth,
+	};
+	const std::list<ImageType> allImageType();
+	const std::string imageTypeToString(ImageType type);
+	const ImageType stringToImageType(std::string typeName);
+
+	enum class Task {
+		NO_TASK,
+		INITIATE_CAMERA,
+		CAPTURE,
+		CONVERT,
+		TRAINING,
 	};
 }

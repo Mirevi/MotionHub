@@ -13,6 +13,9 @@
   <property name="windowTitle">
    <string>Face-Synthesizer</string>
   </property>
+  <property name="modal">
+   <bool>true</bool>
+  </property>
   <widget class="QTabWidget" name="tabWidget">
    <property name="geometry">
     <rect>

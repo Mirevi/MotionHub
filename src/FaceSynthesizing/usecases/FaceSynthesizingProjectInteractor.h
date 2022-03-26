@@ -9,5 +9,7 @@ namespace facesynthesizing::domain::usecases {
 	public:
 		virtual void noImageAvailable(ImageType imageType) = 0;
 		virtual void visualizeImage(std::shared_ptr<Image> image) = 0;
+		virtual void newProjectStatusMessage(std::string statusMessage) = 0;
+		virtual void updateProjectStatusMessage(std::string statusMessage) = 0;
 	};
 }

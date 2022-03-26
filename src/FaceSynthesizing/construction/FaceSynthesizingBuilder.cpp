@@ -35,8 +35,9 @@ namespace facesynthesizing::construction {
 	}
 
 	void FaceSynthesizingBuilder::build(ConfigManager* configManager) {
-		datasetRoot = configManager->getStringFromStartupConfig("faceSynthesizingDatasetRoot");
-		checkpointsRoot = configManager->getStringFromStartupConfig("faceSynthesizingCheckpointsRoot");
+		captureRoot = fs::path(configManager->getStringFromStartupConfig("faceSynthesizingDatasetRoot")) / "unprocessed";
+		datasetRoot = fs::path(configManager->getStringFromStartupConfig("faceSynthesizingDatasetRoot")) / "processed";
+		checkpointsRoot = fs::path(configManager->getStringFromStartupConfig("faceSynthesizingCheckpointsRoot"));
 		cameraType = stringToFaceSynthesizingCameraType(configManager->getStringFromStartupConfig("faceSynthesizingCameraType"));
 		guiType = FaceSynthesizingGUIType::Qt;
 
@@ -74,7 +75,7 @@ namespace facesynthesizing::construction {
 		pythonConstructor = std::make_shared<PythonConstructor>();
 
 		//filesystem
-		fileSystemConstructor = std::make_shared<FileSystemConstructor>(datasetRoot, checkpointsRoot);
+		fileSystemConstructor = std::make_shared<FileSystemConstructor>();
 	}
 
 	void FaceSynthesizingBuilder::resolveDependencies() {
@@ -83,6 +84,16 @@ namespace facesynthesizing::construction {
 		this->faceSynthesizingConstructor->setCameraConstructor(this->cameraConstructor);
 		this->faceSynthesizingConstructor->setPythonConstructor(this->pythonConstructor);
 		this->faceSynthesizingConstructor->setFileSystemConstructor(this->fileSystemConstructor);
+
+		// python
+		pythonConstructor->setCaptureRoot(captureRoot);
+		pythonConstructor->setDatasetRoot(datasetRoot);
+		pythonConstructor->setCheckpointsRoot(checkpointsRoot);
+
+		// file system
+		fileSystemConstructor->setCaptureRoot(captureRoot);
+		fileSystemConstructor->setDatasetRoot(datasetRoot);
+		fileSystemConstructor->setCheckpointsRoot(checkpointsRoot);
 	}
 
 	void FaceSynthesizingBuilder::construct() {

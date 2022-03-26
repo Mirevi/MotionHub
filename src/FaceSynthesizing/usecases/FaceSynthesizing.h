@@ -14,6 +14,7 @@
 #include <mutex>
 #include <cmath>
 #include <functional>
+#include <stdlib.h>
 
 namespace facesynthesizing::domain::usecases {
 
@@ -25,10 +26,15 @@ namespace facesynthesizing::domain::usecases {
 		~FaceSynthesizing();
 		void startInitializeCameraTask();
 		void startCaptureDataTask(std::shared_ptr<CaptureDataInformation> captureDataInfo);
+		void startConvertDataTask(std::shared_ptr<ConvertDataInformation> convertDataInfo);
+		void startTrainingTask(std::shared_ptr<TrainingInformation> trainingInfo);
 		void cancelTask();
+
 		void setDataAlreadyExistsPromptResult(DataAlreadyExistsResult result);
 		void noImageAvailable(ImageType imageType);
 		void visualizeImage(std::shared_ptr<Image> image);
+		void newProjectStatusMessage(std::string statusMessage);
+		void updateProjectStatusMessage(std::string statusMessage);
 
 		void asyncGUIRequest(GUIRequest requestType);
 		void processAllCaptureNamesRequest();
@@ -46,6 +52,11 @@ namespace facesynthesizing::domain::usecases {
 		void captureDataThreadMethod();
 		void captureData();
 		float computeEvalDataPairRate(int imageCount);
+		void convertDataThreadMethod();
+		void convertData();
+		void trainingThreadMethod();
+		void train();
+		void showDataAlreadyExistsPrompt();
 		void waitForTaskThreadTermination();
 
 		std::shared_ptr<FaceSynthesizingGUIPresenter> guiPresenter;
@@ -54,6 +65,7 @@ namespace facesynthesizing::domain::usecases {
 		std::shared_ptr<FaceSynthesizingFileSystem> fileSystem;
 
 		Task currentTask = Task::NO_TASK;
+		std::mutex taskStartLock;
 		std::unique_ptr<std::thread> mainTaskThread;
 		std::mutex threadLock;
 		std::condition_variable dataAlreadyExistsCondition;
@@ -62,6 +74,8 @@ namespace facesynthesizing::domain::usecases {
 		bool cameraIsInitiated = false;
 
 		std::shared_ptr<CaptureDataInformation> captureDataInfo;
+		std::shared_ptr<ConvertDataInformation> convertDataInfo;
+		std::shared_ptr<TrainingInformation> trainingInfo;
 		DataAlreadyExistsResult dataAlreadyExistsResult = DataAlreadyExistsResult::No_Result;
 	};
 }

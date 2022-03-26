@@ -15,6 +15,8 @@ namespace facesynthesizing::domain::adapters::gui {
 		void dataAlreadySetPromtDone(usecases::DataAlreadyExistsResult result);
 		void initializeCamera();
 		void startCaptureData();
+		void startConvertData();
+		void startTraining();
 		void cancel();
 
 		void requestAllCaptureNames();

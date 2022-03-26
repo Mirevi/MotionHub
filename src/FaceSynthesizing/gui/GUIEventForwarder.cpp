@@ -16,6 +16,16 @@ namespace facesynthesizing::domain::adapters::gui {
 		auto infos = captureDataInfoFromModel(captureDataViewModel.get());
 		faceSynthesizing->startCaptureDataTask(infos);
 	}
+	void GUIEventForwarder::startConvertData()
+	{
+		auto infos = convertDataInfoFromModel(convertDataViewModel.get());
+		faceSynthesizing->startConvertDataTask(infos);
+	}
+	void GUIEventForwarder::startTraining()
+	{
+		auto infos = trainingInfoFromModel(trainingViewModel.get());
+		faceSynthesizing->startTrainingTask(infos);
+	}
 	void GUIEventForwarder::cancel()
 	{
 		faceSynthesizing->cancelTask();

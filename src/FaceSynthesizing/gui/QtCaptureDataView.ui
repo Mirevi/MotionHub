@@ -405,11 +405,26 @@ p, li { white-space: pre-wrap; }
    </widget>
   </widget>
  </widget>
+ <tabstops>
+  <tabstop>nameLineEdit</tabstop>
+  <tabstop>faAlgorithmComboBox</tabstop>
+  <tabstop>trainImagesSpinBox</tabstop>
+  <tabstop>maxPitchDoubleSpinBox</tabstop>
+  <tabstop>evalImagesSpinBox</tabstop>
+  <tabstop>maxRollDoubleSpinBox</tabstop>
+  <tabstop>bbAlgorithmComboBox</tabstop>
+  <tabstop>maxYawDoubleSpinBox</tabstop>
+  <tabstop>initializeCameraPushButton</tabstop>
+  <tabstop>startCapturePushButton</tabstop>
+  <tabstop>cancelPushButton</tabstop>
+  <tabstop>visualizeCheckBox</tabstop>
+  <tabstop>statusMessagesContainer</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>
    <sender>nameLineEdit</sender>
-   <signal>editingFinished()</signal>
+   <signal>textChanged(QString)</signal>
    <receiver>QtCaptureDataView</receiver>
    <slot>onConfigurationGroupChanged()</slot>
    <hints>
@@ -425,7 +440,7 @@ p, li { white-space: pre-wrap; }
   </connection>
   <connection>
    <sender>trainImagesSpinBox</sender>
-   <signal>editingFinished()</signal>
+   <signal>valueChanged(int)</signal>
    <receiver>QtCaptureDataView</receiver>
    <slot>onConfigurationGroupChanged()</slot>
    <hints>
@@ -441,7 +456,7 @@ p, li { white-space: pre-wrap; }
   </connection>
   <connection>
    <sender>evalImagesSpinBox</sender>
-   <signal>editingFinished()</signal>
+   <signal>valueChanged(int)</signal>
    <receiver>QtCaptureDataView</receiver>
    <slot>onConfigurationGroupChanged()</slot>
    <hints>
@@ -478,8 +493,8 @@ p, li { white-space: pre-wrap; }
    <slot>onConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>616</x>
-     <y>54</y>
+     <x>1485</x>
+     <y>60</y>
     </hint>
     <hint type="destinationlabel">
      <x>648</x>
@@ -489,12 +504,12 @@ p, li { white-space: pre-wrap; }
   </connection>
   <connection>
    <sender>maxPitchDoubleSpinBox</sender>
-   <signal>editingFinished()</signal>
+   <signal>valueChanged(double)</signal>
    <receiver>QtCaptureDataView</receiver>
    <slot>onConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>877</x>
+     <x>1487</x>
      <y>94</y>
     </hint>
     <hint type="destinationlabel">
@@ -505,13 +520,13 @@ p, li { white-space: pre-wrap; }
   </connection>
   <connection>
    <sender>maxRollDoubleSpinBox</sender>
-   <signal>editingFinished()</signal>
+   <signal>valueChanged(double)</signal>
    <receiver>QtCaptureDataView</receiver>
    <slot>onConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>592</x>
-     <y>114</y>
+     <x>1461</x>
+     <y>124</y>
     </hint>
     <hint type="destinationlabel">
      <x>541</x>
@@ -521,13 +536,13 @@ p, li { white-space: pre-wrap; }
   </connection>
   <connection>
    <sender>maxYawDoubleSpinBox</sender>
-   <signal>editingFinished()</signal>
+   <signal>valueChanged(double)</signal>
    <receiver>QtCaptureDataView</receiver>
    <slot>onConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>662</x>
-     <y>143</y>
+     <x>1487</x>
+     <y>154</y>
     </hint>
     <hint type="destinationlabel">
      <x>647</x>
@@ -542,8 +557,8 @@ p, li { white-space: pre-wrap; }
    <slot>onInitializeCamera()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>921</x>
-     <y>69</y>
+     <x>1531</x>
+     <y>74</y>
     </hint>
     <hint type="destinationlabel">
      <x>856</x>
@@ -558,7 +573,7 @@ p, li { white-space: pre-wrap; }
    <slot>onStartCapture()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>921</x>
+     <x>1531</x>
      <y>110</y>
     </hint>
     <hint type="destinationlabel">
@@ -574,7 +589,7 @@ p, li { white-space: pre-wrap; }
    <slot>onCancel()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>921</x>
+     <x>1531</x>
      <y>143</y>
     </hint>
     <hint type="destinationlabel">

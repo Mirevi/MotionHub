@@ -13,21 +13,19 @@ namespace facesynthesizing::infrastructure::filesystem {
 		if (captureName.empty())
 			return false;
 
-		fs::path captureRoot = datasetRoot / "unprocessed" / captureName;
-		return fs::exists(captureRoot);
+		fs::path root = captureRoot / captureName;
+		return fs::exists(root);
 	}
 	std::vector<std::string> FileSystem::getAllExistingCaptureNames()
 	{
-		std::cout << "datasetRoot: " << datasetRoot.string() << std::endl;
-		fs::path unprocessedRoot = datasetRoot / "unprocessed";
-		return allNames(unprocessedRoot,
+		return allNames(captureRoot,
 			std::bind(&FileSystem::doesCaptureExists, this, std::placeholders::_1));
 	}
 	void FileSystem::prepareCaptureLocation(std::shared_ptr<usecases::CaptureDataInformation> captureInfos, bool overwrite)
 	{
-		fs::path captureRoot = datasetRoot / "unprocessed" / captureInfos->name;
-		fs::path trainingRoot = captureRoot / "train";
-		fs::path evaluationRoot = captureRoot / "eval";
+		fs::path root = captureRoot / captureInfos->name;
+		fs::path trainingRoot = root / "train";
+		fs::path evaluationRoot = root / "eval";
 
 		fs::path trainingColorImageDir = trainingRoot / "Color";
 		fs::path trainingDepthImageDir = trainingRoot / "Depth";
@@ -36,8 +34,8 @@ namespace facesynthesizing::infrastructure::filesystem {
 		fs::path evaluationDepthImageDir = evaluationRoot / "Depth";
 		fs::path evaluationInfraredImageDir = evaluationRoot / "Infrared";
 
-		if (overwrite && fs::exists(captureRoot) && !fs::remove_all(captureRoot))
-			throw "Could not remove root dir and content: " + captureRoot.string();
+		if (overwrite && fs::exists(root) && !fs::remove_all(root))
+			throw "Could not remove root dir and content: " + root.string();
 		if (captureInfos->train_images > 0) {
 			fs::create_directories(trainingColorImageDir);
 			fs::create_directories(trainingDepthImageDir);
@@ -54,8 +52,8 @@ namespace facesynthesizing::infrastructure::filesystem {
 		if (!doesCaptureExists(captureName))
 			return 0;
 
-		fs::path trainColorDir = datasetRoot / "unprocessed" / captureName / "train" / "Color";
-		fs::path evalColorDir = datasetRoot / "unprocessed" / captureName / "eval" / "Color";
+		fs::path trainColorDir = captureRoot / captureName / "train" / "Color";
+		fs::path evalColorDir = captureRoot / captureName / "eval" / "Color";
 
 		int trainDataPairs = 0;
 		int evalDataPairs = 0;
@@ -68,8 +66,8 @@ namespace facesynthesizing::infrastructure::filesystem {
 	}
 	void FileSystem::saveCaptureDataPair(usecases::CaptureDataPair dataPair, std::string captureName, std::string filename, usecases::CaptureDataPairType type)
 	{
-		fs::path trainingRoot = datasetRoot / "unprocessed" / captureName / "train";
-		fs::path evaluationRoot = datasetRoot / "unprocessed" / captureName / "eval";
+		fs::path trainingRoot = captureRoot / captureName / "train";
+		fs::path evaluationRoot = captureRoot / captureName / "eval";
 		fs::path root = type == usecases::CaptureDataPairType::Training ? trainingRoot : evaluationRoot;
 
 		fs::path colorImageFile = root / "Color" / filename;
@@ -88,23 +86,22 @@ namespace facesynthesizing::infrastructure::filesystem {
 		if (datasetName.empty())
 			return false;
 
-		fs::path dataRoot = datasetRoot / "processed" / datasetName;
+		fs::path dataRoot = datasetRoot / datasetName;
 		return fs::exists(dataRoot);
 	}
 	bool FileSystem::datasetContainsTrainingData(std::string datasetName)
 	{
-		fs::path dataRoot = datasetRoot / "processed" / datasetName / "train";
+		fs::path dataRoot = datasetRoot / datasetName / "train";
 		return fs::exists(dataRoot);
 	}
 	bool FileSystem::datasetContainsEvaluationData(std::string datasetName)
 	{
-		fs::path dataRoot = datasetRoot / "processed" / datasetName / "eval";
+		fs::path dataRoot = datasetRoot / datasetName / "eval";
 		return fs::exists(dataRoot);
 	}
 	std::vector<std::string> FileSystem::getAllExistingDatasetNames()
 	{
-		fs::path processedRoot = datasetRoot / "processed";
-		return allNames(processedRoot,
+		return allNames(datasetRoot,
 			std::bind(&FileSystem::doesDatasetExists, this, std::placeholders::_1));
 	}
 
@@ -194,12 +191,16 @@ namespace facesynthesizing::infrastructure::filesystem {
 		return cvtype;
 	}
 
-	void FileSystem::setDatasetRoot(fs::path datasetRoot)
+	void FileSystem::setCaptureRoot(fs::path root)
 	{
-		this->datasetRoot = datasetRoot;
+		this->captureRoot = root;
 	}
-	void FileSystem::setCheckpointsRoot(fs::path checkpointsRoot)
+	void FileSystem::setDatasetRoot(fs::path root)
 	{
-		this->checkpointsRoot = checkpointsRoot;
+		this->datasetRoot = root;
+	}
+	void FileSystem::setCheckpointsRoot(fs::path root)
+	{
+		this->checkpointsRoot = root;
 	}
 }

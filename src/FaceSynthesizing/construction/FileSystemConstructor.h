@@ -10,13 +10,19 @@ namespace filesystem = facesynthesizing::infrastructure::filesystem;
 namespace facesynthesizing::construction {
 	class FileSystemConstructor : public Constructor {
 	public:
-		FileSystemConstructor(std::filesystem::path datasetRoot, std::filesystem::path checkpointsRoot);
+		FileSystemConstructor();
+		void validateDependencies();
 		void resolveDependencies();
+
+		void setCaptureRoot(std::filesystem::path root);
+		void setDatasetRoot(std::filesystem::path root);
+		void setCheckpointsRoot(std::filesystem::path root);
 
 		std::shared_ptr<filesystem::FileSystem> getFileSystem();
 	private:
-		std::filesystem::path datasetRoot;
-		std::filesystem::path checkpointsRoot;
+		std::shared_ptr<std::filesystem::path> captureRoot;
+		std::shared_ptr<std::filesystem::path> datasetRoot;
+		std::shared_ptr<std::filesystem::path> checkpointsRoot;
 
 		std::shared_ptr<filesystem::FileSystem> fileSystem;
 	};

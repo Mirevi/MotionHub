@@ -21,6 +21,8 @@ namespace facesynthesizing::domain::adapters::gui {
 		void cameraInitializationStarted();
 		void cameraIsInitialized();
 		void dataPairCaptureStarted();
+		void dataPairConversionStarted();
+		void trainingStarted();
 		void endOfTask();
 		void dataAlreadyExistsUserPrompt();
 
@@ -41,11 +43,15 @@ namespace facesynthesizing::domain::adapters::gui {
 		void setTrainingViewModel(std::shared_ptr<TrainingViewModel> trainingViewModel);
 		//void setInferenceViewModel(std::shared_ptr<InferenceViewModel> inferenceViewModel);
 	private:
+		void processImageChange(usecases::ImageType imageType, std::shared_ptr<usecases::Image> image);
 		void notifyImageChange(usecases::ImageType imageType);
+		std::shared_ptr<ViewModel> viewDataModelFromCurrentTab();
 		void captureCameraInitializationStarted();
 		void captureCameraIsInitialized();
 		void endOfDataCaptureTask();
-		std::string getDataAlreadyExistsPromprMessage();
+		void endOfDataConvertTask();
+		void endOfTrainingTask();
+		std::string getDataAlreadyExistsPromptMessage();
 
 		void lockCurrentView();
 		void unlockCurrentView();

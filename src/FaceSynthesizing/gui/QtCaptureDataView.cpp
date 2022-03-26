@@ -98,8 +98,8 @@ namespace facesynthesizing::infrastructure::qtgui{
         isUpdating = true;
         ui->visualizeCheckBox->setChecked(captureDataViewModel->visualize);
         if (captureDataViewModel->visualize) {
-            visualizeImage(captureDataViewModel->colorImage, ui->imageColorLabel, QImage::Format_ARGB32);
-            visualizeImage(captureDataViewModel->faceAlignmentImage, ui->imageAlignmentLabel, QImage::Format_ARGB32);
+            visualizeImage(captureDataViewModel->colorImage, ui->imageColorLabel, nullptr);
+            visualizeImage(captureDataViewModel->faceAlignmentImage, ui->imageAlignmentLabel, nullptr);
         }
         else {
             ui->imageColorLabel->clear();

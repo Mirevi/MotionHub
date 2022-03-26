@@ -96,6 +96,8 @@ namespace facesynthesizing::infrastructure::qtgui {
 		ui->pcaLandmarkComponentsDoubleSpinBox->setValue(convertDataViewModel->pcaLandmarkComponents);
 		ui->pcaImageComponentsDoubleSpinBox->setValue(convertDataViewModel->pcaImageComponents);
 		ui->flmLineThicknessSpinBox->setValue(convertDataViewModel->flmLineThickness);
+
+		ui->general->setEnabled(convertDataViewModel->isConfigurationActivated);
 		isUpdating = false;
 	}
 	void QtConvertDataView::updateLandmarkTrackingConfigurationGroup()
@@ -112,6 +114,8 @@ namespace facesynthesizing::infrastructure::qtgui {
 			convertDataViewModel->eyeTrackingAlgorithm == usecases::EyeTrackingAlgorithm::Gradient_Based);
 		ui->eyeTrackingThresholdSpinBox->setEnabled(
 			convertDataViewModel->eyeTrackingAlgorithm == usecases::EyeTrackingAlgorithm::Infrared);
+
+		ui->landmarkTracking->setEnabled(convertDataViewModel->isConfigurationActivated);
 		isUpdating = false;
 	}
 	void QtConvertDataView::updateDepthConversionConfigurationGroup()
@@ -140,6 +144,8 @@ namespace facesynthesizing::infrastructure::qtgui {
 		ui->depthFillingSourceAmountSpinBox->setEnabled(useDepthFilling && dfIsGradientBased);
 		ui->depthFillingUseBlurCheckBox->setEnabled(useDepthFilling && dfIsGradientBased);
 		ui->depthFillingBlurkSizeSpinBox->setEnabled(useDepthFilling && dfIsGradientBased);
+
+		ui->depthConversion->setEnabled(convertDataViewModel->isConfigurationActivated);
 		isUpdating = false;
 	}
 	void QtConvertDataView::updateTaskGroup()
@@ -155,14 +161,14 @@ namespace facesynthesizing::infrastructure::qtgui {
 		isUpdating = true;
 		ui->visualizeCheckBox->setChecked(convertDataViewModel->visualize);
 		if (convertDataViewModel->visualize) {
-			visualizeImage(convertDataViewModel->colorImage, ui->imageColorLabel, QImage::Format_ARGB32);
-			visualizeImage(convertDataViewModel->depthImage, ui->imageDepthLabel, QImage::Format_Grayscale8);
-			visualizeImage(convertDataViewModel->flmImage, ui->imageFLMLabel, QImage::Format_Grayscale8);
+			visualizeImage(convertDataViewModel->firstImage, ui->firstImageLabel, ui->firstImageIdentifierLabel);
+			visualizeImage(convertDataViewModel->secondImage, ui->secondImageLabel, ui->secondImageIdentifierLabel);
+			visualizeImage(convertDataViewModel->thirdImage, ui->thirdImageLabel, ui->thirdImageIdentifierLabel);
 		}
 		else {
-			ui->imageColorLabel->clear();
-			ui->imageDepthLabel->clear();
-			ui->imageFLMLabel->clear();
+			ui->firstImageLabel->clear();
+			ui->secondImageLabel->clear();
+			ui->thirdImageLabel->clear();
 		}
 		isUpdating = false;
 	}
@@ -240,7 +246,7 @@ namespace facesynthesizing::infrastructure::qtgui {
 		if (isUpdating || !isInitialized)
 			return;
 
-		//TODO
+		guiEventForwarder->startConvertData();
 	}
 	void QtConvertDataView::onCancel()
 	{

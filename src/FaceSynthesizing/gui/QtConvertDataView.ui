@@ -675,7 +675,7 @@ p, li { white-space: pre-wrap; }
     </property>
     <layout class="QGridLayout" name="gridLayout_4" columnstretch="0,0,1,1,1">
      <item row="1" column="3">
-      <widget class="QLabel" name="imageDepthLabel">
+      <widget class="QLabel" name="secondImageLabel">
        <property name="text">
         <string>TextLabel</string>
        </property>
@@ -685,7 +685,7 @@ p, li { white-space: pre-wrap; }
       </widget>
      </item>
      <item row="1" column="2">
-      <widget class="QLabel" name="imageColorLabel">
+      <widget class="QLabel" name="firstImageLabel">
        <property name="text">
         <string>TextLabel</string>
        </property>
@@ -695,7 +695,7 @@ p, li { white-space: pre-wrap; }
       </widget>
      </item>
      <item row="1" column="4">
-      <widget class="QLabel" name="imageFLMLabel">
+      <widget class="QLabel" name="thirdImageLabel">
        <property name="text">
         <string>TextLabel</string>
        </property>
@@ -705,9 +705,9 @@ p, li { white-space: pre-wrap; }
       </widget>
      </item>
      <item row="0" column="4">
-      <widget class="QLabel" name="label_23">
+      <widget class="QLabel" name="thirdImageIdentifierLabel">
        <property name="text">
-        <string>FLM</string>
+        <string/>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
@@ -715,9 +715,9 @@ p, li { white-space: pre-wrap; }
       </widget>
      </item>
      <item row="0" column="2">
-      <widget class="QLabel" name="label_21">
+      <widget class="QLabel" name="firstImageIdentifierLabel">
        <property name="text">
-        <string>RGB</string>
+        <string/>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
@@ -725,9 +725,9 @@ p, li { white-space: pre-wrap; }
       </widget>
      </item>
      <item row="0" column="3">
-      <widget class="QLabel" name="label_22">
+      <widget class="QLabel" name="secondImageIdentifierLabel">
        <property name="text">
-        <string>Depth</string>
+        <string/>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
@@ -748,6 +748,34 @@ p, li { white-space: pre-wrap; }
    </widget>
   </widget>
  </widget>
+ <tabstops>
+  <tabstop>nameComboBox</tabstop>
+  <tabstop>horizontalCameraFOVDoubleSpinBox</tabstop>
+  <tabstop>outputImageSizeSpinBox</tabstop>
+  <tabstop>paddingSpinBox</tabstop>
+  <tabstop>pcaLandmarkComponentsDoubleSpinBox</tabstop>
+  <tabstop>pcaImageComponentsDoubleSpinBox</tabstop>
+  <tabstop>flmLineThicknessSpinBox</tabstop>
+  <tabstop>faceTrackingAlgorithmComboBox</tabstop>
+  <tabstop>eyeTrackingAlgorithmComboBox</tabstop>
+  <tabstop>eyeTrackingStrideSpinBox</tabstop>
+  <tabstop>eyeTrackingThresholdSpinBox</tabstop>
+  <tabstop>faceDepthSpinBox</tabstop>
+  <tabstop>depthPaddingSpinBox</tabstop>
+  <tabstop>useDepthFillingCheckBox</tabstop>
+  <tabstop>depthFillingAlgorithmComboBox</tabstop>
+  <tabstop>depthFillingImageSizeSpinBox</tabstop>
+  <tabstop>depthFillingPatchSizeSpinBox</tabstop>
+  <tabstop>depthFillingExtendedPatchSizeSpinBox</tabstop>
+  <tabstop>depthFillingPaddingSpinBox</tabstop>
+  <tabstop>depthFillingSourceAmountSpinBox</tabstop>
+  <tabstop>depthFillingUseBlurCheckBox</tabstop>
+  <tabstop>depthFillingBlurkSizeSpinBox</tabstop>
+  <tabstop>convertDataPushButton</tabstop>
+  <tabstop>cancelPushButton</tabstop>
+  <tabstop>visualizeCheckBox</tabstop>
+  <tabstop>statusMessagesContainer</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>
@@ -757,8 +785,8 @@ p, li { white-space: pre-wrap; }
    <slot>onGeneralConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>304</x>
-     <y>39</y>
+     <x>405</x>
+     <y>52</y>
     </hint>
     <hint type="destinationlabel">
      <x>372</x>
@@ -773,8 +801,8 @@ p, li { white-space: pre-wrap; }
    <slot>onGeneralConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>609</x>
-     <y>46</y>
+     <x>787</x>
+     <y>52</y>
     </hint>
     <hint type="destinationlabel">
      <x>865</x>
@@ -789,8 +817,8 @@ p, li { white-space: pre-wrap; }
    <slot>onGeneralConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1079</x>
-     <y>50</y>
+     <x>1549</x>
+     <y>52</y>
     </hint>
     <hint type="destinationlabel">
      <x>886</x>
@@ -805,8 +833,8 @@ p, li { white-space: pre-wrap; }
    <slot>onGeneralConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>609</x>
-     <y>76</y>
+     <x>787</x>
+     <y>96</y>
     </hint>
     <hint type="destinationlabel">
      <x>647</x>
@@ -821,8 +849,8 @@ p, li { white-space: pre-wrap; }
    <slot>onGeneralConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>860</x>
-     <y>50</y>
+     <x>1168</x>
+     <y>52</y>
     </hint>
     <hint type="destinationlabel">
      <x>394</x>
@@ -837,8 +865,8 @@ p, li { white-space: pre-wrap; }
    <slot>onGeneralConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>304</x>
-     <y>76</y>
+     <x>405</x>
+     <y>96</y>
     </hint>
     <hint type="destinationlabel">
      <x>422</x>
@@ -853,8 +881,8 @@ p, li { white-space: pre-wrap; }
    <slot>onGeneralConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>860</x>
-     <y>76</y>
+     <x>1168</x>
+     <y>96</y>
     </hint>
     <hint type="destinationlabel">
      <x>433</x>
@@ -869,8 +897,8 @@ p, li { white-space: pre-wrap; }
    <slot>onLandmarkTrackingConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>552</x>
-     <y>129</y>
+     <x>787</x>
+     <y>141</y>
     </hint>
     <hint type="destinationlabel">
      <x>16</x>
@@ -885,8 +913,8 @@ p, li { white-space: pre-wrap; }
    <slot>onLandmarkTrackingConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>815</x>
-     <y>129</y>
+     <x>1168</x>
+     <y>141</y>
     </hint>
     <hint type="destinationlabel">
      <x>13</x>
@@ -901,8 +929,8 @@ p, li { white-space: pre-wrap; }
    <slot>onLandmarkTrackingConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>288</x>
-     <y>129</y>
+     <x>405</x>
+     <y>141</y>
     </hint>
     <hint type="destinationlabel">
      <x>1103</x>
@@ -917,8 +945,8 @@ p, li { white-space: pre-wrap; }
    <slot>onLandmarkTrackingConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1079</x>
-     <y>129</y>
+     <x>1549</x>
+     <y>141</y>
     </hint>
     <hint type="destinationlabel">
      <x>1103</x>
@@ -933,8 +961,8 @@ p, li { white-space: pre-wrap; }
    <slot>onDepthConversionConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>536</x>
-     <y>179</y>
+     <x>775</x>
+     <y>204</y>
     </hint>
     <hint type="destinationlabel">
      <x>1103</x>
@@ -949,8 +977,8 @@ p, li { white-space: pre-wrap; }
    <slot>onDepthConversionConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>536</x>
-     <y>228</y>
+     <x>775</x>
+     <y>277</y>
     </hint>
     <hint type="destinationlabel">
      <x>1103</x>
@@ -965,8 +993,8 @@ p, li { white-space: pre-wrap; }
    <slot>onDepthConversionConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1079</x>
-     <y>228</y>
+     <x>1549</x>
+     <y>277</y>
     </hint>
     <hint type="destinationlabel">
      <x>1103</x>
@@ -981,8 +1009,8 @@ p, li { white-space: pre-wrap; }
    <slot>onDepthConversionConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>536</x>
-     <y>253</y>
+     <x>775</x>
+     <y>305</y>
     </hint>
     <hint type="destinationlabel">
      <x>1103</x>
@@ -997,8 +1025,8 @@ p, li { white-space: pre-wrap; }
    <slot>onDepthConversionConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1079</x>
-     <y>253</y>
+     <x>1549</x>
+     <y>305</y>
     </hint>
     <hint type="destinationlabel">
      <x>1103</x>
@@ -1013,8 +1041,8 @@ p, li { white-space: pre-wrap; }
    <slot>onDepthConversionConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>264</x>
-     <y>179</y>
+     <x>400</x>
+     <y>204</y>
     </hint>
     <hint type="destinationlabel">
      <x>12</x>
@@ -1029,8 +1057,8 @@ p, li { white-space: pre-wrap; }
    <slot>onDepthConversionConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>264</x>
-     <y>228</y>
+     <x>400</x>
+     <y>277</y>
     </hint>
     <hint type="destinationlabel">
      <x>10</x>
@@ -1045,8 +1073,8 @@ p, li { white-space: pre-wrap; }
    <slot>onDepthConversionConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>783</x>
-     <y>228</y>
+     <x>1151</x>
+     <y>277</y>
     </hint>
     <hint type="destinationlabel">
      <x>8</x>
@@ -1061,8 +1089,8 @@ p, li { white-space: pre-wrap; }
    <slot>onDepthConversionConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>264</x>
-     <y>253</y>
+     <x>400</x>
+     <y>305</y>
     </hint>
     <hint type="destinationlabel">
      <x>13</x>
@@ -1077,8 +1105,8 @@ p, li { white-space: pre-wrap; }
    <slot>onDepthConversionConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>54</x>
-     <y>203</y>
+     <x>55</x>
+     <y>235</y>
     </hint>
     <hint type="destinationlabel">
      <x>10</x>
@@ -1093,8 +1121,8 @@ p, li { white-space: pre-wrap; }
    <slot>onDepthConversionConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>697</x>
-     <y>252</y>
+     <x>963</x>
+     <y>304</y>
     </hint>
     <hint type="destinationlabel">
      <x>8</x>
@@ -1109,8 +1137,8 @@ p, li { white-space: pre-wrap; }
    <slot>onVisualizationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>35</x>
-     <y>418</y>
+     <x>36</x>
+     <y>368</y>
     </hint>
     <hint type="destinationlabel">
      <x>9</x>
@@ -1125,8 +1153,8 @@ p, li { white-space: pre-wrap; }
    <slot>onConvert()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1043</x>
-     <y>323</y>
+     <x>1591</x>
+     <y>63</y>
     </hint>
     <hint type="destinationlabel">
      <x>1101</x>
@@ -1141,8 +1169,8 @@ p, li { white-space: pre-wrap; }
    <slot>onCancel()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1060</x>
-     <y>352</y>
+     <x>1591</x>
+     <y>92</y>
     </hint>
     <hint type="destinationlabel">
      <x>1102</x>

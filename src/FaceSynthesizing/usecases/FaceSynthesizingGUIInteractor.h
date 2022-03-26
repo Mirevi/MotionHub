@@ -21,6 +21,8 @@ namespace facesynthesizing::domain::usecases {
 	public:
 		virtual void startInitializeCameraTask() = 0;
 		virtual void startCaptureDataTask(std::shared_ptr<CaptureDataInformation> captureDataInfo) = 0;
+		virtual void startConvertDataTask(std::shared_ptr<ConvertDataInformation> convertDataInfo) = 0;
+		virtual void startTrainingTask(std::shared_ptr<TrainingInformation> trainingInfo) = 0;
 		virtual void cancelTask() = 0;
 		virtual void setDataAlreadyExistsPromptResult(DataAlreadyExistsResult result) = 0;
 

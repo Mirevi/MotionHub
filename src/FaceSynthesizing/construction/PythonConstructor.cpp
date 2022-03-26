@@ -9,9 +9,34 @@ namespace facesynthesizing::construction {
 
         this->initializePython();
 	}
+    void PythonConstructor::setCaptureRoot(fs::path root)
+    {
+        this->captureRoot = std::shared_ptr<fs::path>(new fs::path(root));
+    }
+    void PythonConstructor::setDatasetRoot(fs::path root)
+    {
+        this->datasetRoot = std::shared_ptr<fs::path>(new fs::path(root));
+    }
+    void PythonConstructor::setCheckpointsRoot(fs::path root)
+    {
+        this->checkpointsRoot = std::shared_ptr<fs::path>(new fs::path(root));
+    }
+    void PythonConstructor::validateDependencies()
+    {
+        if (this->captureRoot == nullptr)
+            throw ConstructionException("Dependency of FileSystemConstructor not set!");
+        if (this->datasetRoot == nullptr)
+            throw ConstructionException("Dependency of FileSystemConstructor not set!");
+        if (this->checkpointsRoot == nullptr)
+            throw ConstructionException("Dependency of FileSystemConstructor not set!");
+    }
     void PythonConstructor::resolveDependencies()
     {
+        faceSynthesizer->setCaptureRoot(*captureRoot);
+        faceSynthesizer->setDatasetRoot(*datasetRoot);
+        faceSynthesizer->setCheckpointsRoot(*checkpointsRoot);
         faceSynthesizer->setGlobals(globals);
+        PyEval_SaveThread();
     }
     std::shared_ptr<python::FaceSynthesizer> PythonConstructor::getFaceSynthesizer()
     {

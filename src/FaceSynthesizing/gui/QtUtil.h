@@ -8,5 +8,6 @@
 namespace usecases = facesynthesizing::domain::usecases;
 
 namespace facesynthesizing::infrastructure::qtgui {
-	void visualizeImage(std::shared_ptr<usecases::Image> image, QLabel* container, QImage::Format format);
+	void visualizeImage(std::shared_ptr<usecases::Image> image, QLabel* container, QLabel* identifier);
+	QImage::Format qformatFromImage(std::shared_ptr<usecases::Image> image);
 }

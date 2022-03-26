@@ -32,7 +32,6 @@ namespace facesynthesizing::infrastructure::python {
 		image->bytesPerChannelValue = (arrayDimensions == 2) ? npArray.strides(1) : npArray.strides(2);
 		image->bytesPerChannelValue /= sizeof(uint8_t);
 		size_t dataSize = image->getDataSize();
-
 		uint8_t* buffer = reinterpret_cast<uint8_t*>(npArray.get_data());
 		uint8_t* dataArray = new uint8_t[dataSize];
 		std::copy(buffer, buffer + dataSize, dataArray);

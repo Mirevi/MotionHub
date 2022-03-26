@@ -69,7 +69,6 @@ namespace facesynthesizing::infrastructure::qtgui{
     void QtTabView::updateUserPrompts()
     {
         if (tabViewModel->showDataAlreadyExistsUserPrompt) {
-            std::cout << "showDataAlreadyExistsUserPrompt" << std::endl;
             dataAlreadyExistsDialog = std::make_shared<QtDataAlreadyExistsDialog>();
             dataAlreadyExistsDialog->setMessage(tabViewModel->dialogMessage);
             QObject::connect(dataAlreadyExistsDialog.get(), &QtDataAlreadyExistsDialog::finished,
@@ -77,7 +76,6 @@ namespace facesynthesizing::infrastructure::qtgui{
 
             dataAlreadyExistsDialog->setModal(true);
             dataAlreadyExistsDialog->open();
-            std::cout << "showDataAlreadyExistsUserPrompt finished" << std::endl;
         }
         else {
             dataAlreadyExistsDialog = nullptr;

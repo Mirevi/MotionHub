@@ -14,6 +14,8 @@ namespace facesynthesizing::domain::usecases {
 		virtual void cameraInitializationStarted() = 0;
 		virtual void cameraIsInitialized() = 0;
 		virtual void dataPairCaptureStarted() = 0;
+		virtual void dataPairConversionStarted() = 0;
+		virtual void trainingStarted() = 0;
 		virtual void endOfTask() = 0;
 		virtual void dataAlreadyExistsUserPrompt() = 0;
 
