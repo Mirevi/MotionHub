@@ -43,6 +43,7 @@ namespace facesynthesizing::infrastructure::qtgui{
 		void connectSignalsAndSlots();
 		void addItemsToBoundingBoxComboBox();
 		void addItemsToFaceAlignmentComboBox();
+		void resetVisualizationImages();
 
 		bool isUpdating = false;
 		bool isInitialized = false;

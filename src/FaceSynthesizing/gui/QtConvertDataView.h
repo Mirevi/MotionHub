@@ -51,6 +51,7 @@ namespace facesynthesizing::infrastructure::qtgui {
 		void addItemsToEyeTrackingComboBox();
 		void addItemsToFaceTrackingComboBox();
 		void addItemsToDepthFillingComboBox();
+		void resetVisualizationImages();
 
 		bool isUpdating = false;
 		bool isInitialized = false;

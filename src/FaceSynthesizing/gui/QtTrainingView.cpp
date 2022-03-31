@@ -433,7 +433,20 @@ namespace facesynthesizing::infrastructure::qtgui {
         if (isUpdating || !isInitialized)
             return;
 
+        resetVisualizationImages();
         guiEventForwarder->startTraining();
+    }
+    void QtTrainingView::resetVisualizationImages()
+    {
+        std::unique_lock<std::mutex> lock(trainingViewModel->viewModelMutex);
+        trainingViewModel->flmImage = nullptr;
+        trainingViewModel->colorRealImage = nullptr;
+        trainingViewModel->colorFakeImage = nullptr;
+        trainingViewModel->depthRealImage = nullptr;
+        trainingViewModel->depthFakeImage = nullptr;
+        lock.unlock();
+
+        trainingViewModel->notify();
     }
     void QtTrainingView::onCancel()
     {

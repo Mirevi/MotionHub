@@ -153,13 +153,26 @@ namespace facesynthesizing::infrastructure::qtgui{
         if (isUpdating || !isInitialized)
             return;
 
+        resetVisualizationImages();
         guiEventForwarder->initializeCamera();
     }
     void QtCaptureDataView::onStartCapture() {
         if (isUpdating || !isInitialized)
             return;
 
+        resetVisualizationImages();
         guiEventForwarder->startCaptureData();
+    }
+    void QtCaptureDataView::resetVisualizationImages()
+    {
+
+        std::unique_lock<std::mutex> lock(captureDataViewModel->viewModelMutex);
+        captureDataViewModel->colorImage = nullptr;
+        captureDataViewModel->boundingBoxImage = nullptr;
+        captureDataViewModel->faceAlignmentImage = nullptr;
+        lock.unlock();
+
+        captureDataViewModel->notify();
     }
     void QtCaptureDataView::onCancel() {
         if (isUpdating || !isInitialized)

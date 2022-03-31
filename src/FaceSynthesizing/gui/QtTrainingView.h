@@ -63,6 +63,7 @@ namespace facesynthesizing::infrastructure::qtgui {
 		void addItemsToWeightInitTypeComboBox();
 		void updateAllTrainModelElements();
 		void updateAllTrainModelElementsAsync();
+		void resetVisualizationImages();
 
 		bool isUpdating = false;
 		bool isInitialized = false;

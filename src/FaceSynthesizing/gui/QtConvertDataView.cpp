@@ -258,7 +258,18 @@ namespace facesynthesizing::infrastructure::qtgui {
 		if (isUpdating || !isInitialized)
 			return;
 
+		resetVisualizationImages();
 		guiEventForwarder->startConvertData();
+	}
+	void QtConvertDataView::resetVisualizationImages()
+	{
+		std::unique_lock<std::mutex> lock(convertDataViewModel->viewModelMutex);
+		convertDataViewModel->firstImage = nullptr;
+		convertDataViewModel->secondImage = nullptr;
+		convertDataViewModel->thirdImage = nullptr;
+		lock.unlock();
+
+		convertDataViewModel->notify();
 	}
 	void QtConvertDataView::onCancel()
 	{
