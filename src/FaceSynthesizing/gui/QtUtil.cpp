@@ -5,19 +5,26 @@
 namespace facesynthesizing::infrastructure::qtgui {
 	void visualizeImage(std::shared_ptr<usecases::Image> image, QLabel* container, QLabel* identifier)
 	{
-        if (identifier != nullptr && image != nullptr) {
-            identifier->setText(QString::fromStdString(usecases::imageTypeToString(image->type)));
-        }
+        try {
+            if (image != nullptr) {
+                QImage qimage = QImage(image->data.get(), image->width, image->height,
+                    static_cast<int>(image->width * image->channels * image->bytesPerChannelValue),
+                    qformatFromImage(image));
+                qimage = qimage.scaled(container->width(), container->height(), Qt::AspectRatioMode::KeepAspectRatio);
+                container->setPixmap(QPixmap::fromImage(qimage));
+            }
+            else
+                container->clear();
 
-        if (image != nullptr) {
-            QImage qimage = QImage(image->data.get(), image->width, image->height, 
-                static_cast<int>(image->width * image->channels * image->bytesPerChannelValue), 
-                qformatFromImage(image));
-            qimage = qimage.scaled(container->width(), container->height(), Qt::AspectRatioMode::KeepAspectRatio);
-            container->setPixmap(QPixmap::fromImage(qimage));
+            if (identifier != nullptr && image != nullptr) {
+                identifier->setText(QString::fromStdString(usecases::imageTypeToString(image->type)));
+            }
         }
-        else
+        catch (std::exception&) {
             container->clear();
+            if (identifier != nullptr)
+                identifier->clear();
+        }
 	}
     QImage::Format qformatFromImage(std::shared_ptr<usecases::Image> image)
     {

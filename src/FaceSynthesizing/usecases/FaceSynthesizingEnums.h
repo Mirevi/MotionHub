@@ -133,6 +133,7 @@ namespace facesynthesizing::domain::usecases {
 		Camera_Color,
 		Camera_Depth,
 		Camera_Infrared,
+		Capture_FaceBoundingBox,
 		Capture_FaceAlignment,
 		Convert_Face_Bounding_box,
 		Convert_Landmarks,

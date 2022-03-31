@@ -18,6 +18,7 @@ namespace facesynthesizing::domain::adapters::gui {
 		int evaluation_images = 250;
 		usecases::BoundingBoxAlgorithm boundingBoxAlgorithm = usecases::BoundingBoxAlgorithm::SynergyNet;
 		usecases::FaceAlignmentAlgorithm faceAlignmentAlgorithm = usecases::FaceAlignmentAlgorithm::SynergyNet;
+		float minimalFaceSize = 512.0;
 		float maxPitch = 10.0;
 		float maxRoll = 10.0;
 		float maxYaw = 10.0;
@@ -30,6 +31,7 @@ namespace facesynthesizing::domain::adapters::gui {
 		// Visualization
 		bool visualize = true;
 		std::shared_ptr<usecases::Image> colorImage = nullptr;
+		std::shared_ptr<usecases::Image> boundingBoxImage = nullptr;
 		std::shared_ptr<usecases::Image> faceAlignmentImage = nullptr;
 	};
 
@@ -40,6 +42,7 @@ namespace facesynthesizing::domain::adapters::gui {
 		infos->evaluation_images = model->evaluation_images;
 		infos->boundingBoxAlgorithm = model->boundingBoxAlgorithm;
 		infos->faceAlignmentAlgorithm = model->faceAlignmentAlgorithm;
+		infos->minFaceSize = model->minimalFaceSize;
 		infos->maxPitch = model->maxPitch;
 		infos->maxRoll = model->maxRoll;
 		infos->maxYaw = model->maxYaw;

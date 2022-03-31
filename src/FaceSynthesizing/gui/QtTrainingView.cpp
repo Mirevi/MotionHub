@@ -158,6 +158,7 @@ namespace facesynthesizing::infrastructure::qtgui {
     }
     void QtTrainingView::updateGeneralConfigurationGroup()
     {
+        std::unique_lock<std::mutex> lock(trainingViewModel->viewModelMutex);
         isUpdating = true;
         ui->nameLineEdit->setText(QString::fromStdString(trainingViewModel->name));
         auto colorFormatName = usecases::colorFormatToString(trainingViewModel->colorFormat);
@@ -169,6 +170,7 @@ namespace facesynthesizing::infrastructure::qtgui {
     }
     void QtTrainingView::updateDatasetConfigurationGroup()
     {
+        std::unique_lock<std::mutex> lock(trainingViewModel->viewModelMutex);
         isUpdating = true;
         ui->datasetNameComboBox->clear();
         for (std::string datasetName : trainingViewModel->allDatasetNames)
@@ -187,6 +189,7 @@ namespace facesynthesizing::infrastructure::qtgui {
     }
     void QtTrainingView::updateModelConfigurationGroup()
     {
+        std::unique_lock<std::mutex> lock(trainingViewModel->viewModelMutex);
         isUpdating = true;
         auto modelTypeName = usecases::modelTypeToString(trainingViewModel->modelType);
         ui->modelTypeComboBox->setCurrentText(QString::fromStdString(modelTypeName));
@@ -219,6 +222,7 @@ namespace facesynthesizing::infrastructure::qtgui {
     }
     void QtTrainingView::updateTrainingConfigurationGroup()
     {
+        std::unique_lock<std::mutex> lock(trainingViewModel->viewModelMutex);
         isUpdating = true;
         ui->epochsSpinBox->setValue(trainingViewModel->lrConsistentEpochs);
         ui->decayingEpochsSpinBox->setValue(trainingViewModel->lrDecayingEpochs);
@@ -254,6 +258,7 @@ namespace facesynthesizing::infrastructure::qtgui {
     }
     void QtTrainingView::updateEvaluationConfigurationGroup()
     {
+        std::unique_lock<std::mutex> lock(trainingViewModel->viewModelMutex);
         isUpdating = true;
         ui->evaluationFrequencySpinBox->setValue(trainingViewModel->evaluationFrequency);
         ui->pixelAccuracyMetricThresholdSpinBox->setValue(trainingViewModel->pixelAccuracyMetricThreshold);
@@ -273,6 +278,7 @@ namespace facesynthesizing::infrastructure::qtgui {
     }
     void QtTrainingView::updateTaskGroup()
     {
+        std::unique_lock<std::mutex> lock(trainingViewModel->viewModelMutex);
         isUpdating = true;
         bool datasetIsValid = !trainingViewModel->datasetName.empty();
         ui->trainPushButton->setEnabled(trainingViewModel->isTrainingButtonActivated && datasetIsValid);
@@ -281,6 +287,7 @@ namespace facesynthesizing::infrastructure::qtgui {
     }
     void QtTrainingView::updateVisualizationGroup()
     {
+        std::unique_lock<std::mutex> lock(trainingViewModel->viewModelMutex);
         isUpdating = true;
         ui->visualizeCheckBox->setChecked(trainingViewModel->visualize);
         if (trainingViewModel->visualize) {
@@ -301,6 +308,7 @@ namespace facesynthesizing::infrastructure::qtgui {
     }
     void QtTrainingView::updateMessages()
     {
+        std::unique_lock<std::mutex> lock(messageViewModel->viewModelMutex);
         isUpdating = true;
         std::string allMessages = "";
         QString messages;
@@ -319,10 +327,12 @@ namespace facesynthesizing::infrastructure::qtgui {
         if (isUpdating || !isInitialized)
             return;
 
+        std::unique_lock<std::mutex> lock(trainingViewModel->viewModelMutex);
         trainingViewModel->name = ui->nameLineEdit->text().toStdString();
         auto colorFormatName = ui->colorFormatComboBox->currentText().toStdString();
         trainingViewModel->colorFormat = usecases::stringToColorFormat(colorFormatName);
         trainingViewModel->continueEpoch = ui->continueEpochSpinBox->value();
+        lock.unlock();
 
         trainingViewModel->notify();
     }
@@ -331,6 +341,7 @@ namespace facesynthesizing::infrastructure::qtgui {
         if (isUpdating || !isInitialized)
             return;
 
+        std::unique_lock<std::mutex> lock(trainingViewModel->viewModelMutex);
         trainingViewModel->datasetName = ui->datasetNameComboBox->currentText().toStdString();
         trainingViewModel->trainingBatchSize = ui->batchSizeSpinBox->value();
         trainingViewModel->evaluationBatchSize = ui->evalBatchSizeSpinBox->value();
@@ -338,6 +349,7 @@ namespace facesynthesizing::infrastructure::qtgui {
         trainingViewModel->maxDatasetSize = ui->maxDatasetSizeSpinBox->value();
         trainingViewModel->useSerialBatches = ui->useSerialBatchesCheckBox->isChecked();
         trainingViewModel->useDepthMask = ui->useDepthMaskCheckBox->isChecked();
+        lock.unlock();
 
         trainingViewModel->notify();
     }
@@ -346,6 +358,7 @@ namespace facesynthesizing::infrastructure::qtgui {
         if (isUpdating || !isInitialized)
             return;
 
+        std::unique_lock<std::mutex> lock(trainingViewModel->viewModelMutex);
         auto modelTypeName = ui->modelTypeComboBox->currentText().toStdString();
         trainingViewModel->modelType = usecases::stringToModelType(modelTypeName);
         auto generatorArchitectureName = ui->generatorArchitectureComboBox->currentText().toStdString();
@@ -364,6 +377,7 @@ namespace facesynthesizing::infrastructure::qtgui {
         trainingViewModel->useMappingNetwork = ui->useMappingNetworkCheckBox->isChecked();
         auto mappingNetworkName = ui->mappingNetworkComboBox->currentText().toStdString();
         trainingViewModel->mappingNetwork = usecases::stringToMappingNetwork(mappingNetworkName);
+        lock.unlock();
 
         trainingViewModel->notify();
     }
@@ -372,6 +386,7 @@ namespace facesynthesizing::infrastructure::qtgui {
         if (isUpdating || !isInitialized)
             return;
 
+        std::unique_lock<std::mutex> lock(trainingViewModel->viewModelMutex);
         trainingViewModel->lrConsistentEpochs = ui->epochsSpinBox->value();
         trainingViewModel->lrDecayingEpochs = ui->decayingEpochsSpinBox->value();
         trainingViewModel->beta1 = ui->beta1SpinBox->value();
@@ -392,6 +407,7 @@ namespace facesynthesizing::infrastructure::qtgui {
         trainingViewModel->lambdaCycleForward = ui->lambdaCycleForwardSpinBox->value();
         trainingViewModel->lambdaCycleBackward = ui->lambdaCycleBackwardSpinBox->value();
         trainingViewModel->checkpointFrequency = ui->saveEpochFrequencySpinBox->value();
+        lock.unlock();
 
         trainingViewModel->notify();
     }
@@ -400,6 +416,7 @@ namespace facesynthesizing::infrastructure::qtgui {
         if (isUpdating || !isInitialized)
             return;
 
+        std::unique_lock<std::mutex> lock(trainingViewModel->viewModelMutex);
         trainingViewModel->evaluationFrequency = ui->evaluationFrequencySpinBox->value();
         trainingViewModel->pixelAccuracyMetricThreshold = ui->pixelAccuracyMetricThresholdSpinBox->value();
         trainingViewModel->visdomEnvironment = ui->visdomEnvironmentLineEdit->text().toStdString();
@@ -407,6 +424,7 @@ namespace facesynthesizing::infrastructure::qtgui {
         trainingViewModel->useVisdom = ui->useVisdomCheckBox->isChecked();
         trainingViewModel->visdomServerPort = ui->visdomServerPortSpinBox->value();
         trainingViewModel->visdomServerURL = ui->visdomServerURLLineEdit->text().toStdString();
+        lock.unlock();
 
         trainingViewModel->notify();
     }
@@ -429,7 +447,10 @@ namespace facesynthesizing::infrastructure::qtgui {
         if (isUpdating || !isInitialized)
             return;
 
+        std::unique_lock<std::mutex> lock(trainingViewModel->viewModelMutex);
         trainingViewModel->visualize = ui->visualizeCheckBox->isChecked();
+        lock.unlock();
+
         trainingViewModel->notify();
     }
 }

@@ -84,6 +84,7 @@ namespace facesynthesizing::infrastructure::qtgui {
 	}
 	void QtConvertDataView::updateGeneralConfigurationGroup()
 	{
+		std::unique_lock<std::mutex> lock(convertDataViewModel->viewModelMutex);
 		isUpdating = true;
 		ui->nameComboBox->clear();
 		for (std::string name : convertDataViewModel->allNames)
@@ -102,6 +103,7 @@ namespace facesynthesizing::infrastructure::qtgui {
 	}
 	void QtConvertDataView::updateLandmarkTrackingConfigurationGroup()
 	{
+		std::unique_lock<std::mutex> lock(convertDataViewModel->viewModelMutex);
 		isUpdating = true;
 		auto etAlgorithmName = usecases::eyeTrackingAlgorithmToString(convertDataViewModel->eyeTrackingAlgorithm);
 		ui->eyeTrackingAlgorithmComboBox->setCurrentText(QString::fromStdString(etAlgorithmName));
@@ -120,6 +122,7 @@ namespace facesynthesizing::infrastructure::qtgui {
 	}
 	void QtConvertDataView::updateDepthConversionConfigurationGroup()
 	{
+		std::unique_lock<std::mutex> lock(convertDataViewModel->viewModelMutex);
 		isUpdating = true;
 		ui->faceDepthSpinBox->setValue(convertDataViewModel->faceDepth);
 		ui->depthPaddingSpinBox->setValue(convertDataViewModel->depthPadding);
@@ -150,6 +153,7 @@ namespace facesynthesizing::infrastructure::qtgui {
 	}
 	void QtConvertDataView::updateTaskGroup()
 	{
+		std::unique_lock<std::mutex> lock(convertDataViewModel->viewModelMutex);
 		isUpdating = true;
 		bool nameIsValid = !convertDataViewModel->name.empty();
 		ui->convertDataPushButton->setEnabled(convertDataViewModel->isConvertButtonActivated && nameIsValid);
@@ -158,6 +162,7 @@ namespace facesynthesizing::infrastructure::qtgui {
 	}
 	void QtConvertDataView::updateVisualizationGroup()
 	{
+		std::unique_lock<std::mutex> lock(convertDataViewModel->viewModelMutex);
 		isUpdating = true;
 		ui->visualizeCheckBox->setChecked(convertDataViewModel->visualize);
 		if (convertDataViewModel->visualize) {
@@ -174,6 +179,7 @@ namespace facesynthesizing::infrastructure::qtgui {
 	}
 	void QtConvertDataView::updateMessages()
 	{
+		std::unique_lock<std::mutex> lock(messageViewModel->viewModelMutex);
 		isUpdating = true;
 		std::string allMessages = "";
 		QString messages;
@@ -192,6 +198,7 @@ namespace facesynthesizing::infrastructure::qtgui {
 		if (isUpdating || !isInitialized)
 			return;
 
+		std::unique_lock<std::mutex> lock(convertDataViewModel->viewModelMutex);
 		convertDataViewModel->name = ui->nameComboBox->currentText().toStdString();
 		convertDataViewModel->horizontalFoV = ui->horizontalCameraFOVDoubleSpinBox->value();
 		convertDataViewModel->outputImageSize = ui->outputImageSizeSpinBox->value();
@@ -204,6 +211,7 @@ namespace facesynthesizing::infrastructure::qtgui {
 		auto pcaImageComponents = ui->pcaImageComponentsDoubleSpinBox->value();
 		pcaImageComponents = pcaImageComponents > 1 ? floor(pcaImageComponents) : pcaImageComponents;
 		convertDataViewModel->pcaImageComponents = pcaImageComponents;
+		lock.unlock();
 
 		convertDataViewModel->notify();
 	}
@@ -212,12 +220,14 @@ namespace facesynthesizing::infrastructure::qtgui {
 		if (isUpdating || !isInitialized)
 			return;
 
+		std::unique_lock<std::mutex> lock(convertDataViewModel->viewModelMutex);
 		auto etAlgorithmName = ui->eyeTrackingAlgorithmComboBox->currentText().toStdString();
 		convertDataViewModel->eyeTrackingAlgorithm = usecases::stringToEyeTrackingAlgorithm(etAlgorithmName);
 		auto ftAlgorithmName = ui->faceTrackingAlgorithmComboBox->currentText().toStdString();
 		convertDataViewModel->faceTrackingAlgorithm = usecases::stringToFaceTrackingAlgorithm(ftAlgorithmName);
 		convertDataViewModel->eyeTrackingStride = ui->eyeTrackingStrideSpinBox->value();
 		convertDataViewModel->eyeTrackingThreshold = ui->eyeTrackingThresholdSpinBox->value();
+		lock.unlock();
 
 		convertDataViewModel->notify();
 	}
@@ -226,6 +236,7 @@ namespace facesynthesizing::infrastructure::qtgui {
 		if (isUpdating || !isInitialized)
 			return;
 
+		std::unique_lock<std::mutex> lock(convertDataViewModel->viewModelMutex);
 		convertDataViewModel->faceDepth = ui->faceDepthSpinBox->value();
 		convertDataViewModel->depthPadding = ui->depthPaddingSpinBox->value();
 		convertDataViewModel->useDepthFilling = ui->useDepthFillingCheckBox->isChecked();
@@ -238,6 +249,7 @@ namespace facesynthesizing::infrastructure::qtgui {
 		convertDataViewModel->depthFillingSourceAmount = ui->depthFillingSourceAmountSpinBox->value();
 		convertDataViewModel->depthFillingUseBlur = ui->depthFillingUseBlurCheckBox->isChecked();
 		convertDataViewModel->depthFillingBlurKernelSize = ui->depthFillingBlurkSizeSpinBox->value();
+		lock.unlock();
 
 		convertDataViewModel->notify();
 	}
@@ -260,7 +272,10 @@ namespace facesynthesizing::infrastructure::qtgui {
 		if (isUpdating || !isInitialized)
 			return;
 
+		std::unique_lock<std::mutex> lock(convertDataViewModel->viewModelMutex);
 		convertDataViewModel->visualize = ui->visualizeCheckBox->isChecked();
+		lock.unlock();
+
 		convertDataViewModel->notify();
 	}
 }

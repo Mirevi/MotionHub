@@ -32,6 +32,7 @@ namespace facesynthesizing::infrastructure::python {
 		py::dict dict;
 		dict["face_aabbox_tracking_method"] = boundingBoxAlgorithmToPythonName(captureInfos->boundingBoxAlgorithm);
 		dict["face_alignment_tracking_method"] = faceAlignmentAlgorithmToPythonName(captureInfos->faceAlignmentAlgorithm);
+		dict["min_face_size"] = captureInfos->minFaceSize;
 		dict["max_pitch"] = captureInfos->maxPitch;
 		dict["max_roll"] = captureInfos->maxRoll;
 		dict["max_yaw"] = captureInfos->maxYaw;
@@ -52,14 +53,19 @@ namespace facesynthesizing::infrastructure::python {
 			isValid = py::extract<bool>(pyisValid);
 
 			py::exec(
+				"image_face_bb = capture_validator.get_face_bb_image()\n"
 				"image_face_alignment = capture_validator.get_face_alignment_image()\n"
 
-				"if image_face_alignment is not None and image_face_alignment.shape[2] == 3:\n"
-				"	image_face_alignment = append_alpha_channel(image_face_alignment)\n"
+				"if image_face_bb is not None:\n"
+				"	image_face_bb = switch_color_format(image_face_bb)\n"
+				"if image_face_alignment is not None:\n"
+				"	image_face_alignment = switch_color_format(image_face_alignment)\n"
+
 				, globals, captureLocals
 			);
 
-			processFaceAlignmentImage();
+			processCaptureImage("image_face_bb", usecases::ImageType::Capture_FaceBoundingBox);
+			processCaptureImage("image_face_alignment", usecases::ImageType::Capture_FaceAlignment);
 		}
 		catch (py::error_already_set&)
 		{
@@ -68,16 +74,16 @@ namespace facesynthesizing::infrastructure::python {
 		PyEval_SaveThread();
 		return isValid;
 	}
-	void FaceSynthesizer::processFaceAlignmentImage()
+	void FaceSynthesizer::processCaptureImage(std::string name, usecases::ImageType type)
 	{
-		py::extract<np::ndarray> npimageFaceAlignment(captureLocals["image_face_alignment"]);
+		py::extract<np::ndarray> npimageFaceAlignment(captureLocals[name]);
 		if (!npimageFaceAlignment.check()) {
-			faceSynthesizing->noImageAvailable(usecases::ImageType::Capture_FaceAlignment);
+			faceSynthesizing->noImageAvailable(type);
 			return;
 		}
 
 		std::shared_ptr<usecases::Image> imageFaceAlignment = npImageToImage(npimageFaceAlignment);
-		imageFaceAlignment->type = usecases::ImageType::Capture_FaceAlignment;
+		imageFaceAlignment->type = type; 
 		faceSynthesizing->visualizeImage(imageFaceAlignment);
 	}
 
@@ -199,7 +205,7 @@ namespace facesynthesizing::infrastructure::python {
 		dict["n_epochs"] = trainingInfos->lrConsistentEpochs;
 		dict["n_epochs_decay"] = trainingInfos->lrDecayingEpochs;
 		dict["beta1"] = trainingInfos->beta1;
-		dict["lr"] = trainingInfos->learningRate;
+		dict["learning_rate"] = trainingInfos->learningRate;
 		dict["lr_policy"] = learningRatePolicyToPythonName(trainingInfos->learningRatePolicy);
 		dict["lr_decay_iters"] = trainingInfos->stepDecayIterations;
 		dict["init_type"] = weightInitTypeToPythonName(trainingInfos->weightInitType);

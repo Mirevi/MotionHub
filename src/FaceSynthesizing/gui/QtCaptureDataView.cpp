@@ -63,6 +63,7 @@ namespace facesynthesizing::infrastructure::qtgui{
     }
     void QtCaptureDataView::updateConfigurationGroup()
     {
+        std::unique_lock<std::mutex> lock(captureDataViewModel->viewModelMutex);
         isUpdating = true;
         ui->nameLineEdit->setText(QString::fromStdString(captureDataViewModel->name));
         ui->trainImagesSpinBox->setValue(captureDataViewModel->train_images);
@@ -71,6 +72,7 @@ namespace facesynthesizing::infrastructure::qtgui{
         ui->bbAlgorithmComboBox->setCurrentText(QString::fromStdString(bbAlgorithmName));
         auto faAlgorithmName = usecases::faceAlignmentAlgorithmToString(captureDataViewModel->faceAlignmentAlgorithm);
         ui->faAlgorithmComboBox->setCurrentText(QString::fromStdString(faAlgorithmName));
+        ui->minFaceSizeSpinBox->setValue(captureDataViewModel->minimalFaceSize);
         ui->maxPitchDoubleSpinBox->setValue(captureDataViewModel->maxPitch);
         ui->maxRollDoubleSpinBox->setValue(captureDataViewModel->maxRoll);
         ui->maxYawDoubleSpinBox->setValue(captureDataViewModel->maxYaw);
@@ -80,6 +82,7 @@ namespace facesynthesizing::infrastructure::qtgui{
         ui->evalImagesSpinBox->setDisabled(!captureDataViewModel->isConfigurationActivated);
         ui->bbAlgorithmComboBox->setDisabled(!captureDataViewModel->isConfigurationActivated);
         ui->faAlgorithmComboBox->setDisabled(!captureDataViewModel->isConfigurationActivated);
+        ui->minFaceSizeSpinBox->setDisabled(!captureDataViewModel->isConfigurationActivated);
         ui->maxPitchDoubleSpinBox->setDisabled(!captureDataViewModel->isConfigurationActivated);
         ui->maxRollDoubleSpinBox->setDisabled(!captureDataViewModel->isConfigurationActivated);
         ui->maxYawDoubleSpinBox->setDisabled(!captureDataViewModel->isConfigurationActivated);
@@ -95,20 +98,24 @@ namespace facesynthesizing::infrastructure::qtgui{
     }
     void QtCaptureDataView::updateVisualizationGroup()
     {
+        std::unique_lock<std::mutex> lock(captureDataViewModel->viewModelMutex);
         isUpdating = true;
         ui->visualizeCheckBox->setChecked(captureDataViewModel->visualize);
         if (captureDataViewModel->visualize) {
             visualizeImage(captureDataViewModel->colorImage, ui->imageColorLabel, nullptr);
+            visualizeImage(captureDataViewModel->boundingBoxImage, ui->imageBBLabel, nullptr);
             visualizeImage(captureDataViewModel->faceAlignmentImage, ui->imageAlignmentLabel, nullptr);
         }
         else {
             ui->imageColorLabel->clear();
+            ui->imageBBLabel->clear();
             ui->imageAlignmentLabel->clear();
         }
         isUpdating = false;
     }
     void QtCaptureDataView::updateMessages()
     {
+        std::unique_lock<std::mutex> lock(messageViewModel->viewModelMutex);
         isUpdating = true;
         std::string allMessages = "";
         QString messages;
@@ -126,6 +133,7 @@ namespace facesynthesizing::infrastructure::qtgui{
         if (isUpdating || !isInitialized)
             return;
 
+        std::unique_lock<std::mutex> lock(captureDataViewModel->viewModelMutex);
         captureDataViewModel->name = ui->nameLineEdit->text().toStdString();
         captureDataViewModel->train_images = ui->trainImagesSpinBox->value();
         captureDataViewModel->evaluation_images = ui->evalImagesSpinBox->value();
@@ -133,9 +141,11 @@ namespace facesynthesizing::infrastructure::qtgui{
         captureDataViewModel->boundingBoxAlgorithm = usecases::stringToBoundingBoxAlgorithm(bbAlgorithmName);
         auto faAlgorithmName = ui->bbAlgorithmComboBox->currentText().toStdString();
         captureDataViewModel->faceAlignmentAlgorithm = usecases::stringToFaceAlignmentAlgorithm(faAlgorithmName);
+        captureDataViewModel->minimalFaceSize = static_cast<float>(ui->minFaceSizeSpinBox->value());
         captureDataViewModel->maxPitch = static_cast<float>(ui->maxPitchDoubleSpinBox->value());
         captureDataViewModel->maxRoll = static_cast<float>(ui->maxRollDoubleSpinBox->value());
         captureDataViewModel->maxYaw = static_cast<float>(ui->maxYawDoubleSpinBox->value());
+        lock.unlock();
 
         captureDataViewModel->notify();
     }
@@ -161,7 +171,10 @@ namespace facesynthesizing::infrastructure::qtgui{
         if (isUpdating || !isInitialized)
             return;
 
+        std::unique_lock<std::mutex> lock(captureDataViewModel->viewModelMutex);
         captureDataViewModel->visualize = ui->visualizeCheckBox->isChecked();
+        lock.unlock();
+
         captureDataViewModel->notify();
     }
 }

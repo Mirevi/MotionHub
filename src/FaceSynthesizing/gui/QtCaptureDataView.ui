@@ -19,7 +19,7 @@
      <x>10</x>
      <y>20</y>
      <width>1501</width>
-     <height>151</height>
+     <height>181</height>
     </rect>
    </property>
    <property name="title">
@@ -31,13 +31,23 @@
       <x>10</x>
       <y>20</y>
       <width>1481</width>
-      <height>121</height>
+      <height>151</height>
      </rect>
     </property>
     <layout class="QGridLayout" name="gridLayout" columnstretch="0,200,0,200,0">
      <property name="sizeConstraint">
       <enum>QLayout::SetDefaultConstraint</enum>
      </property>
+     <item row="2" column="2">
+      <widget class="QLabel" name="maxRollLabel">
+       <property name="text">
+        <string>Max Roll: </string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
      <item row="2" column="0">
       <widget class="QLabel" name="label_2">
        <property name="sizePolicy">
@@ -54,46 +64,20 @@
        </property>
       </widget>
      </item>
-     <item row="3" column="3">
-      <widget class="QDoubleSpinBox" name="maxYawDoubleSpinBox">
-       <property name="maximum">
-        <double>180.000000000000000</double>
-       </property>
-       <property name="value">
-        <double>0.000000000000000</double>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="1">
-      <widget class="QSpinBox" name="evalImagesSpinBox">
-       <property name="maximum">
-        <number>999999999</number>
-       </property>
-       <property name="value">
-        <number>0</number>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QLineEdit" name="nameLineEdit">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
+     <item row="1" column="2">
+      <widget class="QLabel" name="maxPitchLabel">
        <property name="text">
-        <string/>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="2">
-      <widget class="QLabel" name="maxRollLabel">
-       <property name="text">
-        <string>Max Roll: </string>
+        <string>Max Pitch: </string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="4">
+      <widget class="QLabel" name="label_6">
+       <property name="text">
+        <string>°</string>
        </property>
       </widget>
      </item>
@@ -107,87 +91,6 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="trainImagesLabel">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>Train Images: </string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="0">
-      <widget class="QLabel" name="bbAlgorithmLabel">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>Bounding Box Algorithm:</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QSpinBox" name="trainImagesSpinBox">
-       <property name="maximum">
-        <number>999999999</number>
-       </property>
-       <property name="value">
-        <number>0</number>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="2">
-      <widget class="QLabel" name="maxPitchLabel">
-       <property name="text">
-        <string>Max Pitch: </string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="2">
-      <widget class="QLabel" name="label_4">
-       <property name="text">
-        <string>Face Alignment Algorithm:</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="0">
-      <widget class="QLabel" name="label_5">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>Name: </string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="1">
-      <widget class="QComboBox" name="bbAlgorithmComboBox"/>
-     </item>
      <item row="1" column="3">
       <widget class="QDoubleSpinBox" name="maxPitchDoubleSpinBox">
        <property name="maximum">
@@ -195,19 +98,6 @@
        </property>
        <property name="value">
         <double>0.000000000000000</double>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="3">
-      <widget class="QComboBox" name="faAlgorithmComboBox"/>
-     </item>
-     <item row="3" column="2">
-      <widget class="QLabel" name="maxYawLabel">
-       <property name="text">
-        <string>Max Yaw: </string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
       </widget>
      </item>
@@ -231,10 +121,140 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="4">
-      <widget class="QLabel" name="label_6">
+     <item row="1" column="0">
+      <widget class="QLabel" name="trainImagesLabel">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="text">
-        <string>°</string>
+        <string>Train Images: </string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="3">
+      <widget class="QDoubleSpinBox" name="maxYawDoubleSpinBox">
+       <property name="maximum">
+        <double>180.000000000000000</double>
+       </property>
+       <property name="value">
+        <double>0.000000000000000</double>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QSpinBox" name="trainImagesSpinBox">
+       <property name="maximum">
+        <number>999999999</number>
+       </property>
+       <property name="value">
+        <number>0</number>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="label_5">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>Name: </string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QSpinBox" name="evalImagesSpinBox">
+       <property name="maximum">
+        <number>999999999</number>
+       </property>
+       <property name="value">
+        <number>0</number>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="2">
+      <widget class="QLabel" name="maxYawLabel">
+       <property name="text">
+        <string>Max Yaw: </string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QComboBox" name="bbAlgorithmComboBox"/>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="bbAlgorithmLabel">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>Bounding Box Algorithm:</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLineEdit" name="nameLineEdit">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="QComboBox" name="faAlgorithmComboBox"/>
+     </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="label_4">
+       <property name="text">
+        <string>Face Alignment Algorithm:</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="2">
+      <widget class="QLabel" name="maxPitchLabel_2">
+       <property name="text">
+        <string>Minimal Face Size</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="3">
+      <widget class="QDoubleSpinBox" name="minFaceSizeSpinBox">
+       <property name="maximum">
+        <double>100000000000000008821361405306422640701865984.000000000000000</double>
+       </property>
+       <property name="value">
+        <double>0.000000000000000</double>
        </property>
       </widget>
      </item>
@@ -291,9 +311,9 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>170</y>
+     <y>200</y>
      <width>1691</width>
-     <height>631</height>
+     <height>601</height>
     </rect>
    </property>
    <property name="title">
@@ -305,17 +325,20 @@
       <x>10</x>
       <y>20</y>
       <width>1671</width>
-      <height>601</height>
+      <height>581</height>
      </rect>
     </property>
-    <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,1,1">
-     <item row="0" column="0">
-      <widget class="QCheckBox" name="visualizeCheckBox">
-       <property name="layoutDirection">
-        <enum>Qt::LeftToRight</enum>
-       </property>
+    <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,1,1,1">
+     <item row="1" column="3">
+      <widget class="QLabel" name="imageAlignmentLabel">
        <property name="text">
-        <string>Visualize</string>
+        <string>Image3</string>
+       </property>
+       <property name="scaledContents">
+        <bool>false</bool>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
        </property>
       </widget>
      </item>
@@ -323,16 +346,6 @@
       <widget class="QLabel" name="label_7">
        <property name="text">
         <string>Camera RGB</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="2">
-      <widget class="QLabel" name="label_8">
-       <property name="text">
-        <string>Face Alignment</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
@@ -352,13 +365,43 @@
        </property>
       </widget>
      </item>
+     <item row="0" column="0">
+      <widget class="QCheckBox" name="visualizeCheckBox">
+       <property name="layoutDirection">
+        <enum>Qt::LeftToRight</enum>
+       </property>
+       <property name="text">
+        <string>Visualize</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="3">
+      <widget class="QLabel" name="label_8">
+       <property name="text">
+        <string>Face Alignment (red indicates not in limits)</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
      <item row="1" column="2">
-      <widget class="QLabel" name="imageAlignmentLabel">
+      <widget class="QLabel" name="imageBBLabel">
        <property name="text">
         <string>Image2</string>
        </property>
        <property name="scaledContents">
         <bool>false</bool>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="2">
+      <widget class="QLabel" name="label_9">
+       <property name="text">
+        <string>Face Bounding Box (red indicates too small)</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
@@ -407,13 +450,14 @@ p, li { white-space: pre-wrap; }
  </widget>
  <tabstops>
   <tabstop>nameLineEdit</tabstop>
-  <tabstop>faAlgorithmComboBox</tabstop>
+  <tabstop>minFaceSizeSpinBox</tabstop>
   <tabstop>trainImagesSpinBox</tabstop>
   <tabstop>maxPitchDoubleSpinBox</tabstop>
   <tabstop>evalImagesSpinBox</tabstop>
   <tabstop>maxRollDoubleSpinBox</tabstop>
   <tabstop>bbAlgorithmComboBox</tabstop>
   <tabstop>maxYawDoubleSpinBox</tabstop>
+  <tabstop>faAlgorithmComboBox</tabstop>
   <tabstop>initializeCameraPushButton</tabstop>
   <tabstop>startCapturePushButton</tabstop>
   <tabstop>cancelPushButton</tabstop>
@@ -445,8 +489,8 @@ p, li { white-space: pre-wrap; }
    <slot>onConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>330</x>
-     <y>85</y>
+     <x>466</x>
+     <y>84</y>
     </hint>
     <hint type="destinationlabel">
      <x>457</x>
@@ -461,8 +505,8 @@ p, li { white-space: pre-wrap; }
    <slot>onConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>279</x>
-     <y>117</y>
+     <x>415</x>
+     <y>109</y>
     </hint>
     <hint type="destinationlabel">
      <x>345</x>
@@ -477,8 +521,8 @@ p, li { white-space: pre-wrap; }
    <slot>onConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>177</x>
-     <y>143</y>
+     <x>313</x>
+     <y>134</y>
     </hint>
     <hint type="destinationlabel">
      <x>192</x>
@@ -493,8 +537,8 @@ p, li { white-space: pre-wrap; }
    <slot>onConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1485</x>
-     <y>60</y>
+     <x>772</x>
+     <y>159</y>
     </hint>
     <hint type="destinationlabel">
      <x>648</x>
@@ -510,7 +554,7 @@ p, li { white-space: pre-wrap; }
    <hints>
     <hint type="sourcelabel">
      <x>1487</x>
-     <y>94</y>
+     <y>84</y>
     </hint>
     <hint type="destinationlabel">
      <x>586</x>
@@ -525,8 +569,8 @@ p, li { white-space: pre-wrap; }
    <slot>onConfigurationGroupChanged()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1461</x>
-     <y>124</y>
+     <x>1487</x>
+     <y>109</y>
     </hint>
     <hint type="destinationlabel">
      <x>541</x>
@@ -542,7 +586,7 @@ p, li { white-space: pre-wrap; }
    <hints>
     <hint type="sourcelabel">
      <x>1487</x>
-     <y>154</y>
+     <y>134</y>
     </hint>
     <hint type="destinationlabel">
      <x>647</x>
@@ -611,6 +655,22 @@ p, li { white-space: pre-wrap; }
     <hint type="destinationlabel">
      <x>12</x>
      <y>198</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>minFaceSizeSpinBox</sender>
+   <signal>valueChanged(double)</signal>
+   <receiver>QtCaptureDataView</receiver>
+   <slot>onConfigurationGroupChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1430</x>
+     <y>48</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>668</x>
+     <y>8</y>
     </hint>
    </hints>
   </connection>

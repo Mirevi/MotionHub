@@ -71,7 +71,7 @@ namespace facesynthesizing::infrastructure::python {
 		void setCheckpointsRoot(fs::path root);
 	private:
 		py::dict captureInfosToDict();
-		void processFaceAlignmentImage();
+		void processCaptureImage(std::string name, usecases::ImageType type);
 		py::dict convertInfosToDict();
 		py::dict trainingInfosToDict();
 		void handlePythonError();

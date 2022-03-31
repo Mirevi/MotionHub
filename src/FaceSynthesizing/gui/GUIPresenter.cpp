@@ -13,9 +13,15 @@ namespace facesynthesizing::domain::adapters::gui {
 	}
 	void GUIPresenter::processImageChange(usecases::ImageType imageType, std::shared_ptr<usecases::Image> image)
 	{
+		std::unique_lock<std::mutex> lockCapture(captureDataViewModel->viewModelMutex);
+		std::unique_lock<std::mutex> lockConvert(convertDataViewModel->viewModelMutex);
+		std::unique_lock<std::mutex> lockTraining(trainingViewModel->viewModelMutex);
 		switch (imageType) {
 		case usecases::ImageType::Camera_Color:
 			captureDataViewModel->colorImage = image;
+			break;
+		case usecases::ImageType::Capture_FaceBoundingBox:
+			captureDataViewModel->boundingBoxImage = image;
 			break;
 		case usecases::ImageType::Capture_FaceAlignment:
 			captureDataViewModel->faceAlignmentImage = image;
@@ -56,6 +62,9 @@ namespace facesynthesizing::domain::adapters::gui {
 		default:
 			return;
 		}
+		lockCapture.unlock();
+		lockConvert.unlock();
+		lockTraining.unlock();
 		notifyImageChange(imageType);
 	}
 	void GUIPresenter::notifyImageChange(usecases::ImageType imageType)
@@ -63,6 +72,7 @@ namespace facesynthesizing::domain::adapters::gui {
 		// notify change listener
 		switch (imageType) {
 		case usecases::ImageType::Camera_Color:
+		case usecases::ImageType::Capture_FaceBoundingBox:
 		case usecases::ImageType::Capture_FaceAlignment:
 			captureDataViewModel->notify();
 			break;
@@ -108,10 +118,12 @@ namespace facesynthesizing::domain::adapters::gui {
 	{
 		lockCurrentView();
 
+		std::unique_lock<std::mutex> lockCapture(captureDataViewModel->viewModelMutex);
 		captureDataViewModel->isConfigurationActivated = true;
 		captureDataViewModel->isInitializeButtonActivated = false;
 		captureDataViewModel->isCaptureButtonActivated = false;
 		captureDataViewModel->isCancelButtonActivated = true;
+		lockCapture.unlock();
 		captureDataViewModel->notify();
 	}
 	void GUIPresenter::cameraIsInitialized()
@@ -126,38 +138,46 @@ namespace facesynthesizing::domain::adapters::gui {
 	{
 		lockCurrentView();
 
+		std::unique_lock<std::mutex> lockCapture(captureDataViewModel->viewModelMutex);
 		captureDataViewModel->isConfigurationActivated = true;
 		captureDataViewModel->isInitializeButtonActivated = false;
 		captureDataViewModel->isCaptureButtonActivated = true;
 		captureDataViewModel->isCancelButtonActivated = true;
+		lockCapture.unlock();
 		captureDataViewModel->notify();
 	}
 	void GUIPresenter::dataPairCaptureStarted()
 	{
 		lockCurrentView();
 
+		std::unique_lock<std::mutex> lockCapture(captureDataViewModel->viewModelMutex);
 		captureDataViewModel->isConfigurationActivated = false;
 		captureDataViewModel->isInitializeButtonActivated = false;
 		captureDataViewModel->isCaptureButtonActivated = false;
 		captureDataViewModel->isCancelButtonActivated = true;
+		lockCapture.unlock();
 		captureDataViewModel->notify();
 	}
 	void GUIPresenter::dataPairConversionStarted()
 	{
 		lockCurrentView();
 
+		std::unique_lock<std::mutex> lockConvert(convertDataViewModel->viewModelMutex);
 		convertDataViewModel->isConfigurationActivated = false;
 		convertDataViewModel->isConvertButtonActivated = false;
 		convertDataViewModel->isCancelButtonActivated = true;
+		lockConvert.unlock();
 		convertDataViewModel->notify();
 	}
 	void GUIPresenter::trainingStarted()
 	{
 		lockCurrentView();
 
+		std::unique_lock<std::mutex> lockTraining(trainingViewModel->viewModelMutex);
 		trainingViewModel->isConfigurationActivated = false;
 		trainingViewModel->isTrainingButtonActivated = false;
 		trainingViewModel->isCancelButtonActivated = true;
+		lockTraining.unlock();
 		trainingViewModel->notify();
 	}
 	void GUIPresenter::endOfTask()
@@ -178,36 +198,44 @@ namespace facesynthesizing::domain::adapters::gui {
 	{
 		unlockCurrentView();
 
+		std::unique_lock<std::mutex> lockCapture(captureDataViewModel->viewModelMutex);
 		captureDataViewModel->isConfigurationActivated = true;
 		captureDataViewModel->isInitializeButtonActivated = true;
 		captureDataViewModel->isCaptureButtonActivated = false;
 		captureDataViewModel->isCancelButtonActivated = false;
+		lockCapture.unlock();
 		captureDataViewModel->notify();
 	}
 	void GUIPresenter::endOfDataConvertTask()
 	{
 		unlockCurrentView();
 
+		std::unique_lock<std::mutex> lockConvert(convertDataViewModel->viewModelMutex);
 		convertDataViewModel->isConfigurationActivated = true;
 		convertDataViewModel->isConvertButtonActivated = true;
 		convertDataViewModel->isCancelButtonActivated = false;
+		lockConvert.unlock();
 		convertDataViewModel->notify();
 	}
 	void GUIPresenter::endOfTrainingTask()
 	{
 		unlockCurrentView();
 
+		std::unique_lock<std::mutex> lockTraining(trainingViewModel->viewModelMutex);
 		trainingViewModel->isConfigurationActivated = true;
 		trainingViewModel->isTrainingButtonActivated = true;
 		trainingViewModel->isCancelButtonActivated = false;
+		lockTraining.unlock();
 		trainingViewModel->notify();
 	}
 	void GUIPresenter::dataAlreadyExistsUserPrompt()
 	{
 		std::string message = getDataAlreadyExistsPromptMessage();
 
+		std::unique_lock<std::mutex> lockTab(tabViewModel->viewModelMutex);
 		tabViewModel->showDataAlreadyExistsUserPrompt = true;
 		tabViewModel->dialogMessage = message;
+		lockTab.unlock();
 		tabViewModel->notify();
 	}
 	std::string GUIPresenter::getDataAlreadyExistsPromptMessage()
@@ -230,20 +258,26 @@ namespace facesynthesizing::domain::adapters::gui {
 
 	void GUIPresenter::lockCurrentView()
 	{
+		std::unique_lock<std::mutex> lockTab(tabViewModel->viewModelMutex);
 		tabViewModel->isLocked = true;
+		lockTab.unlock();
 		tabViewModel->notify();
 	}
 	void GUIPresenter::unlockCurrentView()
 	{
+		std::unique_lock<std::mutex> lockTab(tabViewModel->viewModelMutex);
 		tabViewModel->isLocked = false;
+		lockTab.unlock();
 		tabViewModel->notify();
 	}
 
 	void GUIPresenter::addNote(std::string message)
 	{
+		std::unique_lock<std::mutex> lockMessage(messageViewModel->viewModelMutex);
 		messageViewModel->notes.push_back(message);
 		if (messageViewModel->notes.size() > 50)
 			messageViewModel->notes.erase(messageViewModel->notes.begin());
+		lockMessage.unlock();
 
 		messageViewModel->notify();
 	}
@@ -254,7 +288,9 @@ namespace facesynthesizing::domain::adapters::gui {
 	}
 	void GUIPresenter::updateStatusMessage(std::string message)
 	{
+		std::unique_lock<std::mutex> lockMessage(messageViewModel->viewModelMutex);
 		messageViewModel->statusMessage = message;
+		lockMessage.unlock();
 		messageViewModel->notify();
 	}
 	void GUIPresenter::statusMessageToNotes()
@@ -264,17 +300,21 @@ namespace facesynthesizing::domain::adapters::gui {
 
 	void GUIPresenter::presentAllCaptureNames(std::vector<std::string> allNames)
 	{
+		std::unique_lock<std::mutex> lockConvert(convertDataViewModel->viewModelMutex);
 		convertDataViewModel->allNames = allNames;
 		if (convertDataViewModel->allNames.size() > 0 && convertDataViewModel->name.empty())
 			convertDataViewModel->name = allNames[0];
+		lockConvert.unlock();
 
 		convertDataViewModel->notify();
 	}
 	void GUIPresenter::presentTrainingDatasetNames(std::vector<std::string> allNames)
 	{
+		std::unique_lock<std::mutex> lockTraining(trainingViewModel->viewModelMutex);
 		trainingViewModel->allDatasetNames = allNames;
 		if (trainingViewModel->allDatasetNames.size() > 0 && trainingViewModel->datasetName.empty())
 			trainingViewModel->datasetName = allNames[0];
+		lockTraining.unlock();
 
 		trainingViewModel->notify();
 	}

@@ -43,6 +43,7 @@ namespace facesynthesizing::domain::usecases {
 		int evaluation_images;
 		BoundingBoxAlgorithm boundingBoxAlgorithm;
 		FaceAlignmentAlgorithm faceAlignmentAlgorithm;
+		float minFaceSize;
 		float maxPitch;
 		float maxRoll;
 		float maxYaw;
