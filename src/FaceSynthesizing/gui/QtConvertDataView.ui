@@ -297,7 +297,7 @@
       <item row="2" column="1">
        <widget class="QDoubleSpinBox" name="pcaLandmarkComponentsDoubleSpinBox">
         <property name="decimals">
-         <number>6</number>
+         <number>10</number>
         </property>
         <property name="maximum">
          <double>10000000000000000000000.000000000000000</double>
@@ -339,7 +339,7 @@
       <item row="2" column="3">
        <widget class="QDoubleSpinBox" name="pcaImageComponentsDoubleSpinBox">
         <property name="decimals">
-         <number>6</number>
+         <number>10</number>
         </property>
         <property name="maximum">
          <double>10000000000000000000000.000000000000000</double>
