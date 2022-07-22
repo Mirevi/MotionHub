@@ -54,9 +54,11 @@ MotionHub::MotionHub(int argc, char** argv)
 	m_recordingThread = new std::thread(&MotionHub::updateRecorderThread, this);
 	m_recordingThread->detach();
 
-	//RecordingSession::RECORD_PATH = m_configManager->getStringFromStartupConfig("recordPath");
-	RecordingSession::RECORD_PATH = "./data/recording/";
-	m_configManager->readString("recordPath", RecordingSession::RECORD_PATH);
+
+
+	loadRecordPath();
+
+
 
 	// start update loop
 	update();
@@ -251,5 +253,37 @@ void MotionHub::startListening()
 {
 
 	OSCListener::instance().start();
+
+}
+
+void MotionHub::loadRecordPath()
+{
+	char path[256];
+	GetEnvironmentVariable("USERPROFILE", path, sizeof(path));
+
+	char username[256];
+	GetEnvironmentVariable("USERNAME", username, sizeof(username));
+
+	std::string curr_record_path = "\\Documents";
+
+	//RecordingSession::RECORD_PATH = m_configManager->getStringFromStartupConfig("recordPath");
+	RecordingSession::RECORD_PATH = curr_record_path.insert(0, path);
+
+	std::string tempStr = "";
+	m_configManager->readString("recordPath", tempStr);
+
+	std::string usernameStr(username);
+
+	int start = tempStr.find("%userprofile%");
+
+	if (start != std::string::npos)
+	{
+		tempStr = tempStr.replace(start, 13, usernameStr);
+
+		Console::log("MotionHub::loadRecordPath(): Replace %userprofile%: " + tempStr);
+
+		RecordingSession::RECORD_PATH = tempStr;
+	}
+
 
 }

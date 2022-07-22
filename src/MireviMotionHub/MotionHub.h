@@ -13,6 +13,8 @@
 #include <chrono>
 #include <string>
 
+#include <shlobj.h>
+
 /*!
  * \class MotionHub
  *
@@ -83,6 +85,8 @@ private:
 	std::thread* m_listeningThread;
 
 	//OSCListener m_oscListener;
+
+	void loadRecordPath();
 
 
 
