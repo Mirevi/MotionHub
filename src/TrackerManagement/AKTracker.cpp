@@ -83,7 +83,8 @@ bool AKTracker::init()
 		m_configTracker = K4ABT_TRACKER_CONFIG_DEFAULT;
 
 		// create tracker
-		if (k4abt_tracker_create(&m_calibrationCam, m_configTracker, &m_tracker) != K4A_RESULT_SUCCEEDED) {
+		if (k4abt_tracker_create(&m_calibrationCam, m_configTracker, &m_tracker) != K4A_RESULT_SUCCEEDED)
+		{
 			Console::logError("[cam id = " + std::to_string(i) + "] + Body tracker initialization failed!");
 			k4a_device_stop_cameras(m_cam);
 			k4a_device_close(m_cam);
