@@ -31,6 +31,10 @@
   <property name="windowTitle">
    <string>Create new Tracker</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="MainWindow.qrc">
+    <normaloff>:/ressources/icons/mmh-icon.png</normaloff>:/ressources/icons/mmh-icon.png</iconset>
+  </property>
   <property name="styleSheet">
    <string notr="true">QToolTip
 {
@@ -668,7 +672,9 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="MainWindow.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>dropdown_tracker</sender>

@@ -1,29 +1,21 @@
 # CmakeLists for TrackerManagement
 
-#k4a
-#include_directories(${CMAKE_BINARY_DIR}/src ${K4A_INCLUDE_DIR})
-#link_directories(${CMAKE_BINARY_DIR}/lib "${CMAKE_BINARY_DIR}/lib" ${K4A_LIBRARIES_DIR})
-#k4abt
-#include_directories(${CMAKE_BINARY_DIR}/src ${K4ABT_INCLUDE_DIR})
-#link_directories(${CMAKE_BINARY_DIR}/lib "${CMAKE_BINARY_DIR}/lib" ${K4ABT_LIBRARIES_DIR})
-#Cudnn
-#include_directories(${CMAKE_BINARY_DIR}/src ${Cudnn_INCLUDE_DIR})
-#link_directories(${CMAKE_BINARY_DIR}/lib "${CMAKE_BINARY_DIR}/lib" ${Cudnn_LIBRARIES_DIR})
-#OSCPack
-#include_directories(${CMAKE_BINARY_DIR}/src ${OSCp_INCLUDE_DIR})
-#link_directories(${CMAKE_BINARY_DIR}/lib "${CMAKE_BINARY_DIR}/lib" ${OSCp_LIBRARIES_DIR})
-#NatNetSDK
-#include_directories(${CMAKE_BINARY_DIR}/src ${NatNetSDK_INCLUDE_DIR})
-#link_directories(${CMAKE_BINARY_DIR}/lib "${CMAKE_BINARY_DIR}/lib" ${NatNetSDK_LIBRARIES_DIR})
-
-
+if(BUILD_WITH_MULTI_PROCESSOR_COMPILER)
+	include(ProcessorCount)
+	ProcessorCount(N)
+	if(NOT N EQUAL 0)
+		SET(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS} /MP${N} ")
+		SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP${N} ")
+	endif()
+endif()
 
 #include internal source files
-include_directories(${CMAKE_BINARY_DIR}/src/MotionHubUtil)
+include_directories(${CMAKE_BINARY_DIR}/src/MotionHubUtil 
+${CMAKE_BINARY_DIR}/src/RenderManagement)
+#include internal library pathes
 link_directories(${CMAKE_BINARY_DIR}/lib)
 
-
-
+#include external source files
 include_directories(${CMAKE_BINARY_DIR}/src 
 ${K4A_INCLUDE_DIR}
 ${K4ABT_INCLUDE_DIR}
@@ -36,9 +28,7 @@ ${XsensMVNSDK_INCLUDE_DIR}
 ${OpenVR_INCLUDE_DIR}
 )
 
-
-
-
+#include external library pathes
 link_directories(${CMAKE_BINARY_DIR}/lib
  "${CMAKE_BINARY_DIR}/lib"
 ${K4A_LIBRARIES_DIR}
@@ -46,6 +36,7 @@ ${K4ABT_LIBRARIES_DIR}
 ${Cudnn_LIBRARIES_DIR}
 ${NATNET_SDK_LIBRARIES_DIR}
 ${OSCp_LIBRARIES_DIR}
+${OSG_LIBRARIES_DIR}
 ${XsensMVNSDK_LIBRARIES_DIR}
 ${OpenVR_LIBRARIES_DIR}
 )
@@ -76,7 +67,17 @@ target_link_libraries(TrackerManagement
 	debug xstypes64 optimized xstypes64
 	debug openvr_api optimized openvr_api
 	
+	debug osg${CMAKE_DEBUG_POSTFIX} optimized osg
+	debug osgDB${CMAKE_DEBUG_POSTFIX} optimized osgDB
+	debug osgGA${CMAKE_DEBUG_POSTFIX} optimized osgGA
+	debug osgFX${CMAKE_DEBUG_POSTFIX} optimized osgFX
+	debug osgText${CMAKE_DEBUG_POSTFIX} optimized osgText
+	debug osgUtil${CMAKE_DEBUG_POSTFIX} optimized osgUtil
+	debug osgViewer${CMAKE_DEBUG_POSTFIX} optimized osgViewer
+	debug osgShadow${CMAKE_DEBUG_POSTFIX} optimized osgShadow
+	debug OpenThreads${CMAKE_DEBUG_POSTFIX} optimized OpenThreads
+	debug osgText${CMAKE_DEBUG_POSTFIX} optimized osgText
+	
 	debug NetworkManagement${CMAKE_DEBUG_POSTFIX} optimized NetworkManagement
 	debug MotionHubUtil${CMAKE_DEBUG_POSTFIX} optimized MotionHubUtil
-	
 )

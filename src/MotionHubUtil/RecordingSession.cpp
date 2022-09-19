@@ -151,24 +151,37 @@ void RecordingSession::save(int* progression)
 
 	//Console::log("RecordingSession::save(): " + RECORD_PATH);
 
-	filename = pathStr + filename;
 
+	//first remove emptys and colons from filename
 	filename = removeChar(filename, ' ');
 	filename = removeChar(filename, ':');
 
+	//then add path, there can be a colon
+	filename = pathStr + filename;
+
+	//if folder is missing, create it
+	if (!checkAndFixPath(pathStr))
+	{
+		Console::logError("RecordingSession::save(): path fix not working!");
+	}
+
+
+
+
 	tinyxml2::XMLError error = doc.SaveFile(filename.c_str());
-
-
 
 	if ((int)error == 0)
 	{
 		Console::log("RecordingSession::save(): Session saved as: " + filename);
+
+
 	}
 	else
-	{
-		Console::logError("RecordingSession::save(): Error code " + std::to_string((int)error));
+	{	
+		Console::logError("RecordingSession::save(): Error code " + std::to_string((int)error) + ", filepath = " + filename);
 	}
 
+	m_frames.clear();
 
 }
 
@@ -183,7 +196,7 @@ void RecordingSession::saveBVH()
 }
 
 
-void RecordingSession::load(std::string filePath)
+bool RecordingSession::load(std::string filePath)
 {
 	tinyxml2::XMLDocument doc;
 
@@ -196,6 +209,8 @@ void RecordingSession::load(std::string filePath)
 	else
 	{
 		Console::logError("RecordingSession::load(): Error loading file. tinyxml Error code " + toString(res));
+
+		return false;
 	}
 
 
@@ -362,7 +377,7 @@ void RecordingSession::load(std::string filePath)
 
 	Console::log("RecordingSession::load(): done loading data");
 	//Console::log("RecordingSession::load(): frame 0, skeleton 0, Hips rotation: " + toString(m_frames[0].m_skeletons[0].m_joints[Joint::HIPS].getJointRotation()));
-
+	return true;
 }
 
 int RecordingSession::getFrameCount()

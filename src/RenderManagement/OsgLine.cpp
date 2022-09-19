@@ -1,19 +1,20 @@
-#include "Line.h"
+#include "OsgLine.h"
 //#include "MotionHubUtil/ConfigManager.h"
 
 #include <osg/ShapeDrawable>
 #include <osg/Geode>
+#include <osg/LineWidth>
 
-Line::Line(osg::ref_ptr<osg::Group> nodeToAttachTo, bool isOverlay) : m_isDirty{ false }, m_isDisplayed{ true } {
+OsgLine::OsgLine(osg::ref_ptr<osg::Group> nodeToAttachTo, bool isOverlay) : m_isDirty{ false }, m_isDisplayed{ true } {
 
 	nodeToAttachTo->addChild(this);
-	m_scale = 1.0;
+	m_scale = 2.0;
 
 	createGeometry(isOverlay);
 	
 }
 
-void Line::createGeometry(bool isOverlay)
+void OsgLine::createGeometry(bool isOverlay)
 {
 	//Setup  geometry to draw lines
 	m_geode = new osg::Geode();
@@ -22,11 +23,9 @@ void Line::createGeometry(bool isOverlay)
 	if (isOverlay) m_geode->getOrCreateStateSet()->setMode(GL_DEPTH_TEST, osg::StateAttribute::OFF);
 
 	m_geom = new osg::Geometry();
-	//##### NEW Speedup by using VBOs instead of displayLists
 	m_geom->setUseDisplayList(false);
 	m_geom->setUseVertexBufferObjects(true);
 	m_geom->setDataVariance(osg::Object::DYNAMIC);
-	//##### NEW END
 	m_drawArrays = new osg::DrawArrays(osg::PrimitiveSet::LINES);
 	m_geom->addPrimitiveSet(m_drawArrays);
 	m_colors = new osg::Vec4Array();
@@ -36,10 +35,14 @@ void Line::createGeometry(bool isOverlay)
 	m_geom->setVertexArray(m_vertices);
 	m_geode->addDrawable(m_geom);
 
+	osg::LineWidth* lineWidth = new osg::LineWidth();
+	lineWidth->setWidth(m_scale);
+	m_geode->getOrCreateStateSet()->setAttributeAndModes(lineWidth, osg::StateAttribute::OVERRIDE | osg::StateAttribute::ON);
+
 	addChild(m_geode);
 }
 
-void Line::draw(osg::Vec3 start, osg::Vec3 end, osg::Vec4 colorStart, osg::Vec4 colorEnd) 
+void OsgLine::draw(osg::Vec3 start, osg::Vec3 end, osg::Vec4 colorStart, osg::Vec4 colorEnd)
 {
 	m_vertices->push_back(start);
 	m_vertices->push_back(end);
@@ -48,7 +51,7 @@ void Line::draw(osg::Vec3 start, osg::Vec3 end, osg::Vec4 colorStart, osg::Vec4 
 	m_isDirty = true;
 }
 
-void Line::redraw() 
+void OsgLine::redraw()
 {
 	if (!m_isDirty) return;
 	m_drawArrays->setFirst(0);
@@ -62,14 +65,22 @@ void Line::redraw()
 }
 
 
-void Line::clear()
+void OsgLine::clear()
 {
+	if(m_vertices)
+	{
 	m_vertices->clear();
-	m_colors->clear();
+	}
+
+	if(m_colors)
+	{
+		m_colors->clear();
+	}
+	
 }
 
 
-Line::~Line()
+OsgLine::~OsgLine()
 {
 
 }

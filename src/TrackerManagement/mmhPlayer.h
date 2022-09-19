@@ -37,6 +37,9 @@ public:
 
 	void applyModChange(Joint::JointNames type, Vector3f mod, bool inverted);
 
+
+
+
 private:
 
 	/*!
@@ -79,6 +82,7 @@ private:
 	std::string m_filePath;
 
 	Quaternionf convertJointRotation(Quaternionf raw, Joint::JointNames type);
+
 
 
 };

@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>MotionHub Settings</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="MainWindow.qrc">
+    <normaloff>:/ressources/icons/mmh-icon.png</normaloff>:/ressources/icons/mmh-icon.png</iconset>
+  </property>
   <property name="styleSheet">
    <string notr="true">QToolTip
 {

@@ -1,9 +1,9 @@
 // ClayMore - Immersive Mesh Modelling --- Copyright (c) 2014-2017 Philipp Ladwig, Jannik Fiedler, Jan Beutgen
-#include "Grid.h"
+#include "OsgGrid.h"
 
 #include <osg/LineWidth>
 
-Grid::Grid(unsigned short lineCount, GridMode mode, float scaleIn, float lineWidthInRGBAxis, float lineWidthGreyAxis) :
+OsgGrid::OsgGrid(unsigned short lineCount, GridMode mode, float scaleIn, float lineWidthInRGBAxis, float lineWidthGreyAxis) :
 	m_mode(mode)
 {
 	m_geometry = NULL;
@@ -15,11 +15,11 @@ Grid::Grid(unsigned short lineCount, GridMode mode, float scaleIn, float lineWid
 	initialize(lineCount, lineWidthInRGBAxis, lineWidthGreyAxis);
 }
 
-Grid::~Grid()
+OsgGrid::~OsgGrid()
 {
 }
 
-void Grid::initialize(int lineCount, float lineWidthInRGBAxis, float lineWidthGreyAxis)
+void OsgGrid::initialize(int lineCount, float lineWidthInRGBAxis, float lineWidthGreyAxis)
 {
 	//Axes (color-coded)
 	osg::ref_ptr<osg::Vec3Array> pAxesVertexArray = new osg::Vec3Array();
@@ -85,7 +85,7 @@ void Grid::initialize(int lineCount, float lineWidthInRGBAxis, float lineWidthGr
 	int lineCount4 = lineCount * 4;
 	int lineCount8 = lineCount * 8;
 	int lineCount16 = lineCount * 16;
-	float yPos = -0.005;
+	float yPos = 0.001f;
 	for (int i = -lineCountHalf; i <= lineCountHalf; ++i)
 	{
 		pVertexArray->push_back(osg::Vec3(-lineCountHalf, yPos, i));
@@ -99,31 +99,31 @@ void Grid::initialize(int lineCount, float lineWidthInRGBAxis, float lineWidthGr
 		pDrawElementsUShort->push_back(primitiveSetCounter++);
 	}
 
-	for (int i = -lineCount; i <= lineCount; i += 2)
-	{
-		pVertexArray->push_back(osg::Vec3(-lineCount, yPos, i));
-		pVertexArray->push_back(osg::Vec3(lineCount, yPos, i));
-		pVertexArray->push_back(osg::Vec3(i, yPos, -lineCount));
-		pVertexArray->push_back(osg::Vec3(i, yPos, lineCount));
+	//for (int i = -lineCount; i <= lineCount; i += 2)
+	//{
+	//	pVertexArray->push_back(osg::Vec3(-lineCount, yPos-0.01f, i));
+	//	pVertexArray->push_back(osg::Vec3(lineCount, yPos - 0.01f, i));
+	//	pVertexArray->push_back(osg::Vec3(i, yPos - 0.01f, -lineCount));
+	//	pVertexArray->push_back(osg::Vec3(i, yPos - 0.01f, lineCount));
 
-		pDrawElementsUShort->push_back(primitiveSetCounter++);
-		pDrawElementsUShort->push_back(primitiveSetCounter++);
-		pDrawElementsUShort->push_back(primitiveSetCounter++);
-		pDrawElementsUShort->push_back(primitiveSetCounter++);
-	}
+	//	pDrawElementsUShort->push_back(primitiveSetCounter++);
+	//	pDrawElementsUShort->push_back(primitiveSetCounter++);
+	//	pDrawElementsUShort->push_back(primitiveSetCounter++);
+	//	pDrawElementsUShort->push_back(primitiveSetCounter++);
+	//}
 
-	for (int i = -lineCount2; i <= lineCount2; i += 4)
-	{
-		pVertexArray->push_back(osg::Vec3(-lineCount2, yPos, i));
-		pVertexArray->push_back(osg::Vec3(lineCount2, yPos, i));
-		pVertexArray->push_back(osg::Vec3(i, yPos, -lineCount2));
-		pVertexArray->push_back(osg::Vec3(i, yPos, lineCount2));
+	//for (int i = -lineCount2; i <= lineCount2; i += 4)
+	//{
+	//	pVertexArray->push_back(osg::Vec3(-lineCount2, yPos, i));
+	//	pVertexArray->push_back(osg::Vec3(lineCount2, yPos, i));
+	//	pVertexArray->push_back(osg::Vec3(i, yPos, -lineCount2));
+	//	pVertexArray->push_back(osg::Vec3(i, yPos, lineCount2));
 
-		pDrawElementsUShort->push_back(primitiveSetCounter++);
-		pDrawElementsUShort->push_back(primitiveSetCounter++);
-		pDrawElementsUShort->push_back(primitiveSetCounter++);
-		pDrawElementsUShort->push_back(primitiveSetCounter++);
-	}
+	//	pDrawElementsUShort->push_back(primitiveSetCounter++);
+	//	pDrawElementsUShort->push_back(primitiveSetCounter++);
+	//	pDrawElementsUShort->push_back(primitiveSetCounter++);
+	//	pDrawElementsUShort->push_back(primitiveSetCounter++);
+	//}
 
 	//for (int i = -lineCount4; i <= lineCount4; i += 8)
 	//{

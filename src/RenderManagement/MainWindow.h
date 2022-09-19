@@ -22,7 +22,7 @@
 #include <math.h>
 #include <MotionHubUtil/MMHmath.h>
 
-
+//TODO: rename this as RenderManager or add a RenderManager and incorparate MainWindow
 
 #define GET_VARIABLE_NAME(Variable) (#Variable)
 
@@ -83,7 +83,9 @@ public:
 
 	void Record(bool showProgressionBar = true);
 
+	QTreeWidget* getTreeWidgetTrackerRef();
 
+	void setTimelinePlayButton(bool state);
 
 private slots:
 	/*!
@@ -101,10 +103,35 @@ private slots:
 	 * called when user clicks "remove" tracker button
 	 */
 	void slotRemoveTracker();
+
 	/*!
 	 *  called when user clicks on File->Exit
 	 */
 	void on_actionExit_triggered();
+	
+	/*!
+	*  called when user clicks on Menu->View->Show JointAxes
+	*/
+	void on_actionToggle_JointAxes(bool menuValue);
+
+	/*!
+	*  called when user clicks on Menu->View->Show Sick Man Rendering
+	*/
+	void on_actionToggle_StickManRendering(bool menuValue);
+
+	/*!
+	*  called when user clicks on Menu->View->Show Solid Bone Rendering
+	*/
+	void on_actionToggle_SolidBoneRendering(bool menuValue);
+
+	/*!
+	*  called when user clicks on Menu->View->Show Tracking Confidence Spheres
+	*/
+	void on_actionToggle_TrackingConfidenceSpheres(bool menuValue);
+
+
+
+
 	/*!
 	 * called when user clicks on tracker in list 
 	 * \param index id of clicked tracker
@@ -139,6 +166,16 @@ private slots:
 	void slotRecord();
 
 	void slotTimelineLableModeChanged(int idx);
+
+
+	void slotOsgWidgetPressed	(osg::Vec2 position2d);
+	void slotOsgWidgetReleased	(osg::Vec2 position2d);
+	void slotOsgWidgetMoved		(osg::Vec2 position2d);
+
+	void slotTimelinePlay();
+	void slotLoop();
+
+
 
 private:
 	/*!
@@ -246,5 +283,12 @@ private:
 	int m_recordSaveProgression;
 
 
+	void startProgressBar(int maxValue, int* currentValue, QProgressBar* barWidget);
+
+	osg::Vec2 m_cameraManipulatorStartPosition;
+	bool m_cameraManipulatorIsRotating;
+
+	bool m_isTimelinePlaying;
+	bool m_isLooping;
 
 };

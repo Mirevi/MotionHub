@@ -2,6 +2,10 @@
 #include "MotionHub.h"
 
 //#include "RenderManagement/QTOsgWidget.h"
+static bool STOP_UI_REFRESH_ESC = true;
+static bool isUiRefreshAllowed = true;
+static bool isEscapePressed = false;
+
 
 static bool STOP_UI_REFRESH_ESC = true;
 static bool uiRefreshAllowed = true;
@@ -13,13 +17,15 @@ MotionHub::MotionHub(int argc, char** argv)
 	// save arguments
 	m_argc = argc;
 
-	
+
 
 	m_argv = argv;
 
 
 
 	Console::log("MotionHub::MotionHub(): Starting Mirevi MotionHub");
+
+
 
 	// create new config reader
 	m_configManager = new ConfigManager();
@@ -30,6 +36,7 @@ MotionHub::MotionHub(int argc, char** argv)
 	m_networkManager = new NetworkManager(m_configManager);
 	m_trackerManager = new TrackerManager(m_networkManager, m_configManager);
 
+
 	//m_oscListener = OSCListener();
 
 	//create OSC listener to receive remote commands
@@ -38,12 +45,24 @@ MotionHub::MotionHub(int argc, char** argv)
 
 	m_uiManager		 = new UIManager(m_argc, m_argv, m_trackerManager, m_configManager);
 
+
+	if (argc > 1)
+	{
+		Console::log("MotionHub::MotionHub(): Argument: " + std::string(argv[1]));
+		m_trackerManager->createTracker(TrackerManager::mmh, std::string(argv[1]));
+		addTrackerToWidget(0, m_trackerManager, m_uiManager->getMainWindow()->getTreeWidgetTrackerRef());
+
+
+	}
+
 	m_recordingThread = new std::thread(&MotionHub::updateRecorderThread, this);
 	m_recordingThread->detach();
 
-	//RecordingSession::RECORD_PATH = m_configManager->getStringFromStartupConfig("recordPath");
-	RecordingSession::RECORD_PATH = "./data/recording/";
-	m_configManager->readString("recordPath", RecordingSession::RECORD_PATH);
+
+
+	loadRecordPath();
+
+
 
 	// start update loop
 	update();
@@ -88,6 +107,7 @@ void MotionHub::update()
 		if (!STOP_UI_REFRESH_ESC) {
 			m_uiManager->processInput();
 		}
+<<<<<<< HEAD
 		else {
 			if (GetAsyncKeyState(VK_ESCAPE) & 0x8000) {
 				if (!escapePressed) {
@@ -109,6 +129,48 @@ void MotionHub::update()
 			}
 		}
 		
+=======
+		// ui input processing can be skipped
+		else {
+
+			// Is ESC Key pressed in this frame?
+			if (GetAsyncKeyState(VK_ESCAPE) & 0x8000) {
+
+				// Was escape pressed in last frame?
+				if (!isEscapePressed) {
+					// Toggle ui refresh flag
+					isUiRefreshAllowed = !isUiRefreshAllowed;
+					if (isUiRefreshAllowed)
+					{
+						Console::logWarning("UI activated again. HSP-Mode deactivated.");
+					}
+					else 
+					{
+						Console::logWarning("UI deactivated for High Speed Processing Mode (HSP-Mode). Press ESC to activate UI again and to disable HSP-Mode.");
+					}
+				}
+
+				// set escape pressed flag
+				isEscapePressed = true;
+			}
+			else {
+				// reset escape pressed flag
+				isEscapePressed = false;
+			}
+
+			// Is tracker manager tracking?
+			if (m_trackerManager->isTracking()) {
+				// process ui input if allowed
+				if (isUiRefreshAllowed) m_uiManager->processInput();
+			}
+			else {
+				// process ui input
+				m_uiManager->processInput();
+			}
+		}
+
+		// update console
+>>>>>>> master
 		m_uiManager->getMainWindow()->updateConsole();
 
 		// send skeleton pools to other managers
@@ -140,7 +202,11 @@ void MotionHub::update()
 					// send skeleton pool reference to gesture manager in order to update all postures
 					//m_gestureManager->updateAllSkeletonPostures(&((*itTracker)->getSkeletonPoolCache())									  );
 
+<<<<<<< HEAD
 					// set sekelton changed flag if skeleton was added or removed from pool
+=======
+					// update ui if skeleton was added or removed from pool
+>>>>>>> master
 					if ((*itTracker)->hasSkeletonPoolChanged())
 					{
 						hasSkeletonPoolChanged = true;
@@ -168,14 +234,23 @@ void MotionHub::update()
 
 			}
 
+<<<<<<< HEAD
 			// loop over all tracker and reset the data available flag
 			for (auto itTracker = trackerPoolTempCopy.begin(); itTracker != trackerPoolTempCopy.end(); itTracker++)
 			{
 				// reset bool and start new tracking cycle
 				(*itTracker)->resetIsDataAvailable();
 			}
+=======
+			//set Play/Pause button at the timeline correct
+>>>>>>> master
 
-			//Recorder::instance().nextFrame();
+			//get mmh player
+			Tracker* mmhPlayer = m_trackerManager->getFirstTrackerFromType(TrackerManager::mmh);
+			if (mmhPlayer != nullptr && mmhPlayer->isLoopEnded())
+			{
+				m_uiManager->getMainWindow()->setTimelinePlayButton(false);
+			}
 
 			updateTimeline();
 		}	//check if tracker is added or removed
@@ -249,5 +324,37 @@ void MotionHub::startListening()
 {
 
 	OSCListener::instance().start();
+
+}
+
+void MotionHub::loadRecordPath()
+{
+	char path[256];
+	GetEnvironmentVariable("USERPROFILE", path, sizeof(path));
+
+	char username[256];
+	GetEnvironmentVariable("USERNAME", username, sizeof(username));
+
+	std::string curr_record_path = "\\Documents";
+
+	//RecordingSession::RECORD_PATH = m_configManager->getStringFromStartupConfig("recordPath");
+	RecordingSession::RECORD_PATH = curr_record_path.insert(0, path);
+
+	std::string tempStr = "";
+	m_configManager->readString("recordPath", tempStr);
+
+	std::string usernameStr(username);
+
+	int start = tempStr.find("%userprofile%");
+
+	if (start != std::string::npos)
+	{
+		tempStr = tempStr.replace(start, 13, usernameStr);
+
+		Console::log("MotionHub::loadRecordPath(): Replace %userprofile%: " + tempStr);
+
+		RecordingSession::RECORD_PATH = tempStr;
+	}
+
 
 }

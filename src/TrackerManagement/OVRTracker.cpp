@@ -396,6 +396,8 @@ void OVRTracker::track() {
 
 	if (GetAsyncKeyState('R') & 0x8000) {
 		refresh(false);
+		//send Skeleton Pool to NetworkManager
+		m_networkManager->sendSkeletonPool(&getSkeletonPoolCache(), m_properties->id, m_trackingCycles);
 	}
 
 	if (SOLVE_IK) {

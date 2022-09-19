@@ -36,7 +36,7 @@ public:
 	void addFrame(RecordingFrame frame, float duration);
 	void save(int* progression);
 	void saveBVH();
-	void load(std::string filePath);
+	bool load(std::string filePath);
 	void loadBVH(std::string filePath);
 
 	int getFrameCount();

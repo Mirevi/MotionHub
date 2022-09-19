@@ -8,6 +8,7 @@ mmhPlayer::mmhPlayer(int id, NetworkManager* networkManager, ConfigManager* conf
 
 	m_filePath = filePath;
 
+	m_isInitiated = false;
 	init();
 
 	//create new Properties object
@@ -18,8 +19,14 @@ mmhPlayer::mmhPlayer(int id, NetworkManager* networkManager, ConfigManager* conf
 	m_properties->id = id;
 	m_properties->name = "tracker_mmhPlayer_" + toString(id);
 
+	m_isLooping = true;
+
 	//tracker is enabled
 	m_isEnabled = true;
+
+	m_paused = false;
+	m_loopEnded = false;
+
 
 
 	//set default values for offsets
@@ -77,7 +84,11 @@ void mmhPlayer::init()
 	m_timelineDragging = false;
 
 	m_session = RecordingSession();
-	m_session.load(m_filePath);
+
+	if (!m_session.load(m_filePath))
+	{
+		return;
+	}
 
 	//Console::log("mmhPlayer::init(): totalTime = " + toString(m_session.getTotalTime()));
 
@@ -112,6 +123,7 @@ void mmhPlayer::init()
 	m_nameTranslationTable["RightHand"]		= Joint::HAND_R;
 	m_nameTranslationTable["Hips"]			= Joint::HIPS;
 
+	m_isInitiated = true;
 }
 
 void mmhPlayer::update()
@@ -124,7 +136,7 @@ void mmhPlayer::update()
 		Timer::reset();
 
 
-		if (!m_timelineDragging)
+		if (!m_timelineDragging && m_isEnabled)
 		{
 			
 			// get new data
@@ -134,7 +146,7 @@ void mmhPlayer::update()
 
 
 		//send Skeleton Pool to NetworkManager
-		m_networkManager->sendSkeletonPool(&getSkeletonPoolCache(), m_properties->id);
+		m_networkManager->sendSkeletonPool(&getSkeletonPoolCache(), m_properties->id, m_trackingCycles);
 
 
 		//Recorder::instance().addSkeletonsToFrame(&m_skeletonPool);
@@ -144,8 +156,6 @@ void mmhPlayer::update()
 		long long sleepTime = (m_currFrame->m_duration - elapsed) * 1000;
 		std::this_thread::sleep_for(std::chrono::milliseconds(sleepTime));
 
-
-		
 
 
 	}
@@ -164,11 +174,17 @@ void mmhPlayer::track()
 	if (m_currFrameIdx >= m_frameCount)
 	{
 		m_currFrameIdx = 0;
+
+		if (!m_isLooping)
+		{
+			m_paused = true;
+			m_loopEnded = true;
+		}
 	}
 
 
 
-	m_currFrame = m_session.getFrame(m_currFrameIdx++);
+	m_currFrame = m_session.getFrame(m_currFrameIdx);
 
 	int skelIdx = 0;
 
@@ -215,6 +231,13 @@ void mmhPlayer::track()
 
 	}
 
+	//Console::log("mmhPlayer::track(): m_paused = " + toString(m_paused));
+
+	if (!m_paused)
+	{
+		m_currFrameIdx++;
+	}
+
 	m_skeletonPoolLock.unlock();
 
 	//Console::log("mmhPlayer::track(): skeleton count = " + toString(m_skeletonPool.size()));
@@ -248,7 +271,9 @@ void mmhPlayer::controlTime(bool stop)
 
 void mmhPlayer::setCurrentFrame(float newValue)
 {
-	m_currFrameIdx = (int)round(m_frameCount * newValue / 100.0f);
+
+	float frameIdx = (m_frameCount - 1) * newValue / 100.0f;
+	m_currFrameIdx = (int)round(frameIdx);
 
 	if (m_isTracking)
 	{
@@ -277,6 +302,8 @@ void mmhPlayer::applyModChange(Joint::JointNames type, Vector3f mod, bool invert
 {
 
 }
+
+
 
 
 Quaternionf mmhPlayer::convertJointRotation(Quaternionf raw, Joint::JointNames type)

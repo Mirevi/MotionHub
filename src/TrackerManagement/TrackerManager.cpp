@@ -23,6 +23,8 @@ int TrackerManager::createTracker(TrackerType type, std::string filePath)
 	// get the next tracker id
 	int id = m_nextFreeTrackerID;
 
+	Console::log("TrackerManager::createTracker(): filePath = " + filePath);
+	
 	//create local Tracker*
 	Tracker* tempTracker = nullptr;
 
@@ -32,6 +34,11 @@ int TrackerManager::createTracker(TrackerType type, std::string filePath)
 	try {
 		// Call Tracker Factory
 		tempTracker = instantiateTracker(type, id, filePath);
+		if (tempTracker == nullptr)
+		{
+			m_trackerPoolLock.unlock();
+			return -1;
+		}
 	}
 	catch (const Exception& exception) {
 		//unlock the tracker pool
@@ -355,6 +362,21 @@ void TrackerManager::writeSkeletonsToRecorder()
 
 }
 
+Tracker* TrackerManager::getFirstTrackerFromType(TrackerType type)
+{
+
+	for (int currTrackerI = 0; currTrackerI < m_trackerPool.size(); currTrackerI++)
+	{
+		if (m_trackerPool.at(currTrackerI)->getTrackerType() == TrackerTypeString.at(type))
+		{
+			return m_trackerPool.at(currTrackerI);
+			break;
+		}
+	}
+	
+	return nullptr;
+}
+
 Tracker* TrackerManager::instantiateTracker(TrackerType type, int id, std::string filePath) {
 
 	Tracker* tempTracker = nullptr;
@@ -417,6 +439,11 @@ Tracker* TrackerManager::instantiateTracker(TrackerType type, int id, std::strin
 
 		//create new BVH-Player with current ID
 		tempTracker = new mmhPlayer(id, m_networkManager, m_configManager, filePath);
+		
+		if (!tempTracker->isInitiated())
+		{
+			tempTracker = nullptr;
+		}
 
 		break;
 	}

@@ -53,7 +53,7 @@ public:
 	 * \param skeleton input skeleton data
 	 * \param uri messages title
 	 */
-	virtual void sendSkeleton(Skeleton* skeleton, const char* uri, int trackerID) = 0;
+	virtual void sendSkeleton(Skeleton* skeleton, const char* uri, int trackerID, int frameIndex) = 0;
 
 	/*!
 	 * sends point collection

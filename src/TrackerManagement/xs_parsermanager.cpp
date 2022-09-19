@@ -70,6 +70,7 @@ ParserManager::QuaternionDataWithId* ParserManager::getDatagram(const XsByteArra
 		datagram->deserialize(buffer);
 		quaternionDatagramWithId->avatarId = (int)datagram->avatarId();
 		quaternionDatagramWithId->kinematics = datagram->getData();
+		quaternionDatagramWithId->frameTime = datagram->frameTime();
 
 	}
 	else

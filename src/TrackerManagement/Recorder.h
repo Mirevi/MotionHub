@@ -41,7 +41,7 @@ private:
 											// protected, wenn man von der Klasse noch erben möchte
 
 	Recorder(const Recorder&);				// verhindert, dass eine weitere Instanz via Kopier-Konstruktor erstellt werden kann
-	Recorder& operator = (const Recorder&); //Verhindert weitere Instanz durch Kopie
+	Recorder& operator = (const Recorder&); // Verhindert weitere Instanz durch Kopie
 
 
 

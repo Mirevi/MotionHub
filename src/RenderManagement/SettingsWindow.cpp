@@ -51,28 +51,44 @@ void SettingsWindow::accept()
 	}
 
 	bool newFolderIsAvailable = true;
-	//check if path is valid
-	struct stat info;
-	if (stat(pathname.c_str(), &info) != 0)
-	{
-		Console::logError("cannot access " + pathname + ". Creating new folder.");
 
-		if (std::filesystem::create_directory(pathname))
-		{
-			Console::log("successfully created new folder.");
-		}
-		else
-		{
-			Console::logError("ERROR creating new folder! Path reset to old one.");
-			newFolderIsAvailable = false;
-		}
 
-	}
+
+
+
+	////check if path is valid
+	//struct stat info;
+	//if (stat(pathname.c_str(), &info) != 0)
+	//{
+	//	Console::logError("cannot access " + pathname + ". Creating new folder.");
+
+	//	if (std::filesystem::create_directory(pathname))
+	//	{
+	//		Console::log("successfully created new folder.");
+	//	}
+	//	else
+	//	{
+	//		Console::logError("ERROR creating new folder! Path reset to old one.");
+	//		newFolderIsAvailable = false;
+	//	}
+
+	//}
+
+
+	newFolderIsAvailable = checkAndFixPath(pathname);
+
+
+
 
 	if (newFolderIsAvailable)
 	{
 		RecordingSession::RECORD_PATH = pathname;
 		m_configManager->writeString("recordPath", RecordingSession::RECORD_PATH);
+	}
+	else
+	{
+		Console::logError("SettingsWindow::accept(): path fix not working!");
+
 	}
 
 

@@ -146,7 +146,7 @@ void BVHPlayer::update()
 		}
 
 		//send Skeleton Pool to NetworkManager
-		m_networkManager->sendSkeletonPool(&getSkeletonPoolCache(), m_properties->id);
+		m_networkManager->sendSkeletonPool(&getSkeletonPoolCache(), m_properties->id, m_trackingCycles);
 
 
 		//Recorder::instance().addSkeletonsToFrame(&m_skeletonPool);

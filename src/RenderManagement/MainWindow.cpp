@@ -23,6 +23,7 @@ MainWindow::MainWindow(TrackerManager* trackerManager, ConfigManager* configMana
 	traits->width = 640;
 	traits->height = 480;
 	traits->doubleBuffer = true;
+	traits->samples = 4; //Anti Alaising
 
 	osgQt::GraphicsWindowQt* gw = new osgQt::GraphicsWindowQt(traits.get());
 	m_osgQtWidget = new OsgQtWidget(gw, m_refTrackerManager, m_configManager);
@@ -30,6 +31,17 @@ MainWindow::MainWindow(TrackerManager* trackerManager, ConfigManager* configMana
 	QSizePolicy sizePolicyOsgQtWidget(QSizePolicy::Expanding, QSizePolicy::Preferred);
 	m_osgQtWidget->setSizePolicy(sizePolicyOsgQtWidget);
 	ui->gridLayout_main->addWidget(m_osgQtWidget);
+
+	m_isTimelinePlaying = true;
+	m_isLooping = true;
+
+
+	connect(m_osgQtWidget, SIGNAL(osgWidgetPressed(osg::Vec2 position2d)),	this, SLOT(slotOsgWidgetPressed(osg::Vec2 position2d))	);
+	connect(m_osgQtWidget, SIGNAL(osgWidgetReleased(osg::Vec2 position2d)), this, SLOT(slotOsgWidgetReleased(osg::Vec2 position2d))	);
+	connect(m_osgQtWidget, SIGNAL(osgWidgetMoved(osg::Vec2 position2d)),	this, SLOT(slotOsgWidgetMoved(osg::Vec2 position2d)	)	);
+
+
+
 	m_osgQtWidget->show();
 
 	//add timeline-Widget to MainWindow
@@ -44,6 +56,8 @@ MainWindow::MainWindow(TrackerManager* trackerManager, ConfigManager* configMana
 	//sets the Timeline visible
 	m_mmhTimeline->show();
 
+	//hides progressbar
+	ui->progressBar_save->hide();
 
 
 
@@ -498,6 +512,10 @@ void MainWindow::slotToggleTracking()
 	}
 	else
 	{
+		if (Recorder::instance().isRecording())
+		{
+			Record();
+		}
 
 		m_refTrackerManager->stopTracker(); // stop tracking if true
 		//m_timelineActive = false;
@@ -633,7 +651,7 @@ void MainWindow::slotInspectorItemChanged(QTableWidgetItem* item)
 
 		switch (item->row())
 		{
-		case 3:
+		case 3: //isEnabled
 		{
 
 			// set the curser to wait circle
@@ -685,6 +703,42 @@ void MainWindow::on_actionExit_triggered()
 
 }
 
+
+// SLOT: check/uncheck axes in menu
+void MainWindow::on_actionToggle_JointAxes(bool menuValue)
+{
+
+	m_osgQtWidget->setFlagForJointAxes(menuValue);
+
+}
+
+
+// SLOT: check/uncheck stick man rendering in menu
+void MainWindow::on_actionToggle_StickManRendering(bool menuValue)
+{
+
+	m_osgQtWidget->setFlagForStickManRendering(menuValue);
+
+}
+
+
+// SLOT: check/uncheck solid bone rendering in menu
+void MainWindow::on_actionToggle_SolidBoneRendering(bool menuValue)
+{
+
+	m_osgQtWidget->setFlagForSolidBoneRendering(menuValue);
+
+}
+
+// SLOT: check/uncheck tracking confidence spheres in menu
+void MainWindow::on_actionToggle_TrackingConfidenceSpheres(bool menuValue)
+{
+
+	m_osgQtWidget->setFlagForConfidenceSpheresRendering(menuValue);
+
+}
+
+
 void MainWindow::slotNetworkSettings()
 {
 
@@ -699,17 +753,23 @@ void MainWindow::slotTimelinePressed(float newValue)
 {
 	m_refTrackerManager->controlTimeline(true);
 	m_timelineActive = false;
+	m_refTrackerManager->timelineValueChange(m_mmhTimeline->getValue());
+
 }
 
 void MainWindow::slotTimelineReleased(float newValue)
 {
 	m_refTrackerManager->controlTimeline(false);
 	m_timelineActive = true;
+	m_refTrackerManager->timelineValueChange(m_mmhTimeline->getValue());
+
 }
 
 void MainWindow::slotTimelineValueChanged(float newValue)
 {
 	m_refTrackerManager->timelineValueChange(m_mmhTimeline->getValue());	
+	//Console::log("MainWindow::setTimelineValue(): value = " + toString(m_mmhTimeline->getValue()));
+
 }
 
 void MainWindow::slotRecord()
@@ -742,6 +802,90 @@ void MainWindow::slotTimelineLableModeChanged(int idx)
 	default:
 		break;
 	}
+}
+
+void MainWindow::slotOsgWidgetPressed(osg::Vec2 position2d)
+{
+	m_cameraManipulatorIsRotating = true;
+	m_cameraManipulatorStartPosition = position2d;
+
+	Console::log("MainWindow::slotOsgWidgetPressed(): " + toString((float)position2d.x()) + ", " + toString((float)position2d.y()));
+
+
+}
+
+void MainWindow::slotOsgWidgetReleased(osg::Vec2 position2d)
+{
+	m_cameraManipulatorIsRotating = false;
+
+}
+
+void MainWindow::slotOsgWidgetMoved(osg::Vec2 position2d)
+{
+	if (m_cameraManipulatorIsRotating)
+	{
+		//m_osgQtWidget->setCameraTransform();
+	}
+}
+
+void MainWindow::slotTimelinePlay()
+{
+	m_isTimelinePlaying = ui->pushButton_timeline_play->isChecked();
+
+	Tracker* currTracker = m_refTrackerManager->getFirstTrackerFromType(TrackerManager::mmh);
+
+	if (currTracker == nullptr)
+	{
+		return;
+	}
+
+	//start/stop playing mmh-player
+	if (m_isTimelinePlaying)
+	{
+		//currTracker->enable();
+
+		if (currTracker->isTracking())
+		{
+
+			currTracker->setPaused(false);
+		}
+	}
+	else
+	{
+		//currTracker->disable();
+
+
+		if (currTracker->isTracking())
+		{
+
+			currTracker->setPaused(true);
+			//currTracker->stop();
+		}
+	}
+}
+
+void MainWindow::slotLoop()
+{
+	m_isLooping = !m_isLooping;
+
+	Tracker* currTracker = m_refTrackerManager->getFirstTrackerFromType(TrackerManager::mmh);
+
+	if (currTracker == nullptr)
+	{
+		return;
+	}
+
+	//start/stop playing mmh-player
+	if (m_isLooping)
+	{
+		
+		currTracker->setLooping(true);
+	}
+	else
+	{
+		currTracker->setLooping(false);
+	}
+
 }
 
 
@@ -1185,9 +1329,6 @@ void MainWindow::setTimelineValue(float totalTime, int frameIdx, int numFrames)
 
 	std::string currStr;
 
-	//Console::log("MainWindow::setTimelineValue(): totalTime = " + toString(totalTime));
-
-
 	switch (m_timelineLableState)
 	{
 	case percentage:
@@ -1197,7 +1338,7 @@ void MainWindow::setTimelineValue(float totalTime, int frameIdx, int numFrames)
 	case elTime:
 		//currStr = toString((roundf(totalTime * (float)percent) / 100));
 		char chr[10];
-		sprintf(chr, "%.2f", totalTime * (float)percent / 100);
+		sprintf(chr, "%.2f", totalTime * frameIdx / numFrames);
 		currStr = chr;
 		currStr += "s";
 		break;
@@ -1216,10 +1357,6 @@ void MainWindow::setTimelineValue(float totalTime, int frameIdx, int numFrames)
 
 void MainWindow::saveRecord()
 {
-	
-	//std::thread* progressionThread = new std::thread(&MainWindow::progressionBarThread, this);
-	//progressionThread->detach();
-
 
 	Recorder::instance().stopRecording(&m_recordSaveProgression);
 
@@ -1249,9 +1386,19 @@ void MainWindow::Record(bool showProgressionBar)
 
 			if (showProgressionBar)
 			{
-				startProgressBar(Recorder::instance().getFrameCount(), &m_recordSaveProgression, "Save Recording Session...", this);
-			}
 
+				ui->progressBar_save->setMaximum(max);
+				ui->progressBar_save->show();
+
+
+				//std::thread* progThread = new std::thread(&MainWindow::startProgressBar, this, max, &m_recordSaveProgression, ui->progressBar_save);
+				////std::thread* progThread = new std::thread(&MainWindow::startProgressBar, this, max, &m_recordSaveProgression, ui->progressBar_save);
+				//progThread->detach();
+
+				startProgressBar(max, &m_recordSaveProgression, ui->progressBar_save);
+
+
+			}
 		}
 		else
 		{
@@ -1268,4 +1415,35 @@ void MainWindow::Record(bool showProgressionBar)
 	{
 		Console::logError("Recording is Playmode only!");
 	}
+}
+
+
+
+void MainWindow::startProgressBar(int maxValue, int* currentValue, QProgressBar* barWidget)
+{
+
+
+
+
+	while (*currentValue < Recorder::instance().getFrameCount())
+	{
+
+		barWidget->setValue(*currentValue);
+
+	}
+
+
+	barWidget->hide();
+}
+
+QTreeWidget* MainWindow::getTreeWidgetTrackerRef()
+{
+	return ui->treeWidget_tracker;
+}
+
+void MainWindow::setTimelinePlayButton(bool state)
+{
+	ui->pushButton_timeline_play->setChecked(state);
+
+	m_isTimelinePlaying = state;
 }

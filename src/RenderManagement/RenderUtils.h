@@ -1,27 +1,42 @@
 #pragma once
 
 #include <string>
+#include <thread>
 
-#include "QtWidgets/qprogressdialog.h"
+#include "QtWidgets/qprogressbar.h"
 #include <QtWidgets/QMainWindow>
 
 
 
-inline void startProgressBar(int maxValue, int* currentValue, std::string lable, QWidget* parentWidget)
+inline void addTrackerToWidget(int id, TrackerManager* refTrackerManager, QTreeWidget* refTreeWidgetTracker)
 {
-	//create progress bar
-	QProgressDialog progress(QString(lable.c_str()), "Cancel", 0, maxValue, parentWidget);
-	progress.setWindowModality(Qt::WindowModal);
+	//update Tree widget
+	std::vector<Tracker*> trackerPoolRef = refTrackerManager->getPoolTracker();
 
-	//while still saving
-	while (*currentValue < maxValue)
+	//for all trackers in pool
+	for (auto itTracker = trackerPoolRef.begin(); itTracker != trackerPoolRef.end(); itTracker++)
 	{
-		//update progress bar
-		progress.setValue(*currentValue);
+		//get id
+		if ((*itTracker)->getProperties()->id == id)
+		{
+			//add toplevel item tracker
+			//m_refTreeWidgetTracker->addItem((*itTracker)->getProperties()->name.c_str());
+			QTreeWidgetItem* topLevelItem = new QTreeWidgetItem(refTreeWidgetTracker);
 
-		if (progress.wasCanceled())
-			break;
+			// Set text for item
+			topLevelItem->setText(0, (*itTracker)->getProperties()->name.c_str());
+
+			// Add it on our tree as the top item.
+			refTreeWidgetTracker->addTopLevelItem(topLevelItem);
+
+		}
+
 	}
-
-	progress.setValue(*currentValue);
 }
+
+inline void testFunc()
+{
+
+
+}
+

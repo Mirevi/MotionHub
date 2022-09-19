@@ -1,6 +1,5 @@
 #pragma once
 
-#include "ConfigDllExportTrackingManagement.h"
 
 #include <map>
 #include <vector>
@@ -71,6 +70,19 @@ public:
 
 	};
 
+	std::vector<std::string> TrackerTypeString
+	{
+
+		"Azure",	// Azure Kinect Tracker
+		"OptiTrack",		// OptiTrack	Tracker
+		"BVH",			//BVH-Player
+		"MMH",
+		"CapturyLive",	// CapturyLive  Tracker
+		"Xsens",
+		"OpenVR",
+		"TrackerGroup"		//Is not display and counted in the createTrackerWindow.iu. Pls add a new tracker before group
+
+	};
 
 
 	/*!
@@ -161,6 +173,8 @@ public:
 	//void setSendSkeletonPtr(void (*)(std::map<int, Skeleton>* skeletonPool, int trackerID));
 
 	NetworkManager* m_networkManager;
+
+	Tracker* getFirstTrackerFromType(TrackerType type);
 
 
 private:

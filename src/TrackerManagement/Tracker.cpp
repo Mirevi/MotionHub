@@ -220,6 +220,40 @@ int Tracker::getFrameCount()
 	return -1;
 }
 
+bool Tracker::isInitiated()
+{
+	return m_isInitiated;
+}
+
+void Tracker::setPaused(bool state)
+{
+	m_paused = state;
+}
+
+bool Tracker::isPaused()
+{
+	return m_paused;
+}
+
+void Tracker::setLooping(bool state)
+{
+	m_isLooping = state;
+
+	//if (state)
+	//{
+	//	m_paused = false;
+	//}
+}
+
+bool Tracker::isLoopEnded()
+{
+	bool temp = m_loopEnded;
+
+	m_loopEnded = false;
+
+	return temp;
+}
+
 #pragma endregion
 
 #pragma region tracker_Offset_handling
@@ -334,6 +368,7 @@ void Tracker::update()
 			auto timing = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
 			Console::logWarning(std::to_string(timing.count()));
 			*/
+			if (m_networkManager != nullptr) m_networkManager->sendSkeletonPool(&m_skeletonPool, m_properties->id, m_trackingCycles);
 		}
 	}
 	//clean skeleton pool after tracking

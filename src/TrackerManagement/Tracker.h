@@ -6,6 +6,8 @@
 #include <atomic>
 #include <vector>
 
+#include "ConfigDllExportTrackingManagement.h"
+
 #include "MotionHubUtil/Skeleton.h"
 #include "MotionHubUtil/PointCollection.h"
 #include "MotionHubUtil/Console.h"
@@ -21,7 +23,7 @@
  *
  * \author Kester Evers, Eric Jansen and Manuel Zohlen
  */
-class  Tracker
+class /*TrackingManagement_DLL_import_export*/ Tracker
 {
 
 public:
@@ -277,9 +279,7 @@ public:
 	virtual inline std::string getTrackerType() = 0;
 
 	virtual float getTotalTime();
-
 	virtual int getCurrFrameIdx();
-
 	virtual int getFrameCount();
 
 	int getType() {
@@ -289,6 +289,15 @@ public:
 	void setType(int trackerType) {
 		type = trackerType;
 	}
+	bool isInitiated();
+
+
+	virtual void setPaused(bool state);
+	virtual bool isPaused();
+
+	virtual void setLooping(bool state);
+	
+	virtual bool isLoopEnded();
 
 
 protected:
@@ -387,6 +396,15 @@ protected:
 	NetworkManager* m_networkManager = nullptr;
 
 	ConfigManager* m_configManager = nullptr;
+	bool m_isInitiated;
+
+
+	bool m_paused;
+
+	bool m_loopEnded;
+
+	bool m_isLooping;
+
 
 
 	std::atomic<bool> shouldSleep = false;

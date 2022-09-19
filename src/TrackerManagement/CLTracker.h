@@ -45,6 +45,10 @@ protected:
 	
 	int* m_port;
 	/*!
+	* wether a valid CLTracker already exists. Used to invalidate subsequently created trackers
+	*/
+	static bool m_validTrackerExists;
+	/*!
 	 * wether or not the Tracker is connected to CapturyLive
 	 */
 	bool m_connected = false;

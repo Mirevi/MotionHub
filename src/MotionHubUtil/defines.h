@@ -4,6 +4,9 @@ static const char* CONFIG_PATH = "./data/config.xml";
 
 static const char* LOGFILE = "log.txt";
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <filesystem>
 
 
 /*!
@@ -72,4 +75,43 @@ static std::string removeChar(std::string _str, const char _char)
 	_str.erase(end_pos, _str.end());
 
 	return _str;
+}
+
+static bool checkAndFixPath(std::string pathname)
+{
+	//check if path is valid
+	struct stat info;
+	if (stat(pathname.c_str(), &info) != 0)
+	{
+		std::cout << "cannot access " << pathname << ". Creating new folder." << std::endl;
+
+		try
+		{
+			//try to create path
+			if (std::filesystem::create_directory(pathname))
+			{
+				std::cout << "successfully created new folder." << std::endl;
+				return true;
+			}
+			else
+			{
+				std::cout << "ERROR creating new folder!" << std::endl;
+				return false;
+			}
+		}
+		catch (const std::exception&)
+		{
+			std::cout << "ERROR creating new folder! Please check if the drive " << pathname.at(0) << " exist." << std::endl;
+			return false;
+		}
+
+
+
+	}
+	else
+	{
+		return true;
+	}
+
+
 }

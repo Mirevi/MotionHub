@@ -1,6 +1,8 @@
 #include "CreateTrackerWindow.h"
 #include "ui_createtrackerwindow.h"
 
+#include "MainWindow.h"
+
 // default constructor
 CreateTrackerWindow::CreateTrackerWindow(TrackerManager* trackerManager, QTreeWidget* treeWidgetTracker, QWidget *parent) : QDialog(parent), ui(new Ui::CreateTrackerWindow)
 {
@@ -22,6 +24,7 @@ CreateTrackerWindow::~CreateTrackerWindow()
 	delete ui;
 
 }
+
 
 // SLOT: create new tracker
 void CreateTrackerWindow::slotCreateTracker()
@@ -68,11 +71,13 @@ void CreateTrackerWindow::slotCreateTracker()
 		
 		Console::log("CreateTrackerWindow::slotCreateTracker(): Creating Tracker with Tracker Index: " + std::to_string(m_selectedTrackerIdInDropdown));
 
-		try {
+		try
+		{
 			// Create choosen tracker
 			id = m_refTrackerManager->createTracker(trackerType, filePath);
 		}
-		catch (const Exception& exception) {
+		catch (const Exception& exception) //if Error at creating Tracker
+		{
 
 			// Set the curser to default
 			QApplication::restoreOverrideCursor();
@@ -81,6 +86,7 @@ void CreateTrackerWindow::slotCreateTracker()
 
 			std::string error = exception.what();
 
+			//Error messages
 			Console::logError("CreateTrackerWindow::slotCreateTracker(): " + error);
 			QMessageBox::critical(this, tr("Can not create Tracker"), tr(error.c_str()));
 
@@ -92,6 +98,7 @@ void CreateTrackerWindow::slotCreateTracker()
 		Console::logError("CreateTrackerWindow::slotCreateTracker(): Can not create tracker. Tracker type unkown!");
 	}
 
+	//if Tracker creation failed
 	if (id == -1)
 	{
 
@@ -107,27 +114,8 @@ void CreateTrackerWindow::slotCreateTracker()
 
 	}
 
-	std::vector<Tracker*> trackerPoolRef = m_refTrackerManager->getPoolTracker();
 
-	for (auto itTracker = trackerPoolRef.begin(); itTracker != trackerPoolRef.end(); itTracker++)
-	{
-
-		if ((*itTracker)->getProperties()->id == id)
-		{
-
-			//m_refTreeWidgetTracker->addItem((*itTracker)->getProperties()->name.c_str());
-			QTreeWidgetItem *topLevelItem = new QTreeWidgetItem(m_refTreeWidgetTracker);
-
-			// Set text for item
-			topLevelItem->setText(0, (*itTracker)->getProperties()->name.c_str());
-
-			// Add it on our tree as the top item.
-			m_refTreeWidgetTracker->addTopLevelItem(topLevelItem);
-
-		}
-
-	}
-
+	addTrackerToWidget(id, m_refTrackerManager, m_refTreeWidgetTracker);
 
 	//set the curser to default
 	QApplication::restoreOverrideCursor();
@@ -148,7 +136,8 @@ void CreateTrackerWindow::slotSelectTrackerInDropdown(int id)
 std::string CreateTrackerWindow::getFilePath(const char* caption, const char* dir, const char* filter)
 {
 	// get file Path from Open File Dialog with caption, dir & filter
-	QString filePath = QFileDialog::getOpenFileName(this, caption, dir, tr(filter));
+	QString filePath = QFileDialog::getOpenFileName(this, caption, dir, tr(filter), 0, QFileDialog::DontUseNativeDialog);
+	//QString filePath = "C:/Users/phili/Downloads/MMH_FriJul21948092021.mmh";
 
 	// is file path valid?
 	if (filePath != NULL) {

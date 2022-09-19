@@ -36,7 +36,7 @@ public:
 	 * sends skeleton pool to all network sender
 	 * \param skeletonPool skeleton pool to send
 	 */
-	void sendSkeletonPool(std::map<int, Skeleton>* skeletonPool, int trackerID);
+	void sendSkeletonPool(std::map<int, Skeleton>* skeletonPool, int trackerID, int frameIndex);
 
 	/*!
 	 * sends point collection to all network sender
