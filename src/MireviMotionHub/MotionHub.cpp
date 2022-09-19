@@ -6,8 +6,6 @@ static bool STOP_UI_REFRESH_ESC = true;
 static bool isUiRefreshAllowed = true;
 static bool isEscapePressed = false;
 
-
-static bool STOP_UI_REFRESH_ESC = true;
 static bool uiRefreshAllowed = true;
 static bool escapePressed = false;
 
@@ -107,31 +105,8 @@ void MotionHub::update()
 		if (!STOP_UI_REFRESH_ESC) {
 			m_uiManager->processInput();
 		}
-<<<<<<< HEAD
-		else {
-			if (GetAsyncKeyState(VK_ESCAPE) & 0x8000) {
-				if (!escapePressed) {
-					uiRefreshAllowed = !uiRefreshAllowed;
-					Console::logWarning("UI-Events allowed: " + std::to_string(uiRefreshAllowed));
-				}
-
-				escapePressed = true;
-			}
-			else {
-				escapePressed = false;
-			}
-
-			if (m_trackerManager->isTracking()) {
-				if(uiRefreshAllowed) m_uiManager->processInput();
-			}
-			else {
-				m_uiManager->processInput();
-			}
-		}
-		
-=======
-		// ui input processing can be skipped
-		else {
+		else // ui input processing can be skipped
+		{
 
 			// Is ESC Key pressed in this frame?
 			if (GetAsyncKeyState(VK_ESCAPE) & 0x8000) {
@@ -170,7 +145,6 @@ void MotionHub::update()
 		}
 
 		// update console
->>>>>>> master
 		m_uiManager->getMainWindow()->updateConsole();
 
 		// send skeleton pools to other managers
@@ -202,11 +176,8 @@ void MotionHub::update()
 					// send skeleton pool reference to gesture manager in order to update all postures
 					//m_gestureManager->updateAllSkeletonPostures(&((*itTracker)->getSkeletonPoolCache())									  );
 
-<<<<<<< HEAD
 					// set sekelton changed flag if skeleton was added or removed from pool
-=======
 					// update ui if skeleton was added or removed from pool
->>>>>>> master
 					if ((*itTracker)->hasSkeletonPoolChanged())
 					{
 						hasSkeletonPoolChanged = true;
@@ -234,16 +205,13 @@ void MotionHub::update()
 
 			}
 
-<<<<<<< HEAD
 			// loop over all tracker and reset the data available flag
 			for (auto itTracker = trackerPoolTempCopy.begin(); itTracker != trackerPoolTempCopy.end(); itTracker++)
 			{
 				// reset bool and start new tracking cycle
 				(*itTracker)->resetIsDataAvailable();
 			}
-=======
 			//set Play/Pause button at the timeline correct
->>>>>>> master
 
 			//get mmh player
 			Tracker* mmhPlayer = m_trackerManager->getFirstTrackerFromType(TrackerManager::mmh);

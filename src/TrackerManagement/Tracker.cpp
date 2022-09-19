@@ -347,7 +347,7 @@ void Tracker::update()
 			if (m_networkManager != nullptr) {
 
 				//send Skeleton Pool to NetworkManager
-				m_networkManager->sendSkeletonPool(&m_skeletonPool, m_properties->id);
+				m_networkManager->sendSkeletonPool(&m_skeletonPool, m_properties->id, m_trackingCycles);
 
 				// send Point Pool to NetworkManager
 				m_networkManager->sendPointPool(&m_pointCollection, m_properties->id);

@@ -1,0 +1,1119 @@
+#include "OVRTracker.h"
+
+
+static bool DEBUG_DEVICES_ON_START = true;
+
+static bool DEBUG_HMD = false;
+
+static bool DEBUG_HIP = false;
+
+static bool SOLVE_IK = true;
+
+static bool USE_TEST_SKELETON = true;
+static bool USE_DEBUG_POINT_COLLECTION = true;
+
+static bool USE_XSENS_SKELETON = true;
+
+#include <vector>
+#include <numeric>
+
+class Evaluation {
+
+public:
+
+	Evaluation() {
+		values = new std::vector<float>();
+	}
+
+	~Evaluation() {
+		delete values;
+	}
+
+	void clearValues() {
+		values->clear();
+	}
+
+	void addValue(float value) {
+		values->push_back(value);
+	}
+
+	float getAverage() {
+		return std::reduce(values->begin(), values->end()) / static_cast<float>(values->size());
+	}
+
+	float getMedian() {
+		size_t n = values->size() / 2;
+		std::nth_element(values->begin(), values->begin() + n, values->end());
+		return values->at(n);
+	}
+
+	float getMin() {
+		return *std::min_element(values->begin(), values->end());
+	}
+
+	float getMax() {
+		return *std::max_element(values->begin(), values->end());
+	}
+
+private:
+	std::vector<float>* values;
+
+};
+
+
+static Evaluation timingIK;
+static Evaluation timingIKTest;
+
+static float distance4(Vector4f a, Vector4f b) {
+	return distance(Vector3f(a.x(), a.y(), a.z()), Vector3f(b.x(), b.y(), b.z()));
+}
+
+static std::string DebugIdentifier(std::string identifier) {
+
+	if (identifier == "LHR-774276F7") {
+		return "HEAD";
+	}
+	else if (identifier == "LHR-F0DCF515") {
+		return "HAND_L";
+	}
+	else if (identifier == "LHR-9AC396F1") {
+		return "HAND_R";
+	}
+	else if (identifier == "LHR-E6910BC0") {
+		return "FOOT_L";
+	}
+	else if (identifier == "LHR-6E2EA3BC") {
+		return "FOOT_R";
+	}
+	else if (identifier == "LHR-61441A45") {
+		return "HIPS";
+	}
+	else {
+		return "! NOT FOUND !";
+	}
+}
+
+OVRTracker::OVRTracker() {
+
+	// Initialize OpenVR & IK Solvers
+	init();
+}
+
+OVRTracker::OVRTracker(int id, NetworkManager* networkManager, ConfigManager* configManager) {
+
+	m_networkManager = networkManager;
+	m_configManager = configManager;
+
+	//create new Properties object
+	m_properties = new Properties();
+
+	//assign id and name to properties
+	m_properties->id = id;
+	m_properties->name = "tracker_openVR_" + toString(id);
+
+	//default is enabled
+	m_isEnabled = true;
+
+	// Initialize OpenVR, Config & IK Solvers
+	init();
+
+	readOffsetFromConfig();
+}
+
+OVRTracker::~OVRTracker() {
+
+	clearPointers();
+}
+
+void OVRTracker::start() {
+
+	// start tracking in tracking system
+	trackingSystem->start();
+
+	// Refresh values from config
+	refresh(true);
+
+	// set tracking to true
+	m_isTracking = true;
+
+	//there schould only be one skeleton in the file
+	m_countDetectedSkeleton = m_skeletonPool.size();
+
+	//skeleton was added/removed, so UI updates
+	m_hasSkeletonPoolChanged = true;
+
+	// Init IKSolvers
+	initIKSolvers();
+
+	// Clear point collection
+	m_pointCollection.clear();
+
+	// Loop over all devices and convert them to points
+	for (const auto& device : trackingSystem->Devices) {
+
+		// Cast device class to point type
+		Point::PointType pointType = static_cast<Point::PointType>(device.deviceClass);
+
+		// Add point to collection
+		m_pointCollection.addPoint(device.index, pointType);
+
+		// Update Joint if assigned
+		Joint::JointNames joint = config->getJoint(device.index);
+		if (joint != Joint::NDEF) {
+			m_pointCollection.updatePoint(device.index, joint);
+		}
+	}
+
+	if (USE_DEBUG_POINT_COLLECTION) {
+		m_pointCollection.addPoint(Joint::SPINE, Point::PointType::Rigidbody);
+		m_pointCollection.addPoint(Joint::CHEST, Point::PointType::Rigidbody);
+		m_pointCollection.addPoint(Joint::NECK, Point::PointType::Rigidbody);
+		m_pointCollection.addPoint(Joint::HEAD, Point::PointType::Rigidbody);
+
+		m_pointCollection.addPoint(Joint::UPLEG_L, Point::PointType::Rigidbody);
+		m_pointCollection.addPoint(Joint::LEG_L, Point::PointType::Rigidbody);
+		m_pointCollection.addPoint(Joint::FOOT_L, Point::PointType::Rigidbody);
+		m_pointCollection.addPoint(Joint::TOE_L, Point::PointType::Rigidbody);
+
+		m_pointCollection.addPoint(Joint::UPLEG_R, Point::PointType::Rigidbody);
+		m_pointCollection.addPoint(Joint::LEG_R, Point::PointType::Rigidbody);
+		m_pointCollection.addPoint(Joint::FOOT_R, Point::PointType::Rigidbody);
+		m_pointCollection.addPoint(Joint::TOE_R, Point::PointType::Rigidbody);
+
+		m_pointCollection.addPoint(Joint::SHOULDER_L, Point::PointType::Rigidbody);
+		m_pointCollection.addPoint(Joint::ARM_L, Point::PointType::Rigidbody);
+		m_pointCollection.addPoint(Joint::FOREARM_L, Point::PointType::Rigidbody);
+		m_pointCollection.addPoint(Joint::HAND_L, Point::PointType::Rigidbody);
+
+		m_pointCollection.addPoint(Joint::SHOULDER_R, Point::PointType::Rigidbody);
+		m_pointCollection.addPoint(Joint::ARM_R, Point::PointType::Rigidbody);
+		m_pointCollection.addPoint(Joint::FOREARM_R, Point::PointType::Rigidbody);
+		m_pointCollection.addPoint(Joint::HAND_R, Point::PointType::Rigidbody);
+	}
+
+	// register tracker as observers
+	trackingSystem->registerButtonPressObserver(this);
+
+	if (DEBUG_DEVICES_ON_START) {
+		Console::log("");
+		for (const auto& device : trackingSystem->Devices) {
+			Console::log(toString((int)device.index) + " " + OpenVRTracking::toString(device.deviceClass) + " " + device.identifier + " " + Joint::toString(config->getJoint(device.index)));
+			Console::log(DebugIdentifier(device.identifier));
+		}
+		Console::log("");
+	}
+
+	// Update Confidence for each tracked joint
+	for (const auto& device : trackingSystem->Devices) {
+		auto deviceJoint = config->getJoint(device.index);
+		auto skeletonJoint = hierarchicSkeleton->getJoint(deviceJoint);
+
+		if (deviceJoint != Joint::NDEF && skeletonJoint != nullptr) {
+			skeletonJoint->setConfidence(Joint::HIGH);
+		}
+	}
+
+	// Refresh IK Solvers
+	refreshIKSolvers(false);
+
+	// start tracking thread
+	Tracker::start();
+
+	timingIK.clearValues();
+	timingIKTest.clearValues();
+}
+
+void OVRTracker::refresh(bool overrideDefaults) {
+
+	// Refresh config from xml
+	m_configManager->refresh();
+
+	// Read global offsets
+	readOffsetFromConfig();
+
+	// Update prediction time from config
+	//float mmhDelay = 0.0255f; // 0.0255f
+	float predictionTime = config->readPredictionTime();
+	if (predictionTime > 0.0f) {
+		Console::log("OVRTracker::refresh: prediction time " + toString(predictionTime) + " s");
+		trackingSystem->setPredictionTime(predictionTime);
+	}
+
+	// Read assigned devices from config
+	config->readAssignedDevices();
+
+	// Assign remaining devices
+	config->updateUserDeviceRoles();
+
+	// Read offset from config
+	config->readOffsets();
+
+	// Should use TestSkeleton?
+	if (USE_TEST_SKELETON) {
+		// Enable TestSkeleton if HintDevice is configured
+		if (config->getDeviceIndex(Joint::LEG_L) >= 0
+			|| config->getDeviceIndex(Joint::LEG_R) >= 0
+			|| config->getDeviceIndex(Joint::FOREARM_L) >= 0
+			|| config->getDeviceIndex(Joint::FOREARM_R) >= 0)
+		{
+			useTestSkeleton = true;
+		}
+	}
+
+	// Init skeleton & set scale from config
+	hierarchicSkeleton->setScale(config->readScale());
+	if (USE_XSENS_SKELETON) {
+		hierarchicSkeleton->initXsens();
+	}
+	else {
+	hierarchicSkeleton->init();
+	}
+
+	if (useTestSkeleton) {
+		testHierarchicSkeleton->setScale(config->readScale());
+		if (USE_XSENS_SKELETON) {
+			testHierarchicSkeleton->initXsens();
+		}
+		else {
+		testHierarchicSkeleton->init();
+	}
+	}
+
+	// Update Filters
+	int i = 0;
+	for (auto& device : trackingSystem->Devices) {
+		Joint::JointNames joint = config->getJoint(device.index);
+
+
+		if (joint == Joint::HAND_L || joint == Joint::FOREARM_L || joint == Joint::FOOT_L || joint == Joint::LEG_L) {
+			trackingSystem->positionFilters[i].setParams(1, 1.0f, 0.007f);
+			trackingSystem->rotationFilters[i].setParams(2, 1.0f, 0.007f);
+		}
+		else if (joint == Joint::HIPS) {
+			trackingSystem->positionFilters[i].setParams(60, 1.0f, 0.007f);
+			trackingSystem->rotationFilters[i].setParams(120, 1.0f, 0.007f);
+		}
+		else {
+			trackingSystem->positionFilters[i].setParams(30, 1.0f, 0.007f);
+			trackingSystem->rotationFilters[i].setParams(60, 1.0f, 0.007f);
+		}
+
+		i++;
+	}
+
+	// Refresh IKSolvers (if initialized)
+	refreshIKSolvers(overrideDefaults);
+}
+
+void OVRTracker::stop() {
+
+	// write settings & calibration to config 
+	config->write();
+	config->writeScale(hierarchicSkeleton->getScale());
+
+	// remove tracker from observers
+	trackingSystem->removeButtonPressObserver(this);
+
+	Tracker::stop();
+
+	Console::logWarning("avg:" + toString(timingIK.getAverage()) + " median:" + toString(timingIK.getMedian()) + " min:" + toString(timingIK.getMin()) + " max:" + toString(timingIK.getMax()));
+	if (useTestSkeleton) {
+		Console::log("avg:" + toString(timingIKTest.getAverage()) + " median:" + toString(timingIKTest.getMedian()) + " min:" + toString(timingIKTest.getMin()) + " max:" + toString(timingIKTest.getMax()));
+	}
+}
+
+void OVRTracker::init() {
+
+	// Create & init OpenVR Tracking
+	trackingSystem = new OpenVRTracking();
+
+	try {
+		trackingSystem->init();
+	}
+	catch (Exception exception) {
+		delete trackingSystem;
+		throw exception;
+	}
+
+	// Create IK Skeleton
+	hierarchicSkeleton = new HierarchicSkeleton(m_properties->id);
+	testHierarchicSkeleton = new HierarchicSkeleton(m_properties->id + 100);
+
+	skeleton = new Skeleton(m_properties->id);
+	testSkeleton = new Skeleton(m_properties->id + 100);
+
+	// Init Config & try to write default config values
+	config = new OpenVRConfig(m_configManager, trackingSystem);
+	config->writeDefaults();
+}
+
+void OVRTracker::track() {
+
+	// Update offsets from Inspector
+	trackingSystem->setOffsets(m_properties->positionOffset, m_rotationOffset, m_properties->scaleOffset);
+
+	// Poll Events in the Tracking System
+	trackingSystem->pollEvents();
+
+	// Update device poses
+	trackingSystem->receiveDevicePoses();
+
+	// Calibration toggle & Calibration
+	if (GetAsyncKeyState('C') & 0x8000) {
+		Console::log("OVRTracker: Should Calibrate");
+		shouldCalibrate = true;
+	}
+	else if (GetAsyncKeyState(0x20) & 0x8000) { // Space
+		calibrate();
+	}
+
+	// Calibration for target joints
+	if (GetAsyncKeyState(VK_NUMPAD1) & 0x8000) {
+		calibrateDeviceToJointOffset(Joint::FOOT_L);
+	}
+	else if (GetAsyncKeyState(VK_NUMPAD3) & 0x8000) {
+		calibrateDeviceToJointOffset(Joint::FOOT_R);
+	}
+	else if (GetAsyncKeyState(VK_NUMPAD5) & 0x8000) {
+		calibrateDeviceToJointOffset(Joint::HIPS);
+	}
+	else if (GetAsyncKeyState(VK_NUMPAD7) & 0x8000) {
+		calibrateDeviceToJointOffset(Joint::HAND_L);
+	}
+	else if (GetAsyncKeyState(VK_NUMPAD9) & 0x8000) {
+		calibrateDeviceToJointOffset(Joint::HAND_R);
+	}
+	else if (GetAsyncKeyState('S') & 0x8000) {
+		if (shouldCalibrate) {
+			shouldCalibrate = false;
+			calibrateScale();
+		}
+	}
+
+	if (GetAsyncKeyState('I') & 0x8000) {
+		SOLVE_IK = true;
+	}
+
+	if (GetAsyncKeyState('R') & 0x8000) {
+		refresh(false);
+	}
+
+	if (SOLVE_IK) {
+
+
+		// Read Poses from TrackingSystem
+		auto hipPose = getAssignedPose(Joint::HIPS);
+		auto headPose = getAssignedPose(Joint::HEAD);
+
+		auto leftLegPose = getAssignedPose(Joint::LEG_L);
+		auto leftFootPose = getAssignedPose(Joint::FOOT_L);
+
+		auto rightLegPose = getAssignedPose(Joint::LEG_R);
+		auto rightFootPose = getAssignedPose(Joint::FOOT_R);
+
+		auto leftForearmPose = getAssignedPose(Joint::FOREARM_L);
+		auto leftHandPose = getAssignedPose(Joint::HAND_L);
+
+		auto rightForearmPose = getAssignedPose(Joint::FOREARM_R);
+		auto rightHandPose = getAssignedPose(Joint::HAND_R);
+
+
+		bool hasLeftFootPose = !leftFootPose.isNull();
+		bool hasRightFootPose = !rightFootPose.isNull();
+
+		bool hasLeftLegPose = !leftLegPose.isNull();
+		bool hasRightLegPose = !rightLegPose.isNull();
+
+		bool hasLeftForearmPose = !leftForearmPose.isNull();
+		bool hasRightForearmPose = !rightForearmPose.isNull();
+
+		auto start = std::chrono::high_resolution_clock::now();
+
+		// Hint Hip with both feets
+		if (hasLeftFootPose && hasRightFootPose) {
+			ikSolverHip->hint(leftFootPose.position, rightFootPose.position);
+		}
+
+		// Solve Hip
+		ikSolverHip->solve(hipPose.position, hipPose.rotation);
+
+		// Solve Spine
+		ikSolverSpine->solve(headPose.position, headPose.rotation);
+
+		// Hint LeftLeg
+		if (hasLeftLegPose) {
+			ikSolverLeftLeg->hint(leftLegPose.position, leftLegPose.rotation);
+		}
+
+		// Solve LeftLeg
+		ikSolverLeftLeg->solve(leftFootPose.position, leftFootPose.rotation);
+
+		// Hint RightLeg
+		if (hasRightLegPose) {
+			ikSolverRightLeg->hint(rightLegPose.position, rightLegPose.rotation);
+		}
+
+		// Solve RightLeg
+		ikSolverRightLeg->solve(rightFootPose.position, rightFootPose.rotation);
+
+			// Hint LeftArm
+		if (hasLeftForearmPose) {
+				ikSolverLeftArm->hint(leftForearmPose.position, leftForearmPose.rotation);
+			}
+
+			// Solve LeftArm
+			ikSolverLeftArm->solve(leftHandPose.position, leftHandPose.rotation);
+
+			// Hint RightArm
+		if (hasRightForearmPose) {
+				ikSolverRightArm->hint(rightForearmPose.position, rightForearmPose.rotation);
+			}
+
+			// Solve RightArm
+			ikSolverRightArm->solve(rightHandPose.position, rightHandPose.rotation);
+
+		auto end = std::chrono::high_resolution_clock::now();
+
+		auto microseconds = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+
+		timingIK.addValue(microseconds);
+		//Console::logWarning(toString(evaluation.getAverage()) + " " + toString(evaluation.getMedian()) + " " + toString(evaluation.getMin()) + " " + toString(evaluation.getMax()));
+
+
+		if (useTestSkeleton) {
+
+			start = std::chrono::high_resolution_clock::now();
+
+			// Hint Hip with both feets
+			if (hasLeftFootPose && hasRightFootPose) {
+				testIkSolverHip->hint(leftFootPose.position, rightFootPose.position);
+			}
+
+			// Solve Hip
+			testIkSolverHip->solve(hipPose.position, hipPose.rotation);
+
+			// Solve Spine
+			testIkSolverSpine->solve(headPose.position, headPose.rotation);
+
+			// Solve LeftLeg
+			testIkSolverLeftLeg->solve(leftFootPose.position, leftFootPose.rotation);
+
+			// Solve RightLeg
+			testIkSolverRightLeg->solve(rightFootPose.position, rightFootPose.rotation);
+
+			// Solve LeftArm
+			testIkSolverLeftArm->solve(leftHandPose.position, leftHandPose.rotation);
+
+			// Solve RightArm
+			testIkSolverRightArm->solve(rightHandPose.position, rightHandPose.rotation);
+
+			end = std::chrono::high_resolution_clock::now();
+
+			microseconds = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+
+			timingIKTest.addValue(microseconds);
+		}
+	}
+
+	hierarchicSkeleton->insert();
+	if (testHierarchicSkeleton != nullptr) {
+		testHierarchicSkeleton->insert();
+	}
+
+	auto poses = trackingSystem->Poses;
+
+	skeleton->m_joints = hierarchicSkeleton->skeleton.m_joints;
+	if (useTestSkeleton) {
+		testSkeleton->m_joints = testHierarchicSkeleton->skeleton.m_joints;
+	}
+	//hierarchicSkeleton->insert(nullptr);
+
+	// Lock point collection mutex
+	m_pointCollectionLock.lock();
+
+	int i = 0;
+	for (auto& device : trackingSystem->Devices) {
+		// Read pose from device index
+		auto& pose = poses[i];
+
+		auto joint = config->getJoint(device.index);
+		if (joint == Joint::HAND_L || joint == Joint::FOOT_L) {
+			pose = trackingSystem->FilteredPoses[i];
+		}
+
+		// Convert rotation & update point
+		Quaternionf rotation = Quaternionf(-pose.rotation.y(), -pose.rotation.z(), pose.rotation.w(), pose.rotation.x());
+		m_pointCollection.updatePoint(device.index, pose.position, rotation);
+
+		i++;
+	}
+
+	if (USE_DEBUG_POINT_COLLECTION) {
+		m_pointCollection.updatePoint(Joint::SPINE, ikSolverSpine->DebugPos1, Quaternionf::Identity());
+		m_pointCollection.updatePoint(Joint::CHEST, ikSolverSpine->DebugPos2, Quaternionf::Identity());
+		m_pointCollection.updatePoint(Joint::NECK, ikSolverSpine->DebugPos3, Quaternionf::Identity());
+		m_pointCollection.updatePoint(Joint::HEAD, ikSolverSpine->DebugPos4, Quaternionf::Identity());
+
+		m_pointCollection.updatePoint(Joint::UPLEG_L, ikSolverLeftLeg->DebugPos1, Quaternionf::Identity());
+		m_pointCollection.updatePoint(Joint::LEG_L, ikSolverLeftLeg->DebugPos2, Quaternionf::Identity());
+		m_pointCollection.updatePoint(Joint::FOOT_L, ikSolverLeftLeg->DebugPos3, Quaternionf::Identity());
+		m_pointCollection.updatePoint(Joint::TOE_L, ikSolverLeftLeg->DebugPos4, Quaternionf::Identity());
+
+		m_pointCollection.updatePoint(Joint::UPLEG_R, ikSolverRightLeg->DebugPos1, Quaternionf::Identity());
+		m_pointCollection.updatePoint(Joint::LEG_R, ikSolverRightLeg->DebugPos2, Quaternionf::Identity());
+		m_pointCollection.updatePoint(Joint::FOOT_R, ikSolverRightLeg->DebugPos3, Quaternionf::Identity());
+		m_pointCollection.updatePoint(Joint::TOE_R, ikSolverRightLeg->DebugPos4, Quaternionf::Identity());
+
+		m_pointCollection.updatePoint(Joint::SHOULDER_L, ikSolverLeftArm->DebugPos1, Quaternionf::Identity());
+		m_pointCollection.updatePoint(Joint::ARM_L, ikSolverLeftArm->DebugPos2, Quaternionf::Identity());
+		m_pointCollection.updatePoint(Joint::FOREARM_L, ikSolverLeftArm->DebugPos3, Quaternionf::Identity());
+		m_pointCollection.updatePoint(Joint::HAND_L, ikSolverLeftArm->DebugPos4, Quaternionf::Identity());
+
+		m_pointCollection.updatePoint(Joint::SHOULDER_R, ikSolverRightArm->DebugPos1, Quaternionf::Identity());
+		m_pointCollection.updatePoint(Joint::ARM_R, ikSolverRightArm->DebugPos2, Quaternionf::Identity());
+		m_pointCollection.updatePoint(Joint::FOREARM_R, ikSolverRightArm->DebugPos3, Quaternionf::Identity());
+		m_pointCollection.updatePoint(Joint::HAND_R, ikSolverRightArm->DebugPos4, Quaternionf::Identity());
+	}
+
+	// Unlock point collection mutex
+	m_pointCollectionLock.unlock();
+
+	extractSkeleton();
+
+	m_isDataAvailable = true;
+}
+
+void OVRTracker::extractSkeleton() {
+
+	m_skeletonPoolLock.lock();
+
+	// Get id from tracker properties
+	int id = m_properties->id;
+
+	// Try to find skeleton with id
+	auto skeletonIterator = m_skeletonPool.find(id);
+
+	// Skeleton found -> update joints
+	if (skeletonIterator != m_skeletonPool.end()) {
+
+		// update all joints of existing skeleon with new data
+		skeletonIterator->second.m_joints = skeleton->m_joints;
+	}
+	// Skeleton not found -> insert new
+	else {
+
+		m_skeletonPool.insert({ id, *skeleton });
+
+		//skeleton was added, so UI updates
+		m_hasSkeletonPoolChanged = true;
+
+		Console::log("OVRTracker::extractSkeleton(): Created new skeleton with id = " + std::to_string(id));
+	}
+
+	if (useTestSkeleton) {
+		id = id + 100;
+
+		skeletonIterator = m_skeletonPool.find(id);
+
+		// Skeleton found -> update joints
+		if (skeletonIterator != m_skeletonPool.end()) {
+
+			// update all joints of existing skeleon with new data
+			skeletonIterator->second.m_joints = testSkeleton->m_joints;
+		}
+		// Skeleton not found -> insert new
+		else {
+
+			m_skeletonPool.insert({ id, *testSkeleton });
+
+			//skeleton was added, so UI updates
+			m_hasSkeletonPoolChanged = true;
+
+			Console::log("OVRTracker::extractSkeleton(): Created new skeleton with id = " + std::to_string(id));
+		}
+
+	}
+
+	m_skeletonPoolLock.unlock();
+}
+
+void OVRTracker::initIKSolvers() {
+
+	// Init Hip IKSolver
+	if (ikSolverHip != nullptr) delete ikSolverHip;
+	ikSolverHip = new IKSolverHip(&hierarchicSkeleton->hips);
+	ikSolverHip->setLeftLeg(&hierarchicSkeleton->leftUpLeg, &hierarchicSkeleton->leftFoot);
+	ikSolverHip->setRightLeg(&hierarchicSkeleton->rightUpLeg, &hierarchicSkeleton->rightFoot);
+	ikSolverHip->init();
+
+	// Init Spine IKSolver
+	if (ikSolverSpine != nullptr) delete ikSolverSpine;
+	ikSolverSpine = new IKSolverSpine(&hierarchicSkeleton->spine, &hierarchicSkeleton->chest, &hierarchicSkeleton->neck, &hierarchicSkeleton->head);
+	ikSolverSpine->setHip(&hierarchicSkeleton->hips);
+	ikSolverSpine->init();
+
+	// Init LeftLeg IKSolver
+	if (ikSolverLeftLeg != nullptr) delete ikSolverLeftLeg;
+	ikSolverLeftLeg = new IKSolverLeg(&hierarchicSkeleton->leftUpLeg, &hierarchicSkeleton->leftLeg, &hierarchicSkeleton->leftFoot);
+	//ikSolverLeftLeg->seToe(&hierarchicSkeleton->leftToe);
+	ikSolverLeftLeg->init();
+
+	// Init RightLeg IKSolver
+	if (ikSolverRightLeg != nullptr) delete ikSolverRightLeg;
+	ikSolverRightLeg = new IKSolverLeg(&hierarchicSkeleton->rightUpLeg, &hierarchicSkeleton->rightLeg, &hierarchicSkeleton->rightFoot);
+	//ikSolverRightLeg->seToe(&hierarchicSkeleton->rightToe);
+	ikSolverRightLeg->init();
+
+	// Init LeftArm IKSolver
+	if (ikSolverLeftArm != nullptr) delete ikSolverLeftArm;
+	ikSolverLeftArm = new IKSolverArm(&hierarchicSkeleton->leftShoulder, &hierarchicSkeleton->leftArm, &hierarchicSkeleton->leftForeArm, &hierarchicSkeleton->leftHand);
+	ikSolverLeftArm->setChest(&hierarchicSkeleton->chest);
+	ikSolverLeftArm->init();
+
+	// Init RightArm IKSolver
+	if (ikSolverRightArm != nullptr) delete ikSolverRightArm;
+	ikSolverRightArm = new IKSolverArm(&hierarchicSkeleton->rightShoulder, &hierarchicSkeleton->rightArm, &hierarchicSkeleton->rightForeArm, &hierarchicSkeleton->rightHand);
+	ikSolverRightArm->setChest(&hierarchicSkeleton->chest);
+	ikSolverRightArm->init();
+
+	// Solve in T-Pose
+	ikSolverHip->solve(hierarchicSkeleton->hips.getGlobalPosition(), hierarchicSkeleton->hips.getGlobalRotation());
+	ikSolverSpine->solve(hierarchicSkeleton->head.getGlobalPosition(), hierarchicSkeleton->head.getGlobalRotation());
+	ikSolverLeftLeg->solve(hierarchicSkeleton->leftFoot.getGlobalPosition(), hierarchicSkeleton->leftFoot.getGlobalRotation());
+	ikSolverRightLeg->solve(hierarchicSkeleton->rightFoot.getGlobalPosition(), hierarchicSkeleton->rightFoot.getGlobalRotation());
+	ikSolverLeftArm->solve(hierarchicSkeleton->leftHand.getGlobalPosition(), hierarchicSkeleton->leftHand.getGlobalRotation());
+	ikSolverRightArm->solve(hierarchicSkeleton->rightHand.getGlobalPosition(), hierarchicSkeleton->rightHand.getGlobalRotation());
+
+	if (useTestSkeleton) {
+		// Init Hip IKSolver
+		if (testIkSolverHip != nullptr) delete testIkSolverHip;
+		testIkSolverHip = new IKSolverHip(&testHierarchicSkeleton->hips);
+		testIkSolverHip->setLeftLeg(&testHierarchicSkeleton->leftUpLeg, &testHierarchicSkeleton->leftFoot);
+		testIkSolverHip->setRightLeg(&testHierarchicSkeleton->rightUpLeg, &testHierarchicSkeleton->rightFoot);
+		testIkSolverHip->init();
+
+		// Init Spine IKSolver
+		if (testIkSolverSpine != nullptr) delete testIkSolverSpine;
+		testIkSolverSpine = new IKSolverSpine(&testHierarchicSkeleton->spine, &testHierarchicSkeleton->chest, &testHierarchicSkeleton->neck, &testHierarchicSkeleton->head);
+		testIkSolverSpine->setHip(&testHierarchicSkeleton->hips);
+		testIkSolverSpine->init();
+
+		// Init LeftLeg IKSolver
+		if (testIkSolverLeftLeg != nullptr) delete testIkSolverLeftLeg;
+		testIkSolverLeftLeg = new IKSolverLeg(&testHierarchicSkeleton->leftUpLeg, &testHierarchicSkeleton->leftLeg, &testHierarchicSkeleton->leftFoot);
+		testIkSolverLeftLeg->init();
+
+		// Init RightLeg IKSolver
+		if (testIkSolverRightLeg != nullptr) delete testIkSolverRightLeg;
+		testIkSolverRightLeg = new IKSolverLeg(&testHierarchicSkeleton->rightUpLeg, &testHierarchicSkeleton->rightLeg, &testHierarchicSkeleton->rightFoot);
+		testIkSolverRightLeg->init();
+
+		// Init LeftArm IKSolver
+		if (testIkSolverLeftArm != nullptr) delete testIkSolverLeftArm;
+		testIkSolverLeftArm = new IKSolverArm(&testHierarchicSkeleton->leftShoulder, &testHierarchicSkeleton->leftArm, &testHierarchicSkeleton->leftForeArm, &testHierarchicSkeleton->leftHand);
+		testIkSolverLeftArm->setChest(&testHierarchicSkeleton->chest);
+		testIkSolverLeftArm->init();
+
+		// Init RightArm IKSolver
+		if (testIkSolverRightArm != nullptr) delete testIkSolverRightArm;
+		testIkSolverRightArm = new IKSolverArm(&testHierarchicSkeleton->rightShoulder, &testHierarchicSkeleton->rightArm, &testHierarchicSkeleton->rightForeArm, &testHierarchicSkeleton->rightHand);
+		testIkSolverRightArm->setChest(&testHierarchicSkeleton->chest);
+		testIkSolverRightArm->init();
+
+		// Solve in T-Pose
+		testIkSolverHip->solve(testHierarchicSkeleton->hips.getGlobalPosition(), testHierarchicSkeleton->hips.getGlobalRotation());
+		testIkSolverSpine->solve(testHierarchicSkeleton->head.getGlobalPosition(), testHierarchicSkeleton->head.getGlobalRotation());
+		testIkSolverLeftLeg->solve(testHierarchicSkeleton->leftFoot.getGlobalPosition(), testHierarchicSkeleton->leftFoot.getGlobalRotation());
+		testIkSolverRightLeg->solve(testHierarchicSkeleton->rightFoot.getGlobalPosition(), testHierarchicSkeleton->rightFoot.getGlobalRotation());
+		testIkSolverLeftArm->solve(testHierarchicSkeleton->leftHand.getGlobalPosition(), testHierarchicSkeleton->leftHand.getGlobalRotation());
+		testIkSolverRightArm->solve(testHierarchicSkeleton->rightHand.getGlobalPosition(), testHierarchicSkeleton->rightHand.getGlobalRotation());
+	}
+}
+
+void OVRTracker::refreshIKSolvers(bool overrideDefault) {
+
+	if (ikSolverHip != nullptr) {
+		ikSolverHip->refresh(overrideDefault);
+	}
+
+	if (ikSolverLeftLeg != nullptr) {
+		ikSolverLeftLeg->refresh(overrideDefault);
+	}
+
+	if (ikSolverRightLeg != nullptr) {
+		ikSolverRightLeg->refresh(overrideDefault);
+	}
+
+	if (ikSolverLeftArm != nullptr) {
+		ikSolverLeftArm->refresh(overrideDefault);
+	}
+
+	if (ikSolverRightArm != nullptr) {
+		ikSolverRightArm->refresh(overrideDefault);
+	}
+
+	if (hierarchicSkeleton != nullptr) {
+		hierarchicSkeleton->invalidateGlobals();
+	}
+
+
+
+	if (testIkSolverHip != nullptr) {
+		testIkSolverHip->refresh(overrideDefault);
+	}
+
+	if (testIkSolverLeftLeg != nullptr) {
+		testIkSolverLeftLeg->refresh(overrideDefault);
+	}
+
+	if (testIkSolverRightLeg != nullptr) {
+		testIkSolverRightLeg->refresh(overrideDefault);
+	}
+
+	if (testIkSolverLeftArm != nullptr) {
+		testIkSolverLeftArm->refresh(overrideDefault);
+	}
+
+	if (testIkSolverRightArm != nullptr) {
+		testIkSolverRightArm->refresh(overrideDefault);
+	}
+
+	if (testHierarchicSkeleton != nullptr) {
+		testHierarchicSkeleton->invalidateGlobals();
+	}
+}
+
+OpenVRTracking::DevicePose OVRTracker::getAssignedPose(Joint::JointNames joint) {
+
+	// Get the pose from config & tracking system 
+	auto pose = config->getPoseWithOffset(joint);
+
+	// TODO: Debug entfernen
+	switch (joint) {
+	case Joint::HIPS:
+		if (DEBUG_HIP) {
+			pose.position = Vector3f(0, 1.0f, 0);
+			//pose.rotation = Quaternionf::Identity();
+		}
+		break;
+	case Joint::FOREARM_L:
+		break;
+	case Joint::HAND_L:
+		break;
+	case Joint::FOREARM_R:
+		break;
+	case Joint::HAND_R:
+		break;
+	case Joint::LEG_L:
+		break;
+	case Joint::FOOT_L:
+		break;
+	case Joint::LEG_R:
+		break;
+	case Joint::FOOT_R:
+		break;
+	case Joint::HEAD:
+		if (DEBUG_HMD)
+			pose.position = Vector3f(0, 1.6f, 0);
+		break;
+	}
+
+	return pose;
+}
+
+void OVRTracker::calibrate() {
+
+	// Only calibrate if desired
+	if (!shouldCalibrate) {
+		return;
+	}
+
+	// Reset calibration flag
+	shouldCalibrate = false;
+
+	calibrateDeviceRoles();
+
+	calibrateDeviceToJointOffsets();
+
+	calibrateScale();
+
+	calibrateHintOffsets();
+
+	refreshIKSolvers();
+
+	Console::log("OVRTracker::calibrate");
+}
+
+void OVRTracker::calibrateDeviceRoles() {
+
+	auto calibratedDeviceRoles = trackingSystem->getCalibratedDeviceRoles();
+
+	if (calibratedDeviceRoles.size() > 0) {
+		config->clearJointToDevice();
+
+		// Write calibrated DeviceRoles to Config
+		for (const auto& deviceJointPair : calibratedDeviceRoles) {
+
+			auto device = trackingSystem->Devices[deviceJointPair.first];
+			config->assignJointToDevice(deviceJointPair.second, device.index);
+		}
+
+		Console::log("Calibrated Device Roles");
+	}
+}
+
+void OVRTracker::calibrateDeviceToJointOffsets() {
+
+	config->calibrateDeviceToJointOffsets();
+
+	Console::log("Calibrated Device Joint Offsets");
+}
+
+void OVRTracker::calibrateDeviceToJointOffset(Joint::JointNames joint) {
+
+	config->calibrateDeviceToJointOffset(joint);
+
+	Console::log("Calibrated Device Joint Offset: " + Joint::toString(joint));
+}
+
+void OVRTracker::calibrateScale() {
+
+	enableCalibrationMode();
+
+	Vector3f oldScale = hierarchicSkeleton->getScale();
+
+	// Reset Skeleton scale & pose
+	hierarchicSkeleton->reset();
+
+	// Calculate position between feet
+	Vector3f betweenToes = lerp(hierarchicSkeleton->leftToe.getGlobalPosition(), hierarchicSkeleton->rightToe.getGlobalPosition(), 0.5f);
+
+	auto headPose = config->getPoseWithOffset(Joint::HEAD, false);
+	auto leftHandPose = config->getPoseWithOffset(Joint::HAND_L, false);
+	auto rightHandPose = config->getPoseWithOffset(Joint::HAND_R, false);
+
+	float controllerdistance = distance(leftHandPose.position, rightHandPose.position);
+	float beforeScaleDist = distance(hierarchicSkeleton->leftHand.getGlobalPosition(), hierarchicSkeleton->rightHand.getGlobalPosition());
+
+	// Scale Skeleton
+	Vector3f scale = config->getCalibratedScale(hierarchicSkeleton);
+
+	// Is scale invalid?
+	if (scale.x() < 0.0f || scale.y() < 0.0f) {
+		// Revert scaling
+		hierarchicSkeleton->setScale(oldScale);
+		hierarchicSkeleton->init();
+
+		disableCalibrationMode();
+
+		Console::logError("OVRTracker::calibrateScale: Invalid Scale x or y < 0");
+		return;
+	}
+
+	hierarchicSkeleton->setScale(scale);
+	hierarchicSkeleton->init();
+
+	refreshIKSolvers(true);
+
+	float afterScaleDist = distance(hierarchicSkeleton->leftHand.getGlobalPosition(), hierarchicSkeleton->rightHand.getGlobalPosition());
+
+	// Calibrate Hip Offset
+	config->calibrateDeviceToJointOffset(Joint::HIPS);
+
+	// Solve Hip with identity rotation
+	auto hipPose = config->getPoseWithOffset(Joint::HIPS, false);
+	ikSolverHip->solve(hipPose.position, Quaternionf::Identity());
+
+	// y diff ermitteln und auf hip offset rechnen?
+	Vector3f newBetweenToes = lerp(hierarchicSkeleton->leftToe.getGlobalPosition(), hierarchicSkeleton->rightToe.getGlobalPosition(), 0.5f);
+
+	Vector3f toeOffset = newBetweenToes - betweenToes;
+
+	Console::logError("feetOffset: " + toString(toeOffset));
+	Console::logWarning("controllerdistance: " + toString(controllerdistance));
+	Console::logWarning("beforeScaleDist: " + toString(beforeScaleDist));
+	Console::logWarning("afterScaleDist: " + toString(afterScaleDist));
+
+	// Read current hip offset from config
+	Vector3f hipOffset = config->getOffsetPosition(Joint::HIPS);
+
+	Vector3f headToHip = hipPose.position - headPose.position;
+
+	Vector3f hipHeadOffset = projectOnPlane(headToHip, hipPose.rotation * Vector3f(0, 0, 1));
+
+	Vector3f newHipOffset = hipOffset + Vector3f(hipHeadOffset.x(), -toeOffset.y(), 0);
+	//Vector3f newHipOffset = hipOffset + Vector3f(0, -toeOffset.y(), 0);
+	config->setOffsetPosition(Joint::HIPS, newHipOffset);
+
+	hipPose = config->getPoseWithOffset(Joint::HIPS, false);
+	ikSolverHip->solve(hipPose.position, hipPose.rotation);
+
+	Console::log("Hip y Offset: " + toString(toeOffset.y()));
+
+	Console::logError(toString(distance(betweenToes, newBetweenToes)));
+
+	Vector3f leftHandOffset = leftHandPose.position - lerp(leftHandPose.position, rightHandPose.position, 0.25f);
+	Vector3f rightHandOffset = rightHandPose.position - lerp(rightHandPose.position, leftHandPose.position, 0.25f);
+
+	ikSolverSpine->solve(headPose.position, headPose.rotation);
+	ikSolverLeftArm->solve(leftHandPose.position + leftHandOffset.normalized() * 0.1f, leftHandPose.rotation);
+	ikSolverRightArm->solve(rightHandPose.position + rightHandOffset.normalized() * 0.1f, leftHandPose.rotation);
+
+	// Solve LeftFoot & RightFoot lower than Zero to get max stretched distance
+	auto leftFootPose = config->getPoseWithOffset(Joint::FOOT_L, false);
+	auto rightFootPose = config->getPoseWithOffset(Joint::FOOT_R, false);
+	ikSolverLeftLeg->solve(leftFootPose.position + Vector3f(0, -0.5f, 0), leftFootPose.rotation);
+	ikSolverRightLeg->solve(rightFootPose.position + Vector3f(0, -0.5f, 0), rightFootPose.rotation);
+
+	// Is LeftFoot tracked? -> Calculate Y Offset
+	if (config->isJointAssigned(Joint::FOOT_L)) {
+		auto leftFootPose = config->getPoseWithOffset(Joint::FOOT_L, false);
+		Vector3f newOffsetL = (hierarchicSkeleton->leftFoot.getGlobalPosition()) - leftFootPose.position;
+
+		Vector3f offsetL = config->getUserOffsetPosition(Joint::FOOT_L);
+		offsetL.y() += newOffsetL.y();
+
+		config->setUserOffsetPosition(Joint::FOOT_L, offsetL);
+	}
+
+	// Is RightFoot tracked? -> Calculate Y Offset
+	if (config->isJointAssigned(Joint::FOOT_R)) {
+		auto rightFootPose = config->getPoseWithOffset(Joint::FOOT_R, false);
+		Vector3f newOffsetR = (hierarchicSkeleton->leftFoot.getGlobalPosition()) - rightFootPose.position;
+
+		Vector3f offsetR = config->getUserOffsetPosition(Joint::FOOT_R);
+		offsetR.y() += newOffsetR.y();
+
+		config->setUserOffsetPosition(Joint::FOOT_R, offsetR);
+	}
+
+	float afterSolveDist = distance(hierarchicSkeleton->leftHand.getGlobalPosition(), hierarchicSkeleton->rightHand.getGlobalPosition());
+	Console::logWarning("afterSolveDist: " + toString(afterSolveDist));
+	Console::logWarning("L -> LC: " + toString(distance(hierarchicSkeleton->leftHand.getGlobalPosition(), leftHandPose.position)));
+	Console::logWarning("R -> RC: " + toString(distance(hierarchicSkeleton->rightHand.getGlobalPosition(), rightHandPose.position)));
+
+	float xDelta = afterScaleDist / afterSolveDist;
+	scale.x() *= xDelta;
+	scale.z() *= xDelta;
+
+	hierarchicSkeleton->setScale(scale);
+	hierarchicSkeleton->init();
+
+	if (useTestSkeleton) {
+		testHierarchicSkeleton->setScale(scale);
+		testHierarchicSkeleton->init();
+	}
+
+	refreshIKSolvers(true);
+
+	// Write scale to config for Unity process
+	config->writeScale(scale);
+
+	disableCalibrationMode();
+}
+
+void OVRTracker::calibrateHintOffsets() {
+
+	Joint::JointNames limbJoints[]{
+		Joint::LEG_L,
+		Joint::LEG_R,
+		Joint::FOREARM_L,
+		Joint::FOREARM_R
+	};
+
+	enableCalibrationMode();
+
+	for (auto limbJoint : limbJoints) {
+		int deviceIndex = config->getDeviceIndex(limbJoint);
+
+		// Skip if limb is not assigned
+		if (deviceIndex == -1) {
+			continue;
+		}
+
+		// get joint from hierarchic skeleton
+		HierarchicJoint* joint = hierarchicSkeleton->getJoint(limbJoint);
+
+		// get device pose for joint
+		auto limbDevicePose = config->getPose(limbJoint);
+
+		// TODO: Kalibrierung der Rotation testen
+		/*if (limbJoint == Joint::FOREARM_L) {
+			config->calibrateDeviceToJointOffset(limbJoint);
+		}
+		else {
+			Quaternionf offsetRot = limbDevicePose->rotation.inverse() * joint->getGlobalRotation();
+			config->setOffsetRotation(limbJoint, offsetRot);
+		}*/
+
+		Quaternionf offsetRot = limbDevicePose->rotation.inverse() * joint->getGlobalRotation();
+		config->setOffsetRotation(limbJoint, offsetRot);
+	}
+
+	disableCalibrationMode();
+}
+
+void OVRTracker::notify(Subject* subject) {
+
+	// Cast subject to OpenVR button subject
+	OpenVRButtonSubject* ovrButtonSubject = dynamic_cast<OpenVRButtonSubject*>(subject);
+
+	// subject == OpenVRButtonSubject?
+	if (ovrButtonSubject != nullptr) {
+
+		switch (ovrButtonSubject->getButtonState()) {
+
+			// Calibrate on trigger pressed
+		case vr::EVRButtonId::k_EButton_SteamVR_Trigger:
+
+			ikSolverHip->DebugBool2 = !ikSolverHip->DebugBool2;
+			ikSolverSpine->DebugBool2 = !ikSolverSpine->DebugBool2;
+			ikSolverLeftLeg->DebugBool2 = !ikSolverLeftLeg->DebugBool2;
+			ikSolverRightLeg->DebugBool2 = !ikSolverRightLeg->DebugBool2;
+			ikSolverLeftArm->DebugBool2 = !ikSolverLeftArm->DebugBool2;
+			ikSolverRightArm->DebugBool2 = !ikSolverRightArm->DebugBool2;
+
+			Console::log("k_EButton_SteamVR_Trigger: " + toString(ikSolverHip->DebugBool2));
+
+			calibrate();
+
+			break;
+
+		case vr::EVRButtonId::k_EButton_SteamVR_Touchpad:
+
+			ikSolverHip->DebugBool3 = !ikSolverHip->DebugBool3;
+			ikSolverSpine->DebugBool3 = !ikSolverSpine->DebugBool3;
+			ikSolverLeftLeg->DebugBool3 = !ikSolverLeftLeg->DebugBool3;
+			ikSolverRightLeg->DebugBool3 = !ikSolverRightLeg->DebugBool3;
+			ikSolverLeftArm->DebugBool3 = !ikSolverLeftArm->DebugBool3;
+			ikSolverRightArm->DebugBool3 = !ikSolverRightArm->DebugBool3;
+
+			Console::log("k_EButton_SteamVR_Touchpad: " + toString(ikSolverHip->DebugBool3));
+
+			break;
+
+		case vr::EVRButtonId::k_EButton_ApplicationMenu:
+
+			ikSolverHip->DebugBool1 = !ikSolverHip->DebugBool1;
+			ikSolverSpine->DebugBool1 = !ikSolverSpine->DebugBool1;
+			ikSolverLeftLeg->DebugBool1 = !ikSolverLeftLeg->DebugBool1;
+			ikSolverRightLeg->DebugBool1 = !ikSolverRightLeg->DebugBool1;
+			ikSolverLeftArm->DebugBool1 = !ikSolverLeftArm->DebugBool1;
+			ikSolverRightArm->DebugBool1 = !ikSolverRightArm->DebugBool1;
+
+			Console::log("k_EButton_ApplicationMenu: " + toString(ikSolverHip->DebugBool1));
+
+			if (shouldCalibrate) {
+				shouldCalibrate = false;
+				calibrateScale();
+			}
+
+			break;
+		}
+	}
+}
+
+std::string OVRTracker::getTrackerType() {
+
+	return "OpenVR";
+}

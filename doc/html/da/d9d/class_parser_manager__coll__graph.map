@@ -1,0 +1,8 @@
+<map id="ParserManager" name="ParserManager">
+<area shape="rect" id="node1" title=" " alt="" coords="343,784,493,905"/>
+<area shape="rect" id="node2" href="$d4/dd9/struct_scale_datagram_1_1_bvh_scale_information.html" title=" " alt="" coords="5,174,241,281"/>
+<area shape="rect" id="node3" href="$d8/da5/class_scale_datagram.html" title=" " alt="" coords="240,512,407,721"/>
+<area shape="rect" id="node4" href="$db/d35/class_datagram.html" title=" " alt="" coords="300,5,515,449"/>
+<area shape="rect" id="node6" href="$de/d22/class_quaternion_datagram.html" title="a Position &amp; Quaternion orientation pose datagram (type 02)" alt="" coords="431,549,600,685"/>
+<area shape="rect" id="node5" href="$d6/d4b/struct_parser_manager_1_1_quaternion_data_with_id.html" title=" " alt="" coords="625,556,806,677"/>
+</map>

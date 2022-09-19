@@ -1,0 +1,10 @@
+<map id="XSTracker" name="XSTracker">
+<area shape="rect" id="node1" title="Manages Xsens Body Tracking." alt="" coords="469,1115,665,1383"/>
+<area shape="rect" id="node2" href="$de/dbb/class_tracker.html" title="Prototype class for implemetation &#45; holds virtual methods." alt="" coords="221,623,421,1052"/>
+<area shape="rect" id="node3" href="$d4/daf/class_config_manager.html" title=" " alt="" coords="5,5,164,332"/>
+<area shape="rect" id="node4" href="$da/d21/class_network_manager.html" title="Manager for different Network Sender and skeleton sending." alt="" coords="155,395,326,560"/>
+<area shape="rect" id="node5" href="$d4/d92/struct_tracker_1_1_properties.html" title=" " alt="" coords="351,402,499,553"/>
+<area shape="rect" id="node6" href="$d6/d4b/struct_parser_manager_1_1_quaternion_data_with_id.html" title=" " alt="" coords="523,417,705,538"/>
+<area shape="rect" id="node7" href="$db/d0b/class_udp_server.html" title=" " alt="" coords="742,711,921,964"/>
+<area shape="rect" id="node8" href="$d4/dd9/struct_scale_datagram_1_1_bvh_scale_information.html" title=" " alt="" coords="729,424,965,531"/>
+</map>
