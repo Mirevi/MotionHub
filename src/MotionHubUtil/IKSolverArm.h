@@ -109,4 +109,6 @@ protected:
 
 	Vector3f shoulderNormal;
 	float shoulderNormalToUpperDelta = 0.5f;
+
+	float upperArmLength = 0.21f;
 };

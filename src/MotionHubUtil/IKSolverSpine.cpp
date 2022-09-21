@@ -27,13 +27,15 @@ void IKSolverSpine::init() {
 	//ccdBendWeights.push_back(0.6f); 
 	//ccdBendWeights.push_back(0.75f); 
 	//ccdBendWeights.push_back(0.9f); 
-	ccdBendDelta.push_back(0.49f); // 0.49
+	//ccdBendDelta.push_back(0.49f); // 0.49
+	ccdBendDelta.push_back(0.7f);
 
 	ccdJoints.push_back(&spineJoint);
 	//ccdBendWeights.push_back(0.33f); 
 	//ccdBendWeights.push_back(0.5f);
 	//ccdBendWeights.push_back(0.75f);
-	ccdBendDelta.push_back(0.45f); // 0.45
+	//ccdBendDelta.push_back(0.45f);
+	ccdBendDelta.push_back(0.6f);
 
 	// Init Twist joints
 	twistJoints.push_back(&spineJoint);
@@ -67,10 +69,11 @@ void IKSolverSpine::solve(Vector3f position, Quaternionf rotation) {
 	// Solve another CCD iteration to make the spine less rigid
 	solveCCD();
 
-	// Solve neck with CCD & extra offset
-	Vector3f offset = targetRotation * Vector3f(0, 0.2f, 0);
-	Quaternionf fromTo = IKSolver::solveCCD(neckJoint.getPosition(), headJoint.getPosition(), targetPosition + offset);
-	Quaternionf neckRotation = Quaternionf::Identity().slerp(0.75f, fromTo);
+	// Solve neck with CCD
+	//Vector3f offset = targetRotation * Vector3f(0, 0.2f, 0);
+	Quaternionf fromTo = IKSolver::solveCCD(neckJoint.getPosition(), headJoint.getPosition(), targetPosition);
+	//Quaternionf neckRotation = Quaternionf::Identity().slerp(0.75f, fromTo);
+	Quaternionf neckRotation = fromTo;
 	neckJoint.setRotation(neckRotation * neckJoint.getRotation());
 	
 	// Solve Head rotation
@@ -107,11 +110,11 @@ void IKSolverSpine::loadDefaultState() {
 
 void IKSolverSpine::solveCCD() {
 
-	// Store head position
-	Vector3f headPosition = headJoint.getPosition();
-
 	// Loop over all CCD joints
 	for (int i = 0; i < ccdJoints.size(); i++) {
+
+		// Store head position
+		Vector3f headPosition = headJoint.getPosition();
 
 		// Store current joint position & rotation
 		Vector3f jointPosition = ccdJoints[i]->getPosition();
@@ -121,27 +124,27 @@ void IKSolverSpine::solveCCD() {
 		Quaternionf fromTo = IKSolver::solveCCD(jointPosition, headPosition, solvePosition);
 
 		// Apply rotation to joint rotation
-		Quaternionf rotation = fromTo * jointRotation;
+		Quaternionf rotation;
 
 		// Limit rotation to XZ only?
-		if (onlyXZCCD || lerpTest) {
+		if (onlyXZCCD) {
 
 			Quaternionf localJointRotation = jointRotation * ccdDefaultRotations[i].inverse();
 
 			// Decompose x rotation from right vector
 			Quaternionf xRotation = decomposeTwist(fromTo, localJointRotation * Vector3f(1, 0, 0));
-			xRotation = Quaternionf::Identity().slerp(ccdSlerpX, xRotation);
+			//xRotation = Quaternionf::Identity().slerp(ccdSlerpX, xRotation);
 
 			// Decompose z rotation from forward vector
 			Quaternionf zRotation = decomposeTwist(fromTo, localJointRotation * Vector3f(0, 0, 1));
-			zRotation = Quaternionf::Identity().slerp(ccdSlerpZ, zRotation);
+			//zRotation = Quaternionf::Identity().slerp(ccdSlerpZ, zRotation);
 
 			// Create new rotation from XZ & joint rotation
 			rotation = (xRotation * zRotation) * jointRotation;
 
-			if (lerpTest) {
-				rotation = fromTo.slerp(0.5f, xRotation * zRotation) * jointRotation;
-			}
+		}
+		else {
+			rotation = fromTo * jointRotation;
 		}
 
 		// Set joint rotation towards target with max degrees delta

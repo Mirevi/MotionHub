@@ -102,5 +102,4 @@ protected:
 	std::vector<float> ccdBendDelta;
 
 	bool onlyXZCCD = true;
-	bool lerpTest = false;
 };

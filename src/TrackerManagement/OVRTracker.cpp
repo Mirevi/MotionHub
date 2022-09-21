@@ -1,6 +1,15 @@
 #include "OVRTracker.h"
 
 
+//<OpenVR id = "Tracker:FOREARM_R" >
+//< position>0.000000 - 0.050000 0.090000 < / position >
+//< rotation>9.555434 - 129.125565 - 83.462875 < / rotation >
+//< / OpenVR>
+//<OpenVR id = "Tracker:FOREARM_L">
+//< position>0.000000 0.090000 -0.050000 < / position >
+//< rotation>8.627157 100.982559 83.464706 < / rotation >
+//< / OpenVR>
+
 static bool DEBUG_DEVICES_ON_START = true;
 
 static bool DEBUG_HMD = false;
@@ -9,13 +18,22 @@ static bool DEBUG_HIP = false;
 
 static bool SOLVE_IK = true;
 
-static bool USE_TEST_SKELETON = true;
 static bool USE_DEBUG_POINT_COLLECTION = true;
 
-static bool USE_XSENS_SKELETON = true;
+static bool USE_XSENS_SKELETON = false;
+
+static bool USE_TEST_SKELETON = true;
+
+static bool EVAL_TIMING = true;
+static bool EVAL_DISTANCE = true;
+
+static bool SCALE_SKELETON = true;
+
 
 #include <vector>
 #include <numeric>
+
+static std::chrono::steady_clock::time_point evalStart;
 
 class Evaluation {
 
@@ -47,25 +65,351 @@ public:
 		return values->at(n);
 	}
 
-	float getMin() {
-		return *std::min_element(values->begin(), values->end());
+	float getMin(float percent = 1.0f) {
+
+		float percentCount = fmax(ceil(values->size() / 100.0f * percent), 1.0f);
+
+		std::sort(values->begin(), values->end(), std::less<float>());
+
+		float min = 0;
+		for (size_t i = 0; i < percentCount && i < values->size(); i++) {
+			min += values->at(i);
+		}
+
+		return min / fmin(percentCount, values->size());
+		//return *std::min_element(values->begin(), values->end());
 	}
 
-	float getMax() {
-		return *std::max_element(values->begin(), values->end());
+	float getMax(float percent = 1.0f) {
+
+		float percentCount = fmax(ceil(values->size() / 100.0f * percent), 1.0f);
+
+		std::sort(values->begin(), values->end(), std::greater<float>());
+
+		float max = 0;
+		for (size_t i = 0; i < percentCount && i < values->size(); i++) {
+			max += values->at(i);
+		}
+
+		return max / fmin(percentCount, values->size());
+		//return *std::max_element(values->begin(), values->end());
+	}
+
+private:
+	std::vector<float>* values;
+};
+
+class EvaluationV {
+
+public:
+
+	EvaluationV() {
+		values = new std::vector<float>();
+
+		estimations = new std::vector<Vector3f>();
+		ground_truth = new std::vector<Vector3f>();
+	}
+
+	~EvaluationV() {
+		delete values;
+
+		delete estimations;
+		delete ground_truth;
+	}
+
+	void clearValues() {
+		values->clear();
+
+		estimations->clear();
+		ground_truth->clear();
+	}
+
+	void addValue(float value) {
+		values->push_back(value);
+	}
+
+	void addValue(Vector3f& estimation, Vector4f& truth) {
+		estimations->push_back(estimation);
+
+		ground_truth->push_back(Vector3f(truth.x(), truth.y(), truth.z()));
+	}
+
+	void fillValues() {
+
+		values->clear();
+
+		for (unsigned int i = 0; i < estimations->size() && i < ground_truth->size(); i++) {
+
+			values->push_back(1000.0f * distance(estimations->at(i), ground_truth->at(i)));
+		}
+	}
+
+	float getAverage() {
+		return std::reduce(values->begin(), values->end()) / static_cast<float>(values->size());
+	}
+
+	float getMedian() {
+		size_t n = values->size() / 2;
+		std::nth_element(values->begin(), values->begin() + n, values->end());
+		return values->at(n);
+	}
+
+	float getMin(float percent = 1.0f) {
+
+		float percentCount = fmax(ceil(values->size() / 100.0f * percent), 1.0f);
+
+		std::sort(values->begin(), values->end(), std::less<float>());
+
+		float min = 0;
+		for (size_t i = 0; i < percentCount && i < values->size(); i++) {
+			min += values->at(i);
+		}
+
+		return min / fmin(percentCount, values->size());
+		//return *std::min_element(values->begin(), values->end());
+	}
+
+	float getMax(float percent = 1.0f) {
+
+		float percentCount = fmax(ceil(values->size() / 100.0f * percent), 1.0f);
+
+		std::sort(values->begin(), values->end(), std::greater<float>());
+
+		float max = 0;
+		for (size_t i = 0; i < percentCount && i < values->size(); i++) {
+			max += values->at(i);
+		}
+
+		return max / fmin(percentCount, values->size());
+		//return *std::max_element(values->begin(), values->end());
+	}
+
+	float getMSE() {
+
+		float mse = 0;
+
+		for (unsigned int i = 0; i < values->size(); i++) {
+
+			mse += values->at(i) * values->at(i);
+		}
+
+		mse = mse / values->size();
+		
+		return mse;
 	}
 
 private:
 	std::vector<float>* values;
 
+	std::vector<Vector3f>* estimations;
+	std::vector<Vector3f>* ground_truth;
 };
 
 
 static Evaluation timingIK;
 static Evaluation timingIKTest;
 
+static EvaluationV distanceLeftLeg;
+static EvaluationV distanceRightLeg;
+
+static EvaluationV distanceLeftFoot;
+static EvaluationV distanceRightFoot;
+
+static EvaluationV distanceHead;
+
+static EvaluationV distanceLeftArm;
+static EvaluationV distanceRightArm;
+
+static EvaluationV distanceLeftHand;
+static EvaluationV distanceRightHand;
+
+static EvaluationV distanceLeftArmTest;
+static EvaluationV distanceRightArmTest;
+
+static EvaluationV distanceLeftHandTest;
+static EvaluationV distanceRightHandTest;
+
+static EvaluationV distanceLeftLegTest;
+static EvaluationV distanceRightLegTest;
+
+static EvaluationV distanceLeftFootTest;
+static EvaluationV distanceRightFootTest;
+
+
+static std::string getData(Evaluation& evaluation, std::string description) {
+
+	return std::string(description + " avg:" + toString(evaluation.getAverage()) + " median:" + toString(evaluation.getMedian()) + " min1:" + toString(evaluation.getMin(1.0f)) + " min5:" + toString(evaluation.getMin(5.0f)) + " max1:" + toString(evaluation.getMax(1.0f)) + " max5:" + toString(evaluation.getMax(5.0f)));
+}
+
+static std::string getData(EvaluationV& evaluation, std::string description) {
+
+	float mse = evaluation.getMSE();
+	float rmse = sqrt(mse);
+	return std::string(description + " avg:" + toString(evaluation.getAverage()) + " median:" + toString(evaluation.getMedian()) + " mse:" + toString(mse) + " rmse:" + toString(rmse) + " min1:" + toString(evaluation.getMin(1.0f)) + " min5:" + toString(evaluation.getMin(5.0f)) + " max1:" + toString(evaluation.getMax(1.0f)) + " max5:" + toString(evaluation.getMax(5.0f)));
+}
+
+static void clearEvalValues() {
+
+	if (EVAL_TIMING) {
+		timingIK.clearValues();
+		timingIKTest.clearValues();
+	}
+
+	if (EVAL_DISTANCE) {
+
+		distanceLeftLeg.clearValues();
+		distanceRightLeg.clearValues();
+
+		distanceLeftFoot.clearValues();
+		distanceRightFoot.clearValues();
+
+		distanceLeftArm.clearValues();
+		distanceRightArm.clearValues();
+
+		distanceLeftHand.clearValues();
+		distanceRightHand.clearValues();
+
+		distanceHead.clearValues();
+
+		distanceLeftArmTest.clearValues();
+		distanceRightArmTest.clearValues();
+
+		distanceLeftHandTest.clearValues();
+		distanceRightHandTest.clearValues();
+
+		distanceLeftLegTest.clearValues();
+		distanceRightLegTest.clearValues();
+
+		distanceLeftFootTest.clearValues();
+		distanceRightFootTest.clearValues();
+	}
+}
+
+static void startTimer() {
+	Console::logWarning("");
+	Console::logWarning("Start Evaluation Timer");
+
+	evalStart = std::chrono::high_resolution_clock::now();
+}
+
+static void printEvalValues() {
+
+	auto evalEnd = std::chrono::high_resolution_clock::now();
+
+	auto duration = evalEnd - evalStart;
+
+	auto seconds = std::chrono::duration_cast<std::chrono::seconds>(duration);
+	duration -= seconds;
+
+	auto milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(duration);
+
+	Console::logWarning("");
+	Console::logWarning(std::to_string(seconds.count()) + ":" + std::to_string(milliseconds.count()));
+
+	if (EVAL_TIMING) {
+		Console::logWarning(getData(timingIK, "Timing"));
+
+		if (USE_TEST_SKELETON) {
+			Console::logError(getData(timingIKTest, "TimingT"));
+		}
+
+		Console::logWarning("");
+	}
+
+	if (EVAL_DISTANCE) {
+
+		//distanceLeftLeg.fillValues();
+		//Console::logWarning(getData(distanceLeftLeg, "LeftLeg"));
+
+		//distanceRightLeg.fillValues();
+		//Console::logWarning(getData(distanceRightLeg, "RightLeg"));
+
+		distanceLeftFoot.fillValues();
+		Console::logWarning(getData(distanceLeftFoot, "LeftFoot"));
+
+		distanceRightFoot.fillValues();
+		Console::logWarning(getData(distanceRightFoot, "RightFoot"));
+
+		distanceLeftArm.fillValues();
+		Console::logWarning(getData(distanceLeftArm, "LeftArm"));
+
+		distanceRightArm.fillValues();
+		Console::logWarning(getData(distanceRightArm, "RightArm"));
+
+		distanceLeftHand.fillValues();
+		Console::logWarning(getData(distanceLeftHand, "LeftHand"));
+
+		distanceRightHand.fillValues();
+		Console::logWarning(getData(distanceRightHand, "RightHand"));
+
+
+		distanceHead.fillValues();
+		Console::logWarning(getData(distanceHead, "Head"));
+
+
+		if (USE_TEST_SKELETON) {
+
+			Console::logError("");
+
+			//distanceLeftLegTest.fillValues();
+			//Console::logError(getData(distanceLeftLegTest, "LeftLegT"));
+
+			//distanceRightLegTest.fillValues();
+			//Console::logError(getData(distanceRightLegTest, "RightLegT"));
+
+			//distanceLeftFootTest.fillValues();
+			//Console::logError(getData(distanceLeftFootTest, "LeftFootT"));
+
+			//distanceRightFootTest.fillValues();
+			//Console::logError(getData(distanceRightFootTest, "RightFootT"));
+
+			distanceLeftArmTest.fillValues();
+			Console::logError(getData(distanceLeftArmTest, "LeftArmT"));
+
+			distanceRightArmTest.fillValues();
+			Console::logError(getData(distanceRightArmTest, "RightArmT"));
+
+			distanceLeftHandTest.fillValues();
+			Console::logError(getData(distanceLeftHandTest, "LeftHandT"));
+
+			distanceRightHandTest.fillValues();
+			Console::logError(getData(distanceRightHandTest, "RightHandT"));
+		}
+	}
+}
+
 static float distance4(Vector4f a, Vector4f b) {
 	return distance(Vector3f(a.x(), a.y(), a.z()), Vector3f(b.x(), b.y(), b.z()));
+}
+
+static float distance34(Vector3f a, Vector4f b) {
+	return distance(a, Vector3f(b.x(), b.y(), b.z()));
+}
+
+static bool isEvaluating;
+
+static void StartEvaluating() {
+
+	if (isEvaluating) {
+		return;
+	}
+
+	isEvaluating = true;
+
+	clearEvalValues();
+	startTimer();
+}
+
+static void StopEvaluating() {
+
+	if (!isEvaluating) {
+		return;
+	}
+
+	isEvaluating = false;
+
+	printEvalValues();
+	clearEvalValues();
 }
 
 static std::string DebugIdentifier(std::string identifier) {
@@ -87,6 +431,12 @@ static std::string DebugIdentifier(std::string identifier) {
 	}
 	else if (identifier == "LHR-61441A45") {
 		return "HIPS";
+	}
+	else if (identifier == "LHR-227770AA") {
+		return "FOREARM_L";
+	}
+	else if (identifier == "LHR-EB83669E") {
+		return "FOREARM_R";
 	}
 	else {
 		return "! NOT FOUND !";
@@ -219,8 +569,7 @@ void OVRTracker::start() {
 	// start tracking thread
 	Tracker::start();
 
-	timingIK.clearValues();
-	timingIKTest.clearValues();
+	clearEvalValues();
 }
 
 void OVRTracker::refresh(bool overrideDefaults) {
@@ -266,7 +615,7 @@ void OVRTracker::refresh(bool overrideDefaults) {
 		hierarchicSkeleton->initXsens();
 	}
 	else {
-	hierarchicSkeleton->init();
+		hierarchicSkeleton->init();
 	}
 
 	if (useTestSkeleton) {
@@ -275,27 +624,35 @@ void OVRTracker::refresh(bool overrideDefaults) {
 			testHierarchicSkeleton->initXsens();
 		}
 		else {
-		testHierarchicSkeleton->init();
-	}
+			testHierarchicSkeleton->init();
+		}
 	}
 
 	// Update Filters
 	int i = 0;
+	float beta = 1.0f;
+	float cutoff = 0.007f;
+
 	for (auto& device : trackingSystem->Devices) {
 		Joint::JointNames joint = config->getJoint(device.index);
 
+		// TODO: Parameter der 1 Euro Filter mit Framerate abstimmen
 
-		if (joint == Joint::HAND_L || joint == Joint::FOREARM_L || joint == Joint::FOOT_L || joint == Joint::LEG_L) {
-			trackingSystem->positionFilters[i].setParams(1, 1.0f, 0.007f);
-			trackingSystem->rotationFilters[i].setParams(2, 1.0f, 0.007f);
+		if (EVAL_DISTANCE) {
+			trackingSystem->positionFilters[i].setParams(30, beta, cutoff);
+			trackingSystem->rotationFilters[i].setParams(60, beta, cutoff);
+		}
+		else if (joint == Joint::HAND_L || joint == Joint::FOREARM_L || joint == Joint::FOOT_L || joint == Joint::LEG_L) {
+			trackingSystem->positionFilters[i].setParams(1, beta, cutoff);
+			trackingSystem->rotationFilters[i].setParams(2, beta, cutoff);
 		}
 		else if (joint == Joint::HIPS) {
-			trackingSystem->positionFilters[i].setParams(60, 1.0f, 0.007f);
-			trackingSystem->rotationFilters[i].setParams(120, 1.0f, 0.007f);
+			trackingSystem->positionFilters[i].setParams(60, beta, cutoff);
+			trackingSystem->rotationFilters[i].setParams(120, beta, cutoff);
 		}
 		else {
-			trackingSystem->positionFilters[i].setParams(30, 1.0f, 0.007f);
-			trackingSystem->rotationFilters[i].setParams(60, 1.0f, 0.007f);
+			trackingSystem->positionFilters[i].setParams(30, beta, cutoff);
+			trackingSystem->rotationFilters[i].setParams(60, beta, cutoff);
 		}
 
 		i++;
@@ -316,9 +673,9 @@ void OVRTracker::stop() {
 
 	Tracker::stop();
 
-	Console::logWarning("avg:" + toString(timingIK.getAverage()) + " median:" + toString(timingIK.getMedian()) + " min:" + toString(timingIK.getMin()) + " max:" + toString(timingIK.getMax()));
-	if (useTestSkeleton) {
-		Console::log("avg:" + toString(timingIKTest.getAverage()) + " median:" + toString(timingIKTest.getMedian()) + " min:" + toString(timingIKTest.getMin()) + " max:" + toString(timingIKTest.getMax()));
+	if (EVAL_DISTANCE || EVAL_TIMING) {
+		printEvalValues();
+		clearEvalValues();
 	}
 }
 
@@ -363,9 +720,9 @@ void OVRTracker::track() {
 		Console::log("OVRTracker: Should Calibrate");
 		shouldCalibrate = true;
 	}
-	else if (GetAsyncKeyState(0x20) & 0x8000) { // Space
-		calibrate();
-	}
+	//else if (GetAsyncKeyState(0x20) & 0x8000) { // Space
+	//	calibrate();
+	//}
 
 	// Calibration for target joints
 	if (GetAsyncKeyState(VK_NUMPAD1) & 0x8000) {
@@ -383,40 +740,32 @@ void OVRTracker::track() {
 	else if (GetAsyncKeyState(VK_NUMPAD9) & 0x8000) {
 		calibrateDeviceToJointOffset(Joint::HAND_R);
 	}
-	else if (GetAsyncKeyState('S') & 0x8000) {
-		if (shouldCalibrate) {
-			shouldCalibrate = false;
-			calibrateScale();
-		}
-	}
 
-	if (GetAsyncKeyState('I') & 0x8000) {
+	/*if (GetAsyncKeyState('I') & 0x8000) {
 		SOLVE_IK = true;
-	}
+	}*/
 
 	if (GetAsyncKeyState('R') & 0x8000) {
 		refresh(false);
 	}
 
+	// Read Poses from TrackingSystem
+	auto hipPose = getAssignedPose(Joint::HIPS);
+	auto headPose = getAssignedPose(Joint::HEAD);
+
+	auto leftLegPose = getAssignedPose(Joint::LEG_L);
+	auto leftFootPose = getAssignedPose(Joint::FOOT_L);
+
+	auto rightLegPose = getAssignedPose(Joint::LEG_R);
+	auto rightFootPose = getAssignedPose(Joint::FOOT_R);
+
+	auto leftForearmPose = getAssignedPose(Joint::FOREARM_L);
+	auto leftHandPose = getAssignedPose(Joint::HAND_L);
+
+	auto rightForearmPose = getAssignedPose(Joint::FOREARM_R);
+	auto rightHandPose = getAssignedPose(Joint::HAND_R);
+
 	if (SOLVE_IK) {
-
-
-		// Read Poses from TrackingSystem
-		auto hipPose = getAssignedPose(Joint::HIPS);
-		auto headPose = getAssignedPose(Joint::HEAD);
-
-		auto leftLegPose = getAssignedPose(Joint::LEG_L);
-		auto leftFootPose = getAssignedPose(Joint::FOOT_L);
-
-		auto rightLegPose = getAssignedPose(Joint::LEG_R);
-		auto rightFootPose = getAssignedPose(Joint::FOOT_R);
-
-		auto leftForearmPose = getAssignedPose(Joint::FOREARM_L);
-		auto leftHandPose = getAssignedPose(Joint::HAND_L);
-
-		auto rightForearmPose = getAssignedPose(Joint::FOREARM_R);
-		auto rightHandPose = getAssignedPose(Joint::HAND_R);
-
 
 		bool hasLeftFootPose = !leftFootPose.isNull();
 		bool hasRightFootPose = !rightFootPose.isNull();
@@ -427,12 +776,51 @@ void OVRTracker::track() {
 		bool hasLeftForearmPose = !leftForearmPose.isNull();
 		bool hasRightForearmPose = !rightForearmPose.isNull();
 
-		auto start = std::chrono::high_resolution_clock::now();
+
+		std::chrono::steady_clock::time_point start;
+		std::chrono::steady_clock::time_point end;
+		long long microseconds;
+
 
 		// Hint Hip with both feets
 		if (hasLeftFootPose && hasRightFootPose) {
 			ikSolverHip->hint(leftFootPose.position, rightFootPose.position);
 		}
+
+		if (useTestSkeleton) {
+			// Hint Hip with both feets
+			if (hasLeftFootPose && hasRightFootPose) {
+				testIkSolverHip->hint(leftFootPose.position, rightFootPose.position);
+			}
+		}
+
+		// Hint LeftLeg
+		if (hasLeftLegPose) {
+			ikSolverLeftLeg->hint(leftLegPose.position, leftLegPose.rotation);
+		}
+
+		// Hint RightLeg
+		if (hasRightLegPose) {
+			ikSolverRightLeg->hint(rightLegPose.position, rightLegPose.rotation);
+		}
+
+		// Hint LeftArm
+		if (hasLeftForearmPose) {
+			ikSolverLeftArm->hint(leftForearmPose.position, leftForearmPose.rotation);
+			ikSolverLeftArm->DebugPos4 = leftForearmPose.position;
+		}
+
+		// Hint RightArm
+		if (hasRightForearmPose) {
+			ikSolverRightArm->hint(rightForearmPose.position, rightForearmPose.rotation);
+			ikSolverRightArm->DebugPos4 = rightForearmPose.position;
+		}
+
+
+		if (EVAL_TIMING) {
+			start = std::chrono::high_resolution_clock::now();
+		}
+
 
 		// Solve Hip
 		ikSolverHip->solve(hipPose.position, hipPose.rotation);
@@ -440,54 +828,30 @@ void OVRTracker::track() {
 		// Solve Spine
 		ikSolverSpine->solve(headPose.position, headPose.rotation);
 
-		// Hint LeftLeg
-		if (hasLeftLegPose) {
-			ikSolverLeftLeg->hint(leftLegPose.position, leftLegPose.rotation);
-		}
-
 		// Solve LeftLeg
 		ikSolverLeftLeg->solve(leftFootPose.position, leftFootPose.rotation);
-
-		// Hint RightLeg
-		if (hasRightLegPose) {
-			ikSolverRightLeg->hint(rightLegPose.position, rightLegPose.rotation);
-		}
 
 		// Solve RightLeg
 		ikSolverRightLeg->solve(rightFootPose.position, rightFootPose.rotation);
 
-			// Hint LeftArm
-		if (hasLeftForearmPose) {
-				ikSolverLeftArm->hint(leftForearmPose.position, leftForearmPose.rotation);
-			}
+		// Solve LeftArm
+		ikSolverLeftArm->solve(leftHandPose.position, leftHandPose.rotation);
 
-			// Solve LeftArm
-			ikSolverLeftArm->solve(leftHandPose.position, leftHandPose.rotation);
+		// Solve RightArm
+		ikSolverRightArm->solve(rightHandPose.position, rightHandPose.rotation);
 
-			// Hint RightArm
-		if (hasRightForearmPose) {
-				ikSolverRightArm->hint(rightForearmPose.position, rightForearmPose.rotation);
-			}
+		if (EVAL_TIMING) {
+			end = std::chrono::high_resolution_clock::now();
 
-			// Solve RightArm
-			ikSolverRightArm->solve(rightHandPose.position, rightHandPose.rotation);
+			microseconds = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
 
-		auto end = std::chrono::high_resolution_clock::now();
-
-		auto microseconds = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
-
-		timingIK.addValue(microseconds);
-		//Console::logWarning(toString(evaluation.getAverage()) + " " + toString(evaluation.getMedian()) + " " + toString(evaluation.getMin()) + " " + toString(evaluation.getMax()));
+			timingIK.addValue(microseconds);
+		}
 
 
 		if (useTestSkeleton) {
 
 			start = std::chrono::high_resolution_clock::now();
-
-			// Hint Hip with both feets
-			if (hasLeftFootPose && hasRightFootPose) {
-				testIkSolverHip->hint(leftFootPose.position, rightFootPose.position);
-			}
 
 			// Solve Hip
 			testIkSolverHip->solve(hipPose.position, hipPose.rotation);
@@ -507,11 +871,13 @@ void OVRTracker::track() {
 			// Solve RightArm
 			testIkSolverRightArm->solve(rightHandPose.position, rightHandPose.rotation);
 
-			end = std::chrono::high_resolution_clock::now();
+			if (EVAL_TIMING) {
+				end = std::chrono::high_resolution_clock::now();
 
-			microseconds = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+				microseconds = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
 
-			timingIKTest.addValue(microseconds);
+				timingIKTest.addValue(microseconds);
+			}
 		}
 	}
 
@@ -527,6 +893,55 @@ void OVRTracker::track() {
 		testSkeleton->m_joints = testHierarchicSkeleton->skeleton.m_joints;
 	}
 	//hierarchicSkeleton->insert(nullptr);
+
+	if (EVAL_DISTANCE) {
+
+		/*float multi = 1000.0f;
+
+		float footL = multi * distance34(leftFootPose.position, skeleton->m_joints[Joint::FOOT_L].getJointPosition());
+		float footR = multi * distance34(rightFootPose.position, skeleton->m_joints[Joint::FOOT_R].getJointPosition());
+		float handL = multi * distance34(leftHandPose.position, skeleton->m_joints[Joint::HAND_L].getJointPosition());
+		float handR = multi * distance34(rightHandPose.position, skeleton->m_joints[Joint::HAND_R].getJointPosition());
+		float head = multi * distance34(headPose.position, skeleton->m_joints[Joint::HEAD].getJointPosition());
+
+		float armL = multi * distance34(leftForearmPose.position, skeleton->m_joints[Joint::FOREARM_L].getJointPosition());
+		float armR = multi * distance34(rightForearmPose.position, skeleton->m_joints[Joint::FOREARM_R].getJointPosition());*/
+
+		distanceLeftLeg.addValue(leftLegPose.position, skeleton->m_joints[Joint::LEG_L].getJointPosition());
+		distanceRightLeg.addValue(rightLegPose.position, skeleton->m_joints[Joint::LEG_R].getJointPosition());
+
+		distanceLeftFoot.addValue(leftFootPose.position, skeleton->m_joints[Joint::FOOT_L].getJointPosition());
+		distanceRightFoot.addValue(rightFootPose.position, skeleton->m_joints[Joint::FOOT_R].getJointPosition());
+
+		distanceLeftArm.addValue(leftForearmPose.position, skeleton->m_joints[Joint::FOREARM_L].getJointPosition());
+		distanceRightArm.addValue(rightForearmPose.position, skeleton->m_joints[Joint::FOREARM_R].getJointPosition());
+
+		distanceLeftHand.addValue(leftHandPose.position, skeleton->m_joints[Joint::HAND_L].getJointPosition());
+		distanceRightHand.addValue(rightHandPose.position, skeleton->m_joints[Joint::HAND_R].getJointPosition());
+
+		distanceHead.addValue(headPose.position, skeleton->m_joints[Joint::HEAD].getJointPosition());
+
+		if (useTestSkeleton) {
+			/*handL = multi * distance34(leftHandPose.position, testSkeleton->m_joints[Joint::HAND_L].getJointPosition());
+			handR = multi * distance34(rightHandPose.position, testSkeleton->m_joints[Joint::HAND_R].getJointPosition());
+
+			armL = multi * distance34(leftForearmPose.position, testSkeleton->m_joints[Joint::FOREARM_L].getJointPosition());
+			armR = multi * distance34(rightForearmPose.position, testSkeleton->m_joints[Joint::FOREARM_R].getJointPosition());*/
+
+			distanceLeftLegTest.addValue(leftLegPose.position, testSkeleton->m_joints[Joint::LEG_L].getJointPosition());
+			distanceRightLegTest.addValue(rightLegPose.position, testSkeleton->m_joints[Joint::LEG_R].getJointPosition());
+
+			distanceLeftFootTest.addValue(leftFootPose.position, testSkeleton->m_joints[Joint::FOOT_L].getJointPosition());
+			distanceRightFootTest.addValue(rightFootPose.position, testSkeleton->m_joints[Joint::FOOT_R].getJointPosition());
+
+			distanceLeftArmTest.addValue(leftForearmPose.position, testSkeleton->m_joints[Joint::FOREARM_L].getJointPosition());
+			distanceRightArmTest.addValue(rightForearmPose.position, testSkeleton->m_joints[Joint::FOREARM_R].getJointPosition());
+
+			distanceLeftHandTest.addValue(leftHandPose.position, testSkeleton->m_joints[Joint::HAND_L].getJointPosition());
+			distanceRightHandTest.addValue(rightHandPose.position, testSkeleton->m_joints[Joint::HAND_R].getJointPosition());
+		}
+	}
+
 
 	// Lock point collection mutex
 	m_pointCollectionLock.lock();
@@ -898,11 +1313,20 @@ void OVRTracker::calibrateScale() {
 	// Scale Skeleton
 	Vector3f scale = config->getCalibratedScale(hierarchicSkeleton);
 
+	if (!SCALE_SKELETON) {
+		//scale = Vector3f::Ones();
+	}
+
 	// Is scale invalid?
 	if (scale.x() < 0.0f || scale.y() < 0.0f) {
 		// Revert scaling
 		hierarchicSkeleton->setScale(oldScale);
-		hierarchicSkeleton->init();
+		if (USE_XSENS_SKELETON) {
+			hierarchicSkeleton->initXsens();
+		}
+		else {
+			hierarchicSkeleton->init();
+		}
 
 		disableCalibrationMode();
 
@@ -911,7 +1335,12 @@ void OVRTracker::calibrateScale() {
 	}
 
 	hierarchicSkeleton->setScale(scale);
-	hierarchicSkeleton->init();
+	if (USE_XSENS_SKELETON) {
+		hierarchicSkeleton->initXsens();
+	}
+	else {
+		hierarchicSkeleton->init();
+	}
 
 	refreshIKSolvers(true);
 
@@ -956,8 +1385,8 @@ void OVRTracker::calibrateScale() {
 	Vector3f rightHandOffset = rightHandPose.position - lerp(rightHandPose.position, leftHandPose.position, 0.25f);
 
 	ikSolverSpine->solve(headPose.position, headPose.rotation);
-	ikSolverLeftArm->solve(leftHandPose.position + leftHandOffset.normalized() * 0.1f, leftHandPose.rotation);
-	ikSolverRightArm->solve(rightHandPose.position + rightHandOffset.normalized() * 0.1f, leftHandPose.rotation);
+	ikSolverLeftArm->solve(leftHandPose.position + leftHandOffset.normalized() * 0.2f, leftHandPose.rotation);
+	ikSolverRightArm->solve(rightHandPose.position + rightHandOffset.normalized() * 0.2f, leftHandPose.rotation);
 
 	// Solve LeftFoot & RightFoot lower than Zero to get max stretched distance
 	auto leftFootPose = config->getPoseWithOffset(Joint::FOOT_L, false);
@@ -996,12 +1425,26 @@ void OVRTracker::calibrateScale() {
 	scale.x() *= xDelta;
 	scale.z() *= xDelta;
 
+	if (!SCALE_SKELETON) {
+		//scale = Vector3f::Ones();
+	}
+
 	hierarchicSkeleton->setScale(scale);
-	hierarchicSkeleton->init();
+	if (USE_XSENS_SKELETON) {
+		hierarchicSkeleton->initXsens();
+	}
+	else {
+		hierarchicSkeleton->init();
+	}
 
 	if (useTestSkeleton) {
 		testHierarchicSkeleton->setScale(scale);
-		testHierarchicSkeleton->init();
+		if (USE_XSENS_SKELETON) {
+			testHierarchicSkeleton->initXsens();
+		}
+		else {
+			testHierarchicSkeleton->init();
+		}
 	}
 
 	refreshIKSolvers(true);
@@ -1066,14 +1509,7 @@ void OVRTracker::notify(Subject* subject) {
 			// Calibrate on trigger pressed
 		case vr::EVRButtonId::k_EButton_SteamVR_Trigger:
 
-			ikSolverHip->DebugBool2 = !ikSolverHip->DebugBool2;
-			ikSolverSpine->DebugBool2 = !ikSolverSpine->DebugBool2;
-			ikSolverLeftLeg->DebugBool2 = !ikSolverLeftLeg->DebugBool2;
-			ikSolverRightLeg->DebugBool2 = !ikSolverRightLeg->DebugBool2;
-			ikSolverLeftArm->DebugBool2 = !ikSolverLeftArm->DebugBool2;
-			ikSolverRightArm->DebugBool2 = !ikSolverRightArm->DebugBool2;
-
-			Console::log("k_EButton_SteamVR_Trigger: " + toString(ikSolverHip->DebugBool2));
+			//Console::log("k_EButton_SteamVR_Trigger: " + toString(ikSolverHip->DebugBool2));
 
 			calibrate();
 
@@ -1081,32 +1517,27 @@ void OVRTracker::notify(Subject* subject) {
 
 		case vr::EVRButtonId::k_EButton_SteamVR_Touchpad:
 
-			ikSolverHip->DebugBool3 = !ikSolverHip->DebugBool3;
-			ikSolverSpine->DebugBool3 = !ikSolverSpine->DebugBool3;
-			ikSolverLeftLeg->DebugBool3 = !ikSolverLeftLeg->DebugBool3;
-			ikSolverRightLeg->DebugBool3 = !ikSolverRightLeg->DebugBool3;
+			//Console::log("k_EButton_SteamVR_Touchpad: " + toString(ikSolverHip->DebugBool3));
+
+			//StartEvaluating();
+			Console::log("Scaling: " + toString(hierarchicSkeleton->getScale()));
+
 			ikSolverLeftArm->DebugBool3 = !ikSolverLeftArm->DebugBool3;
 			ikSolverRightArm->DebugBool3 = !ikSolverRightArm->DebugBool3;
 
-			Console::log("k_EButton_SteamVR_Touchpad: " + toString(ikSolverHip->DebugBool3));
+			Console::log("k_EButton_SteamVR_Touchpad: " + toString(ikSolverLeftArm->DebugBool3));
 
 			break;
 
 		case vr::EVRButtonId::k_EButton_ApplicationMenu:
 
-			ikSolverHip->DebugBool1 = !ikSolverHip->DebugBool1;
-			ikSolverSpine->DebugBool1 = !ikSolverSpine->DebugBool1;
-			ikSolverLeftLeg->DebugBool1 = !ikSolverLeftLeg->DebugBool1;
-			ikSolverRightLeg->DebugBool1 = !ikSolverRightLeg->DebugBool1;
+			//Console::log("k_EButton_ApplicationMenu: " + toString(ikSolverHip->DebugBool1));
+
+			//StopEvaluating();
 			ikSolverLeftArm->DebugBool1 = !ikSolverLeftArm->DebugBool1;
 			ikSolverRightArm->DebugBool1 = !ikSolverRightArm->DebugBool1;
 
-			Console::log("k_EButton_ApplicationMenu: " + toString(ikSolverHip->DebugBool1));
-
-			if (shouldCalibrate) {
-				shouldCalibrate = false;
-				calibrateScale();
-			}
+			Console::log("k_EButton_ApplicationMenu: " + toString(ikSolverLeftArm->DebugBool1));
 
 			break;
 		}

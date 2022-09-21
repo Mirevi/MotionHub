@@ -157,6 +157,7 @@ void IKSolverLeg::updateNormal() {
 	Vector3f axis = (solvePosition - upperPosition).normalized();
 
 	if (angleBetween(targetForward, axis) >= 90) {
+		// TODO: target forward in richtung axis
 	}
 
 	// Rotate upperNormal towards axis
@@ -177,6 +178,15 @@ void IKSolverLeg::updateNormal() {
 	Quaternionf identity = Quaternionf::Identity();
 	Vector3f slerpNormal = identity.slerp(upperNormalToTargetDelta, fromTo) * upperNormal;
 
+	// TODO: auf Plausibilitaet pruefen
+
+	if (isLeg) {
+		normal = slerpNormal.normalized();
+
+		lastNormal = normal;
+		return;
+	}
+
 	// Slerp from identity towards target in reverse direction
 	float angle = angleBetween(identity, fromTo);
 	float angleDelta = (360.0f - angle) / fmax(angle, powf(0.1f, FLT_DECIMAL_DIG));
@@ -194,10 +204,16 @@ void IKSolverLeg::updateNormal() {
 	Vector3f middleA = upperPosition + bendDirectionA;
 	Vector3f middleB = upperPosition + bendDirectionB;
 
-	if (lastNormal.isApprox(Vector3f::Zero())) {
+	// Use slerp if last normal was not initialized or angle is confident
+	//if (lastNormal.isApprox(Vector3f::Zero()) || angle <= 30.0f) {
+
+	// TODO: angle?
+	//if (lastNormal.isApprox(Vector3f::Zero())) {
+	if (lastNormal.x() == 0.0f && lastNormal.y() == 0.0f && lastNormal.z() == 0.0f) {
 		normal = slerpNormal.normalized();
 	}
 	// use closest normal to last direction
+	//else if (angleBetween(bendDirectionA, lastBendDirection) < angleBetween(bendDirectionB, lastBendDirection)) {
 	else if (distance(middleA, lastMiddle) < distance(middleB, lastMiddle)) {
 		normal = slerpNormal.normalized();
 	}
@@ -265,17 +281,22 @@ void IKSolverLeg::solve() {
 	//float upperMultiplicator = 1.001f;
 	float upperMultiplicator = 1.001f;
 	if (isCalibrating) {
-		upperMultiplicator = 1.0f;
+		// TODO: Nicht noetig?
+		//upperMultiplicator = 1.0f;
 	}
 
 	// get or calculate knee hint position
 	Vector3f middleHint = hintPosition;
 	if (!hasHint) {
 		middleHint = calcInverseKinematic(startPosition, solvePosition, upperJoint.length * upperMultiplicator, middleJoint.length, helpAxis);
-	}
+	} else {
 
-	if (hasHint) {
-		middleHint += (solvePosition - hintPosition).cross(normal).normalized() * 0.05f;
+		Vector3f hintOffset = (solvePosition - hintPosition).cross(normal).normalized() * 0.05f;
+		if (isDirect) {
+			hintOffset = Vector3f::Zero();
+		}
+
+		middleHint += hintOffset;
 	}
 
 	// Move middle position to knee hint
@@ -301,17 +322,17 @@ void IKSolverLeg::solve() {
 
 		// Break if tolerance distance is reached
 		if (distanceToTarget < distanceTolerance) {
-			break;
+			//break;
 		}
 
 		// Break if distance stayed the same
 		if (distanceToTarget == lastDistance) {
-			break;
+			//break;
 		}
 
 		// Break if distance is lower than progress tolerance
 		if (abs(distanceToTarget - lastDistance) < progressTolerance) {
-			break;
+			//break;
 		}
 
 		// Store current distance to target
@@ -335,12 +356,21 @@ void IKSolverLeg::constraint() {
 	// Get direction the limb should point to
 	Vector3f bendDirection = (solvePosition - upperPosition).cross(normal);
 
+	//DebugPos1 = upperPosition;
+
 	// Get direction to hint if not calibrating
 	if (!isCalibrating && hasHint) {
 
-		Vector3f hintOffset = (targetPosition - hintPosition).cross(normal).normalized() * 0.05f;
+		Vector3f hintOffset = (targetPosition - hintPosition).normalized().cross(normal).normalized() * 0.05f;
+		
+		//DebugPos2 = hintPosition + hintOffset;
+		//DebugPos3 = targetPosition;
 
-		DebugPos2 = hintPosition + hintOffset;
+		//DebugPos2 = hintPosition + hintOffset;
+		DebugPos1 = hintPosition + hintOffset;
+		if (isDirect) {
+			hintOffset = Vector3f::Zero();
+		}
 
 		bendDirection = (hintPosition + hintOffset) - upperPosition;
 	}
@@ -350,8 +380,6 @@ void IKSolverLeg::constraint() {
 	// project both directions on limb axis plane
 	currentDirection = projectOnPlane(currentDirection.normalized(), limbAxis);
 	bendDirection = projectOnPlane(bendDirection.normalized(), limbAxis);
-
-	// projectOnPlane anstatt orthoNormalize?
 
 	// Calculate angle difference on limb axis & create rotation on axis
 	float angle = signedAngle(currentDirection, bendDirection, limbAxis);

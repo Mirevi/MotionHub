@@ -288,7 +288,18 @@ void IKSolverArm::solve() {
 
 			// Create vector from hint position to solved upper
 			Vector3f upperPosition = upperJoint.getPosition();
-			Vector3f hintUpperPosition = hintPosition + (upperPosition - hintPosition).normalized() * upperJoint.length;
+			//float hintMulti = 0.9f;
+			//float hintMulti = 1.0f;
+			float hintMulti = 0.8f;
+			//Vector3f hintUpperPosition = hintPosition + (upperPosition - hintPosition).normalized() * (upperJoint.length * hintMulti);
+			//Vector3f hintUpperPosition = hintPosition + (upperPosition - hintPosition).normalized() * (upperArmLength);
+			Vector3f hintUpperPosition = hintPosition + (upperPosition - hintPosition).normalized() * (0.315f);
+			
+			DebugPos2 = hintUpperPosition;
+
+			DebugPos3 = hintUpperPosition + (upperPosition - shoulderPosition) * 0.2f;
+
+			hintUpperPosition += (upperPosition - shoulderPosition) * 0.2f;
 
 			// create & apply new rotation
 			rotation = fromToRotation(upperPosition - shoulderPosition, hintUpperPosition - shoulderPosition);
@@ -389,7 +400,7 @@ Vector3f IKSolverArm::createBendDirection(const Vector3f& currentDirection, cons
 	// Create position & vector between upper & lower candidate
 	Vector3f centerUpperLower = lerp(upperCandidate, lowerCandidate, 0.5f);
 	Vector3f toCenterUpperLower = (centerUpperLower - solvePosition).normalized();
-
+	
 	// Create Hand back vector
 	Vector3f toHandJoint = targetRotation * (handToJoint * 0.5f);
 	Vector3f toHandPinky = targetRotation * (handToPinky * 0.2f);
@@ -400,6 +411,7 @@ Vector3f IKSolverArm::createBendDirection(const Vector3f& currentDirection, cons
 
 	// Calculate closest point between upper & lower candidate
 	Vector3f closestPoint = closesPointOnLine(point, upperCandidate, lowerCandidate);
+
 
 	// Return normalized direction from upper to closest point
 	return (closestPoint - upperPosition).normalized();

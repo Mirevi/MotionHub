@@ -151,7 +151,7 @@ protected:
 public:
 
 	// Break Condition: Max allowed iterations 
-	int iterations = 20; // 10
+	int iterations = 30; // 10
 
 	// Break Condition: How close lower joint should be to the target (in meters) 
 	float distanceTolerance = 0.0001f; // 0.001f

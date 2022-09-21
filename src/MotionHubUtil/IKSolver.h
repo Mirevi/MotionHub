@@ -60,6 +60,10 @@ public:
 		isCalibrating = false;
 	}
 
+	void enableDirectMode() {
+		isDirect = true;
+	}
+
 	/*!
 	 * FABRIK helper function to clamp two positions to be within the range of a desired length
 	 *
@@ -135,4 +139,6 @@ protected:
 
 	bool isCalibrating = false;
 	bool hasHint = false;
+
+	bool isDirect = false;
 };

@@ -14,7 +14,7 @@
         <prediction>0.027500</prediction>
     </OpenVR>
     <OpenVR id="HMD:HEAD">
-        <position>0.000000 -0.100000 -0.140000</position>
+        <position>0.000000 -0.090000 -0.140000</position>
     </OpenVR>
     <OpenVR id="Controller:HAND_L">
         <position>0.045000 0.040000 -0.160000</position>
@@ -25,19 +25,19 @@
         <rotation>130.000000 -179.999985 -90.000015</rotation>
     </OpenVR>
     <OpenVR id="Tracker:HIPS">
-        <position>-0.010360 0.044720 -0.120000</position>
-        <rotation>23.193533 175.888397 9.499821</rotation>
-        <scale>1.000000 1.000000 1.000000</scale>
+        <position>-0.001028 0.040825 -0.120000</position>
+        <rotation>8.204600 179.538010 3.200892</rotation>
+        <scale>1.018573 0.968610 1.018573</scale>
     </OpenVR>
     <OpenVR id="Tracker:FOOT_L">
         <position>0.000000 0.100000 0.000000</position>
-        <rotation>64.042076 -20.598902 10.319073</rotation>
-        <useroffset>0.000000 -0.022709 0.000000</useroffset>
+        <rotation>67.164703 -25.809601 11.718740</rotation>
+        <useroffset>0.000000 0.021837 0.000000</useroffset>
     </OpenVR>
     <OpenVR id="Tracker:FOOT_R">
         <position>0.008000 0.100000 0.000000</position>
-        <rotation>67.306488 26.439436 -17.681358</rotation>
-        <useroffset>0.000000 -0.020296 0.000000</useroffset>
+        <rotation>67.405235 28.832041 -13.524076</rotation>
+        <useroffset>0.000000 0.019505 0.000000</useroffset>
     </OpenVR>
     <OpenVR id="Tracker:HAND_L">
         <position>0.000000 -0.040000 0.050000</position>
@@ -49,11 +49,11 @@
     </OpenVR>
     <OpenVR id="Tracker:FOREARM_R">
         <position>0.000000 0.090000 -0.050000</position>
-        <rotation>4.592264 -115.914536 -87.350517</rotation>
+        <rotation>164.149689 -52.083160 69.886787</rotation>
     </OpenVR>
     <OpenVR id="Tracker:FOREARM_L">
         <position>0.000000 0.090000 -0.050000</position>
-        <rotation>165.925659 73.431282 -74.286278</rotation>
+        <rotation>171.296585 61.778725 -76.517082</rotation>
     </OpenVR>
     <OpenVR id="LHR-774276F7">
         <joint>HEAD</joint>

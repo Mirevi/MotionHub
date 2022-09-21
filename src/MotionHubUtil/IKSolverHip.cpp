@@ -67,6 +67,9 @@ void IKSolverHip::solve(Vector3f position, Quaternionf rotation) {
 		return;
 	}
 
+	/*
+	return;
+
 	// TODO: Reach oder Lenght?
 
 	// Init hip offset with zero
@@ -106,9 +109,10 @@ void IKSolverHip::solve(Vector3f position, Quaternionf rotation) {
 		//Console::logWarning("R");
 	}
 
-	if (!(GetAsyncKeyState(VK_LMENU) & 0x8000)) {
+	//if (!(GetAsyncKeyState(VK_LMENU) & 0x8000)) {
 		hip->setGlobalPosition(position + hipOffset);
-	}
+	//}
+	*/
 }
 
 void IKSolverHip::hint(Vector3f leftFoot, Vector3f rightFoot) {

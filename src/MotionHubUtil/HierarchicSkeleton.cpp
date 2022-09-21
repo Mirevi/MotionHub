@@ -269,8 +269,8 @@ void HierarchicSkeleton::initXsens() {
 	// 0.042378, 0.169018, 0.014114
 	// 0.174821
 	//leftShoulder = HierarchicJoint(Vector3f(0.061f, 0.129f, -0.0175f), eulerToQuaternion(Vector3f(6.925f, 0, 0)), scale);
-	leftShoulder = HierarchicJoint(Vector3f(0.029f, 0.076f, 0), eulerToQuaternion(Vector3f(6.925f, 0, 0)), scale);
 	//leftShoulder = HierarchicJoint(Vector3f(0.029f, 0.116f, 0), eulerToQuaternion(Vector3f(6.925f, 0, 0)), scale);
+	leftShoulder = HierarchicJoint(Vector3f(0.029f, 0.174f, 0), eulerToQuaternion(Vector3f(6.925f, 0, 0)), scale);
 	leftShoulder.setParent(&chest);
 	addJoint(&leftShoulder, Joint::JointNames::SHOULDER_L);
 
@@ -278,15 +278,15 @@ void HierarchicSkeleton::initXsens() {
 	// -0.015655, 0.173515, 0.018255
 	// 0.175174
 	//rightShoulder = HierarchicJoint(Vector3f(-0.061f, 0.129f, -0.0175f), eulerToQuaternion(Vector3f(6.925f, 0, 0)), scale);
-	rightShoulder = HierarchicJoint(Vector3f(-0.029f, 0.076f, 0), eulerToQuaternion(Vector3f(6.925f, 0, 0)), scale);
 	//rightShoulder = HierarchicJoint(Vector3f(-0.029f, 0.116f, 0), eulerToQuaternion(Vector3f(6.925f, 0, 0)), scale);
+	rightShoulder = HierarchicJoint(Vector3f(-0.029f, 0.174f, 0), eulerToQuaternion(Vector3f(6.925f, 0, 0)), scale);
 	rightShoulder.setParent(&chest);
 	addJoint(&rightShoulder, Joint::JointNames::SHOULDER_R);
 
 	// LeftArm
 	// 0.131675, -0.042729, -0.007322
 	// 0.138628
-	//leftArm = HierarchicJoint(Vector3f(0.126f, -0.0334f, 0), eulerToQuaternion(Vector3f(0, 0, 0)), scale);
+	//leftArm = HierarchicJoint(Vector3f(0.139f, -0.0334f, 0), eulerToQuaternion(Vector3f(0, 0, 0)), scale);
 	leftArm = HierarchicJoint(Vector3f(0.139f, 0, 0), eulerToQuaternion(Vector3f(0, 0, 0)), scale);
 	leftArm.setParent(&leftShoulder);
 	addJoint(&leftArm, Joint::JointNames::ARM_L);
@@ -294,7 +294,7 @@ void HierarchicSkeleton::initXsens() {
 	// RightArm
 	//-0.127931, -0.019725, 0.049677
 	// 0.138648
-	//rightArm = HierarchicJoint(Vector3f(-0.126f, -0.0334f, 0), eulerToQuaternion(Vector3f(0, 0, 0)), scale);
+	//rightArm = HierarchicJoint(Vector3f(-0.139f, -0.0334f, 0), eulerToQuaternion(Vector3f(0, 0, 0)), scale);
 	rightArm = HierarchicJoint(Vector3f(-0.139f, 0, 0), eulerToQuaternion(Vector3f(0, 0, 0)), scale);
 	rightArm.setParent(&rightShoulder);
 	addJoint(&rightArm, Joint::JointNames::ARM_R);
