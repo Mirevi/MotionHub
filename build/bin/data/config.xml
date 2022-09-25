@@ -10,4 +10,10 @@
     <Azure id="000771692412">
         <position>1.000000 1.000000 0.000000</position>
     </Azure>
+    <BVH>
+        <scale>0.010000 0.010000 0.010000</scale>
+    </BVH>
+    <Azure id="001131114312">
+        <position>0.000000 1.000000 0.000000</position>
+    </Azure>
 </config>
