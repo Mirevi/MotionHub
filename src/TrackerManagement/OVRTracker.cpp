@@ -18,14 +18,14 @@ static bool DEBUG_HIP = false;
 
 static bool SOLVE_IK = true;
 
-static bool USE_DEBUG_POINT_COLLECTION = true;
+static bool USE_DEBUG_POINT_COLLECTION = false;
 
 static bool USE_XSENS_SKELETON = false;
 
-static bool USE_TEST_SKELETON = true;
+static bool USE_TEST_SKELETON = false;
 
-static bool EVAL_TIMING = true;
-static bool EVAL_DISTANCE = true;
+static bool EVAL_TIMING = false;
+static bool EVAL_DISTANCE = false;
 
 static bool SCALE_SKELETON = true;
 

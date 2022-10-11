@@ -196,5 +196,5 @@ public:
 	Skeleton* skeleton = nullptr;
 	Skeleton* testSkeleton = nullptr;
 
-	bool useTestSkeleton = true;
+	bool useTestSkeleton = false;
 };
