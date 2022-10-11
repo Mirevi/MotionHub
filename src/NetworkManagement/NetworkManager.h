@@ -38,6 +38,12 @@ public:
 	 */
 	void sendSkeletonPool(std::map<int, Skeleton>* skeletonPool, int trackerID, int frameIndex);
 
+	/*!
+	 * sends point collection to all network sender
+	 * \param pointCollection point collection to send
+	 */
+	void sendPointPool(PointCollection* pointCollection, int trackerID);
+
 	void createOSCSender(int ID);
 
 	void removeNetworkSender(int ID);

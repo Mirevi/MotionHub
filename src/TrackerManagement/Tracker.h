@@ -9,6 +9,7 @@
 #include "ConfigDllExportTrackingManagement.h"
 
 #include "MotionHubUtil/Skeleton.h"
+#include "MotionHubUtil/PointCollection.h"
 #include "MotionHubUtil/Console.h"
 #include "MotionHubUtil/Exception.h"
 #include "MotionHubUtil/MMHmath.h"
@@ -23,7 +24,7 @@
  *
  * \author Kester Evers, Eric Jansen and Manuel Zohlen
  */
-class /*TrackingManagement_DLL_import_export*/ Tracker
+class  Tracker
 {
 
 public:
@@ -47,9 +48,9 @@ public:
 	template<class T> struct Property : public NullProperty
 	{
 		T value;
-			
+
 		Property(std::string name, T value) : NullProperty(name), value(value) {};
-		
+
 		Type type() override {
 			if (std::is_same_v<T, bool>) return Type::BOOL;
 			else if (std::is_same_v<T, int>) return Type::INT;
@@ -154,7 +155,7 @@ public:
 	*/
 	virtual bool isEnabled();
 	/*!
-	 * checks if new skeleton date is available 
+	 * checks if new skeleton date is available
 	 * \return true when new skeleton data is available
 	 */
 	virtual bool isDataAvailable();
@@ -180,7 +181,7 @@ public:
 	*/
 	virtual int getNumDetectedSkeletons();
 	/*!
-	 * getter for the trackers properties struct 
+	 * getter for the trackers properties struct
 	 * \return the trackers Property struct
 	 */
 	virtual Properties* getProperties();
@@ -198,16 +199,22 @@ public:
 	virtual std::map<int, Skeleton> getSkeletonPool();
 
 	/*!
+	  * getter for the trackers point collection
+	  * \return the point collection by value
+	  */
+	virtual PointCollection getPointCollection();
+
+	/*!
 	 * recalculates the update matrix
 	 *
 	 */
-	//virtual void updateMatrix();
+	 //virtual void updateMatrix();
 
-	/*!
-	 * sets the position offset in the properties
-	 *
-	 * \param position position offset
-	 */
+	 /*!
+	  * sets the position offset in the properties
+	  *
+	  * \param position position offset
+	  */
 	virtual void setPositionOffset(Vector3f position);
 
 	/*!
@@ -228,7 +235,7 @@ public:
 	 * applies the tracker's offset to a given Vector4f
 	 */
 	virtual Vector4f applyOffset(Vector4f pos);
-	
+
 	/*!
 	* applies the tracker's offset to a given Quaternionf
 	*/
@@ -283,8 +290,16 @@ public:
 	virtual bool isPaused();
 
 	virtual void setLooping(bool state);
-	
+
 	virtual bool isLoopEnded();
+
+	int getType() {
+		return type;
+	}
+
+	void setType(int trackerType) {
+		type = trackerType;
+	}
 
 
 protected:
@@ -309,12 +324,12 @@ protected:
 	 */
 	int m_countDetectedSkeleton = 0;
 	/*!
-	 * the trackers property struct 
+	 * the trackers property struct
 	 */
 	Properties* m_properties;
 	/*!
 	 * matrix calculated with the offset Vectors
-	 * 
+	 *
 	 */
 	Matrix4f m_offsetMatrix;
 	/*!
@@ -342,6 +357,10 @@ protected:
 	std::map<int, Skeleton> m_skeletonPool;
 
 	std::map<int, Skeleton> m_skeletonPoolCache;
+	/*!
+	 * collection containing all points detected by this Tracker
+	 */
+	PointCollection m_pointCollection;
 
 	/*!
 	 * updade method used for tracker thread
@@ -367,6 +386,13 @@ protected:
 	 */
 	std::mutex m_skeletonPoolLock;
 
+	/*!
+	 * lock for save acces to point collection
+	 *
+	 */
+	std::mutex m_pointCollectionLock;
+
+	int type;
 
 	NetworkManager* m_networkManager = nullptr;
 
@@ -380,5 +406,11 @@ protected:
 
 	bool m_isLooping;
 
+	std::atomic<bool> shouldSleep = false;
 
+public:
+
+	void setShouldSleep(bool sleep) {
+		shouldSleep = sleep;
+	}
 };

@@ -2,29 +2,37 @@
 
 #include "Tracker.h"
 #include "OpenVRTracking.h"
-#include "MotionHubUtil/HierarchicJoint.h"
-#include "MotionHubUtil/IKSolver.h"
+#include "OpenVRConfig.h"
+#include "MotionHubUtil/HierarchicSkeleton.h"
+#include "MotionHubUtil/IKSolverHip.h"
+#include "MotionHubUtil/IKSolverSpine.h"
+#include "MotionHubUtil/IKSolverLeg.h"
+#include "MotionHubUtil/IKSolverArm.h"
+//#include "MotionHubUtil/ButtonHelper.h"
+#include "OpenVRButtonSubject.h"
+
+#include "MotionHubUtil/OneEuroFilter.h"
 
 /*!
  * \class OVRTracker
  *
- * \brief Manages TODO: Kommentare
- *
- * \author David Nowottnik
+ * \brief Manages Open VR Tracking and uses IK Solvers to realize Body Tracking
  */
-class OVRTracker : public Tracker {
+class OVRTracker : public Tracker, public Observer {
 
 public:
 
-	/*!
+	/*!	
 	 * default constructor
 	 */
 	OVRTracker();
 
 	/*!
-	 * constructor wit initialization
+	 * constructor with initialization
 	 *
 	 * \param id Tracker ID
+	 * \param networkManager reference to NetworkManager
+	 * \param configManager reference to ConfigManager
 	 */
 	OVRTracker(int id, NetworkManager* networkManager, ConfigManager* configManager);
 
@@ -38,24 +46,24 @@ public:
 	 */
 	void start() override;
 
+	void refresh(bool overrideDefaults = false);
+
 	/*!
 	* executes the stop() method of the base class which sets m_tracking to false
 	*/
 	void stop() override;
 
+	/*!
+	* returns a unique name to clearly identify the type of tracker
+	*/
 	std::string getTrackerType() override;
 
 private:
 
 	/*!
-	 * 
+	 * override method for Tracker::init()
 	 */
 	void init();
-
-	/*!
-	 * updade method used for tracker thread
-	 */
-	void update() override;
 
 	/*!
 	 * main tracking method
@@ -69,15 +77,124 @@ private:
 	void extractSkeleton();
 
 	/*!
-	 * converts OpenVR tracking to default skeleton type
-	 *
-	 * \param skeleton input OptiTrack skeleto
-	 * \param id the skeletons ID
-	 * \return converted default skeleton
+	 * initializes IK chains
 	 */
-	Skeleton* parseSkeleton(int id, Skeleton* oldSkeletonData);
+	void initIKSolvers();
 
-	OpenVRTracking trackingSystem;
+	void refreshIKSolvers(bool overrideDefault = false);
 
-	//IKSolver ikSolver;
+
+	OpenVRTracking::DevicePose getAssignedPose(Joint::JointNames joint);
+
+	void calibrate();
+
+	void calibrateDeviceRoles();
+
+	void calibrateDeviceToJointOffsets();
+
+	void calibrateDeviceToJointOffset(Joint::JointNames jointName);
+
+	void calibrateScale();
+
+	void calibrateHintOffsets();
+
+	/*!
+	 * update the state of this observer
+	 */
+	virtual void notify(Subject* subject) override;
+
+	void clearPointers() {
+
+		// Clear memory for OpenVRConfig
+		if (config != nullptr) delete config;
+
+		// Clear memory for TrackingSystem
+		if (trackingSystem != nullptr) delete trackingSystem;
+
+		// Clear memory for HierarchicSkeleton
+		if (hierarchicSkeleton != nullptr) delete hierarchicSkeleton;
+		if (testHierarchicSkeleton != nullptr) delete testHierarchicSkeleton;
+
+		// Clear memory for IKSolverHip
+		if (ikSolverHip != nullptr) delete ikSolverHip;
+		if (testIkSolverHip != nullptr) delete testIkSolverHip;
+
+		// Clear memory for IKSolverSpine
+		if (ikSolverSpine != nullptr) delete ikSolverSpine;
+		if (testIkSolverSpine != nullptr) delete testIkSolverSpine;
+
+		// Clear memory for IKSolverLeg
+		if (ikSolverLeftLeg != nullptr) delete ikSolverLeftLeg;
+		if (testIkSolverLeftLeg != nullptr) delete testIkSolverLeftLeg;
+
+		// Clear memory for IKSolverLeg
+		if (ikSolverRightLeg != nullptr) delete ikSolverRightLeg;
+		if (testIkSolverRightLeg != nullptr) delete testIkSolverRightLeg;
+
+		// Clear memory for IKSolverArm
+		if (ikSolverLeftArm != nullptr) delete ikSolverLeftArm;
+		if (testIkSolverLeftArm != nullptr) delete testIkSolverLeftArm;
+
+		// Clear memory for IKSolverArm
+		if (ikSolverRightArm != nullptr) delete ikSolverRightArm;
+		if (testIkSolverRightArm != nullptr) delete testIkSolverRightArm;
+
+		if (skeleton != nullptr) delete skeleton;
+		if (testSkeleton != nullptr) delete testSkeleton;
+	}
+
+	void enableCalibrationMode() {
+
+		ikSolverHip->enableCalibrationMode();
+		ikSolverSpine->enableCalibrationMode();
+		ikSolverLeftLeg->enableCalibrationMode();
+		ikSolverRightLeg->enableCalibrationMode();
+		ikSolverLeftArm->enableCalibrationMode();
+		ikSolverRightArm->enableCalibrationMode();
+	}
+
+	void disableCalibrationMode() {
+
+		ikSolverHip->disableCalibrationMode();
+		ikSolverSpine->disableCalibrationMode();
+		ikSolverLeftLeg->disableCalibrationMode();
+		ikSolverRightLeg->disableCalibrationMode();
+		ikSolverLeftArm->disableCalibrationMode();
+		ikSolverRightArm->disableCalibrationMode();
+	}
+
+// TODO: private
+public:
+//private:
+
+	OpenVRTracking* trackingSystem = nullptr;
+
+	HierarchicSkeleton* hierarchicSkeleton = nullptr;
+	HierarchicSkeleton* testHierarchicSkeleton = nullptr;
+
+	// IKSolvers
+	IKSolverHip* ikSolverHip = nullptr;
+	IKSolverSpine* ikSolverSpine = nullptr;
+	IKSolverLeg* ikSolverLeftLeg = nullptr;
+	IKSolverLeg* ikSolverRightLeg = nullptr;
+	IKSolverArm* ikSolverLeftArm = nullptr;
+	IKSolverArm* ikSolverRightArm = nullptr;
+
+	IKSolverHip* testIkSolverHip = nullptr;
+	IKSolverSpine* testIkSolverSpine = nullptr;
+	IKSolverLeg* testIkSolverLeftLeg = nullptr;
+	IKSolverLeg* testIkSolverRightLeg = nullptr;
+	IKSolverArm* testIkSolverLeftArm = nullptr;
+	IKSolverArm* testIkSolverRightArm = nullptr;
+
+	OpenVRConfig* config = nullptr;
+
+	bool shouldCalibrate = false;
+
+	//ButtonHelper buttonHelper;
+
+	Skeleton* skeleton = nullptr;
+	Skeleton* testSkeleton = nullptr;
+
+	bool useTestSkeleton = false;
 };

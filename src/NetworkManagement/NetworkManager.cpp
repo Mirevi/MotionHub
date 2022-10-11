@@ -38,6 +38,20 @@ void NetworkManager::sendSkeletonPool(std::map<int, Skeleton>* skeletonPool, int
 
 
 
+void NetworkManager::sendPointPool(PointCollection* pointCollection, int trackerID)
+{
+	// check if point collection exists
+	if (pointCollection != nullptr)
+	{
+		// check if current sender is active
+		if (m_poolSender[trackerID]->isActive())
+		{
+			// send point collection
+			m_poolSender[trackerID]->sendPoints(pointCollection, POINT_URI, trackerID);
+		}
+	}
+}
+
 void NetworkManager::createOSCSender(int ID)
 {
 

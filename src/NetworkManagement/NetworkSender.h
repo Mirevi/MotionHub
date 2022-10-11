@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include "MotionHubUtil/Skeleton.h"
+#include "MotionHubUtil/PointCollection.h"
 
 /*!
  * \class NetworkSender
@@ -53,6 +54,14 @@ public:
 	 * \param uri messages title
 	 */
 	virtual void sendSkeleton(Skeleton* skeleton, const char* uri, int trackerID, int frameIndex) = 0;
+
+	/*!
+	 * sends point collection
+	 *
+	 * \param pointCollection input point data
+	 * \param uri messages title
+	 */
+	virtual void sendPoints(PointCollection* pointCollection, const char* uri, int trackerID) = 0;
 
 	/*!
 	 * overrides the receivers address
