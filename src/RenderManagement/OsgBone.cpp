@@ -113,7 +113,7 @@ void OsgBone::update()
 			m_line->clear();
 			// create a  line
 			m_line->draw(m_startJoint->getPosition(),
-				m_startJoint->getPosition() + m_startJointOffset->getAttitude() * m_startJoint->getAttitude() * osg::Vec3f(-0.1f, 0.0f, 0.0f),
+				m_startJoint->getPosition() + m_startJointOffset->getAttitude() * normalizeQuat(m_startJoint->getAttitude()) * osg::Vec3f(-0.1f, 0.0f, 0.0f),
 				osg::Vec4f(0.95f, 0.95f, 0.95f, 1.0f),
 				osg::Vec4f(0.7f, 0.38f, 0.08f, 1.0f));
 			// to reset the line count to 0, use clear(). After this, Line is empty and new lines can be added
@@ -152,4 +152,11 @@ void OsgBone::createLeafJoint()
 void OsgBone::updateStickManRenderingState(bool renderStickMan)
 {
 	m_isStickManRenderingActive = renderStickMan;
+}
+
+osg::Quat OsgBone::normalizeQuat(osg::Quat input)
+{
+	float magnitude = sqrt(pow(input.x(), 2) + pow(input.y(), 2) + pow(input.z(), 2) + pow(input.w(), 2));
+
+	return osg::Quat(input.x() / magnitude, input.y() / magnitude, input.z() / magnitude, input.w() / magnitude);
 }

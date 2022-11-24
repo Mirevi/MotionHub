@@ -35,7 +35,6 @@ MainWindow::MainWindow(TrackerManager* trackerManager, ConfigManager* configMana
 	m_isTimelinePlaying = true;
 	m_isLooping = true;
 
-
 	connect(m_osgQtWidget, SIGNAL(osgWidgetPressed(osg::Vec2 position2d)),	this, SLOT(slotOsgWidgetPressed(osg::Vec2 position2d))	);
 	connect(m_osgQtWidget, SIGNAL(osgWidgetReleased(osg::Vec2 position2d)), this, SLOT(slotOsgWidgetReleased(osg::Vec2 position2d))	);
 	connect(m_osgQtWidget, SIGNAL(osgWidgetMoved(osg::Vec2 position2d)),	this, SLOT(slotOsgWidgetMoved(osg::Vec2 position2d)	)	);
