@@ -108,7 +108,10 @@ bool CLTracker::disconnect() {
 void CLTracker::parseSkeleton(Skeleton* skeleton, CapturyActor* actor, CapturyPose* pose) {
 	for (int i = 0; i < actor->numJoints; i++) {
 		std::pair<Joint::JointNames, bool> parsedName = parseJointName(&actor->joints[i]);
-		if (parsedName.second) skeleton->m_joints[parsedName.first] = Joint(convertCapturyPosition(&pose->transforms[i]), convertCapturyEuler(&pose->transforms[i]), Joint::JointConfidence::HIGH);
+		if (parsedName.second) 
+		{
+			skeleton->m_joints[parsedName.first] = Joint(convertCapturyPosition(&pose->transforms[i]), convertCapturyEuler(&pose->transforms[i]), Joint::JointConfidence::HIGH);
+		}
 	}
 }
 
@@ -119,13 +122,13 @@ std::pair<Joint::JointNames, bool> CLTracker::parseJointName(const CapturyJoint*
 	//else if (name == "HeadEE")
 	else if (name == "Neck")
 		return { Joint::JointNames::NECK, true };
-	else if (name == "Spine4")
+	else if (name == "Spine")
 		return { Joint::JointNames::CHEST, true };
 	//else if (name == "Spine3")
 	else if (name == "Spine2")
 		return { Joint::JointNames::SPINE, true };
 	//else if (name == "Spine1")
-	else if (name == "Spine")
+	else if (name == "Spine4")
 		return { Joint::JointNames::HIPS, true };
 	//else if (name == "Root")
 	else if (name == "RightShoulder")

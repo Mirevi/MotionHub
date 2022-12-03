@@ -35,12 +35,9 @@ MainWindow::MainWindow(TrackerManager* trackerManager, ConfigManager* configMana
 	m_isTimelinePlaying = true;
 	m_isLooping = true;
 
-
 	connect(m_osgQtWidget, SIGNAL(osgWidgetPressed(osg::Vec2 position2d)),	this, SLOT(slotOsgWidgetPressed(osg::Vec2 position2d))	);
 	connect(m_osgQtWidget, SIGNAL(osgWidgetReleased(osg::Vec2 position2d)), this, SLOT(slotOsgWidgetReleased(osg::Vec2 position2d))	);
 	connect(m_osgQtWidget, SIGNAL(osgWidgetMoved(osg::Vec2 position2d)),	this, SLOT(slotOsgWidgetMoved(osg::Vec2 position2d)	)	);
-
-
 
 	m_osgQtWidget->show();
 
@@ -59,11 +56,8 @@ MainWindow::MainWindow(TrackerManager* trackerManager, ConfigManager* configMana
 	//hides progressbar
 	ui->progressBar_save->hide();
 
-
-
 	//maximize the MainWindow
 	this->setWindowState(Qt::WindowMaximized);
-
 
 	// disable qt vector warning in console
 	qRegisterMetaType<QVector<int>>();
@@ -80,7 +74,6 @@ MainWindow::MainWindow(TrackerManager* trackerManager, ConfigManager* configMana
 	}
 
 	ui->tableWidget_console->setColumnWidth(1, 70);
-
 }
 
 // default destructor
@@ -239,7 +232,6 @@ void MainWindow::updateConsole()
 		currItemTime->setTextAlignment(Qt::AlignLeft); //aligning is inverted, this is actually left aligned
 		currItemType->setTextAlignment(Qt::AlignLeft);
 		currItemMessage->setTextAlignment(Qt::AlignLeft);
-
 
 
 		//insert new row

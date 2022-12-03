@@ -277,7 +277,7 @@ Skeleton* AKTracker::parseSkeleton(k4abt_skeleton_t * skeleton, int id)
 		Joint::JointConfidence confidence = (Joint::JointConfidence)skeleton->joints[jointIndex].confidence_level;
 
 		// map azure kinect skeleton joints to default skeleton joints and set confidence level
-		//rotations are converted from global to local
+		// rotations are converted from global to local
 		Joint::JointNames jointName;
 
 		switch (jointIndex) {
