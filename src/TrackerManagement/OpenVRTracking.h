@@ -3,19 +3,29 @@
 #include "MotionHubUtil/Exception.h"
 #include "MotionHubUtil/Console.h"
 #include "MotionHubUtil/Joint.h"
+#include "MotionHubUtil/OneEuroFilter.h"
+#include "OpenVRButtonSubject.h"
 
 #include <openvr_capi.h>
 #include <openvr.h>
 
 #include <vector>
-#include <map>
+#include <algorithm> // Sort
+#include <unordered_map>
 #include <Dense>
 
 using namespace Eigen;
 
+/*!
+ * \class OpenVRTracking
+ *
+ * \brief Manages VR Tracking with the Open VR API
+ */
 class OpenVRTracking {
+
 public:
 
+	// enum for the various devices
 	enum DeviceClass {
 		Invalid,
 		HMD,
@@ -23,97 +33,211 @@ public:
 		Tracker
 	};
 
+	/*!
+	 * \struct Device
+	 *
+	 * \brief Container for tracking devices
+	 */
 	struct Device {
 
-		unsigned int Index;
-		DeviceClass Class;
-		// TODO: const char* ? string mem allocation > 15 chars
-		std::string Identifier;
+		// represents the device index from the Open VR API
+		unsigned int index;
+
+		// unnique identifier (e.g. serial number)
+		std::string identifier;
+
+		DeviceClass deviceClass;
 
 		Device()
-			: Index(0), Class(DeviceClass::Invalid), Identifier("") {
+			: index(0), deviceClass(DeviceClass::Invalid), identifier("") {
 		}
 
 		Device(unsigned int index, DeviceClass deviceClass, std::string identifier) {
-			this->Index = index;
-			this->Class = deviceClass;
-			this->Identifier = identifier;
+
+			this->index = index;
+			this->deviceClass = deviceClass;
+			this->identifier = identifier;
 		}
 	};
 
-	// TODO: Pose auslagern? Und bei ReceiveDevicePoses übergeben?
+
+	/*!
+	 * \struct DevicePose
+	 *
+	 * \brief Container for tracking poses
+	 */
 	struct DevicePose {
 
-		Vector3f Position;
-		Quaternionf Rotation;
-		// TODO: Valid nötig? -> Invalide Posen überspringen?
-		//bool Valid;
+		Vector3f position;
+
+		Quaternionf rotation;
 
 		DevicePose() : 
-			Position(Vector3f::Zero()), 
-			Rotation(Quaternionf::Identity()) 
+			position(Vector3f::Zero()), 
+			rotation(Quaternionf::Identity()) 
 		{ }
 
-		DevicePose(Vector3f Position, Quaternionf Rotation) {
-			this->Position = Position;
-			this->Rotation = Rotation;
+		DevicePose(Vector3f position, Quaternionf rotation) {
+			this->position = position;
+			this->rotation = rotation;
 		}
 
-		void ExtractPose(const vr::HmdMatrix34_t& trackingMatrix) {
+		void extractPose(const vr::HmdMatrix34_t& trackingMatrix) {
 			// Extract Position
-			Position = Vector3f(-trackingMatrix.m[0][3], trackingMatrix.m[1][3], -trackingMatrix.m[2][3]);
+			position = Vector3f(-trackingMatrix.m[0][3], trackingMatrix.m[1][3], -trackingMatrix.m[2][3]);
 
 			// Extract Rotation 
-			Quaternionf q = Quaternionf(
-				sqrtf(fmaxf(0, 1 + trackingMatrix.m[0][0] + trackingMatrix.m[1][1] + trackingMatrix.m[2][2])) / 2,
+			rotation = Quaternionf(
+				//q.w = sqrt(fmax(0, 1 + trackingMatrix.m[0][0] + trackingMatrix.m[1][1] + trackingMatrix.m[2][2])) / 2;
+				- sqrt(fmax(0, 1 + trackingMatrix.m[0][0] + trackingMatrix.m[1][1] + trackingMatrix.m[2][2])) / 2,
+
+				//q.x = sqrt(fmax(0, 1 + trackingMatrix.m[0][0] - trackingMatrix.m[1][1] - trackingMatrix.m[2][2])) / 2;
+				//q.x = copysignf(q.x, trackingMatrix.m[2][1] - trackingMatrix.m[1][2]);
 				copysignf(
-					sqrtf(fmaxf(0, 1 + trackingMatrix.m[0][0] - trackingMatrix.m[1][1] - trackingMatrix.m[2][2])) / 2,
+					sqrt(fmax(0, 1 + trackingMatrix.m[0][0] - trackingMatrix.m[1][1] - trackingMatrix.m[2][2])) / 2,
 					trackingMatrix.m[2][1] - trackingMatrix.m[1][2]
 				),
-				copysignf(
-					sqrtf(fmaxf(0, 1 - trackingMatrix.m[0][0] + trackingMatrix.m[1][1] - trackingMatrix.m[2][2])) / 2,
+
+				//q.y = sqrt(fmax(0, 1 - trackingMatrix.m[0][0] + trackingMatrix.m[1][1] - trackingMatrix.m[2][2])) / 2;
+				//q.y = copysignf(q.y, trackingMatrix.m[0][2] - trackingMatrix.m[2][0]);
+				- copysignf(
+					sqrt(fmax(0, 1 - trackingMatrix.m[0][0] + trackingMatrix.m[1][1] - trackingMatrix.m[2][2])) / 2,
 					trackingMatrix.m[0][2] - trackingMatrix.m[2][0]
 				),
-				-copysignf(
-					sqrtf(fmaxf(0, 1 - trackingMatrix.m[0][0] - trackingMatrix.m[1][1] + trackingMatrix.m[2][2])) / 2,
+
+				//q.z = sqrt(fmax(0, 1 - trackingMatrix.m[0][0] - trackingMatrix.m[1][1] + trackingMatrix.m[2][2])) / 2;
+				//q.z = copysignf(q.z, trackingMatrix.m[1][0] - trackingMatrix.m[0][1]);
+				copysignf(
+					sqrt(fmax(0, 1 - trackingMatrix.m[0][0] - trackingMatrix.m[1][1] + trackingMatrix.m[2][2])) / 2,
 					trackingMatrix.m[1][0] - trackingMatrix.m[0][1]
 				)
 			);
+		}
 
-			// TODO: inverse vermeiden und Rechnung umstellen
-			Rotation = q.inverse();
+		bool isNull() {
+			return isPositionNull() && isRotationNull();
+		}
+
+		bool isPositionNull() {
+			return position.isApprox(Vector3f::Zero());
+		}
+
+		bool isRotationNull() {
+			return rotation.isApprox(Quaternionf::Identity());
 		}
 	};
 
-	bool Valid = true;
-
-	std::vector<Device> Devices;
-
-	std::vector<DevicePose> Poses;
-
-	OpenVRTracking();
-
-	~OpenVRTracking();
-
-	void init();
-
-	void start();
-
-	void LoadDevices();
-
-	Device* GetDevice(unsigned int deviceIndex);
-
-	void ReceiveDevicePoses();
-
-	bool IsDeviceConnected(unsigned int deviceIndex);
-
-	void SetPredictionTime(float secondsFromNow);
-
-	void PollEvents();
-
 public:
 
-	static std::string GetDeviceClassType(DeviceClass deviceClass) {
+	/*!
+	 * default constructor
+	 */
+	OpenVRTracking();
+
+	/*!
+	 * destructor
+	 */
+	~OpenVRTracking();
+
+	/*!
+	 * initializes the VR System
+	 */
+	void init();
+
+	/*!
+	 * refreshes the devices vector & starts the tracking
+	 */
+	void start();
+
+	/*!
+	 * returns a pointer to device with a specific device index
+	 *
+	 * \param deviceIndex the device index
+	 * 
+	 * \return pointer to a device, null if index was not found
+	 */
+	Device* getDevice(unsigned int deviceIndex);
+
+	/*!
+	 * removes a device from the collection by device index
+	 *
+	 * \param deviceIndex the device index
+	 */
+	void removeDevice(unsigned int deviceIndex);
+
+	/*!
+	 * returns a pointer to pose from a specific device by device index
+	 *
+	 * \param deviceIndex the device index
+	 *
+	 * \return pointer to a pose, null if index was not found
+	 */
+	DevicePose* getPose(unsigned int deviceIndex);
+	
+	DevicePose* getFilteredPose(unsigned int deviceIndex);
+
+	/*!
+	 * updates the devices poses from the VR System
+	 */
+	void receiveDevicePoses();
+
+	/*!
+	 * chekcs if the device is currently connected
+	 * 
+	 * \param deviceIndex the device index
+	 *
+	 * \return true if connected, false if not
+	 */
+	bool isDeviceConnected(unsigned int deviceIndex);
+
+	/*!
+	 * sets the prediction time of the VR System
+	 * 
+	 * \param secondsFromNow the prediction time in seconds
+	 */
+	void setPredictionTime(float secondsFromNow);
+
+	/*!
+	 * polls all events from the VR System
+	 */
+	void pollEvents();
+
+	/*!
+	 * Assigns device roles within a T-Pose
+	 */
+	std::unordered_map<unsigned int, Joint::JointNames> getCalibratedDeviceRoles();
+
+	int readDeviceIndexForJoint(Joint::JointNames jointName);
+
+	/*!
+	* Register an observer for button presses
+	*
+	* \param observer the observer object to be registered
+	*/
+	void registerButtonPressObserver(Observer* observer) {
+		ovrButtonSubject.registerObserver(observer);
+	}
+
+	/*!
+	* Unregister an observer for button presses
+	*
+	* \param observer the observer object to be unregistered
+	*/
+	void removeButtonPressObserver(Observer* observer) {
+		ovrButtonSubject.removeObserver(observer);
+	}
+
+	DevicePose filter(int index, DevicePose& pose, TimeStamp timestamp = UndefinedTime) {
+		return DevicePose(
+			positionFilters[index].filter(pose.position, timestamp),
+			rotationFilters[index].filter(pose.rotation, timestamp)
+		);
+	}
+
+	/*!
+	 * Converts a device class to string
+	 */
+	static std::string toString(DeviceClass deviceClass) {
 		std::string type = "Invalid";
 
 		switch (deviceClass) {
@@ -132,13 +256,49 @@ public:
 
 		return type;
 	}
+
+	void setOffsets(Vector3f positionOffset, Quaternionf rotationOffset, Vector3f scaleOffset) {
+
+		this->positionOffset = positionOffset;
+		this->rotationOffset = rotationOffset;
+		this->scaleOffset = scaleOffset;
+	}
+
+
+	private:
+
+		Vector3f applyOffset(Vector3f pos) {
+
+			return rotationOffset * pos.cwiseProduct(scaleOffset) + positionOffset;
+		}
+
+		Quaternionf applyOffset(Quaternionf rot) {
+
+			if (scaleOffset.x() < 0) rot.x() *= -1;
+			if (scaleOffset.y() < 0) rot.y() *= -1;
+			if (scaleOffset.z() < 0) rot.z() *= -1;
+			return rotationOffset * rot;
+		}
+public:
+
+	// collection for Devices
+	std::vector<Device> Devices;
+
+	// collection for Devices transforms
+	std::vector<DevicePose> Poses;
+
+	std::vector<DevicePose> FilteredPoses;
+
+	std::vector<Vector3OneEuroFilter> positionFilters;
+	std::vector<QuaternionOneEuroFilter> rotationFilters;
+
 private:
 
 	void tryAddDevice(unsigned int deviceIndex);
 
-	void updateDeviceRoles();
+	void updateDevices();
 
-	std::vector<Device> GetConnectedDevices();
+	std::vector<Device> getConnectedDevices();
 
 	unsigned int trackedPoseCount;
 
@@ -148,5 +308,13 @@ private:
 
 	vr::TrackedDevicePose_t* devicePoses;
 
-	std::map<unsigned int, Joint::JointNames> userIndexToJoint;
+	std::unordered_map<unsigned int, DevicePose*> deviceToPose;
+
+	std::unordered_map<unsigned int, DevicePose*> deviceToFilteredPose;
+
+	OpenVRButtonSubject ovrButtonSubject;
+
+	Vector3f positionOffset = Vector3f::Zero();
+	Quaternionf rotationOffset = Quaternionf::Identity();
+	Vector3f scaleOffset = Vector3f::Ones();
 };

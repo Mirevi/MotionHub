@@ -16,8 +16,12 @@ void Tracker::start()
 {
 	//isTracking is true, so update loop will continue tracking
 	m_isTracking = true;
+
 	//start new thread for update loop
 	m_trackingThread = new std::thread(&Tracker::update, this);
+
+	SetPriorityClass(m_trackingThread, HIGH_PRIORITY_CLASS);
+	SetThreadPriority(m_trackingThread, THREAD_PRIORITY_ABOVE_NORMAL);
 }
 
 void Tracker::stop()
@@ -187,6 +191,20 @@ std::map<int, Skeleton> Tracker::getSkeletonPool()
 
 }
 
+PointCollection Tracker::getPointCollection()
+{
+	// lock point collection bevore accessing point collection
+	m_pointCollectionLock.lock();
+
+	// local copy, so we can unlock the skeleton pool befor return
+	PointCollection pointCollectionCopy = m_pointCollection;
+
+	// unlock point collection
+	m_pointCollectionLock.unlock();
+
+	return pointCollectionCopy;
+}
+
 float Tracker::getTotalTime()
 {
 	return -1.0;
@@ -286,13 +304,26 @@ bool Tracker::readOffsetFromConfig()
 {
 	//std::cout << getTrackerType() << ", " << getTrackerIdentifier() << std::endl;
 	return	m_configManager->readVec3f("position", m_properties->positionOffset, getTrackerType(), getTrackerIdentifier()) &&
-			m_configManager->readVec3f("rotation", m_properties->rotationOffset, getTrackerType(), getTrackerIdentifier()) &&
-			m_configManager->readVec3f("scale", m_properties->scaleOffset, getTrackerType(), getTrackerIdentifier());
+		m_configManager->readVec3f("rotation", m_properties->rotationOffset, getTrackerType(), getTrackerIdentifier()) &&
+		m_configManager->readVec3f("scale", m_properties->scaleOffset, getTrackerType(), getTrackerIdentifier());
 }
 
 #pragma endregion
 
 #pragma region protected_methods
+
+
+void printFPS() {
+	static std::chrono::time_point<std::chrono::steady_clock> oldTime = std::chrono::high_resolution_clock::now();
+	static int fps; fps++;
+
+	if (std::chrono::duration_cast<std::chrono::seconds>(std::chrono::high_resolution_clock::now() - oldTime) >= std::chrono::seconds{ 1 }) {
+		oldTime = std::chrono::high_resolution_clock::now();
+
+		Console::log("FPS: " + std::to_string(fps));
+		fps = 0;
+	}
+}
 
 void Tracker::update()
 {
@@ -302,11 +333,41 @@ void Tracker::update()
 		//Console::log("Tracker::update()");
 		// if no new data is procressed
 		if (!m_isDataAvailable && m_isEnabled) {
+			using namespace std::chrono;
+
+			using fps = duration<int64_t, std::ratio<1, 240>>;
+
+			auto start = high_resolution_clock::now();
+			auto nextFrame = (start + fps{ 1 }) - start;
+
 			// get new data
 			track();
 
 			// send Skeleton Pool to NetworkManager
-			if (m_networkManager != nullptr) m_networkManager->sendSkeletonPool(&m_skeletonPool, m_properties->id, m_trackingCycles);
+			if (m_networkManager != nullptr) {
+
+				//send Skeleton Pool to NetworkManager
+				m_networkManager->sendSkeletonPool(&m_skeletonPool, m_properties->id, m_trackingCycles);
+
+				// send Point Pool to NetworkManager
+				m_networkManager->sendPointPool(&m_pointCollection, m_properties->id);
+			}
+
+			//printFPS();
+
+			if (shouldSleep) {
+				while ((high_resolution_clock::now() - start) < nextFrame) {
+					// Do nothing...
+				}
+
+				//std::this_thread::sleep_until(std::chrono::steady_clock::now() + std::chrono::milliseconds(1));
+			}
+
+			/*
+			auto end = std::chrono::high_resolution_clock::now();
+			auto timing = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+			Console::logWarning(std::to_string(timing.count()));
+			*/
 		}
 	}
 	//clean skeleton pool after tracking

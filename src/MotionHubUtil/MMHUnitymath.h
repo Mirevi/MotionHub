@@ -11,7 +11,7 @@ using namespace Eigen;
 
 /*!
  * Returns the signum function of x
- * 
+ *
  * \return -1 if x<0, 0 if x=0, 1 if x>0
  */
 template <typename T> static int sgn(T x) {
@@ -20,7 +20,7 @@ template <typename T> static int sgn(T x) {
 
 /*!
  * Calculates the reverse square root of x
- * 
+ *
  * \return reverse square root of x
  */
 static float rsqrt(float x) {
@@ -29,7 +29,7 @@ static float rsqrt(float x) {
 
 /*!
  * Returns the result of linearly interpolating from a to b using the interpolation parameter t
- * 
+ *
  * \remarks If the interpolation parameter is not in the range [0, 1], then this function extrapolates
  * \param a zhe first endpoint, corresponding to the interpolation parameter value of 0
  * \param b The second endpoint, corresponding to the interpolation parameter value of 1
@@ -42,7 +42,7 @@ static float lerp(const float a, const float b, const float t) {
 
 /*!
  * Clamps x between min and max and returns value
- * 
+ *
  * \param x input value to be clamped
  * \param min lower bound of the interval
  * \param max upper bound of the interval
@@ -54,12 +54,24 @@ static float clamp(const float x, const float min, const float max) {
 
 /*!
  * Clamps x between 0 and 1 and returns value
- * 
+ *
  * \param x input value to be clamped
  * \return x between 0 and 1
  */
 static float clamp01(const float x) {
 	return clamp(x, 0.0f, 1.0f);
+}
+
+static float map(float value, float fromSource, float toSource, float fromTarget, float toTarget) {
+	return (value - fromSource) / (toSource - fromSource) * (toTarget - fromTarget) + fromTarget;
+}
+
+static float mapClamp(float value, float fromSource, float toSource, float fromTarget, float toTarget) {
+	return clamp(map(value, fromSource, toSource, fromTarget, toTarget), fromTarget, toTarget);
+}
+
+static float mapClamp01(float value, float fromSource, float toSource) {
+	return clamp(map(value, fromSource, toSource, 0.0f, 1.0f), 0.0f, 1.0f);
 }
 
 /*!
@@ -73,24 +85,7 @@ static float clamp01(const float x) {
  * \see https://github.com/Unity-Technologies/Unity.Mathematics/blob/4915b7afebc50b9c6c9a410b7a86ae5489aa6b9c/src/Unity.Mathematics/quaternion.cs#L405
  */
 static Quaternionf lookRotation(Vector3f forward, Vector3f up) {
-	/*
-	if (forward == Vector3f::Zero()) {
-		return Quaternionf::Identity();
-	}
 
-	if (forward != up) {
-		Vector3f upNorm = up.normalized();
-
-		Vector3f v = forward + upNorm * -upNorm.dot(forward);
-		Quaternionf q = Quaternionf::FromTwoVectors(Vector3f(0, 0, 1), v);
-		return Quaternionf::FromTwoVectors(v, forward) * q;
-	}
-	else {
-		return Quaternionf::FromTwoVectors(Vector3f(0, 0, 1), forward);
-	}
-	*/
-	
-	// TODO: Oben/Unten?
 	float forwardLengthSq = forward.dot(forward);
 	float upLengthSq = up.dot(up);
 
@@ -124,7 +119,7 @@ static Quaternionf lookRotation(Vector3f forward, Vector3f up) {
  *
  * \param space the rotational space to transform to
  * \param rotation lower bound of the interval
- * \return the transformed rotation 
+ * \return the transformed rotation
  */
 static Quaternionf rotationToSpace(Quaternionf space, Quaternionf rotation) {
 	return (space.inverse() * rotation).inverse();
@@ -148,8 +143,20 @@ static Quaternionf fromToRotation(Quaternionf from, Quaternionf to) {
  * \param to second direction
  * \return the transformed direction
  */
-static Quaternionf fromToRotation(Vector3f from, Vector3f to) {
+static Quaternionf fromToRotation(const Vector3f& from, const Vector3f& to) {
 	return Quaternionf::FromTwoVectors(from, to);
+}
+
+/*!
+ * Returns the angle in degrees between quaternion from and quaternion to
+ *
+ * \param from first quaternion.
+ * \param to second quaternion.
+ * \return angle in degrees between both quaternions.
+ */
+static float angleBetween(Quaternionf from, Quaternionf to) {
+
+	return from.angularDistance(to) * M_Rad2Deg;
 }
 
 /*!
@@ -159,57 +166,25 @@ static Quaternionf fromToRotation(Vector3f from, Vector3f to) {
  *
  * \param from first direction
  * \param to second direction
- * \param maxDegreesDelta angular step 
+ * \param maxDegreesDelta angular step
  * \return the transformed rotation
  */
 static Quaternionf rotateTowards(Quaternionf from, Quaternionf to, float maxDegreesDelta) {
-	float angle = from.angularDistance(to);
+	float angle = angleBetween(from, to);
 	if (angle == 0.0f) return to;
 
 	return from.slerp(fmin(1.0f, maxDegreesDelta / angle), to);
 }
 
 /*!
- * Clamps a rotation to a identity rotation by the weight of clamp [0, 1]
- * 
- * \param rotation the rotation
- * \param clamp the weight to clamp [0 = rotation, 1 = identity rotation]
- * \param clampSmoothing angular step
- * \return the clamped rotation
+ * Projects a vector onto another vector
+ *
+ * \param vector the vector
+ * \param onNormal the normal to project on
+ * \return projected vector
+ * \see https://docs.unity3d.com/ScriptReference/Vector3.Project.html
  */
-static Quaternionf clamp(Quaternionf rotation, float clamp, int clampSmoothing) {
-	Quaternionf identity = Quaternionf::Identity();
-
-	if (clamp >= 1.0f) {
-		return identity;
-	}
-
-	if (clamp <= 0.0f) {
-		return rotation;
-	}
-
-	float dot = 1.0f - (identity.angularDistance(rotation) / 180.0f);
-
-	float targetClampMlp = clamp01(1.0f - ((clamp - dot) / (1.0f - dot)));
-	float clampMlp = clamp01(dot / clamp);
-
-	for (int i = 0; i < clampSmoothing; i++) {
-		float sinF = clampMlp * M_PI * 0.5f;
-		clampMlp = sinf(sinF);
-	}
-
-	return identity.slerp(clampMlp * targetClampMlp, rotation);
-}
-
- /*!
-  * Projects a vector onto another vector
-  *
-  * \param vector the vector
-  * \param onNormal the normal to project on
-  * \return projected vector
-  * \see https://docs.unity3d.com/ScriptReference/Vector3.Project.html
-  */
- static Vector3f project(Vector3f vector, Vector3f onNormal) {
+static Vector3f project(Vector3f vector, Vector3f onNormal) {
 
 	float sqrMag = onNormal.dot(onNormal);
 
@@ -227,37 +202,48 @@ static Quaternionf clamp(Quaternionf rotation, float clamp, int clampSmoothing) 
 	}
 }
 
- /*!
- * Reflects a vector off the plane defined by a plane normal
- *
- * \param vector the vector is treated as a directional arrow coming in to the plane
- * \param planeNormal the normal to project on
- * \return reflected vector
- * \see https://docs.unity3d.com/ScriptReference/Vector3.Reflect.html
- */
- static Vector3f reflect(Vector3f vector, Vector3f planeNormal) {
-	 return vector - 2 * project(vector, planeNormal);
- }
+/*!
+* Reflects a vector off the plane defined by a plane normal
+*
+* \param vector the vector is treated as a directional arrow coming in to the plane
+* \param planeNormal the normal to project on
+* \return reflected vector
+* \see https://docs.unity3d.com/ScriptReference/Vector3.Reflect.html
+*/
+static Vector3f reflect(Vector3f vector, Vector3f planeNormal) {
+	return vector - 2 * project(vector, planeNormal);
+}
 
- /*!
- * Projects a vector onto another vector and rejects a 
- *
- * \param a the vector to reject
- * \param b the second vector
- * \return rejected vector
- */
- static Vector3f reject(Vector3f a, Vector3f b) {
-	 return a - project(a, b);
- }
+/*!
+* Projects a vector onto another vector and rejects a
+*
+* \param a the vector to reject
+* \param b the second vector
+* \return rejected vector
+*/
+static Vector3f reject(Vector3f a, Vector3f b) {
+	return a - project(a, b);
+}
 
- /*!
-  * Normalizes tangent and makes sure it is orthogonal to normal (that is, angle between them is 90 degrees)
-  *
-  * \param normal the normal
-  * \param tangent the tangent
-  * \return angle in degrees between both vectors.
-  * \see https://graemepottsfolio.wordpress.com/2015/11/26/vectors-programming/
-  */
+/*!
+* Projects a vector onto a plane defined by a normal orthogonal to the plane.
+*
+* \param vector the location of the vector above the plane
+* \param planeNormal the direction from the vector towards the plane
+* \return the location of the vector on the plane
+*/
+static Vector3f projectOnPlane(Vector3f vector, Vector3f planeNormal) {
+	return reject(vector, planeNormal);
+}
+
+/*!
+ * Normalizes tangent and makes sure it is orthogonal to normal (that is, angle between them is 90 degrees)
+ *
+ * \param normal the normal
+ * \param tangent the tangent
+ * \return angle in degrees between both vectors.
+ * \see https://graemepottsfolio.wordpress.com/2015/11/26/vectors-programming/
+ */
 static void orthoNormalize(Vector3f& normal, Vector3f& tangent) {
 	/*normal.normalize();
 	tangent.normalize();
@@ -265,7 +251,7 @@ static void orthoNormalize(Vector3f& normal, Vector3f& tangent) {
 	tangent.completeOrthogonalDecomposition();
 
 	return tangent.cross(normal);*/
-	
+
 	tangent = (tangent - project(tangent, normal.normalized())).normalized();
 }
 
@@ -294,7 +280,7 @@ static void orthoNormalize(Vector3f& normal, Vector3f& tangent, Vector3f& binorm
  * \return angle in degrees between both vectors.
  * \see https://github.com/Unity-Technologies/UnityCsReference/blob/61f92bd79ae862c4465d35270f9d1d57befd1761/Runtime/Export/Math/Vector3.cs#L305
  */
-static float angle(Vector3f from, Vector3f to) {
+static float angleBetween(const Vector3f& from, const Vector3f& to) {
 	// sqrt(a) * sqrt(b) = sqrt(a * b) -- valid for real numbers
 	float denominator = sqrtf(from.squaredNorm() * to.squaredNorm());
 
@@ -311,7 +297,7 @@ static float angle(Vector3f from, Vector3f to) {
 /*!
  * The smaller of the two possible angles between the two vectors is returned, therefore the result will never be greater than 180 degrees or smaller than -180 degrees.
  * If you imagine the from and to vectors as lines on a piece of paper, both originating from the same point, then the /axis/ vector would point up out of the paper.
- * 
+ *
  * \param from first vector.
  * \param to second vector.
  * \param axis axis vector.
@@ -319,13 +305,13 @@ static float angle(Vector3f from, Vector3f to) {
  * \see https://github.com/Unity-Technologies/UnityCsReference/blob/61f92bd79ae862c4465d35270f9d1d57befd1761/Runtime/Export/Math/Vector3.cs#L319
  */
 static float signedAngle(const Vector3f& from, const Vector3f& to, const Vector3f& axis) {
-	float unsignedAngle = angle(from, to);
+	float unsignedAngle = angleBetween(from, to);
 
 	float cross_x = from.y() * to.z() - from.z() * to.y();
 	float cross_y = from.z() * to.x() - from.x() * to.z();
 	float cross_z = from.x() * to.y() - from.y() * to.x();
 
-	float sign = sgn(axis.x() * cross_x + axis.y() * cross_y + axis.z() * cross_z);
+	int sign = sgn(axis.x() * cross_x + axis.y() * cross_y + axis.z() * cross_z);
 
 	return unsignedAngle * sign;
 }
@@ -340,7 +326,7 @@ static float signedAngle(const Vector3f& from, const Vector3f& to, const Vector3
  * \see https://github.com/Unity-Technologies/Unity.Mathematics/blob/4915b7afebc50b9c6c9a410b7a86ae5489aa6b9c/src/Unity.Mathematics/quaternion.cs#L99
  */
 static Quaternionf angleAxis(const float& angle, const Vector3f& axis) {
-	// TODO: In radians umwandeln?
+	
 	float halfAngle = 0.5f * (angle * M_Deg2Rad);
 
 	float sina = sinf(halfAngle);
@@ -425,7 +411,7 @@ static Vector3f slerpUnclamped(Vector3f start, Vector3f end, float delta) {
  * Spherically interpolates between between vector a and b by amount t
  * The parameter t is clamped to the range [0, 1].
  * The difference between this and linear interpolation (aka, "lerp") is that the vectors are treated as directions rather than points in space.
- * 
+ *
  * \param a first vector
  * \param b second vector
  * \param t interpolant
@@ -445,19 +431,47 @@ static Vector3f slerp(Vector3f a, Vector3f b, float t) {
  * \return decomposed rotation
  * \see http://allenchou.net/2018/05/game-math-swing-twist-interpolation-sterp/
  */
-static Quaternionf DecomposeTwist(const Quaternionf rotation, const Vector3f twistAxis) {
+static Quaternionf decomposeTwist(const Quaternionf& rotation, const Vector3f& twistAxis) {
 	// Create Euler for sqrlength check
-	Vector3f r = Vector3f(rotation.x(), rotation.y(), rotation.z());
+	Vector3f euler = Vector3f(rotation.x(), rotation.y(), rotation.z());
 
 	// Singularity: rotation by 0 degree
-	if (r.squaredNorm() < FLT_EPSILON) {
+	if (euler.squaredNorm() < FLT_EPSILON) {
 		return angleAxis(0, twistAxis);
 	}
 	else {
 		// swing-twist decomposition
-		Vector3f p = project(r, twistAxis);
-		return Quaternionf(rotation.w(), rotation.x(), rotation.y(), rotation.z()).normalized();
+		Vector3f p = project(euler, twistAxis);
+		return Quaternionf(rotation.w(), p.x(), p.y(), p.z()).normalized();
 	}
+}
+
+/*!
+ * Calculates 
+ *
+ * \param point 
+ * \param lineStart the start point of the line
+ * \param lineEnd the end point of the line
+ * \return point between start & end
+ */
+static Vector3f closesPointOnLine(const Vector3f& point, const Vector3f& lineStart, const Vector3f& lineEnd) {
+	
+	// Create line vector from start to end
+	Vector3f line = (lineEnd - lineStart);
+
+	// Calculate length & normalize line
+	float length = line.norm();
+	line.normalize();
+
+	// Create vector from start to point
+	Vector3f v = point - lineStart;
+
+	// Calculate dot product & clamp it within line length
+	float dot = v.dot(line);
+	dot = clamp(dot, 0.0f, length);
+
+	// return point on line
+	return lineStart + line * dot;
 }
 
 /*

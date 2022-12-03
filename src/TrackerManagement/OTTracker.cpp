@@ -47,9 +47,11 @@ void OTTracker::start()
 	//init NatNet client
 	createClient(iConnectionType);
 
-
 	//get reference to the frame data
 	m_refData = m_dataHandlerManager->getData();
+
+	// Clear point collection
+	m_pointCollection.clear();
 
 	//start tracking in a new thread
 	Tracker::start();
@@ -75,20 +77,16 @@ int OTTracker::createClient(int iConnectionType)
 
 	// create NatNet client
 	m_client = new NatNetClient(iConnectionType);
-	
+
 	// set the callback handlers
 	m_client->SetVerbosityLevel(Verbosity_Warning);
 	m_client->SetMessageCallback(MessageHandler);
-
-
 
 	//create dummy object for MessageHandler
 	m_dataHandlerManager = new DataHandlerManager(this);
 
 	//set callback with dummy object
 	m_client->SetDataCallback(m_dataHandlerManager->DataHandler, m_client);	// this function will receive data from the server
-
-
 
 	// print version info
 	unsigned char ver[4];
@@ -103,10 +101,8 @@ int OTTracker::createClient(int iConnectionType)
 	// to use a different port for commands and/or data:
 	if (retCode != ErrorCode_OK)
 	{
-				
 		Console::log("OTTracker::createClient(): Unable to connect to server. Error code: " + std::to_string(retCode) + ". Exiting");
 		return ErrorCode_Internal;
-
 	}
 	else
 	{
@@ -131,7 +127,6 @@ int OTTracker::createClient(int iConnectionType)
 			Console::log("OTTracker::createClient(): Unable to connect to server. Host not present. Exiting.");
 			return 1;
 		}
-
 	}
 
 	return ErrorCode_OK;
@@ -142,26 +137,26 @@ int OTTracker::createClient(int iConnectionType)
 void OTTracker::track()
 {
 
-	//when frame data wasn't initialized, try again later
-	if (m_refData == nullptr)
-	{
+//when frame data wasn't initialized, try again later
+if (m_refData == nullptr)
+{
 
-		std::this_thread::sleep_for(std::chrono::milliseconds(10));
+	std::this_thread::sleep_for(std::chrono::milliseconds(10));
 
-		return;
+	return;
 
-	}
+}
 
-	//get skeleton data from frame data
-	extractSkeleton();
+//get skeleton data from frame data
+extractSkeleton();
 
-	cleanSkeletonPool();
+cleanSkeletonPool();
 
-	//increase tracking cycle counter
-	m_trackingCycles++;
+//increase tracking cycle counter
+m_trackingCycles++;
 
-	//new data is ready
-	m_isDataAvailable = true;
+//new data is ready
+m_isDataAvailable = true;
 
 }
 
@@ -173,14 +168,15 @@ void OTTracker::extractSkeleton()
 	//when new data isn't available, skip this method run
 	if (!m_dataHandlerManager->isDataAvailable())
 	{
-
 		return;
-
 	}
 
 
 	//get current skeleton number
 	m_countDetectedSkeleton = m_refData->nSkeletons;
+
+	// lock skeleton pool mutex
+	m_skeletonPoolLock.lock();
 
 	//loop through all OptiTrack skeletons
 	for (int i = 0; i < m_refData->nSkeletons; i++)
@@ -222,7 +218,6 @@ void OTTracker::extractSkeleton()
 		}
 
 
-
 		// create new skeleton
 		if (createNewSkeleton)
 		{
@@ -236,14 +231,79 @@ void OTTracker::extractSkeleton()
 			Console::log("DataHandlerManager::extractSkeleton(): Created new skeleton with id = " + std::to_string(skData.skeletonID) + ".");
 
 		}
-
 	}
 
+	// unlock skeleton pool mutex
+	m_skeletonPoolLock.unlock();
+
+
+	// lock point collection mutex
+	m_pointCollectionLock.lock();
+
+	// RigidBodies
+	for (int i = 0; i < m_refData->nRigidBodies; i++) {
+
+		sRigidBodyData& rbData = m_refData->RigidBodies[i];
+
+		// negate id
+		int id = -rbData.ID;
+
+		auto rbIterator = m_pointCollection.points.find(id);
+
+		Vector3f position = Vector3f(rbData.x, rbData.y, rbData.z);
+		Quaternionf rotation = Quaternionf(rbData.qw, rbData.qx, -rbData.qy, -rbData.qz);
+
+		if (rbIterator != m_pointCollection.points.end()) {
+
+			Point& point = rbIterator->second;
+
+			point.setPosition(position);
+			point.setRotation(rotation);
+		}
+		// Rigidbody not found -> add new
+		else {
+			m_pointCollection.addPoint(id, Point(position, rotation, Point::Rigidbody));
+		}
+	}
+
+	// TODO: Delete not received Markers & Rigidbodies 
+
+	// Markers
+	for (int i = 0; i < m_refData->nLabeledMarkers; i++) {
+
+		sMarker& marker = m_refData->LabeledMarkers[i];
+
+		int id = marker.ID;
+
+		auto markerIterator = m_pointCollection.points.find(id);
+
+		Vector3f position = Vector3f(marker.x, marker.y, marker.z);
+
+		if (markerIterator != m_pointCollection.points.end()) {
+
+			Point& point = markerIterator->second;
+
+			point.setPosition(position);
+
+		}
+		// Marker not found -> add new
+		else {
+
+			Point point = Point(position, eulerToQuaternion(Vector3f(0, 0, 0)), Point::Marker);
+			point.setCustomFloat(marker.size);
+			point.setCustomInt((int) marker.params);
+
+			m_pointCollection.addPoint(id, point);
+		}
+	}
+
+	// unlock point collection mutex
+	m_pointCollectionLock.unlock();
 }
 
 Skeleton* OTTracker::parseSkeleton(sSkeletonData skeleton, int id, Skeleton* oldSkeletonData)
 {
-	
+
 	//skeleton data container
 	Skeleton* currSkeleton = new Skeleton(id);
 
@@ -262,8 +322,8 @@ Skeleton* OTTracker::parseSkeleton(sSkeletonData skeleton, int id, Skeleton* old
 
 
 		//filter for corrupt position values  
-		if ( pos.x() >  100 || pos.y() >  100 || pos.z() >  100 ||
-			 pos.x() < -100 || pos.y() < -100 || pos.z() < -100 )
+		if (pos.x() > 100 || pos.y() > 100 || pos.z() > 100 ||
+			pos.x() < -100 || pos.y() < -100 || pos.z() < -100)
 		{
 
 			return nullptr;
@@ -271,8 +331,8 @@ Skeleton* OTTracker::parseSkeleton(sSkeletonData skeleton, int id, Skeleton* old
 		}
 
 		//filter for corrupt rotation values
-		if ( rot.x() < -1 || rot.y() < -1 || rot.z() < -1 || rot.w() < -1 || 
-			 rot.x() >  1 || rot.y() >  1 || rot.z() >  1 || rot.w() >  1 )
+		if (rot.x() < -1 || rot.y() < -1 || rot.z() < -1 || rot.w() < -1 ||
+			rot.x() > 1 || rot.y() > 1 || rot.z() > 1 || rot.w() > 1)
 		{
 
 			return nullptr;
@@ -419,9 +479,12 @@ void OTTracker::cleanSkeletonPool()
 			idSkeletonsToErase.push_back(idCurrPoolSkeleton);
 
 		}
-
 	}
 
+	// exit if no skeletons found
+	if (idSkeletonsToErase.size() == 0) {
+		return;
+	}
 
 	//loop through the removing list
 	for (int itIndexIdSkeletonsToErase = idSkeletonsToErase.front(); itIndexIdSkeletonsToErase != idSkeletonsToErase.back(); itIndexIdSkeletonsToErase++)

@@ -26,10 +26,13 @@ protected:
 	bool globalValid;
 
 public:
+	Joint* jointPointer;
+
+public:
 
 	HierarchicJoint(Joint::JointNames jointName, Vector3f localPosition, Quaternionf localRotation);
 
-	HierarchicJoint(Vector3f localPosition, Quaternionf localRotation);
+	HierarchicJoint(Vector3f localPosition, Quaternionf localRotation, Vector3f scale = Vector3f(1,1,1));
 
 	HierarchicJoint(Vector3f localPosition);
 
@@ -73,6 +76,8 @@ public:
 
 	Vector4f getGlobalPosition4();
 
+	void invalidateGlobal();
+
 	Vector3f getRight();
 
 	Vector3f getUp();
@@ -91,10 +96,14 @@ public:
 
 	Vector3f inverseTransformDirection(Vector3f direction);
 
+	void convertFromSkeleton(Joint joint);
+
+	void convertFromSkeleton(Joint joint, Joint parentJoint);
+
 protected:
 
 	Matrix4f combineParentMatrixRecursive(HierarchicJoint* hierarchicJoint);
 
-	void invalidateGlobalRecursive(HierarchicJoint* hierarchicJoint);
+	void invalidateGlobalRecursive();
 
 };

@@ -79,6 +79,11 @@ private:
 	tinyxml2::XMLElement* findOrCreateElement(std::string name, std::string identifier = "", tinyxml2::XMLElement* parent = nullptr);
 
 public:
+	void refresh();
+
+	bool exists(std::string parent, std::string identifier);
+	bool exists(std::string name, std::string parent, std::string identifier);
+
 	bool readString(std::string name, std::string& out, std::string parent = "", std::string identifier = "");
 	bool readBool(std::string name, bool& out, std::string parent = "", std::string identifier = "");
 	bool readInt(std::string name, int& out, std::string parent = "", std::string identifier = "");

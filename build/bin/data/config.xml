@@ -1,13 +1,62 @@
 <config>
+    <OpenVR id="HMD:HEAD">
+        <position>0.000000 -0.090000 -0.140000</position>
+    </OpenVR>
+    <OpenVR id="LHR-E61148B3">
+        <joint>HEAD</joint>
+    </OpenVR>
+    <OpenVR id="LHR-AB997679">
+        <joint>HIPS</joint>
+    </OpenVR>
+    <OpenVR id="LHR-0972C187">
+        <joint>FOOT_R</joint>
+    </OpenVR>
+    <OpenVR id="LHR-477F2564">
+        <joint>FOOT_L</joint>
+    </OpenVR>
+    <OpenVR id="LHR-DCF49E82">
+        <joint>HAND_R</joint>
+    </OpenVR>
+    <OpenVR id="LHR-CD4D636C">
+        <joint>HAND_L</joint>
+    </OpenVR>
+    <OpenVR id="Controller:HAND_L">
+        <position>0.045000 0.040000 -0.160000</position>
+        <rotation>130.000000 -179.999985 89.999992</rotation>
+    </OpenVR>
+    <OpenVR id="Controller:HAND_R">
+        <position>-0.045000 0.040000 -0.160000</position>
+        <rotation>130.000000 -179.999985 -90.000015</rotation>
+    </OpenVR>
+    <OpenVR id="Tracker:HIPS">
+        <position>-0.011760 -0.054144 -0.160000</position>
+        <rotation>157.972351 0.049149 -0.121478</rotation>
+        <scale>0.997145 0.972330 0.997145</scale>
+    </OpenVR>
+    <OpenVR id="Tracker:FOOT_L">
+        <position>0.000000 0.100000 0.000000</position>
+        <rotation>123.010994 163.893143 -2.683520</rotation>
+        <useroffset>0.000000 0.144797 0.000000</useroffset>
+    </OpenVR>
+    <OpenVR id="Tracker:FOOT_R">
+        <position>0.000000 0.100000 0.000000</position>
+        <rotation>121.304459 147.403946 -32.592258</rotation>
+        <useroffset>0.000000 0.113304 0.000000</useroffset>
+    </OpenVR>
+    <OpenVR id="Tracker:FOREARM_L">
+        <position>0.000000 0.090000 -0.050000</position>
+    </OpenVR>
+    <OpenVR id="Tracker:FOREARM_R">
+        <position>0.000000 -0.050000 0.095000</position>
+    </OpenVR>
+    <OpenVR id="Tracker:HAND_L">
+        <position>0.000000 -0.040000 0.050000</position>
+        <rotation>90.000000 90.000000 -90.000000</rotation>
+    </OpenVR>
+    <OpenVR id="Tracker:HAND_R">
+        <position>0.000000 -0.040000 0.050000</position>
+        <rotation>-90.000000 -90.000000 -90.000000</rotation>
+    </OpenVR>
     <ipAddress>127.0.0.1</ipAddress>
-    <recordPath>./data/recording/</recordPath>
-    <MMH>
-        <position>0.000000 1.000000 0.000000</position>
-    </MMH>
-    <Azure id="000040394012">
-        <position>0.000000 1.000000 0.000000</position>
-    </Azure>
-    <Azure id="000771692412">
-        <position>1.000000 1.000000 0.000000</position>
-    </Azure>
+    <recordPath>C:\Users\Mirevi\Documents/</recordPath>
 </config>

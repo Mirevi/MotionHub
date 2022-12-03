@@ -2,12 +2,59 @@
 
 #include "ConfigDllExportMotionHubUtil.h"
 
-#include "MotionHubUtil/HierarchicJoint.h"
-#include <MotionHubUtil/Skeleton.h>
+#include "HierarchicJoint.h"
+#include "Skeleton.h"
 
+/*!
+ * \class HierarchicSkeleton
+ *
+ * \brief Wrapper for multiple HierarchicJoints with fields to access them directly
+ */
 class MotionHubUtil_DLL_import_export HierarchicSkeleton {
 
 public:
+
+	HierarchicSkeleton(int sid = 1);
+
+	/*!
+	 * Initializes the HierarchicSkeleton with default values
+	 */
+	void init();
+	void initXsens();
+
+	void init(Skeleton otherSkeleton);
+
+	void reset();
+
+	void invalidateGlobals();
+
+	/*!
+	 * Inserts all Joints from HierarchicSkeleton into given Skeleton
+	 */
+	void insert();
+
+	void setScale(Vector3f scale);
+
+	Vector3f getScale();
+
+	HierarchicJoint* getJoint(Joint::JointNames jointName);
+
+protected:
+
+	/*!
+	 * Adds a Joint to the Joint collection vector
+	 * 
+	 * \param joint the Joint to add
+	 * \param jointName the Joint::JointName
+	 */
+	void addJoint(HierarchicJoint* joint, Joint::JointNames jointName);
+
+public:
+
+	Vector3f scale;
+
+	// joint collection
+	std::vector<HierarchicJoint*> joints;
 
 	HierarchicJoint hips;
 
@@ -15,11 +62,13 @@ public:
 	HierarchicJoint leftLeg;
 	HierarchicJoint leftFoot;
 	HierarchicJoint leftToe;
+	//HierarchicJoint leftToeEnd;
 
 	HierarchicJoint rightUpLeg;
 	HierarchicJoint rightLeg;
 	HierarchicJoint rightFoot;
 	HierarchicJoint rightToe;
+	//HierarchicJoint rightToeEnd;
 
 	HierarchicJoint spine;
 	HierarchicJoint chest;
@@ -37,15 +86,7 @@ public:
 	HierarchicJoint rightForeArm;
 	HierarchicJoint rightHand;
 
-	std::vector<HierarchicJoint*> joints;
+	Skeleton skeleton;
 
-public:
-
-	void init();
-
-	void insert(Skeleton* currSkeleton);
-
-protected:
-
-	void addJoint(HierarchicJoint* joint, Joint::JointNames jointName);
+	bool useXsens = false;
 };

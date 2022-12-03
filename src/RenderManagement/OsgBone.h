@@ -3,7 +3,7 @@
 #include <osg/PositionAttitudeTransform>
 #include "MotionHubUtil/Joint.h"
 #include <osg/Node>
-
+#include <Dense>
 class OsgLine;
 
 //TODO: Check if derivation from Node is necessary
@@ -38,6 +38,14 @@ private:
     void initialize(osg::ref_ptr<osg::Group> stickManGroup, osg::Quat rotationOffset);
     //osg::ref_ptr<osg::Group> m_parentNode;
 
+    /*!
+     * returns a normalized version of the input Quaternion
+     *
+     * \param input input quaternion
+     * \return normalized quaternion
+     */
+    osg::Quat normalizeQuat(osg::Quat input);
+
     osg::ref_ptr<osg::Node> m_boneNode;
     osg::ref_ptr<osg::PositionAttitudeTransform> m_startJoint;
     osg::ref_ptr<osg::PositionAttitudeTransform> m_startJointOffset;
@@ -46,6 +54,8 @@ private:
     
     //Offset rotation to correctly render the bone
     osg::Vec3f offsetRotation;
+
+    
 
     //bool isLeafJoint;
 

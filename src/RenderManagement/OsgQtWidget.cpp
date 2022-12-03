@@ -24,7 +24,7 @@ OsgQtWidget::OsgQtWidget(osgQt::GraphicsWindowQt* gw, TrackerManager* trackerMan
 
 	osg::Camera* camera = m_viewer.getCamera();
 	camera->setGraphicsContext(gw);
-	camera->setClearColor(osg::Vec4(0.0, 0.0, 0.0, 1.0));
+	camera->setClearColor(osg::Vec4(0.0, 0.0, 0.0, 1.0)); //BACKGROUND COLOR 3D-View
 	camera->setViewport(new osg::Viewport(0, 0, traits->width, traits->height));
 	camera->setProjectionMatrixAsPerspective(30.0f, static_cast<double>(traits->width) / static_cast<double>(traits->height), 0.1f, 1000.0f);
 

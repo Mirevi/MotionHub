@@ -218,6 +218,26 @@ Tracker* TrackerManager::getTrackerRefAt(int trackerPositionInList )
 
 }
 
+Tracker* TrackerManager::getTrackerByType(TrackerType type) {
+
+	m_trackerPoolLock.lock();
+
+	//loop through tracker pool and return the tracker with given type
+	for (Tracker* tracker : m_trackerPool) {
+
+		if (tracker->getType() == type) {
+
+			m_trackerPoolLock.unlock();
+
+			return tracker;
+		}
+	}
+
+	m_trackerPoolLock.unlock();
+
+	return nullptr;
+}
+
 std::mutex* TrackerManager::getTrackerPoolLock()
 {
 	return &m_trackerPoolLock;
@@ -467,6 +487,11 @@ Tracker* TrackerManager::instantiateTracker(TrackerType type, int id, std::strin
 
 		throw Exception("Unknown tracker type");
 	}
+	}
+
+	// Set Tracker Type
+	if (tempTracker != nullptr) {
+		tempTracker->setType(type);
 	}
 
 	return tempTracker;
