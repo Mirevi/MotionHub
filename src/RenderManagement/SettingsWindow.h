@@ -40,6 +40,7 @@ private:
 	NetworkManager* m_refNetworkManager;
 
 	QLineEdit* m_LineEditIP;
+	QLineEdit* m_LineEditIP2;
 
 	ConfigManager* m_configManager;
 

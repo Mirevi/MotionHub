@@ -410,7 +410,8 @@ bool ConfigManager::readString(std::string name, std::string& out, std::string p
 	tinyxml2::XMLElement* parentElement = findElement(parent, identifier);
 	if (parent != "" && parentElement == nullptr) return false;
 	tinyxml2::XMLElement* element = findElement(name, "", parentElement);
-	if (element != nullptr) {
+	if (element != nullptr)
+	{
 		out = element->GetText();
 		return true;
 	}

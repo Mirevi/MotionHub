@@ -58,5 +58,6 @@
         <rotation>-90.000000 -90.000000 -90.000000</rotation>
     </OpenVR>
     <ipAddress>127.0.0.1</ipAddress>
-    <recordPath>C:\Users\Mirevi\Documents/</recordPath>
+    <ipAddress2>192.168.2.1</ipAddress2>
+    <recordPath>C:\Users\Studio1\Documents/</recordPath>
 </config>

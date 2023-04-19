@@ -6,8 +6,29 @@ NetworkManager::NetworkManager(ConfigManager* configManager)
 	
 	m_configManager = configManager;
 
-	//m_ipAddress = m_configManager->getStringFromStartupConfig("ipAddress");
-	m_configManager->readString("ipAddress", m_ipAddress);
+	m_ipAddresses = std::vector<std::string>(1);
+
+	//check if adresses in config are real IPs and store them in m_ipAddresses
+	std::string adr;
+	m_configManager->readString("ipAddress", adr);
+
+	if (isValidIPAddress(adr))
+	{
+		m_ipAddresses[0] = adr;
+	}
+
+	
+	if (m_configManager->readString("ipAddress2", adr))
+	{
+		if (isValidIPAddress(adr))
+		{
+			m_ipAddresses.push_back(adr);
+		}
+	}
+	else
+	{
+		Console::log("NetworkManager::NetworkManager(): No value for ipAddress2 in config");
+	}
 
 	Console::log("NetworkManager::NetworkManager(): Created network manager");
 
@@ -55,8 +76,12 @@ void NetworkManager::sendPointPool(PointCollection* pointCollection, int tracker
 void NetworkManager::createOSCSender(int ID)
 {
 
-	m_poolSender.insert({ID, new OSCSender(m_ipAddress, DEFAULT_PORT) });
+	m_poolSender.insert({ID, new OSCSender(m_ipAddresses[0], DEFAULT_PORT) });
 
+	if (m_ipAddresses[1] != "")
+	{
+		m_poolSender.insert({ ID, new OSCSender(m_ipAddresses[1], DEFAULT_PORT) });
+	}
 }
 
 void NetworkManager::removeNetworkSender(int ID)
@@ -68,15 +93,16 @@ void NetworkManager::removeNetworkSender(int ID)
 
 }
 
-void NetworkManager::setIPAddress(std::string ipAddress) 
+void NetworkManager::setIPAddress(int idx,  std::string ipAddress)
 {
 	// Override IP address
-	m_ipAddress = ipAddress;
+	m_ipAddresses[idx] = ipAddress;
 	
-	// Update IP address for each NetworkSender
-	for (const std::pair<const int, NetworkSender*> &entry: m_poolSender) {
-		entry.second->setIPAddress(ipAddress);
-	}
+	// Update IP address for each NetworkSender DOES NOT WORK WITH MULTI ADDRESS
+	//for (const std::pair<const int, NetworkSender*> &entry: m_poolSender)
+	//{
+	//	entry.second->setIPAddress(ipAddress);
+	//}
 }
 
 bool NetworkManager::isValidIPAddress(std::string ipAddress)

@@ -48,7 +48,7 @@ public:
 
 	void removeNetworkSender(int ID);
 
-	void setIPAddress(std::string ipAddress);
+	void setIPAddress(int idx, std::string ipAddress);
 
 	/*!
 	 * Checks if IP address is within IPv4 range 0.0.0.0 - 255.255.255.255 OR a valid IPv6 address
@@ -58,7 +58,7 @@ public:
 	 */
 	bool isValidIPAddress(std::string ipAddress);
 
-	std::string m_ipAddress = "127.0.0.1";
+	std::vector<std::string> m_ipAddresses;
 
 
 

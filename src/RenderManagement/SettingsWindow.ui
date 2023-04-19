@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>399</width>
-    <height>279</height>
+    <height>270</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -504,7 +504,7 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
      <x>10</x>
      <y>9</y>
      <width>381</width>
-     <height>91</height>
+     <height>101</height>
     </rect>
    </property>
    <property name="title">
@@ -546,12 +546,22 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled
      </rect>
     </property>
    </widget>
+   <widget class="QLineEdit" name="lineEdit_ipAdress2">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>70</y>
+      <width>113</width>
+      <height>21</height>
+     </rect>
+    </property>
+   </widget>
   </widget>
   <widget class="QGroupBox" name="groupBox_recorder">
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>110</y>
+     <y>130</y>
      <width>381</width>
      <height>80</height>
     </rect>

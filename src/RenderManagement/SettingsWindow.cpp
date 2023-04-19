@@ -12,10 +12,17 @@ SettingsWindow::SettingsWindow(NetworkManager* networkManager, ConfigManager* co
 	m_refNetworkManager = networkManager;
 	m_configManager = configManager;
 	m_LineEditIP = ui->lineEdit_ipAdress;
+	m_LineEditIP2 = ui->lineEdit_ipAdress2;
 	ui->lineEdit_recorder_path->setText(QString(RecordingSession::RECORD_PATH.c_str()));
 
 
-	m_LineEditIP->setText(QString::fromStdString(m_refNetworkManager->m_ipAddress));
+	m_LineEditIP->setText(QString::fromStdString(m_refNetworkManager->m_ipAddresses[0]));
+	if (m_refNetworkManager->m_ipAddresses.size() > 1)
+	{
+		m_LineEditIP2->setText(QString::fromStdString(m_refNetworkManager->m_ipAddresses[1]));
+
+	}
+
 
 	// Connect TextChanged event to IP address textfield
 	connect(m_LineEditIP, &QLineEdit::textChanged, this, &SettingsWindow::ipAddressTextChanged);
@@ -33,11 +40,18 @@ void SettingsWindow::accept()
 
 	// Trim text and convert to std::string
 	std::string newAddress = m_LineEditIP->text().trimmed().toStdString();
+	std::string newAddress2 = m_LineEditIP2->text().trimmed().toStdString();
+
 
 	// Apply only valid IP addresses
 	if (m_refNetworkManager->isValidIPAddress(newAddress)) {
-		m_refNetworkManager->setIPAddress(newAddress);
+		m_refNetworkManager->setIPAddress(0, newAddress);
 		m_configManager->writeString("ipAddress", newAddress);
+	}
+
+	if (m_refNetworkManager->isValidIPAddress(newAddress2)) {
+		m_refNetworkManager->setIPAddress(1, newAddress2);
+		m_configManager->writeString("ipAddress2", newAddress2);
 	}
 
 	std::string pathname(ui->lineEdit_recorder_path->text().toLocal8Bit().data());
@@ -100,7 +114,7 @@ void SettingsWindow::accept()
 void SettingsWindow::setLocalhost()
 {
 
-	m_refNetworkManager->m_ipAddress = LOCALHOST;
+	m_refNetworkManager->m_ipAddresses[0] = LOCALHOST;
 	m_LineEditIP->setText(QString::fromStdString(LOCALHOST));
 
 
