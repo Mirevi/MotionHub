@@ -85,6 +85,7 @@ public:
 	bool exists(std::string name, std::string parent, std::string identifier);
 
 	bool readString(std::string name, std::string& out, std::string parent = "", std::string identifier = "");
+	bool readStrings(std::string name, std::vector<std::string>& out, std::string parent = "", std::string identifier = "");
 	bool readBool(std::string name, bool& out, std::string parent = "", std::string identifier = "");
 	bool readInt(std::string name, int& out, std::string parent = "", std::string identifier = "");
 	bool readFloat(std::string name, float& out, std::string parent = "", std::string identifier = "");

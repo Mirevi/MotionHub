@@ -418,6 +418,35 @@ bool ConfigManager::readString(std::string name, std::string& out, std::string p
 	return false;
 }
 
+bool ConfigManager::readStrings(std::string name, std::vector<std::string>& out, std::string parent, std::string identifier)
+{
+	if (!loadConfig()) return false;
+	tinyxml2::XMLElement* parentElement = findElement(parent, identifier);
+	if (parent != "" && parentElement == nullptr) return false;
+	tinyxml2::XMLElement* element = findElement(name, "", parentElement);
+	if (element != nullptr)
+	{
+		std::vector<std::string> strings = std::vector<std::string>();
+		tinyxml2::XMLElement* child = element->FirstChildElement();
+
+		while (true)
+		{ 
+			if (child == NULL)
+			{
+				break;
+			}
+
+			strings.push_back(child->GetText());
+
+			child = child->NextSiblingElement();
+		}
+
+		out = strings;
+		return true;
+	}
+	return false;
+}
+
 bool ConfigManager::readBool(std::string name, bool& out, std::string parent, std::string identifier)
 {
 	std::string outStr;
@@ -531,3 +560,4 @@ bool ConfigManager::writeVec4f(std::string name, Vector4f value, std::string par
 {
 	return writeString(name, std::to_string(value.x()) + " " + std::to_string(value.y()) + " " + std::to_string(value.z()) + " " + std::to_string(value.w()), parent, identifier);
 }
+

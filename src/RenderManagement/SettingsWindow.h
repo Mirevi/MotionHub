@@ -34,13 +34,16 @@ private slots:
 
 	void ipAddressTextChanged(const QString& value);
 
+	void slotAddAddress();
+	void slotRemoveAddress();
+
 private:
 	Ui::SettingsWindow* ui; 
 
 	NetworkManager* m_refNetworkManager;
 
-	QLineEdit* m_LineEditIP;
-	QLineEdit* m_LineEditIP2;
+	//QLineEdit* m_LineEditIP;
+	//QLineEdit* m_LineEditIP2;
 
 	ConfigManager* m_configManager;
 
