@@ -54,6 +54,8 @@ The developer, API and user documentation including a class collaboration diagra
 | Planned                                                                             							|
 | --------------------------------------------------------------------------------------------------------------|
 | [Perception Neuron 2 and 3 (planned when neuronmocap release a new version of its C++ SDK with absolut tracking data available](https://neuronmocap.com/content/product/32-neuron-edition-v2) --- [Link to old SDK](https://neuronmocap.com/software/neuron-data-reader-sdk)|
+Rokokko Smartsuit Pro II and Smartgloves |
+Valve Knuckles Controller|
 
 # Installer (for users, not for developers)
 
@@ -109,8 +111,8 @@ Hopefully, we will be able to integrate Unreal Engine 4 and a Live Link connecti
 
 
 # License
-Free for research, education, art and culture. We are glad to receive a reference in your paper or project (reference information below). If you want to use the MMH in a commercial setting, please send a mail to [Philipp Ladwig](https://www.mirevi.de/team/philipp-ladwig). We are very happy to share, but we don't want that anybody rebrand or missuse the MMH. Full license
-[here](https://github.com/Mirevi/MotionHub/blob/master/LICENSE.txt).
+MIT license.  
+If you want to use the MMH in a commercial setting, please send a mail to [Philipp Ladwig](https://www.mirevi.de/team/philipp-ladwig).
 
 
 # Referencing MotionHub (Paper)
