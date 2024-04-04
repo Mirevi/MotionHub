@@ -39,6 +39,12 @@ public:
 	~MotionHub();
 
 private:
+
+	/*!
+	 * Singleton instance
+	 */
+	static MotionHub* instance;
+
 	/*!
 	 * argument c 
 	 */

@@ -10,6 +10,18 @@ static bool isEscapePressed = false;
 MotionHub::MotionHub(int argc, char** argv)
 {
 
+#pragma region Singleton
+
+
+	if (instance == NULL)
+	{
+		instance == this;
+	}
+
+
+#pragma endregion
+
+
 	// save arguments
 	m_argc = argc;
 
@@ -41,21 +53,24 @@ MotionHub::MotionHub(int argc, char** argv)
 
 	m_uiManager		 = new UIManager(m_argc, m_argv, m_trackerManager, m_configManager);
 
-
+	//if mmh-file is opened in mmh, create player tracker and load file
 	if (argc > 1)
 	{
 		Console::log("MotionHub::MotionHub(): Argument: " + std::string(argv[1]));
+		
+		//create player tracker and pass file path
 		m_trackerManager->createTracker(TrackerManager::mmh, std::string(argv[1]));
+		
+		//add new tracker to tree widget
 		addTrackerToWidget(0, m_trackerManager, m_uiManager->getMainWindow()->getTreeWidgetTrackerRef());
-
-
 	}
 
+	//create and detach recorder thread
 	m_recordingThread = new std::thread(&MotionHub::updateRecorderThread, this);
 	m_recordingThread->detach();
 
 
-
+	//load recorder path from config file into global variable
 	loadRecordPath();
 
 
@@ -269,6 +284,7 @@ void MotionHub::loadRecordPath()
 	//RecordingSession::RECORD_PATH = m_configManager->getStringFromStartupConfig("recordPath");
 	RecordingSession::RECORD_PATH = curr_record_path.insert(0, path);
 
+	//read record path from config manager
 	std::string tempStr = "";
 	m_configManager->readString("recordPath", tempStr);
 
