@@ -5,7 +5,7 @@ TrackerGroup::TrackerGroup()
 
 }
 
-TrackerGroup::TrackerGroup(int id)
+TrackerGroup::TrackerGroup(int id, NetworkManager* networkManager, ConfigManager* configManager)
 {
 
 	//create new Properties object
@@ -14,6 +14,9 @@ TrackerGroup::TrackerGroup(int id)
 	//assign id and name to properties
 	m_properties->id = id;
 	m_properties->name = "trackerGroup_" + std::to_string(id);
+
+	m_networkManager = networkManager;
+	m_configManager = configManager;
 
 	//default is enabled
 	m_isEnabled = true;

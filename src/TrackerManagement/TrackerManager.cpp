@@ -456,7 +456,7 @@ Tracker* TrackerManager::instantiateTracker(TrackerType type, int id, std::strin
 
 	case group:
 	{
-		tempTracker = new TrackerGroup(id);
+		tempTracker = new TrackerGroup(id, m_networkManager, m_configManager);
 
 		break;
 	}

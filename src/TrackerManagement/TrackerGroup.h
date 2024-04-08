@@ -11,7 +11,7 @@ class TrackerGroup : public Tracker
 public:
 
 	TrackerGroup();
-	TrackerGroup(int id);
+	TrackerGroup(int id, NetworkManager* networkManager, ConfigManager* configManager);
 
 	void start() override;
 	/*!
